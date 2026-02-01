@@ -23,7 +23,7 @@ class AuthGroups extends ShieldAuthGroups
      * --------------------------------------------------------------------
      * The group that a newly registered user is added to.
      */
-    public string $defaultGroup = 'user';
+    public string $defaultGroup = 'student';
 
     /**
      * --------------------------------------------------------------------
@@ -49,16 +49,16 @@ class AuthGroups extends ShieldAuthGroups
             'title'       => 'Admin',
             'description' => 'Day to day administrators of the site.',
         ],
-        'developer' => [
-            'title'       => 'Developer',
+        'instructor' => [
+            'title'       => 'instructor',
             'description' => 'Site programmers.',
         ],
-        'user' => [
-            'title'       => 'User',
+        'student' => [
+            'title'       => 'student',
             'description' => 'General users of the site. Often customers.',
         ],
-        'beta' => [
-            'title'       => 'Beta User',
+        'staff' => [
+            'title'       => 'staff',
             'description' => 'Has access to beta-level features.',
         ],
     ];
@@ -79,6 +79,9 @@ class AuthGroups extends ShieldAuthGroups
         'users.edit'          => 'Can edit existing non-admin users',
         'users.delete'        => 'Can delete existing non-admin users',
         'beta.access'         => 'Can access beta-level features',
+        'dashboard.access'    => 'Can access the dashboard',
+        'admission.manage'    => 'Can manage admissions (CRUD)',
+        'admission.view'      => 'Can view admissions (read-only)',
     ];
 
     /**
@@ -94,6 +97,8 @@ class AuthGroups extends ShieldAuthGroups
             'admin.*',
             'users.*',
             'beta.*',
+            'dashboard.*',
+            'admission.*',
         ],
         'admin' => [
             'admin.access',
@@ -101,17 +106,17 @@ class AuthGroups extends ShieldAuthGroups
             'users.edit',
             'users.delete',
             'beta.access',
+            'dashboard.access',
+            'admission.manage',
         ],
-        'developer' => [
-            'admin.access',
-            'admin.settings',
-            'users.create',
-            'users.edit',
-            'beta.access',
+        'staff' => [
+            'dashboard.access',
+            'admission.view',
         ],
-        'user' => [],
-        'beta' => [
-            'beta.access',
+        'instructor' => [
+            'dashboard.access',
+            'admission.view',
         ],
+        'student' => [],
     ];
 }

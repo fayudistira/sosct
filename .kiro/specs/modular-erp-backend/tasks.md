@@ -43,61 +43,61 @@
 - [x] 3.8 Test menu filtering based on permissions
 
 ## 4. Admission Module - Model
-- [ ] 4.1 Create Admission module structure using make:module command
-- [ ] 4.2 Create AdmissionModel
-  - [ ] 4.2.1 Define table properties and allowed fields
-  - [ ] 4.2.2 Define validation rules
-  - [ ] 4.2.3 Implement generateRegistrationNumber() method
-  - [ ] 4.2.4 Implement getWithPagination() method
-  - [ ] 4.2.5 Implement searchAdmissions() method
-  - [ ] 4.2.6 Implement filterByStatus() method
-  - [ ] 4.2.7 Implement getStatusCounts() method
+- [x] 4.1 Create Admission module structure using make:module command
+- [x] 4.2 Create AdmissionModel
+  - [x] 4.2.1 Define table properties and allowed fields
+  - [x] 4.2.2 Define validation rules
+  - [x] 4.2.3 Implement generateRegistrationNumber() method
+  - [x] 4.2.4 Implement getWithPagination() method
+  - [x] 4.2.5 Implement searchAdmissions() method
+  - [x] 4.2.6 Implement filterByStatus() method
+  - [x] 4.2.7 Implement getStatusCounts() method
 
 ## 5. Admission Module - Web Controller
-- [ ] 5.1 Create AdmissionController
-  - [ ] 5.1.1 Implement index() method (list with pagination and stats)
-  - [ ] 5.1.2 Implement view() method (show details with file links)
-  - [ ] 5.1.3 Implement create() method (show form)
-  - [ ] 5.1.4 Implement store() method (save with file uploads)
-  - [ ] 5.1.5 Implement edit() method (show edit form)
-  - [ ] 5.1.6 Implement update() method (update with file handling)
-  - [ ] 5.1.7 Implement delete() method (soft delete)
-  - [ ] 5.1.8 Implement search() method
-  - [ ] 5.1.9 Implement downloadDocument() method
+- [x] 5.1 Create AdmissionController
+  - [x] 5.1.1 Implement index() method (list with pagination and stats)
+  - [x] 5.1.2 Implement view() method (show details with file links)
+  - [x] 5.1.3 Implement create() method (show form)
+  - [x] 5.1.4 Implement store() method (save with file uploads)
+  - [x] 5.1.5 Implement edit() method (show edit form)
+  - [x] 5.1.6 Implement update() method (update with file handling)
+  - [x] 5.1.7 Implement delete() method (soft delete)
+  - [x] 5.1.8 Implement search() method
+  - [x] 5.1.9 Implement downloadDocument() method
 
 ## 6. Admission Module - Views
-- [ ] 6.1 Create Admission views
-  - [ ] 6.1.1 Create index.php (list with search, filter, pagination)
-  - [ ] 6.1.2 Create view.php (detail view with photo and document downloads)
-  - [ ] 6.1.3 Create create.php (form for manual entry)
-  - [ ] 6.1.4 Create edit.php (edit form with current data)
+- [x] 6.1 Create Admission views
+  - [x] 6.1.1 Create index.php (list with search, filter, pagination)
+  - [x] 6.1.2 Create view.php (detail view with photo and document downloads)
+  - [x] 6.1.3 Create create.php (form for manual entry)
+  - [x] 6.1.4 Create edit.php (edit form with current data)
 
 ## 7. Admission Module - API Controller
-- [ ] 7.1 Create Api subdirectory in Controllers
-- [ ] 7.2 Create AdmissionApiController
-  - [ ] 7.2.1 Implement index() method (list with pagination)
-  - [ ] 7.2.2 Implement show() method (get single record)
-  - [ ] 7.2.3 Implement create() method (create new)
-  - [ ] 7.2.4 Implement update() method (update existing)
-  - [ ] 7.2.5 Implement delete() method (soft delete)
-  - [ ] 7.2.6 Implement search() method
-  - [ ] 7.2.7 Implement filter() method
+- [x] 7.1 Create Api subdirectory in Controllers
+- [x] 7.2 Create AdmissionApiController
+  - [x] 7.2.1 Implement index() method (list with pagination)
+  - [x] 7.2.2 Implement show() method (get single record)
+  - [x] 7.2.3 Implement create() method (create new)
+  - [x] 7.2.4 Implement update() method (update existing)
+  - [x] 7.2.5 Implement delete() method (soft delete)
+  - [x] 7.2.6 Implement search() method
+  - [x] 7.2.7 Implement filter() method
 
 ## 8. Admission Module - Routes
-- [ ] 8.1 Configure web routes with permission filter
-- [ ] 8.2 Configure API routes with tokens filter
-- [ ] 8.3 Create Menu.php config file
-- [ ] 8.4 Test route accessibility
-- [ ] 8.5 Test menu item appears in dashboard sidebar
+- [x] 8.1 Configure web routes with permission filter
+- [x] 8.2 Configure API routes with tokens filter
+- [x] 8.3 Create Menu.php config file
+- [x] 8.4 Test route accessibility
+- [x] 8.5 Test menu item appears in dashboard sidebar
 
 ## 9. Authentication & Authorization
-- [ ] 9.1 Add admission permissions to AuthGroups.php
-  - [ ] 9.1.1 Add 'dashboard.access' permission
-  - [ ] 9.1.2 Add 'admission.manage' permission
-  - [ ] 9.1.3 Add 'admission.view' permission
-  - [ ] 9.1.4 Assign permissions to appropriate groups in matrix
-- [ ] 9.2 Test permission-based access control
-- [ ] 9.3 Test token-based API authentication
+- [x] 9.1 Add admission permissions to AuthGroups.php
+  - [x] 9.1.1 Add 'dashboard.access' permission
+  - [x] 9.1.2 Add 'admission.manage' permission
+  - [x] 9.1.3 Add 'admission.view' permission
+  - [x] 9.1.4 Assign permissions to appropriate groups in matrix
+- [x] 9.2 Test permission-based access control
+- [x] 9.3 Test token-based API authentication
 
 ## 10. Testing & Validation
 - [ ] 10.1 Test public admission form submission

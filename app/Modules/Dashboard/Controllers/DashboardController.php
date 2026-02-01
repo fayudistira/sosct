@@ -24,10 +24,22 @@ class DashboardController extends BaseController
         // Get menu items from all modules
         $menuItems = $this->loadModuleMenus();
         
+        // Get admission statistics if user has permission
+        $admissionStats = null;
+        $courseStats = null;
+        
+        if ($user->can('admission.view') || $user->can('admission.manage')) {
+            $admissionModel = new \Modules\Admission\Models\AdmissionModel();
+            $admissionStats = $admissionModel->getStatusCounts();
+            $courseStats = $admissionModel->getCourseStatusBreakdown();
+        }
+        
         return view('Modules\Dashboard\Views\index', [
             'title' => 'Dashboard',
             'user' => $user,
-            'menuItems' => $menuItems
+            'menuItems' => $menuItems,
+            'admissionStats' => $admissionStats,
+            'courseStats' => $courseStats
         ]);
     }
     
