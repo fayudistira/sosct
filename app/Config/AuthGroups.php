@@ -82,6 +82,8 @@ class AuthGroups extends ShieldAuthGroups
         'dashboard.access'    => 'Can access the dashboard',
         'admission.manage'    => 'Can manage admissions (CRUD)',
         'admission.view'      => 'Can view admissions (read-only)',
+        'program.manage'      => 'Can manage programs (CRUD)',
+        'program.view'        => 'Can view programs (read-only)',
     ];
 
     /**
@@ -99,6 +101,7 @@ class AuthGroups extends ShieldAuthGroups
             'beta.*',
             'dashboard.*',
             'admission.*',
+            'program.*',
         ],
         'admin' => [
             'admin.access',
@@ -108,14 +111,17 @@ class AuthGroups extends ShieldAuthGroups
             'beta.access',
             'dashboard.access',
             'admission.manage',
+            'program.manage',
         ],
         'staff' => [
             'dashboard.access',
             'admission.view',
+            'program.view',
         ],
         'instructor' => [
             'dashboard.access',
             'admission.view',
+            'program.view',
         ],
         'student' => [],
     ];
