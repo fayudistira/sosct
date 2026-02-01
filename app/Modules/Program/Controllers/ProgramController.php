@@ -49,7 +49,9 @@ class ProgramController extends BaseController
             'pager' => $pager,
             'keyword' => $keyword,
             'status' => $status,
-            'category' => $category
+            'category' => $category,
+            'menuItems' => $this->loadModuleMenus(),
+            'user' => auth()->user()
         ]);
     }
     
@@ -66,7 +68,9 @@ class ProgramController extends BaseController
         
         return view('Modules\Program\Views\view', [
             'title' => 'Program Details',
-            'program' => $program
+            'program' => $program,
+            'menuItems' => $this->loadModuleMenus(),
+            'user' => auth()->user()
         ]);
     }
     
@@ -76,7 +80,9 @@ class ProgramController extends BaseController
     public function create()
     {
         return view('Modules\Program\Views\create', [
-            'title' => 'Create Program'
+            'title' => 'Create Program',
+            'menuItems' => $this->loadModuleMenus(),
+            'user' => auth()->user()
         ]);
     }
     
@@ -138,7 +144,9 @@ class ProgramController extends BaseController
         
         return view('Modules\Program\Views\edit', [
             'title' => 'Edit Program',
-            'program' => $program
+            'program' => $program,
+            'menuItems' => $this->loadModuleMenus(),
+            'user' => auth()->user()
         ]);
     }
     

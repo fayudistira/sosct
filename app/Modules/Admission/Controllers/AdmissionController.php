@@ -24,6 +24,8 @@ class AdmissionController extends BaseController
         $data['admissions'] = $this->admissionModel->getWithPagination(10);
         $data['pager'] = $this->admissionModel->pager;
         $data['statusCounts'] = $this->admissionModel->getStatusCounts();
+        $data['menuItems'] = $this->loadModuleMenus();
+        $data['user'] = auth()->user();
         
         return view('Modules\Admission\Views\index', $data);
     }
@@ -47,6 +49,9 @@ class AdmissionController extends BaseController
             $data['admission']['documents'] = json_decode($data['admission']['documents'], true);
         }
         
+        $data['menuItems'] = $this->loadModuleMenus();
+        $data['user'] = auth()->user();
+        
         return view('Modules\Admission\Views\view', $data);
     }
     
@@ -58,7 +63,9 @@ class AdmissionController extends BaseController
     public function create(): string
     {
         return view('Modules\Admission\Views\create', [
-            'title' => 'Create Admission'
+            'title' => 'Create Admission',
+            'menuItems' => $this->loadModuleMenus(),
+            'user' => auth()->user()
         ]);
     }
 
@@ -130,6 +137,9 @@ class AdmissionController extends BaseController
         if (!$data['admission']) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Admission not found');
         }
+        
+        $data['menuItems'] = $this->loadModuleMenus();
+        $data['user'] = auth()->user();
         
         return view('Modules\Admission\Views\edit', $data);
     }
@@ -219,6 +229,8 @@ class AdmissionController extends BaseController
         $data['admissions'] = $this->admissionModel->searchAdmissions($keyword);
         $data['statusCounts'] = $this->admissionModel->getStatusCounts();
         $data['keyword'] = $keyword;
+        $data['menuItems'] = $this->loadModuleMenus();
+        $data['user'] = auth()->user();
         
         return view('Modules\Admission\Views\index', $data);
     }
