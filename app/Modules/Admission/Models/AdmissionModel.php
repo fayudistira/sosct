@@ -47,6 +47,7 @@ class AdmissionModel extends Model
     protected $deletedField = 'deleted_at';
     
     protected $validationRules = [
+        'id' => 'permit_empty|is_natural_no_zero',
         'registration_number' => 'required|is_unique[admissions.registration_number,id,{id}]',
         'full_name' => 'required|min_length[3]|max_length[100]',
         'gender' => 'required|in_list[Male,Female]',
