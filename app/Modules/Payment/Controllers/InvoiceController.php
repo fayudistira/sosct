@@ -6,8 +6,6 @@ use App\Controllers\BaseController;
 use Modules\Payment\Models\InvoiceModel;
 use Modules\Admission\Models\AdmissionModel;
 use Modules\Payment\Libraries\PdfGenerator;
-use Endroid\QrCode\QrCode;
-use Endroid\QrCode\Writer\PngWriter;
 
 class InvoiceController extends BaseController
 {
@@ -236,13 +234,12 @@ class InvoiceController extends BaseController
         // Generate public URL for invoice
         $publicUrl = base_url('invoice/public/' . $id);
         
-        // Create QR code
-        $qrCode = new QrCode($publicUrl);
-        $qrCode->setSize(300);
-        $qrCode->setMargin(10);
-        
-        $writer = new PngWriter();
-        $result = $writer->write($qrCode);
+        // Create QR code using Builder
+        $result = \Endroid\QrCode\Builder\Builder::create()
+            ->data($publicUrl)
+            ->size(300)
+            ->margin(10)
+            ->build();
         
         // Return QR code image
         return $this->response

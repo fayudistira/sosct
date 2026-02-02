@@ -4,6 +4,10 @@ use CodeIgniter\Config\Services;
 
 $routes = Services::routes();
 
+// Public Invoice Routes (MUST be before grouped routes to avoid conflicts)
+$routes->get('invoice/public/(:segment)', '\Modules\Payment\Controllers\InvoiceController::publicView/$1');
+$routes->get('invoice/qr/(:segment)', '\Modules\Payment\Controllers\InvoiceController::generateQr/$1');
+
 // Payment Web UI Routes
 $routes->group('payment', ['namespace' => 'Modules\Payment\Controllers', 'filter' => 'session'], function($routes) {
     $routes->get('/', 'PaymentController::index');
@@ -31,10 +35,6 @@ $routes->group('invoice', ['namespace' => 'Modules\Payment\Controllers', 'filter
     $routes->post('update/(:segment)', 'InvoiceController::update/$1');
     $routes->get('pdf/(:segment)', 'InvoiceController::downloadPdf/$1');
 });
-
-// Public Invoice Routes (no authentication required)
-$routes->get('invoice/public/(:segment)', 'Modules\Payment\Controllers\InvoiceController::publicView/$1');
-$routes->get('invoice/qr/(:segment)', 'Modules\Payment\Controllers\InvoiceController::generateQr/$1');
 
 // Payment API Routes
 $routes->group('api/payments', ['namespace' => 'Modules\Payment\Controllers\Api', 'filter' => 'session'], function($routes) {
