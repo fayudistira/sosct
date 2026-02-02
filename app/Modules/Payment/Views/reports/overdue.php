@@ -42,7 +42,7 @@
                 </div>
                 <div class="col-md-4">
                     <h6 class="text-muted">Total Amount Overdue</h6>
-                    <h3>$<?= number_format(array_sum(array_column($invoices, 'amount')), 2) ?></h3>
+                    <h3>Rp <?= number_format(array_sum(array_column($invoices, 'amount')), 0, ',', '.') ?></h3>
                 </div>
                 <div class="col-md-4">
                     <h6 class="text-muted">Average Days Overdue</h6>
@@ -97,7 +97,7 @@
                                     </td>
                                     <td><?= esc($invoice['full_name']) ?></td>
                                     <td><?= esc($invoice['email']) ?></td>
-                                    <td>$<?= number_format($invoice['amount'], 2) ?></td>
+                                    <td>Rp <?= number_format($invoice['amount'], 0, ',', '.') ?></td>
                                     <td><?= date('M d, Y', strtotime($invoice['due_date'])) ?></td>
                                     <td>
                                         <span class="overdue-badge"><?= $daysOverdue ?> days</span>

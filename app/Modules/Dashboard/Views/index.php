@@ -132,7 +132,7 @@
                 <div class="row g-3">
                     <div class="col-md-3">
                         <div class="p-3 border rounded text-center">
-                            <div class="stat-number" style="color: var(--dark-red);">$<?= number_format($paymentStats['total_revenue'], 2) ?></div>
+                            <div class="stat-number" style="color: var(--dark-red);">Rp <?= number_format($paymentStats['total_revenue'], 0, ',', '.') ?></div>
                             <div class="stat-label">Total Revenue</div>
                             <div class="progress mt-2" style="height: 6px;">
                                 <div class="progress-bar" style="width: 100%; background-color: var(--dark-red);"></div>
@@ -178,7 +178,7 @@
                                     <div class="p-3 border rounded">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <span class="fw-medium"><?= ucwords(str_replace('_', ' ', $method)) ?></span>
-                                            <span class="badge" style="background-color: var(--dark-red);">$<?= number_format($amount, 2) ?></span>
+                                            <span class="badge" style="background-color: var(--dark-red);">Rp <?= number_format($amount, 0, ',', '.') ?></span>
                                         </div>
                                         <div class="progress mt-2" style="height: 6px;">
                                             <div class="progress-bar" style="width: <?= $paymentStats['total_revenue'] > 0 ? ($amount / $paymentStats['total_revenue'] * 100) : 0 ?>%; background-color: var(--dark-red);"></div>

@@ -96,6 +96,25 @@
                     </div>
                 </div>
                 
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <label class="form-label">Receipt File</label>
+                            <?php if (!empty($payment['receipt_file'])): ?>
+                                <div class="mb-2">
+                                    <a href="<?= base_url('writable/uploads/' . $payment['receipt_file']) ?>" 
+                                       target="_blank" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-file-earmark"></i> View Current Receipt
+                                    </a>
+                                    <small class="text-muted d-block mt-1">Current file: <?= basename($payment['receipt_file']) ?></small>
+                                </div>
+                            <?php endif; ?>
+                            <input type="file" name="receipt_file" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+                            <small class="text-muted">Upload new receipt file (PDF, JPG, PNG - Max 2MB). Leave empty to keep current file.</small>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="mb-3">
                     <label class="form-label">Notes</label>
                     <textarea name="notes" class="form-control" rows="3"><?= esc($payment['notes'] ?? '') ?></textarea>

@@ -438,8 +438,11 @@
                             <i class="bi bi-chevron-down ms-1"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
-                            <a class="dropdown-item" href="<?= base_url('account') ?>"><i class="bi bi-person me-2"></i>Profile</a>
-                            <a class="dropdown-item" href="<?= base_url('settings') ?>"><i class="bi bi-gear me-2"></i>Settings</a>
+                            <div class="dropdown-header">
+                                <strong><?= esc($user->username ?? $user->email) ?></strong>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="<?= base_url('account') ?>"><i class="bi bi-person me-2"></i>My Profile</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item text-danger" href="<?= base_url('logout') ?>"><i class="bi bi-box-arrow-right me-2"></i>Logout</a>
                         </div>

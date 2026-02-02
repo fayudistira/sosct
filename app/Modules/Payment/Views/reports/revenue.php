@@ -62,7 +62,7 @@
             <div class="card stat-card">
                 <div class="card-body">
                     <h6 class="text-muted">Total Revenue</h6>
-                    <h3 class="mb-0">$<?= number_format($stats['total_revenue'], 2) ?></h3>
+                    <h3 class="mb-0">Rp <?= number_format($stats['total_revenue'], 0, ',', '.') ?></h3>
                 </div>
             </div>
         </div>
@@ -111,7 +111,7 @@
                             <?php foreach ($revenueByMethod as $method => $amount): ?>
                                 <tr>
                                     <td><?= ucwords(str_replace('_', ' ', $method)) ?></td>
-                                    <td class="text-end">$<?= number_format($amount, 2) ?></td>
+                                    <td class="text-end">Rp <?= number_format($amount, 0, ',', '.') ?></td>
                                 </tr>
                             <?php endforeach ?>
                         </tbody>
@@ -137,7 +137,7 @@
                             <?php foreach ($revenueByType as $type => $amount): ?>
                                 <tr>
                                     <td><?= ucwords(str_replace('_', ' ', $type)) ?></td>
-                                    <td class="text-end">$<?= number_format($amount, 2) ?></td>
+                                    <td class="text-end">Rp <?= number_format($amount, 0, ',', '.') ?></td>
                                 </tr>
                             <?php endforeach ?>
                         </tbody>
@@ -164,7 +164,7 @@
                     <?php foreach ($monthlyTrend as $trend): ?>
                         <tr>
                             <td><?= $trend['month'] ?></td>
-                            <td class="text-end">$<?= number_format($trend['revenue'], 2) ?></td>
+                            <td class="text-end">Rp <?= number_format($trend['revenue'], 0, ',', '.') ?></td>
                         </tr>
                     <?php endforeach ?>
                 </tbody>
@@ -196,7 +196,7 @@
                                 <td><?= esc($payment['registration_number']) ?></td>
                                 <td><?= ucwords(str_replace('_', ' ', $payment['payment_method'])) ?></td>
                                 <td><?= esc($payment['document_number']) ?></td>
-                                <td class="text-end">$<?= number_format($payment['amount'], 2) ?></td>
+                                <td class="text-end">Rp <?= number_format($payment['amount'], 0, ',', '.') ?></td>
                             </tr>
                         <?php endforeach ?>
                     </tbody>
