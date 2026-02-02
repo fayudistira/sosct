@@ -17,8 +17,8 @@ $routes->post('login', '\App\Controllers\Auth\LoginController::loginAction');
 $routes->get('register', '\App\Controllers\Auth\RegisterController::registerView', ['as' => 'register']);
 $routes->post('register', '\App\Controllers\Auth\RegisterController::registerAction');
 
-// Route to serve uploaded files from writable/uploads
-$routes->get('writable/uploads/(:any)', 'FileController::serve/$1');
+// Route to serve uploaded files from writable/uploads (captures all nested paths)
+$routes->get('writable/uploads/(.+)', 'FileController::serve/$1');
 
 //Auto-Load Modules' Routes
 $modulesPath = APPPATH . 'Modules/';
