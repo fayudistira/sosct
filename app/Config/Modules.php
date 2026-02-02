@@ -35,7 +35,7 @@ class Modules extends BaseModules
      *
      * @var bool
      */
-    public $discoverInComposer = false;
+    public $discoverInComposer = true;
 
     /**
      * The Composer package list for Auto-Discovery

@@ -34,6 +34,7 @@ abstract class BaseController extends Controller
     {
         // Load here all helpers you want to be available in your controllers that extend BaseController.
         // Caution: Do not put the this below the parent::initController() call below.
+        helper(['auth', 'setting']);
         helper('Modules\Dashboard\Helpers\menu_helper');
 
         // Caution: Do not edit this line.
