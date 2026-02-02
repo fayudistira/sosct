@@ -48,16 +48,47 @@ class PageController extends BaseController
     }
     
     /**
-     * Display programs listing page
+     * Display programs listing page with category tabs
      */
     public function programs(): string
     {
-        // Fetch active programs from API
-        $programs = $this->fetchProgramsFromAPI();
+        $programModel = new \Modules\Program\Models\ProgramModel();
+        
+        // Get selected category from query string
+        $selectedCategory = $this->request->getGet('category');
+        
+        // Get all active programs
+        $allPrograms = $programModel->where('status', 'active')
+                                    ->orderBy('category', 'ASC')
+                                    ->orderBy('title', 'ASC')
+                                    ->findAll();
+        
+        // Group programs by category
+        $programsByCategory = [];
+        $categories = [];
+        
+        foreach ($allPrograms as $program) {
+            $category = $program['category'] ?? 'Uncategorized';
+            
+            if (!isset($programsByCategory[$category])) {
+                $programsByCategory[$category] = [];
+                $categories[] = $category;
+            }
+            
+            $programsByCategory[$category][] = $program;
+        }
+        
+        // If no category selected, select the first one
+        if (empty($selectedCategory) && !empty($categories)) {
+            $selectedCategory = $categories[0];
+        }
         
         return view('Modules\Frontend\Views\Programs\index', [
             'title' => 'Our Programs',
-            'programs' => $programs
+            'programsByCategory' => $programsByCategory,
+            'categories' => $categories,
+            'selectedCategory' => $selectedCategory,
+            'totalPrograms' => count($allPrograms)
         ]);
     }
     

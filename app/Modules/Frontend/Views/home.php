@@ -16,7 +16,7 @@
                 </a>
             </div>
             <div class="col-lg-6">
-                <img src="https://via.placeholder.com/600x400/8B0000/FFFFFF?text=Campus+Life" alt="Campus" class="img-fluid rounded shadow-lg">
+                <img src="https://www.vecteezy.com/photo/50077160-group-of-students-young-university-students-consulting-doing-homework-cooperating-research-plan-discuss-concepts-and-strategies-prepare-presentations-on-laptops-and-tablet-computers" alt="Campus" class="img-fluid rounded shadow-lg">
             </div>
         </div>
     </div>
