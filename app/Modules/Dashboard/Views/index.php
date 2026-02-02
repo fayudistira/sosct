@@ -118,4 +118,82 @@
     </div>
     <?php endif ?>
 </div>
+
+<!-- Payment Statistics Section -->
+<?php if ($paymentStats): ?>
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <div class="dashboard-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-cash-coin me-2"></i>Payment Statistics (Year to Date)</span>
+                <a href="<?= base_url('payment/reports/revenue') ?>" class="btn btn-outline-dark-red btn-sm">View Reports</a>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <div class="p-3 border rounded text-center">
+                            <div class="stat-number" style="color: var(--dark-red);">$<?= number_format($paymentStats['total_revenue'], 2) ?></div>
+                            <div class="stat-label">Total Revenue</div>
+                            <div class="progress mt-2" style="height: 6px;">
+                                <div class="progress-bar" style="width: 100%; background-color: var(--dark-red);"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 border rounded text-center">
+                            <div class="stat-number text-success"><?= $paymentStats['completed_count'] ?></div>
+                            <div class="stat-label">Completed Payments</div>
+                            <div class="progress mt-2" style="height: 6px;">
+                                <div class="progress-bar bg-success" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 border rounded text-center">
+                            <div class="stat-number" style="color: #FFA500;"><?= $paymentStats['pending_count'] ?></div>
+                            <div class="stat-label">Pending Payments</div>
+                            <div class="progress mt-2" style="height: 6px;">
+                                <div class="progress-bar bg-warning" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 border rounded text-center">
+                            <div class="stat-number text-danger"><?= $paymentStats['overdue_count'] ?></div>
+                            <div class="stat-label">Overdue Invoices</div>
+                            <div class="progress mt-2" style="height: 6px;">
+                                <div class="progress-bar bg-danger" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <?php if (!empty($paymentStats['revenue_by_method'])): ?>
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h6 class="mb-3">Revenue by Payment Method</h6>
+                        <div class="row g-3">
+                            <?php foreach ($paymentStats['revenue_by_method'] as $method => $amount): ?>
+                                <div class="col-md-6">
+                                    <div class="p-3 border rounded">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="fw-medium"><?= ucwords(str_replace('_', ' ', $method)) ?></span>
+                                            <span class="badge" style="background-color: var(--dark-red);">$<?= number_format($amount, 2) ?></span>
+                                        </div>
+                                        <div class="progress mt-2" style="height: 6px;">
+                                            <div class="progress-bar" style="width: <?= $paymentStats['total_revenue'] > 0 ? ($amount / $paymentStats['total_revenue'] * 100) : 0 ?>%; background-color: var(--dark-red);"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach ?>
+                        </div>
+                    </div>
+                </div>
+                <?php endif ?>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif ?>
+
 <?= $this->endSection() ?>

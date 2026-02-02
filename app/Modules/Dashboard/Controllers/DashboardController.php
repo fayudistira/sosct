@@ -32,12 +32,26 @@ class DashboardController extends BaseController
             $programStats = $programModel->getProgramsByCategory();
         }
         
+        // Get payment statistics
+        $paymentStats = null;
+        try {
+            $paymentModel = new \Modules\Payment\Models\PaymentModel();
+            $startDate = date('Y-01-01');
+            $endDate = date('Y-m-d');
+            $paymentStats = $paymentModel->getDashboardStatistics($startDate, $endDate);
+            $paymentStats['revenue_by_method'] = $paymentModel->getRevenueByMethod();
+        } catch (\Exception $e) {
+            // Payment module might not be available
+            $paymentStats = null;
+        }
+        
         return view('Modules\Dashboard\Views\index', [
             'title' => 'Dashboard',
             'user' => $user,
             'menuItems' => $menuItems,
             'admissionStats' => $admissionStats,
-            'programStats' => $programStats
+            'programStats' => $programStats,
+            'paymentStats' => $paymentStats
         ]);
     }
 }

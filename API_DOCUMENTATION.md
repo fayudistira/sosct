@@ -982,3 +982,608 @@ For questions or issues, contact the backend development team.
 
 **Last Updated:** February 2, 2026
 **Version:** 1.0.0
+
+
+---
+
+## Payment API
+
+### Base Endpoints
+- Payment API: `/api/payments`
+- Invoice API: `/api/invoices`
+
+### Authentication
+All payment endpoints require session authentication.
+
+---
+
+### Payment Endpoints
+
+#### 1. List All Payments
+
+**Endpoint:** `GET /api/payments`
+
+**Query Parameters:**
+- `page` (optional) - Page number (default: 1)
+- `per_page` (optional) - Items per page (default: 10)
+- `status` (optional) - Filter by status (pending, paid, failed, refunded)
+- `method` (optional) - Filter by payment method (cash, bank_transfer)
+- `start_date` (optional) - Filter by start date (YYYY-MM-DD)
+- `end_date` (optional) - Filter by end date (YYYY-MM-DD)
+
+**Example Request:**
+```bash
+GET /api/payments?page=1&status=paid&start_date=2026-01-01&end_date=2026-12-31
+```
+
+**Example Response:**
+```json
+{
+  "status": "success",
+  "data": [
+    {
+      "id": 1,
+      "registration_number": "REG-2026-0001",
+      "invoice_id": 5,
+      "amount": 500.00,
+      "payment_method": "bank_transfer",
+      "document_number": "TRX-123456",
+      "payment_date": "2026-02-01",
+      "receipt_file": "receipts/receipt_123.pdf",
+      "status": "paid",
+      "notes": "Payment for registration fee",
+      "created_at": "2026-02-01 10:30:00",
+      "student": {
+        "full_name": "John Doe",
+        "email": "john@example.com"
+      }
+    }
+  ],
+  "pagination": {
+    "current_page": 1,
+    "per_page": 10,
+    "total": 45,
+    "total_pages": 5
+  }
+}
+```
+
+---
+
+#### 2. Get Single Payment
+
+**Endpoint:** `GET /api/payments/{id}`
+
+**Example Request:**
+```bash
+GET /api/payments/1
+```
+
+**Example Response:**
+```json
+{
+  "status": "success",
+  "data": {
+    "id": 1,
+    "registration_number": "REG-2026-0001",
+    "invoice_id": 5,
+    "amount": 500.00,
+    "payment_method": "bank_transfer",
+    "document_number": "TRX-123456",
+    "payment_date": "2026-02-01",
+    "status": "paid",
+    "student": {
+      "full_name": "John Doe",
+      "email": "john@example.com"
+    },
+    "invoice": {
+      "invoice_number": "INV-2026-0005",
+      "amount": 500.00
+    }
+  }
+}
+```
+
+---
+
+#### 3. Create Payment
+
+**Endpoint:** `POST /api/payments`
+
+**Request Body:**
+```json
+{
+  "registration_number": "REG-2026-0001",
+  "invoice_id": 5,
+  "amount": 500.00,
+  "payment_method": "bank_transfer",
+  "document_number": "TRX-123456",
+  "payment_date": "2026-02-01",
+  "status": "paid",
+  "notes": "Payment for registration fee"
+}
+```
+
+**Example Response:**
+```json
+{
+  "status": "success",
+  "data": {
+    "id": 1,
+    "registration_number": "REG-2026-0001",
+    "amount": 500.00,
+    "status": "paid"
+  },
+  "message": "Payment created successfully"
+}
+```
+
+---
+
+#### 4. Update Payment
+
+**Endpoint:** `PUT /api/payments/{id}`
+
+**Request Body:**
+```json
+{
+  "amount": 550.00,
+  "status": "paid",
+  "notes": "Updated payment amount"
+}
+```
+
+---
+
+#### 5. Update Payment Status
+
+**Endpoint:** `PUT /api/payments/{id}/status`
+
+**Request Body:**
+```json
+{
+  "status": "refunded",
+  "refund_date": "2026-02-15",
+  "refund_reason": "Customer request"
+}
+```
+
+---
+
+#### 6. Search Payments
+
+**Endpoint:** `GET /api/payments/search?q={keyword}`
+
+**Query Parameters:**
+- `q` (required) - Search keyword (searches student name, registration number, document number)
+
+**Example Request:**
+```bash
+GET /api/payments/search?q=John
+```
+
+---
+
+#### 7. Filter Payments by Status
+
+**Endpoint:** `GET /api/payments/filter/status?status={status}`
+
+**Example Request:**
+```bash
+GET /api/payments/filter/status?status=paid
+```
+
+---
+
+#### 8. Filter Payments by Method
+
+**Endpoint:** `GET /api/payments/filter/method?method={method}`
+
+**Example Request:**
+```bash
+GET /api/payments/filter/method?method=bank_transfer
+```
+
+---
+
+#### 9. Filter Payments by Date Range
+
+**Endpoint:** `GET /api/payments/filter/daterange?start_date={start}&end_date={end}`
+
+**Example Request:**
+```bash
+GET /api/payments/filter/daterange?start_date=2026-01-01&end_date=2026-12-31
+```
+
+---
+
+#### 10. Get Payments by Student
+
+**Endpoint:** `GET /api/payments/student/{registrationNumber}`
+
+**Example Request:**
+```bash
+GET /api/payments/student/REG-2026-0001
+```
+
+---
+
+#### 11. Get Payment Statistics
+
+**Endpoint:** `GET /api/payments/statistics?start_date={start}&end_date={end}`
+
+**Query Parameters:**
+- `start_date` (optional) - Start date (default: current year start)
+- `end_date` (optional) - End date (default: today)
+
+**Example Response:**
+```json
+{
+  "status": "success",
+  "data": {
+    "total_revenue": 125000.00,
+    "pending_count": 15,
+    "completed_count": 230,
+    "overdue_count": 8,
+    "revenue_by_method": {
+      "cash": 45000.00,
+      "bank_transfer": 80000.00
+    },
+    "revenue_by_type": {
+      "registration_fee": 50000.00,
+      "tuition_fee": 70000.00,
+      "miscellaneous_fee": 5000.00
+    },
+    "monthly_trend": [
+      {"month": "January", "revenue": 45000.00},
+      {"month": "February", "revenue": 80000.00}
+    ]
+  },
+  "period": {
+    "start_date": "2026-01-01",
+    "end_date": "2026-02-02"
+  }
+}
+```
+
+---
+
+#### 12. Upload Receipt File
+
+**Endpoint:** `POST /api/payments/{id}/receipt`
+
+**Content-Type:** `multipart/form-data`
+
+**Form Data:**
+- `receipt_file` - File (PDF, JPG, PNG, max 2MB)
+
+**Example Response:**
+```json
+{
+  "status": "success",
+  "data": {
+    "id": 1,
+    "receipt_file": "receipts/receipt_123.pdf"
+  },
+  "message": "Receipt file uploaded successfully"
+}
+```
+
+---
+
+### Invoice Endpoints
+
+#### 1. List All Invoices
+
+**Endpoint:** `GET /api/invoices`
+
+**Query Parameters:**
+- `page` (optional) - Page number
+- `per_page` (optional) - Items per page
+- `status` (optional) - Filter by status (unpaid, paid, cancelled)
+- `type` (optional) - Filter by type (registration_fee, tuition_fee, miscellaneous_fee)
+- `start_date` (optional) - Filter by start date
+- `end_date` (optional) - Filter by end date
+
+**Example Response:**
+```json
+{
+  "status": "success",
+  "data": [
+    {
+      "id": 1,
+      "invoice_number": "INV-2026-0001",
+      "registration_number": "REG-2026-0001",
+      "description": "Registration fee for Spring 2026",
+      "amount": 500.00,
+      "due_date": "2026-02-15",
+      "invoice_type": "registration_fee",
+      "status": "unpaid",
+      "created_at": "2026-02-01 10:00:00",
+      "student": {
+        "full_name": "John Doe",
+        "email": "john@example.com"
+      }
+    }
+  ],
+  "pagination": {
+    "current_page": 1,
+    "per_page": 10,
+    "total": 30,
+    "total_pages": 3
+  }
+}
+```
+
+---
+
+#### 2. Get Single Invoice
+
+**Endpoint:** `GET /api/invoices/{id}`
+
+**Example Response:**
+```json
+{
+  "status": "success",
+  "data": {
+    "id": 1,
+    "invoice_number": "INV-2026-0001",
+    "registration_number": "REG-2026-0001",
+    "description": "Registration fee for Spring 2026",
+    "amount": 500.00,
+    "due_date": "2026-02-15",
+    "invoice_type": "registration_fee",
+    "status": "paid",
+    "student": {
+      "full_name": "John Doe",
+      "email": "john@example.com"
+    },
+    "payments": [
+      {
+        "id": 1,
+        "amount": 500.00,
+        "payment_date": "2026-02-01",
+        "status": "paid"
+      }
+    ]
+  }
+}
+```
+
+---
+
+#### 3. Create Invoice
+
+**Endpoint:** `POST /api/invoices`
+
+**Request Body:**
+```json
+{
+  "registration_number": "REG-2026-0001",
+  "description": "Registration fee for Spring 2026",
+  "amount": 500.00,
+  "due_date": "2026-02-15",
+  "invoice_type": "registration_fee"
+}
+```
+
+**Note:** Invoice number is auto-generated in format INV-YYYY-NNNN
+
+**Example Response:**
+```json
+{
+  "status": "success",
+  "data": {
+    "id": 1,
+    "invoice_number": "INV-2026-0001",
+    "amount": 500.00,
+    "status": "unpaid"
+  },
+  "message": "Invoice created successfully"
+}
+```
+
+---
+
+#### 4. Update Invoice
+
+**Endpoint:** `PUT /api/invoices/{id}`
+
+**Request Body:**
+```json
+{
+  "description": "Updated description",
+  "amount": 550.00,
+  "due_date": "2026-02-20"
+}
+```
+
+---
+
+#### 5. Delete Invoice
+
+**Endpoint:** `DELETE /api/invoices/{id}`
+
+**Example Response:**
+```json
+{
+  "status": "success",
+  "message": "Invoice deleted successfully"
+}
+```
+
+---
+
+#### 6. Search Invoices
+
+**Endpoint:** `GET /api/invoices/search?q={keyword}`
+
+**Query Parameters:**
+- `q` (required) - Search keyword (searches invoice number, student name)
+
+---
+
+#### 7. Filter Invoices by Status
+
+**Endpoint:** `GET /api/invoices/filter/status?status={status}`
+
+---
+
+#### 8. Filter Invoices by Type
+
+**Endpoint:** `GET /api/invoices/filter/type?type={type}`
+
+---
+
+#### 9. Get Invoices by Student
+
+**Endpoint:** `GET /api/invoices/student/{registrationNumber}`
+
+---
+
+#### 10. Get Overdue Invoices
+
+**Endpoint:** `GET /api/invoices/overdue`
+
+**Example Response:**
+```json
+{
+  "status": "success",
+  "data": [
+    {
+      "id": 1,
+      "invoice_number": "INV-2026-0001",
+      "amount": 500.00,
+      "due_date": "2026-01-15",
+      "days_overdue": 18,
+      "student": {
+        "full_name": "John Doe",
+        "email": "john@example.com"
+      }
+    }
+  ]
+}
+```
+
+---
+
+#### 11. Generate Invoice PDF
+
+**Endpoint:** `GET /api/invoices/{id}/pdf`
+
+**Response:** PDF file with Content-Type: application/pdf
+
+---
+
+#### 12. Cancel Invoice
+
+**Endpoint:** `PUT /api/invoices/{id}/cancel`
+
+**Example Response:**
+```json
+{
+  "status": "success",
+  "data": {
+    "id": 1,
+    "invoice_number": "INV-2026-0001",
+    "status": "cancelled"
+  },
+  "message": "Invoice cancelled successfully"
+}
+```
+
+---
+
+### Error Responses
+
+#### Validation Error (422)
+```json
+{
+  "status": "error",
+  "message": "Validation failed",
+  "errors": {
+    "registration_number": "Student with this registration number does not exist",
+    "amount": "Amount must be greater than 0"
+  }
+}
+```
+
+#### Not Found (404)
+```json
+{
+  "status": "error",
+  "message": "Payment not found"
+}
+```
+
+#### Authentication Required (401)
+```json
+{
+  "status": "error",
+  "message": "Authentication required",
+  "errors": {
+    "auth": "You must be logged in to access this resource"
+  }
+}
+```
+
+---
+
+### Code Examples
+
+#### JavaScript (Fetch API)
+```javascript
+// Create a payment
+fetch('http://your-domain.com/api/payments', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    registration_number: 'REG-2026-0001',
+    amount: 500.00,
+    payment_method: 'bank_transfer',
+    document_number: 'TRX-123456',
+    payment_date: '2026-02-01',
+    status: 'paid'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+
+#### PHP (cURL)
+```php
+$ch = curl_init('http://your-domain.com/api/payments');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
+    'registration_number' => 'REG-2026-0001',
+    'amount' => 500.00,
+    'payment_method' => 'bank_transfer',
+    'document_number' => 'TRX-123456',
+    'payment_date' => '2026-02-01',
+    'status' => 'paid'
+]));
+curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+$response = curl_exec($ch);
+curl_close($ch);
+echo $response;
+```
+
+#### Python (Requests)
+```python
+import requests
+
+response = requests.post('http://your-domain.com/api/payments', json={
+    'registration_number': 'REG-2026-0001',
+    'amount': 500.00,
+    'payment_method': 'bank_transfer',
+    'document_number': 'TRX-123456',
+    'payment_date': '2026-02-01',
+    'status': 'paid'
+})
+print(response.json())
+```
+
+---
