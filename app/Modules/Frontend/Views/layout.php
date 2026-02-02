@@ -42,18 +42,39 @@
             border-radius: 4px;
         }
         
+        .navbar-custom .nav-link.btn-apply {
+            color: var(--dark-red) !important;
+        }
+        
+        .navbar-custom .nav-link.btn-apply:hover {
+            color: white !important;
+            background-color: var(--dark-red) !important;
+        }
+        
         .btn-apply {
             background-color: white !important;
             color: var(--dark-red) !important;
             font-weight: 600;
             padding: 0.5rem 1.5rem !important;
             border-radius: 25px;
+            border: 2px solid white !important;
             transition: all 0.3s;
         }
         
+        .btn-apply i {
+            color: var(--dark-red) !important;
+        }
+        
         .btn-apply:hover {
+            background-color: var(--dark-red) !important;
+            color: white !important;
+            border-color: white !important;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(255,255,255,0.3);
+        }
+        
+        .btn-apply:hover i {
+            color: white !important;
         }
         
         /* Hero Section */
@@ -145,7 +166,7 @@
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container">
             <a class="navbar-brand" href="<?= base_url('/') ?>">
-                <i class="bi bi-mortarboard me-2"></i>ERP System
+                <i class="bi bi-mortarboard me-2"></i>SOSCT
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border-color: rgba(255,255,255,0.5);">
                 <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
@@ -166,7 +187,7 @@
                     </li>
                     <li class="nav-item ms-2">
                         <a class="nav-link btn-apply" href="<?= base_url('dashboard') ?>">
-                            <i class="bi bi-person-circle me-1"></i>Member Area
+                            <i class="bi bi-speedometer2 me-1"></i>MyDashboard
                         </a>
                     </li>
                 </ul>

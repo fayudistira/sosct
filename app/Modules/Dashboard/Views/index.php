@@ -9,63 +9,6 @@
     </div>
 </div>
 
-<!-- Statistics Cards -->
-<div class="row g-3 mb-4">
-    <?php if ($admissionStats): ?>
-    <!-- Total Applications -->
-    <div class="col-lg-3 col-md-6">
-        <div class="dashboard-card stat-card">
-            <div class="card-body compact">
-                <div class="stat-label">Total Applications</div>
-                <div class="stat-number"><?= $admissionStats['total'] ?></div>
-                <div class="stat-change">
-                    <i class="bi bi-file-earmark-text me-1"></i>All time admissions
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Pending Applications -->
-    <div class="col-lg-3 col-md-6">
-        <div class="dashboard-card stat-card">
-            <div class="card-body compact">
-                <div class="stat-label">Pending Review</div>
-                <div class="stat-number"><?= $admissionStats['pending'] ?></div>
-                <div class="stat-change">
-                    <i class="bi bi-clock-history me-1"></i>Awaiting decision
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Approved Applications -->
-    <div class="col-lg-3 col-md-6">
-        <div class="dashboard-card stat-card">
-            <div class="card-body compact">
-                <div class="stat-label">Approved</div>
-                <div class="stat-number"><?= $admissionStats['approved'] ?></div>
-                <div class="stat-change positive">
-                    <i class="bi bi-check-circle me-1"></i>Successfully admitted
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Rejected Applications -->
-    <div class="col-lg-3 col-md-6">
-        <div class="dashboard-card stat-card">
-            <div class="card-body compact">
-                <div class="stat-label">Rejected</div>
-                <div class="stat-number"><?= $admissionStats['rejected'] ?></div>
-                <div class="stat-change negative">
-                    <i class="bi bi-x-circle me-1"></i>Not admitted
-                </div>
-            </div>
-        </div>
-    </div>
-    <?php endif ?>
-</div>
-
 <!-- Admission & Program Details -->
 <div class="row g-3 mb-4">
     <!-- Admission Statistics Card -->

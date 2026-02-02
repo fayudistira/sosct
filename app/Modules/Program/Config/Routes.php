@@ -13,3 +13,22 @@ $routes->group('program', ['namespace' => 'Modules\Program\Controllers', 'filter
     $routes->post('update/(:segment)', 'ProgramController::update/$1', ['filter' => 'permission:program.manage']);
     $routes->get('delete/(:segment)', 'ProgramController::delete/$1', ['filter' => 'permission:program.manage']);
 });
+
+// Program API Routes
+$routes->group('api/programs', ['namespace' => 'Modules\Program\Controllers\Api'], function($routes) {
+    // CRUD operations
+    $routes->get('/', 'ProgramApiController::index');
+    $routes->get('(:segment)', 'ProgramApiController::show/$1');
+    $routes->post('/', 'ProgramApiController::create');
+    $routes->put('(:segment)', 'ProgramApiController::update/$1');
+    $routes->delete('(:segment)', 'ProgramApiController::delete/$1');
+    
+    // Search and filter
+    $routes->get('search', 'ProgramApiController::search');
+    $routes->get('filter', 'ProgramApiController::filterByStatus');
+    $routes->get('filter/category', 'ProgramApiController::filterByCategory');
+    
+    // Special endpoints
+    $routes->get('active', 'ProgramApiController::active');
+    $routes->get('categories', 'ProgramApiController::categories');
+});
