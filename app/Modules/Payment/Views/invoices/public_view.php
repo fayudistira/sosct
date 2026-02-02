@@ -147,6 +147,14 @@
             .no-print {
                 display: none;
             }
+            /* Ensure QR code prints */
+            img {
+                max-width: 100%;
+                page-break-inside: avoid;
+            }
+            .info-section {
+                page-break-inside: avoid;
+            }
         }
     </style>
 </head>
@@ -261,6 +269,18 @@
                 </div>
             </div>
             <?php endif ?>
+
+            <!-- QR Code Section -->
+            <div class="info-section">
+                <h5><i class="bi bi-qr-code"></i> Quick Access</h5>
+                <div class="text-center">
+                    <p class="mb-2">Scan QR code to view this invoice online</p>
+                    <img src="<?= base_url('invoice/qr/' . $invoice['id']) ?>" 
+                         alt="Invoice QR Code" 
+                         style="max-width: 200px; border: 2px solid #ddd; padding: 10px; border-radius: 8px;">
+                    <p class="small text-muted mt-2">Invoice #<?= esc($invoice['invoice_number']) ?></p>
+                </div>
+            </div>
 
             <!-- Footer Note -->
             <div class="footer-note">

@@ -81,6 +81,9 @@ class PdfGenerator
      */
     public function generateInvoicePdf(array $invoiceData)
     {
+        // Generate QR code as base64 for embedding in PDF
+        $qrCodeBase64 = $this->generateQrCodeBase64($invoiceData['id']);
+        
         // Create PDF template
         $html = $this->applyTheme();
         $html .= '
@@ -120,6 +123,12 @@ class PdfGenerator
                 <div class="total">
                     Total Amount: Rp ' . number_format($invoiceData['amount'], 0, ',', '.') . '
                 </div>
+                
+                <div style="text-align: center; margin-top: 30px; padding: 20px; border: 2px solid #8B0000; border-radius: 5px;">
+                    <p style="margin: 0 0 10px 0; font-weight: bold; color: #8B0000;">Scan to View Online</p>
+                    <img src="' . $qrCodeBase64 . '" alt="QR Code" style="width: 150px; height: 150px;">
+                    <p style="margin: 10px 0 0 0; font-size: 12px; color: #666;">Invoice #' . htmlspecialchars($invoiceData['invoice_number']) . '</p>
+                </div>
             </div>
         ';
         
@@ -144,6 +153,33 @@ class PdfGenerator
         
         // Return relative path
         return 'invoices/' . $filename;
+    }
+
+    /**
+     * Generate QR code as base64 data URI for embedding in PDF
+     * 
+     * @param int $invoiceId Invoice ID
+     * @return string Base64 data URI
+     */
+    protected function generateQrCodeBase64($invoiceId): string
+    {
+        try {
+            // Generate public URL for invoice
+            $publicUrl = base_url('invoice/public/' . $invoiceId);
+            
+            // Create QR code using Builder
+            $result = \Endroid\QrCode\Builder\Builder::create()
+                ->data($publicUrl)
+                ->size(300)
+                ->margin(10)
+                ->build();
+            
+            // Convert to base64 data URI
+            return 'data:image/png;base64,' . base64_encode($result->getString());
+        } catch (\Exception $e) {
+            // Return empty string if QR generation fails
+            return '';
+        }
     }
 
     /**

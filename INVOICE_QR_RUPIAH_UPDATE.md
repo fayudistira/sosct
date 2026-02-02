@@ -1,7 +1,7 @@
 # Invoice QR Code and Rupiah Currency Update
 
 ## Summary
-Updated the invoice system to display currency in Indonesian Rupiah (Rp) format and added QR code functionality for public invoice viewing.
+Updated the invoice system to display currency in Indonesian Rupiah (Rp) format and added QR code functionality for public invoice viewing. QR codes are now displayed on public invoice views, printed documents, and PDF downloads.
 
 ## Changes Made
 
@@ -26,6 +26,7 @@ Added three new methods:
   - Invoice information
   - Student information
   - Payment history
+  - **QR code for easy sharing**
   - Professional layout with print functionality
 
 ### 3. New Public Invoice View
@@ -35,11 +36,23 @@ Features:
 - Standalone HTML page (no dashboard layout)
 - Modern, professional design with dark red gradient theme
 - Responsive layout
-- Print-friendly styling
+- Print-friendly styling with QR code included
 - Shows all invoice details publicly
 - Payment history table
 - Status badges (unpaid, paid, cancelled)
 - Currency displayed in Rupiah format
+- **QR code section for easy access and sharing**
+- QR code prints correctly with invoice
+
+### 4. PDF Generator Updates
+**File**: `app/Modules/Payment/Libraries/PdfGenerator.php`
+
+New features:
+- QR code embedded in PDF invoices
+- QR code displayed as base64 image in PDF
+- New method `generateQrCodeBase64()` for PDF embedding
+- QR code shows at bottom of invoice with "Scan to View Online" text
+- 150x150px QR code in PDF documents
 
 ### 4. Routes Configuration
 **File**: `app/Modules/Payment/Config/Routes.php`
@@ -92,6 +105,27 @@ number_format($amount, 2)  // Output: 1,500.00
 // New
 number_format($amount, 0, ',', '.')  // Output: 1.500
 ```
+
+## QR Code Display Locations
+
+The QR code now appears in **three places**:
+
+### 1. Admin Invoice View (`/invoice/view/{id}`)
+- QR code in right sidebar
+- Link to public view
+- For staff to share with students
+
+### 2. Public Invoice View (`/invoice/public/{id}`)
+- QR code displayed at bottom of page
+- Prints with the invoice
+- For easy sharing and verification
+- No login required
+
+### 3. PDF Invoice Download (`/invoice/pdf/{id}`)
+- QR code embedded in PDF
+- 150x150px at bottom of document
+- "Scan to View Online" label
+- Permanent part of PDF file
 
 ## Usage
 
