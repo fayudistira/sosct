@@ -42,7 +42,7 @@
                         <span class="info-label">Type:</span> <?= ucwords(str_replace('_', ' ', $invoice['invoice_type'])) ?>
                     </div>
                     <div class="mb-2">
-                        <span class="info-label">Amount:</span> $<?= number_format($invoice['amount'], 2) ?>
+                        <span class="info-label">Amount:</span> Rp <?= number_format($invoice['amount'], 0, ',', '.') ?>
                     </div>
                     <div class="mb-2">
                         <span class="info-label">Due Date:</span> <?= date('F d, Y', strtotime($invoice['due_date'])) ?>
@@ -81,6 +81,21 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="card mb-3">
+                <div class="card-header" style="background-color: #8B0000; color: white;">
+                    <h5 class="mb-0">Share Invoice</h5>
+                </div>
+                <div class="card-body text-center">
+                    <p class="small text-muted mb-2">Scan QR code to view invoice publicly</p>
+                    <img src="<?= base_url('invoice/qr/' . $invoice['id']) ?>" alt="Invoice QR Code" class="img-fluid" style="max-width: 200px;">
+                    <div class="mt-2">
+                        <a href="<?= base_url('invoice/public/' . $invoice['id']) ?>" target="_blank" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-box-arrow-up-right"></i> Public View
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -103,7 +118,7 @@
                         <?php foreach ($invoice['payments'] as $payment): ?>
                             <tr>
                                 <td><?= date('M d, Y', strtotime($payment['payment_date'])) ?></td>
-                                <td>$<?= number_format($payment['amount'], 2) ?></td>
+                                <td>Rp <?= number_format($payment['amount'], 0, ',', '.') ?></td>
                                 <td><?= ucwords(str_replace('_', ' ', $payment['payment_method'])) ?></td>
                                 <td>
                                     <span class="badge bg-<?= $payment['status'] === 'paid' ? 'success' : 'warning' ?>">

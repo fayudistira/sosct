@@ -6,6 +6,8 @@ use App\Controllers\BaseController;
 use Modules\Payment\Models\InvoiceModel;
 use Modules\Admission\Models\AdmissionModel;
 use Modules\Payment\Libraries\PdfGenerator;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
 
 class InvoiceController extends BaseController
 {
@@ -218,5 +220,54 @@ class InvoiceController extends BaseController
         // Download PDF
         $fullPath = WRITEPATH . 'uploads/' . $filePath;
         return $this->response->download($fullPath, null)->setFileName('invoice_' . $invoice['invoice_number'] . '.pdf');
+    }
+    
+    /**
+     * Generate QR code for invoice
+     */
+    public function generateQr($id)
+    {
+        $invoice = $this->invoiceModel->find($id);
+        
+        if (!$invoice) {
+            return $this->response->setStatusCode(404)->setBody('Invoice not found');
+        }
+        
+        // Generate public URL for invoice
+        $publicUrl = base_url('invoice/public/' . $id);
+        
+        // Create QR code
+        $qrCode = new QrCode($publicUrl);
+        $qrCode->setSize(300);
+        $qrCode->setMargin(10);
+        
+        $writer = new PngWriter();
+        $result = $writer->write($qrCode);
+        
+        // Return QR code image
+        return $this->response
+            ->setHeader('Content-Type', 'image/png')
+            ->setBody($result->getString());
+    }
+    
+    /**
+     * Public invoice view (no authentication required)
+     */
+    public function publicView($id)
+    {
+        $invoice = $this->invoiceModel->getInvoiceWithPayments($id);
+        
+        if (!$invoice) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Invoice not found');
+        }
+        
+        // Get student details
+        $student = $this->admissionModel->where('registration_number', $invoice['registration_number'])->first();
+        $invoice['student'] = $student;
+        
+        return view('Modules\Payment\Views\invoices\public_view', [
+            'title' => 'Invoice ' . $invoice['invoice_number'],
+            'invoice' => $invoice
+        ]);
     }
 }
