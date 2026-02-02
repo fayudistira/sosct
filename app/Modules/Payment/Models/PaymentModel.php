@@ -142,25 +142,23 @@ class PaymentModel extends Model
      */
     public function filterPayments(array $filters): array
     {
-        $builder = $this->builder();
-        
         if (isset($filters['status'])) {
-            $builder->where('status', $filters['status']);
+            $this->where('status', $filters['status']);
         }
         
         if (isset($filters['method'])) {
-            $builder->where('payment_method', $filters['method']);
+            $this->where('payment_method', $filters['method']);
         }
         
         if (isset($filters['start_date'])) {
-            $builder->where('payment_date >=', $filters['start_date']);
+            $this->where('payment_date >=', $filters['start_date']);
         }
         
         if (isset($filters['end_date'])) {
-            $builder->where('payment_date <=', $filters['end_date']);
+            $this->where('payment_date <=', $filters['end_date']);
         }
         
-        return $builder->orderBy('payment_date', 'DESC')->get()->getResultArray();
+        return $this->orderBy('payment_date', 'DESC')->findAll();
     }
 
     /**
@@ -340,7 +338,7 @@ class PaymentModel extends Model
                      ->join('invoices', 'invoices.id = payments.invoice_id', 'left')
                      ->where('payments.status', 'paid')
                      ->where('payments.deleted_at', null)
-                     ->where('invoices.invoice_type IS NOT NULL')
+                     ->where('invoices.invoice_type IS NOT', null)
                      ->groupBy('invoices.invoice_type')
                      ->get()
                      ->getResultArray();

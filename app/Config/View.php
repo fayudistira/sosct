@@ -60,5 +60,13 @@ class View extends BaseView
      */
     public array $decorators = [];
 
-    public bool $appOverridesFolder = true;
+    /**
+     * The folder path (relative to viewPath) where overridden module views
+     * should be looked for. When set to a non-empty string, Views will look
+     * for overridden views in this folder before looking in the module's Views folder.
+     * Set to empty string '' to disable this feature.
+     *
+     * @var string
+     */
+    public string $appOverridesFolder = 'Views';
 }
