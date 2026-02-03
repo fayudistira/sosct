@@ -112,8 +112,13 @@ class PaymentController extends BaseController
      */
     public function create()
     {
-        // Get all students for dropdown
-        $students = $this->admissionModel->findAll();
+        // Get all approved admissions with student details for dropdown
+        $students = $this->admissionModel->getAllWithDetails();
+        
+        // Filter only approved admissions
+        $students = array_filter($students, function($student) {
+            return $student['status'] === 'approved';
+        });
         
         // Get unpaid invoices for dropdown
         $invoices = $this->invoiceModel->where('status', 'unpaid')->findAll();
@@ -175,8 +180,13 @@ class PaymentController extends BaseController
             return redirect()->to('/payment')->with('error', 'Payment not found.');
         }
         
-        // Get all students for dropdown
-        $students = $this->admissionModel->findAll();
+        // Get all approved admissions with student details for dropdown
+        $students = $this->admissionModel->getAllWithDetails();
+        
+        // Filter only approved admissions
+        $students = array_filter($students, function($student) {
+            return $student['status'] === 'approved';
+        });
         
         // Get unpaid invoices for dropdown
         $invoices = $this->invoiceModel->where('status', 'unpaid')->findAll();

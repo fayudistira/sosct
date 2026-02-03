@@ -167,17 +167,29 @@ class PdfGenerator
             // Generate public URL for invoice
             $publicUrl = base_url('invoice/public/' . $invoiceId);
             
-            // Create QR code using Builder
-            $result = \Endroid\QrCode\Builder\Builder::create()
-                ->data($publicUrl)
-                ->size(300)
-                ->margin(10)
-                ->build();
+            // Try different QR code APIs based on version
+            try {
+                // Try v4+ API
+                $qrCode = \Endroid\QrCode\QrCode::create($publicUrl)
+                    ->setSize(300)
+                    ->setMargin(10);
+            } catch (\Error $e) {
+                // Try v3 API
+                $qrCode = new \Endroid\QrCode\QrCode($publicUrl);
+                $qrCode->setSize(300);
+                $qrCode->setMargin(10);
+            }
+            
+            $writer = new \Endroid\QrCode\Writer\PngWriter();
+            $result = $writer->write($qrCode);
             
             // Convert to base64 data URI
             return 'data:image/png;base64,' . base64_encode($result->getString());
         } catch (\Exception $e) {
-            // Return empty string if QR generation fails
+            // Log error and return placeholder
+            log_message('error', 'QR Code generation failed: ' . $e->getMessage());
+            // Return a simple placeholder image or empty string
+            return '';
             return '';
         }
     }

@@ -90,7 +90,7 @@
                         <th>Full Name</th>
                         <th>Email</th>
                         <th>Phone</th>
-                        <th>Course</th>
+                        <th>Program</th>
                         <th>Status</th>
                         <th>Application Date</th>
                         <th class="text-end">Actions</th>
@@ -104,7 +104,7 @@
                                 <td><?= esc($admission['full_name']) ?></td>
                                 <td><?= esc($admission['email']) ?></td>
                                 <td><?= esc($admission['phone']) ?></td>
-                                <td><?= esc($admission['course']) ?></td>
+                                <td><?= esc($admission['program_title'] ?? 'N/A') ?></td>
                                 <td>
                                     <?php
                                     $badgeClass = match($admission['status']) {
@@ -141,9 +141,17 @@
     </div>
     
     <!-- Pagination -->
-    <?php if (isset($pager)): ?>
+    <?php if (isset($totalPages) && $totalPages > 1): ?>
         <div class="card-body">
-            <?= $pager->links() ?>
+            <nav>
+                <ul class="pagination justify-content-center mb-0">
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <li class="page-item <?= ($currentPage ?? 1) == $i ? 'active' : '' ?>">
+                            <a class="page-link" href="<?= base_url('admission?page=' . $i) ?>"><?= $i ?></a>
+                        </li>
+                    <?php endfor ?>
+                </ul>
+            </nav>
         </div>
     <?php endif ?>
 </div>

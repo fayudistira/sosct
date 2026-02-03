@@ -212,6 +212,7 @@
                     <?php if (isset($selectedProgram) && $selectedProgram): ?>
                         <!-- Pre-selected program (read-only) -->
                         <input type="text" class="form-control" value="<?= esc($selectedProgram['title']) ?>" readonly style="background-color: #f8f9fa;">
+                        <input type="hidden" name="program_id" value="<?= esc($selectedProgram['id']) ?>">
                         <input type="hidden" name="course" value="<?= esc($selectedProgram['title']) ?>">
                         <small class="text-muted">
                             <i class="bi bi-info-circle me-1"></i>
@@ -223,7 +224,7 @@
                         <select class="form-select" id="course" name="course" required>
                             <option value="">Select a Program</option>
                             <?php foreach ($programs as $program): ?>
-                                <option value="<?= esc($program['title']) ?>" <?= old('course') === $program['title'] ? 'selected' : '' ?>>
+                                <option value="<?= esc($program['id']) ?>" data-title="<?= esc($program['title']) ?>" <?= old('course') === $program['id'] ? 'selected' : '' ?>>
                                     <?= esc($program['title']) ?>
                                     <?php if ($program['discount'] > 0): ?>
                                         (<?= number_format($program['discount'], 0) ?>% OFF)

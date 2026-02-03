@@ -13,6 +13,7 @@ $routes->group('admission', ['namespace' => 'Modules\Admission\Controllers', 'fi
     $routes->post('store', 'AdmissionController::store');
     $routes->get('edit/(:num)', 'AdmissionController::edit/$1');
     $routes->post('update/(:num)', 'AdmissionController::update/$1');
+    $routes->post('update-status', 'AdmissionController::updateStatus'); // AJAX endpoint
     $routes->delete('delete/(:num)', 'AdmissionController::delete/$1');
     $routes->get('search', 'AdmissionController::search');
 });

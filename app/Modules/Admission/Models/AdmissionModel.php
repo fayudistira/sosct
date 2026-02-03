@@ -14,31 +14,14 @@ class AdmissionModel extends Model
     
     protected $allowedFields = [
         'registration_number',
-        'full_name',
-        'nickname',
-        'gender',
-        'place_of_birth',
-        'date_of_birth',
-        'religion',
-        'citizen_id',
-        'phone',
-        'email',
-        'street_address',
-        'district',
-        'regency',
-        'province',
-        'postal_code',
-        'emergency_contact_name',
-        'emergency_contact_phone',
-        'emergency_contact_relation',
-        'father_name',
-        'mother_name',
-        'course',
+        'profile_id',
+        'program_id',
         'status',
         'application_date',
-        'photo',
-        'documents',
-        'notes'
+        'reviewed_date',
+        'reviewed_by',
+        'notes',
+        'applicant_notes'
     ];
     
     protected $useTimestamps = true;
@@ -49,32 +32,26 @@ class AdmissionModel extends Model
     protected $validationRules = [
         'id' => 'permit_empty|is_natural_no_zero',
         'registration_number' => 'required|is_unique[admissions.registration_number,id,{id}]',
-        'full_name' => 'required|min_length[3]|max_length[100]',
-        'gender' => 'required|in_list[Male,Female]',
-        'place_of_birth' => 'required|min_length[3]|max_length[100]',
-        'date_of_birth' => 'required|valid_date',
-        'religion' => 'required|min_length[3]|max_length[50]',
-        'phone' => 'required|regex_match[/^[0-9]{10,15}$/]',
-        'email' => 'required|valid_email|is_unique[admissions.email,id,{id}]',
-        'street_address' => 'required|min_length[5]',
-        'district' => 'required|min_length[3]',
-        'regency' => 'required|min_length[3]',
-        'province' => 'required|min_length[3]',
-        'emergency_contact_name' => 'required|min_length[3]|max_length[100]',
-        'emergency_contact_phone' => 'required|regex_match[/^[0-9]{10,15}$/]',
-        'emergency_contact_relation' => 'required|min_length[3]|max_length[50]',
-        'father_name' => 'required|min_length[3]|max_length[100]',
-        'mother_name' => 'required|min_length[3]|max_length[100]',
-        'course' => 'required|min_length[3]',
-        'status' => 'required|in_list[pending,approved,rejected]'
+        'profile_id' => 'required|is_natural_no_zero|is_not_unique[profiles.id]',
+        'program_id' => 'required|is_not_unique[programs.id]',
+        'status' => 'required|in_list[pending,approved,rejected,withdrawn]',
+        'application_date' => 'permit_empty|valid_date',
+        'reviewed_date' => 'permit_empty|valid_date',
+        'reviewed_by' => 'permit_empty|is_natural_no_zero|is_not_unique[users.id]'
     ];
     
     protected $validationMessages = [
-        'email' => [
-            'is_unique' => 'This email is already registered.'
-        ],
         'registration_number' => [
             'is_unique' => 'This registration number already exists.'
+        ],
+        'profile_id' => [
+            'is_not_unique' => 'Profile does not exist.'
+        ],
+        'program_id' => [
+            'is_not_unique' => 'Program does not exist.'
+        ],
+        'reviewed_by' => [
+            'is_not_unique' => 'Reviewer user does not exist.'
         ]
     ];
 
@@ -120,18 +97,23 @@ class AdmissionModel extends Model
     }
     
     /**
-     * Search admissions by keyword
+     * Search admissions by keyword (with profile join)
      * 
      * @param string $keyword Search keyword
      * @return array
      */
     public function searchAdmissions(string $keyword)
     {
-        return $this->like('registration_number', $keyword)
-                    ->orLike('full_name', $keyword)
-                    ->orLike('email', $keyword)
-                    ->orLike('course', $keyword)
-                    ->orLike('phone', $keyword)
+        return $this->select('admissions.*, profiles.full_name, profiles.email, profiles.phone, programs.title as program_title')
+                    ->join('profiles', 'profiles.id = admissions.profile_id')
+                    ->join('programs', 'programs.id = admissions.program_id')
+                    ->groupStart()
+                        ->like('admissions.registration_number', $keyword)
+                        ->orLike('profiles.full_name', $keyword)
+                        ->orLike('profiles.email', $keyword)
+                        ->orLike('profiles.phone', $keyword)
+                        ->orLike('programs.title', $keyword)
+                    ->groupEnd()
                     ->findAll();
     }
     
@@ -162,18 +144,19 @@ class AdmissionModel extends Model
     }
     
     /**
-     * Get count of admissions by course
+     * Get count of admissions by program
      * 
      * @return array
      */
-    public function getCourseStatistics(): array
+    public function getProgramStatistics(): array
     {
         $db = \Config\Database::connect();
         $builder = $db->table($this->table);
         
-        $results = $builder->select('course, COUNT(*) as total')
-                          ->where('deleted_at', null)
-                          ->groupBy('course')
+        $results = $builder->select('programs.title as program_title, programs.category, COUNT(*) as total')
+                          ->join('programs', 'programs.id = admissions.program_id')
+                          ->where('admissions.deleted_at', null)
+                          ->groupBy('admissions.program_id')
                           ->orderBy('total', 'DESC')
                           ->get()
                           ->getResultArray();
@@ -182,40 +165,121 @@ class AdmissionModel extends Model
     }
     
     /**
-     * Get count of admissions by course and status
+     * Get count of admissions by program and status
      * 
      * @return array
      */
-    public function getCourseStatusBreakdown(): array
+    public function getProgramStatusBreakdown(): array
     {
         $db = \Config\Database::connect();
         $builder = $db->table($this->table);
         
-        $results = $builder->select('course, status, COUNT(*) as total')
-                          ->where('deleted_at', null)
-                          ->groupBy('course, status')
-                          ->orderBy('course', 'ASC')
-                          ->orderBy('status', 'ASC')
+        $results = $builder->select('programs.title as program_title, programs.category, admissions.status, COUNT(*) as total')
+                          ->join('programs', 'programs.id = admissions.program_id')
+                          ->where('admissions.deleted_at', null)
+                          ->groupBy('admissions.program_id, admissions.status')
+                          ->orderBy('programs.title', 'ASC')
+                          ->orderBy('admissions.status', 'ASC')
                           ->get()
                           ->getResultArray();
         
-        // Organize by course
+        // Organize by program
         $organized = [];
         foreach ($results as $row) {
-            $course = $row['course'];
-            if (!isset($organized[$course])) {
-                $organized[$course] = [
-                    'course' => $course,
+            $program = $row['program_title'];
+            if (!isset($organized[$program])) {
+                $organized[$program] = [
+                    'program' => $program,
+                    'category' => $row['category'],
                     'pending' => 0,
                     'approved' => 0,
                     'rejected' => 0,
+                    'withdrawn' => 0,
                     'total' => 0
                 ];
             }
-            $organized[$course][$row['status']] = (int)$row['total'];
-            $organized[$course]['total'] += (int)$row['total'];
+            $organized[$program][$row['status']] = (int)$row['total'];
+            $organized[$program]['total'] += (int)$row['total'];
         }
         
         return array_values($organized);
+    }
+    
+    /**
+     * Get admission with profile and program details
+     * 
+     * @param int $id Admission ID
+     * @return array|null
+     */
+    public function getWithDetails(int $id): ?array
+    {
+        return $this->select('
+                admissions.id as admission_id,
+                admissions.registration_number,
+                admissions.profile_id,
+                admissions.program_id,
+                admissions.status,
+                admissions.application_date,
+                admissions.reviewed_date,
+                admissions.reviewed_by,
+                admissions.notes,
+                admissions.applicant_notes,
+                admissions.created_at,
+                admissions.updated_at,
+                profiles.profile_number,
+                profiles.full_name,
+                profiles.nickname,
+                profiles.gender,
+                profiles.place_of_birth,
+                profiles.date_of_birth,
+                profiles.religion,
+                profiles.citizen_id,
+                profiles.phone,
+                profiles.email,
+                profiles.street_address,
+                profiles.district,
+                profiles.regency,
+                profiles.province,
+                profiles.postal_code,
+                profiles.emergency_contact_name,
+                profiles.emergency_contact_phone,
+                profiles.emergency_contact_relation,
+                profiles.father_name,
+                profiles.mother_name,
+                profiles.photo,
+                profiles.documents,
+                programs.title as program_title,
+                programs.category,
+                programs.tuition_fee,
+                programs.discount
+            ')
+                    ->join('profiles', 'profiles.id = admissions.profile_id')
+                    ->join('programs', 'programs.id = admissions.program_id')
+                    ->where('admissions.id', $id)
+                    ->first();
+    }
+    
+    /**
+     * Get all admissions with profile and program details
+     * 
+     * @return array
+     */
+    public function getAllWithDetails(): array
+    {
+        return $this->select('
+                admissions.id,
+                admissions.registration_number,
+                admissions.status,
+                admissions.application_date,
+                profiles.full_name,
+                profiles.email,
+                profiles.phone,
+                programs.title as program_title,
+                programs.category
+            ')
+                    ->join('profiles', 'profiles.id = admissions.profile_id')
+                    ->join('programs', 'programs.id = admissions.program_id')
+                    ->orderBy('admissions.created_at', 'DESC')
+                    ->findAll();
     }
 }

@@ -13,6 +13,7 @@ class ProfileModel extends Model
     protected $useSoftDeletes = true;
     
     protected $allowedFields = [
+        'profile_number',
         'user_id',
         'full_name',
         'nickname',
@@ -22,6 +23,7 @@ class ProfileModel extends Model
         'religion',
         'citizen_id',
         'phone',
+        'email',
         'street_address',
         'district',
         'regency',
@@ -43,8 +45,11 @@ class ProfileModel extends Model
     protected $deletedField = 'deleted_at';
     
     protected $validationRules = [
-        'user_id' => 'required|is_natural_no_zero|is_unique[profiles.user_id,id,{id}]',
+        'id' => 'permit_empty|is_natural_no_zero',
+        'profile_number' => 'permit_empty|is_unique[profiles.profile_number,id,{id}]',
+        'user_id' => 'permit_empty|is_natural_no_zero|is_unique[profiles.user_id,id,{id}]',
         'full_name' => 'required|max_length[100]',
+        'email' => 'required|valid_email|is_unique[profiles.email,id,{id}]',
         'gender' => 'required|in_list[Male,Female]',
         'place_of_birth' => 'required|max_length[100]',
         'date_of_birth' => 'required|valid_date',
@@ -60,6 +65,44 @@ class ProfileModel extends Model
         'father_name' => 'required|max_length[100]',
         'mother_name' => 'required|max_length[100]'
     ];
+    
+    protected $validationMessages = [
+        'email' => [
+            'is_unique' => 'This email is already registered.'
+        ],
+        'profile_number' => [
+            'is_unique' => 'This profile number already exists.'
+        ]
+    ];
+
+    /**
+     * Generate unique profile number
+     * Format: PROF-YYYY-NNNN (e.g., PROF-2026-0001)
+     * 
+     * @return string
+     */
+    public function generateProfileNumber(): string
+    {
+        $year = date('Y');
+        $prefix = "PROF-{$year}-";
+        
+        // Get the last profile number for current year
+        $lastRecord = $this->like('profile_number', $prefix)
+                          ->orderBy('id', 'DESC')
+                          ->first();
+        
+        if ($lastRecord) {
+            // Extract the number part and increment
+            $lastNumber = (int) substr($lastRecord['profile_number'], -4);
+            $newNumber = $lastNumber + 1;
+        } else {
+            // First profile of the year
+            $newNumber = 1;
+        }
+        
+        // Format with leading zeros (4 digits)
+        return $prefix . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
+    }
 
     /**
      * Get profile by user ID

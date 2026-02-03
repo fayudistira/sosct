@@ -27,7 +27,7 @@
     </div>
 <?php endif ?>
 
-<form action="<?= base_url('admission/update/' . $admission['id']) ?>" method="post" enctype="multipart/form-data">
+<form action="<?= base_url('admission/update/' . $admission['admission_id']) ?>" method="post" enctype="multipart/form-data">
     <?= csrf_field() ?>
     
     <!-- Personal Information -->
@@ -171,16 +171,16 @@
     <!-- Course & Files -->
     <div class="dashboard-card mb-3">
         <div class="card-header">
-            <i class="bi bi-mortarboard me-2"></i>Course & Files
+            <i class="bi bi-mortarboard me-2"></i>Program, Status & Files
         </div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label class="form-label">Course <span class="text-danger">*</span></label>
-                    <select name="course" class="form-select form-select-sm" required>
+                    <label class="form-label">Program <span class="text-danger">*</span></label>
+                    <select name="program_id" class="form-select form-select-sm" required>
                         <option value="">Select Program</option>
                         <?php foreach ($programs as $program): ?>
-                            <option value="<?= esc($program['title']) ?>" <?= old('course', $admission['course']) === $program['title'] ? 'selected' : '' ?>>
+                            <option value="<?= esc($program['id']) ?>" <?= old('program_id', $admission['program_id']) === $program['id'] ? 'selected' : '' ?>>
                                 <?= esc($program['title']) ?>
                             </option>
                         <?php endforeach ?>
@@ -192,13 +192,14 @@
                         <option value="pending" <?= old('status', $admission['status']) === 'pending' ? 'selected' : '' ?>>Pending</option>
                         <option value="approved" <?= old('status', $admission['status']) === 'approved' ? 'selected' : '' ?>>Approved</option>
                         <option value="rejected" <?= old('status', $admission['status']) === 'rejected' ? 'selected' : '' ?>>Rejected</option>
+                        <option value="withdrawn" <?= old('status', $admission['status']) === 'withdrawn' ? 'selected' : '' ?>>Withdrawn</option>
                     </select>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Profile Photo</label>
                     <?php if (!empty($admission['photo'])): ?>
                         <div class="mb-2">
-                            <img src="<?= base_url('uploads/admissions/photos/' . $admission['photo']) ?>" 
+                            <img src="<?= base_url('uploads/' . $admission['photo']) ?>" 
                                  alt="Current Photo" 
                                  class="img-thumbnail"
                                  style="max-height: 100px;">
@@ -210,11 +211,17 @@
                 <div class="col-md-6">
                     <label class="form-label">Supporting Documents</label>
                     <input type="file" name="documents[]" class="form-control form-control-sm" accept=".pdf,.doc,.docx" multiple>
-                    <small class="text-muted">Upload new documents (will replace existing)</small>
+                    <small class="text-muted">Upload new documents (will add to existing)</small>
                 </div>
                 <div class="col-12">
-                    <label class="form-label">Notes</label>
-                    <textarea name="notes" class="form-control form-control-sm" rows="3"><?= old('notes', $admission['notes']) ?></textarea>
+                    <label class="form-label">Applicant Notes</label>
+                    <textarea name="applicant_notes" class="form-control form-control-sm" rows="2"><?= old('applicant_notes', $admission['applicant_notes'] ?? '') ?></textarea>
+                    <small class="text-muted">Notes from the applicant</small>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Admin Notes</label>
+                    <textarea name="notes" class="form-control form-control-sm" rows="2"><?= old('notes', $admission['notes'] ?? '') ?></textarea>
+                    <small class="text-muted">Internal notes for staff only</small>
                 </div>
             </div>
         </div>

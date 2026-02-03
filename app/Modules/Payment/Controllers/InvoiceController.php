@@ -87,8 +87,20 @@ class InvoiceController extends BaseController
             return redirect()->to('/invoice')->with('error', 'Invoice not found.');
         }
         
-        // Get student details
-        $student = $this->admissionModel->where('registration_number', $invoice['registration_number'])->first();
+        // Get student details with profile data
+        $student = $this->admissionModel->select('
+                admissions.registration_number,
+                profiles.full_name,
+                profiles.email,
+                profiles.phone,
+                programs.title as program_title,
+                programs.category
+            ')
+            ->join('profiles', 'profiles.id = admissions.profile_id')
+            ->join('programs', 'programs.id = admissions.program_id')
+            ->where('admissions.registration_number', $invoice['registration_number'])
+            ->first();
+        
         $invoice['student'] = $student;
         
         return view('Modules\Payment\Views\invoices\view', [
@@ -104,8 +116,13 @@ class InvoiceController extends BaseController
      */
     public function create()
     {
-        // Get all students for dropdown
-        $students = $this->admissionModel->findAll();
+        // Get all approved admissions with student details for dropdown
+        $students = $this->admissionModel->getAllWithDetails();
+        
+        // Filter only approved admissions
+        $students = array_filter($students, function($student) {
+            return $student['status'] === 'approved';
+        });
         
         return view('Modules\Payment\Views\invoices\create', [
             'title' => 'Create Invoice',
@@ -149,8 +166,13 @@ class InvoiceController extends BaseController
             return redirect()->to('/invoice')->with('error', 'Invoice not found.');
         }
         
-        // Get all students for dropdown
-        $students = $this->admissionModel->findAll();
+        // Get all approved admissions with student details for dropdown
+        $students = $this->admissionModel->getAllWithDetails();
+        
+        // Filter only approved admissions
+        $students = array_filter($students, function($student) {
+            return $student['status'] === 'approved';
+        });
         
         return view('Modules\Payment\Views\invoices\edit', [
             'title' => 'Edit Invoice',
@@ -190,34 +212,34 @@ class InvoiceController extends BaseController
     }
     
     /**
-     * Generate and download invoice PDF
+     * Display printable invoice (can be saved as PDF from browser)
      */
     public function downloadPdf($id)
     {
-        $invoice = $this->invoiceModel->find($id);
+        $invoice = $this->invoiceModel->getInvoiceWithPayments($id);
         
         if (!$invoice) {
             return redirect()->to('/invoice')->with('error', 'Invoice not found.');
         }
         
-        // Get student details
-        $student = $this->admissionModel->where('registration_number', $invoice['registration_number'])->first();
+        // Get student details with profile data
+        $student = $this->admissionModel->select('
+                admissions.registration_number,
+                profiles.full_name,
+                profiles.email,
+                profiles.phone,
+                programs.title as program_title,
+                programs.category
+            ')
+            ->join('profiles', 'profiles.id = admissions.profile_id')
+            ->join('programs', 'programs.id = admissions.program_id')
+            ->where('admissions.registration_number', $invoice['registration_number'])
+            ->first();
         
-        // Prepare invoice data for PDF
-        $invoiceData = $invoice;
-        $invoiceData['student_name'] = $student['full_name'] ?? 'N/A';
-        
-        // Generate PDF
-        $pdfGenerator = new PdfGenerator();
-        $filePath = $pdfGenerator->generateInvoicePdf($invoiceData);
-        
-        if (!$filePath) {
-            return redirect()->back()->with('error', 'Failed to generate PDF.');
-        }
-        
-        // Download PDF
-        $fullPath = WRITEPATH . 'uploads/' . $filePath;
-        return $this->response->download($fullPath, null)->setFileName('invoice_' . $invoice['invoice_number'] . '.pdf');
+        return view('Modules\Payment\Views\invoices\print', [
+            'invoice' => $invoice,
+            'student' => $student
+        ]);
     }
     
     /**
@@ -258,8 +280,20 @@ class InvoiceController extends BaseController
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Invoice not found');
         }
         
-        // Get student details
-        $student = $this->admissionModel->where('registration_number', $invoice['registration_number'])->first();
+        // Get student details with profile data
+        $student = $this->admissionModel->select('
+                admissions.registration_number,
+                profiles.full_name,
+                profiles.email,
+                profiles.phone,
+                programs.title as program_title,
+                programs.category
+            ')
+            ->join('profiles', 'profiles.id = admissions.profile_id')
+            ->join('programs', 'programs.id = admissions.program_id')
+            ->where('admissions.registration_number', $invoice['registration_number'])
+            ->first();
+        
         $invoice['student'] = $student;
         
         return view('Modules\Payment\Views\invoices\public_view', [

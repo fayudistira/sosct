@@ -123,9 +123,23 @@ class PageController extends BaseController
         // Fetch single program from API
         $program = $this->fetchProgramFromAPI($programId);
         
-        if (!$program || $program['status'] !== 'active') {
+        // Debug logging
+        if (!$program) {
+            log_message('error', 'Program not found with ID: ' . $programId);
             return redirect()->to('/programs')
-                ->with('error', 'Program not found or not available.');
+                ->with('error', 'Program not found.');
+        }
+        
+        if (!isset($program['status'])) {
+            log_message('error', 'Program status not set for ID: ' . $programId);
+            return redirect()->to('/programs')
+                ->with('error', 'Program status is not configured.');
+        }
+        
+        if ($program['status'] !== 'active') {
+            log_message('error', 'Program is not active. ID: ' . $programId . ', Status: ' . $program['status']);
+            return redirect()->to('/programs')
+                ->with('error', 'This program is currently not available for enrollment.');
         }
         
         // Fetch all programs for dropdown
@@ -171,10 +185,9 @@ class PageController extends BaseController
     
     public function submitApplication()
     {
-        // Load model (will work after Admission module is created)
-        if (!isset($this->admissionModel)) {
-            $this->admissionModel = new \Modules\Admission\Models\AdmissionModel();
-        }
+        // Load models
+        $profileModel = new \Modules\Account\Models\ProfileModel();
+        $admissionModel = new \Modules\Admission\Models\AdmissionModel();
         
         // Validate input
         $rules = [
@@ -184,7 +197,7 @@ class PageController extends BaseController
             'date_of_birth' => 'required|valid_date',
             'religion' => 'required|min_length[3]|max_length[50]',
             'phone' => 'required|regex_match[/^[0-9]{10,15}$/]',
-            'email' => 'required|valid_email|is_unique[admissions.email]',
+            'email' => 'required|valid_email|is_unique[profiles.email]',
             'street_address' => 'required|min_length[5]',
             'district' => 'required|min_length[3]',
             'regency' => 'required|min_length[3]',
@@ -194,7 +207,7 @@ class PageController extends BaseController
             'emergency_contact_relation' => 'required|min_length[3]|max_length[50]',
             'father_name' => 'required|min_length[3]|max_length[100]',
             'mother_name' => 'required|min_length[3]|max_length[100]',
-            'course' => 'required|min_length[3]',
+            'course' => 'permit_empty|min_length[3]', // Optional - for backward compatibility
             'photo' => 'uploaded[photo]|max_size[photo,2048]|is_image[photo]|mime_in[photo,image/jpg,image/jpeg,image/png]',
             'documents.*' => 'max_size[documents,5120]|ext_in[documents,pdf,doc,docx]',
         ];
@@ -205,72 +218,135 @@ class PageController extends BaseController
                 ->with('errors', $this->validator->getErrors());
         }
         
-        // Handle photo upload
-        $photo = $this->request->getFile('photo');
-        $photoName = null;
+        // Start database transaction
+        $db = \Config\Database::connect();
+        $db->transStart();
         
-        if ($photo && $photo->isValid() && !$photo->hasMoved()) {
-            $photoName = $photo->getRandomName();
-            $photo->move(FCPATH . 'uploads/admissions/photos', $photoName);
-        }
-        
-        // Handle documents upload
-        $documents = $this->request->getFileMultiple('documents');
-        $documentNames = [];
-        
-        if ($documents) {
-            foreach ($documents as $doc) {
-                if ($doc->isValid() && !$doc->hasMoved()) {
-                    $docName = $doc->getRandomName();
-                    $doc->move(FCPATH . 'uploads/admissions/documents', $docName);
-                    $documentNames[] = $docName;
+        try {
+            // Handle photo upload
+            $photo = $this->request->getFile('photo');
+            $photoPath = null;
+            
+            if ($photo && $photo->isValid() && !$photo->hasMoved()) {
+                $photoPath = $photo->getRandomName();
+                $photo->move(FCPATH . 'uploads/profiles/photos', $photoPath);
+                $photoPath = 'profiles/photos/' . $photoPath;
+            }
+            
+            // Handle documents upload
+            $documents = $this->request->getFileMultiple('documents');
+            $documentPaths = [];
+            
+            if ($documents) {
+                foreach ($documents as $doc) {
+                    if ($doc->isValid() && !$doc->hasMoved()) {
+                        $docPath = $doc->getRandomName();
+                        $doc->move(FCPATH . 'uploads/profiles/documents', $docPath);
+                        $documentPaths[] = 'profiles/documents/' . $docPath;
+                    }
                 }
             }
-        }
-        
-        // Prepare data
-        $data = [
-            'registration_number' => $this->admissionModel->generateRegistrationNumber(),
-            'full_name' => $this->request->getPost('full_name'),
-            'nickname' => $this->request->getPost('nickname'),
-            'gender' => $this->request->getPost('gender'),
-            'place_of_birth' => $this->request->getPost('place_of_birth'),
-            'date_of_birth' => $this->request->getPost('date_of_birth'),
-            'religion' => $this->request->getPost('religion'),
-            'citizen_id' => $this->request->getPost('citizen_id'),
-            'phone' => $this->request->getPost('phone'),
-            'email' => $this->request->getPost('email'),
-            'street_address' => $this->request->getPost('street_address'),
-            'district' => $this->request->getPost('district'),
-            'regency' => $this->request->getPost('regency'),
-            'province' => $this->request->getPost('province'),
-            'postal_code' => $this->request->getPost('postal_code'),
-            'emergency_contact_name' => $this->request->getPost('emergency_contact_name'),
-            'emergency_contact_phone' => $this->request->getPost('emergency_contact_phone'),
-            'emergency_contact_relation' => $this->request->getPost('emergency_contact_relation'),
-            'father_name' => $this->request->getPost('father_name'),
-            'mother_name' => $this->request->getPost('mother_name'),
-            'course' => $this->request->getPost('course'),
-            'notes' => $this->request->getPost('notes'),
-            'photo' => $photoName,
-            'documents' => !empty($documentNames) ? json_encode($documentNames) : null,
-            'status' => 'pending',
-            'application_date' => date('Y-m-d'),
-        ];
-        
-        // Save application
-        if (!$this->admissionModel->save($data)) {
+            
+            // STEP 1: Create Profile
+            $profileData = [
+                'profile_number' => $profileModel->generateProfileNumber(),
+                'user_id' => null, // No user account yet
+                'full_name' => $this->request->getPost('full_name'),
+                'nickname' => $this->request->getPost('nickname'),
+                'gender' => $this->request->getPost('gender'),
+                'place_of_birth' => $this->request->getPost('place_of_birth'),
+                'date_of_birth' => $this->request->getPost('date_of_birth'),
+                'religion' => $this->request->getPost('religion'),
+                'citizen_id' => $this->request->getPost('citizen_id'),
+                'phone' => $this->request->getPost('phone'),
+                'email' => $this->request->getPost('email'),
+                'street_address' => $this->request->getPost('street_address'),
+                'district' => $this->request->getPost('district'),
+                'regency' => $this->request->getPost('regency'),
+                'province' => $this->request->getPost('province'),
+                'postal_code' => $this->request->getPost('postal_code'),
+                'emergency_contact_name' => $this->request->getPost('emergency_contact_name'),
+                'emergency_contact_phone' => $this->request->getPost('emergency_contact_phone'),
+                'emergency_contact_relation' => $this->request->getPost('emergency_contact_relation'),
+                'father_name' => $this->request->getPost('father_name'),
+                'mother_name' => $this->request->getPost('mother_name'),
+                'photo' => $photoPath,
+                'documents' => !empty($documentPaths) ? json_encode($documentPaths) : null,
+            ];
+            
+            $profileId = $profileModel->insert($profileData);
+            
+            if (!$profileId) {
+                throw new \Exception('Failed to create profile');
+            }
+            
+            // STEP 2: Create Admission
+            // Get program_id from form (either directly or by looking up course name)
+            $programId = $this->request->getPost('program_id');
+            
+            if (!$programId) {
+                // Fallback: Look up program by ID from 'course' field (which now contains ID)
+                $courseValue = $this->request->getPost('course');
+                
+                if ($courseValue) {
+                    // Check if it's a UUID (program ID) or a title
+                    if (preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $courseValue)) {
+                        // It's a UUID
+                        $programId = $courseValue;
+                    } else {
+                        // It's a title, look it up
+                        $programModel = new \Modules\Program\Models\ProgramModel();
+                        $program = $programModel->where('title', $courseValue)->first();
+                        
+                        if (!$program) {
+                            throw new \Exception('Program not found');
+                        }
+                        
+                        $programId = $program['id'];
+                    }
+                }
+            }
+            
+            if (!$programId) {
+                throw new \Exception('Program selection is required');
+            }
+            
+            $admissionData = [
+                'registration_number' => $admissionModel->generateRegistrationNumber(),
+                'profile_id' => $profileId,
+                'program_id' => $programId,
+                'status' => 'pending',
+                'application_date' => date('Y-m-d'),
+                'applicant_notes' => $this->request->getPost('notes'),
+            ];
+            
+            $admissionId = $admissionModel->insert($admissionData);
+            
+            if (!$admissionId) {
+                throw new \Exception('Failed to create admission');
+            }
+            
+            // Commit transaction
+            $db->transComplete();
+            
+            if ($db->transStatus() === false) {
+                throw new \Exception('Transaction failed');
+            }
+            
+            // Success - redirect with registration number
+            return redirect()->to('/apply/success')
+                ->with('success', 'Your application has been submitted successfully!')
+                ->with('registration_number', $admissionData['registration_number']);
+                
+        } catch (\Exception $e) {
+            // Rollback transaction
+            $db->transRollback();
+            log_message('error', 'Application submission failed: ' . $e->getMessage());
+            
             return redirect()->back()
                 ->withInput()
                 ->with('error', 'Failed to submit application. Please try again.');
         }
-        
-        // Get the registration number for confirmation
-        $registrationNumber = $data['registration_number'];
-        
-        return redirect()->to('/apply/success')
-            ->with('success', 'Your application has been submitted successfully!')
-            ->with('registration_number', $registrationNumber);
     }
     
     public function applySuccess(): string
