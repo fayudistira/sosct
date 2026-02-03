@@ -422,7 +422,37 @@ class AdmissionController extends BaseController
         if (!file_exists($filepath)) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('File not found on disk: ' . $filename);
         }
-        
         return $this->response->download($filepath, null);
+    }
+    
+    /**
+     * Search students for AJAX (Select2)
+     */
+    public function ajaxSearch()
+    {
+        if (!$this->request->isAJAX()) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Invalid request']);
+        }
+        
+        $keyword = $this->request->getGet('q');
+        if (!$keyword) {
+            return $this->response->setJSON(['results' => []]);
+        }
+        
+        $results = $this->admissionModel->searchAdmissions($keyword);
+        
+        // Filter only approved students for payment
+        $filtered = array_filter($results, function($item) {
+            return $item['status'] === 'approved';
+        });
+        
+        $formatted = array_map(function($item) {
+            return [
+                'id' => $item['registration_number'],
+                'text' => $item['full_name'] . ' (' . $item['registration_number'] . ')'
+            ];
+        }, array_values($filtered));
+        
+        return $this->response->setJSON(['results' => $formatted]);
     }
 }

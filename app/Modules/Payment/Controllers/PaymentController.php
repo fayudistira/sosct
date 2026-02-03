@@ -112,21 +112,8 @@ class PaymentController extends BaseController
      */
     public function create()
     {
-        // Get all approved admissions with student details for dropdown
-        $students = $this->admissionModel->getAllWithDetails();
-        
-        // Filter only approved admissions
-        $students = array_filter($students, function($student) {
-            return $student['status'] === 'approved';
-        });
-        
-        // Get unpaid invoices for dropdown
-        $invoices = $this->invoiceModel->where('status', 'unpaid')->findAll();
-        
         return view('Modules\Payment\Views\payments\create', [
             'title' => 'Create Payment',
-            'students' => $students,
-            'invoices' => $invoices,
             'menuItems' => $this->loadModuleMenus(),
             'user' => auth()->user()
         ]);

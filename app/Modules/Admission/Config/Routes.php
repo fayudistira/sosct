@@ -16,6 +16,7 @@ $routes->group('admission', ['namespace' => 'Modules\Admission\Controllers', 'fi
     $routes->post('update-status', 'AdmissionController::updateStatus'); // AJAX endpoint
     $routes->delete('delete/(:num)', 'AdmissionController::delete/$1');
     $routes->get('search', 'AdmissionController::search');
+    $routes->get('ajax-search', 'AdmissionController::ajaxSearch');
 });
 
 // API Routes (RESTful) - Protected by tokens filter
