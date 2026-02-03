@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Dashboard') ?> - ERP.FEEC</title>
+    <title><?= esc($title ?? 'Dashboard') ?> - ERP.v1.0</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <?php 
@@ -432,7 +432,7 @@
             <a href="<?= base_url('/') ?>" class="text-decoration-none" style="color: inherit;">
                 <h3>
                     <i class="bi bi-speedometer2 me-2"></i>
-                    <span>ERP.FEEC</span>
+                    <span>ERP.v1.0</span>
                 </h3>
             </a>
             <button class="btn btn-link d-none d-lg-block p-0" id="sidebarToggle" style="color: var(--dark-red);">
