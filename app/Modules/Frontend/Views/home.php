@@ -16,7 +16,7 @@
                 </a>
             </div>
             <div class="col-lg-6">
-                <img src="https://www.vecteezy.com/photo/50077160-group-of-students-young-university-students-consulting-doing-homework-cooperating-research-plan-discuss-concepts-and-strategies-prepare-presentations-on-laptops-and-tablet-computers" alt="Campus" class="img-fluid rounded shadow-lg">
+                <img src="<?= base_url('assets/images/campus_hero.png') ?>" alt="Campus" class="img-fluid rounded shadow-lg img-landscape">
             </div>
         </div>
     </div>

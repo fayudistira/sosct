@@ -84,6 +84,12 @@
             padding: 4rem 0;
         }
         
+        .img-landscape {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+        }
+        
         /* Cards */
         .card-custom {
             border: 1px solid #E0E0E0;
