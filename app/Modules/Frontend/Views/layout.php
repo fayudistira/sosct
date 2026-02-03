@@ -188,12 +188,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="<?= base_url('about') ?>">Documentation</a>
                     </li>
-                    <!-- <li class="nav-item">
+                    <li class="nav-item">
                         <a class="nav-link" href="<?= base_url('apply') ?>">Apply</a>
-                    </li> -->
-                    <!-- <li class="nav-item">
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="<?= base_url('contact') ?>">Contact</a>
-                    </li> -->
+                    </li>
                     <li class="nav-item ms-2">
                         <a class="nav-link btn-apply" href="<?= base_url('dashboard') ?>">
                             <i class="bi bi-speedometer2 me-1"></i>MyDashboard
