@@ -172,7 +172,7 @@
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container">
             <a class="navbar-brand" href="<?= base_url('/') ?>">
-                <i class="bi bi-mortarboard me-2"></i>FEEC
+                <i class="bi bi-mortarboard me-2"></i>ERP V 1.1
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border-color: rgba(255,255,255,0.5);">
                 <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
@@ -186,14 +186,14 @@
                         <a class="nav-link" href="<?= base_url('programs') ?>">Programs</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url('about') ?>">About</a>
+                        <a class="nav-link" href="<?= base_url('about') ?>">Documentation</a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link" href="<?= base_url('apply') ?>">Apply</a>
-                    </li>
-                    <li class="nav-item">
+                    </li> -->
+                    <!-- <li class="nav-item">
                         <a class="nav-link" href="<?= base_url('contact') ?>">Contact</a>
-                    </li>
+                    </li> -->
                     <li class="nav-item ms-2">
                         <a class="nav-link btn-apply" href="<?= base_url('dashboard') ?>">
                             <i class="bi bi-speedometer2 me-1"></i>MyDashboard
@@ -214,7 +214,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 text-center text-md-start">
-                    <p class="mb-0">&copy; <?= date('Y') ?> Future English Education Center. All rights reserved.</p>
+                    <p class="mb-0">&copy; <?= date('Y') ?> fayudistira. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-center text-md-end">
                     <a href="#" class="text-white-50 me-3"><i class="bi bi-facebook"></i></a>
