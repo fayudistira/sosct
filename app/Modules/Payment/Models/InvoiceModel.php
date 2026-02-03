@@ -33,8 +33,21 @@ class InvoiceModel extends Model
         'amount' => 'required|decimal|greater_than[0]',
         'due_date' => 'required|valid_date',
         'invoice_type' => 'required|in_list[registration_fee,tuition_fee,miscellaneous_fee]',
-        'status' => 'permit_empty|in_list[unpaid,paid,cancelled]'
+        'status' => 'permit_empty|in_list[unpaid,paid,cancelled,expired]'
     ];
+
+    /**
+     * Update all unpaid invoices that are past their due date to 'expired'
+     * 
+     * @return int Number of invoices updated
+     */
+    public function processExpiredInvoices(): int
+    {
+        return $this->where('status', 'unpaid')
+                    ->where('due_date <', date('Y-m-d'))
+                    ->set(['status' => 'expired'])
+                    ->update();
+    }
     
     protected $validationMessages = [
         'registration_number' => [

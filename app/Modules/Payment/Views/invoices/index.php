@@ -56,6 +56,7 @@
                             <option value="unpaid" <?= ($status ?? '') === 'unpaid' ? 'selected' : '' ?>>Unpaid</option>
                             <option value="paid" <?= ($status ?? '') === 'paid' ? 'selected' : '' ?>>Paid</option>
                             <option value="cancelled" <?= ($status ?? '') === 'cancelled' ? 'selected' : '' ?>>Cancelled</option>
+                            <option value="expired" <?= ($status ?? '') === 'expired' ? 'selected' : '' ?>>Expired</option>
                         </select>
                     </div>
                     <div class="col-md-2">
@@ -109,17 +110,32 @@
                                     <td>Rp <?= number_format($invoice['amount'], 0, ',', '.') ?></td>
                                     <td><?= date('M d, Y', strtotime($invoice['due_date'])) ?></td>
                                     <td>
-                                        <span class="badge bg-<?= $invoice['status'] === 'paid' ? 'success' : ($invoice['status'] === 'unpaid' ? 'warning' : 'secondary') ?>">
+                                        <span class="badge bg-<?php 
+                                            if ($invoice['status'] === 'paid') echo 'success';
+                                            elseif ($invoice['status'] === 'unpaid') echo 'warning';
+                                            elseif ($invoice['status'] === 'expired') echo 'danger';
+                                            else echo 'secondary';
+                                        ?>">
                                             <?= ucfirst($invoice['status']) ?>
                                         </span>
                                     </td>
                                     <td>
                                         <a href="<?= base_url('invoice/view/' . $invoice['id']) ?>" 
-                                           class="btn btn-sm btn-info">View</a>
+                                           class="btn btn-sm btn-info" title="View Details"><i class="bi bi-eye"></i></a>
                                         <a href="<?= base_url('invoice/pdf/' . $invoice['id']) ?>" 
-                                           class="btn btn-sm btn-danger" target="_blank">PDF</a>
-                                        <a href="<?= base_url('invoice/edit/' . $invoice['id']) ?>" 
-                                           class="btn btn-sm btn-warning">Edit</a>
+                                           class="btn btn-sm btn-danger" target="_blank" title="Download PDF"><i class="bi bi-file-pdf"></i></a>
+                                        
+                                        <?php if ($invoice['status'] === 'unpaid'): ?>
+                                            <a href="<?= base_url('invoice/cancel/' . $invoice['id']) ?>" 
+                                               class="btn btn-sm btn-secondary" title="Cancel Invoice" 
+                                               onclick="return confirm('Are you sure you want to cancel this invoice? This action cannot be undone.')">
+                                                <i class="bi bi-x-circle"></i>
+                                            </a>
+                                        <?php else: ?>
+                                            <button class="btn btn-sm btn-light disabled" title="Locked: Issued Document">
+                                                <i class="bi bi-lock-fill"></i>
+                                            </button>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach ?>

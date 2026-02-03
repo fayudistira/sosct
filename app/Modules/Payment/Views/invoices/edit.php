@@ -76,11 +76,25 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <select name="status" class="form-select">
-                                <option value="unpaid" <?= $invoice['status'] === 'unpaid' ? 'selected' : '' ?>>Unpaid</option>
-                                <option value="paid" <?= $invoice['status'] === 'paid' ? 'selected' : '' ?>>Paid</option>
-                                <option value="cancelled" <?= $invoice['status'] === 'cancelled' ? 'selected' : '' ?>>Cancelled</option>
+                            <?php 
+                                $isLocked = in_array($invoice['status'], ['paid', 'cancelled']);
+                            ?>
+                            <select name="status" class="form-select" <?= $isLocked ? 'disabled' : '' ?>>
+                                <?php if ($invoice['status'] === 'unpaid'): ?>
+                                    <option value="unpaid" selected>Unpaid</option>
+                                    <option value="cancelled">Cancelled</option>
+                                <?php elseif ($invoice['status'] === 'paid'): ?>
+                                    <option value="paid" selected>Paid</option>
+                                <?php elseif ($invoice['status'] === 'cancelled'): ?>
+                                    <option value="cancelled" selected>Cancelled</option>
+                                <?php endif; ?>
                             </select>
+                            <?php if ($isLocked): ?>
+                                <input type="hidden" name="status" value="<?= esc($invoice['status']) ?>">
+                            <?php endif; ?>
+                            <div class="form-text">
+                                <?= $isLocked ? 'This status is locked and cannot be changed.' : 'Status can only be changed to Cancelled. Paid status occurs automatically upon payment.' ?>
+                            </div>
                         </div>
                     </div>
                 </div>

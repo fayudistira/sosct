@@ -301,8 +301,12 @@ class PageController extends BaseController
             // STEP 2: Create Admission
             // Get program_id from form (either directly or by looking up course name)
             $programId = $this->request->getPost('program_id');
+            $program = null;
+            $programModel = new \Modules\Program\Models\ProgramModel();
             
-            if (!$programId) {
+            if ($programId) {
+                $program = $programModel->find($programId);
+            } else {
                 // Fallback: Look up program by ID from 'course' field (which now contains ID)
                 $courseValue = $this->request->getPost('course');
                 
@@ -311,21 +315,18 @@ class PageController extends BaseController
                     if (preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $courseValue)) {
                         // It's a UUID
                         $programId = $courseValue;
+                        $program = $programModel->find($programId);
                     } else {
                         // It's a title, look it up
-                        $programModel = new \Modules\Program\Models\ProgramModel();
                         $program = $programModel->where('title', $courseValue)->first();
-                        
-                        if (!$program) {
-                            throw new \Exception('Program not found');
+                        if ($program) {
+                            $programId = $program['id'];
                         }
-                        
-                        $programId = $program['id'];
                     }
                 }
             }
             
-            if (!$programId) {
+            if (!$program) {
                 throw new \Exception('Program selection is required');
             }
             
@@ -343,6 +344,26 @@ class PageController extends BaseController
             if (!$admissionId) {
                 throw new \Exception('Failed to create admission');
             }
+
+            // STEP 3: Auto-generate Invoice
+            $regFee = $program['registration_fee'] ?? 0;
+            $tuitionFee = $program['tuition_fee'] ?? 0;
+            $discount = $program['discount'] ?? 0;
+            $finalTuition = $tuitionFee * (1 - $discount / 100);
+            $totalAmount = $regFee + $finalTuition;
+
+            if ($totalAmount > 0) {
+                $invoiceModel = new \Modules\Payment\Models\InvoiceModel();
+                $invoiceData = [
+                    'registration_number' => $admissionData['registration_number'],
+                    'description' => 'Initial Fees: Registration and Tuition for ' . $program['title'],
+                    'amount' => $totalAmount,
+                    'due_date' => date('Y-m-d', strtotime('+3 days')), // Due in 3 days
+                    'invoice_type' => 'tuition_fee',
+                    'status' => 'unpaid'
+                ];
+                $invoiceId = $invoiceModel->createInvoice($invoiceData);
+            }
             
             // Commit transaction
             $db->transComplete();
@@ -351,7 +372,13 @@ class PageController extends BaseController
                 throw new \Exception('Transaction failed');
             }
             
-            // Success - redirect with registration number
+            // Success - redirect to public invoice if it exists, otherwise success page
+            if (isset($invoiceId) && $invoiceId) {
+                return redirect()->to('invoice/public/' . $invoiceId)
+                    ->with('success', 'Your application has been submitted successfully!')
+                    ->with('registration_number', $admissionData['registration_number']);
+            }
+
             return redirect()->to('/apply/success')
                 ->with('success', 'Your application has been submitted successfully!')
                 ->with('registration_number', $admissionData['registration_number']);
@@ -371,16 +398,23 @@ class PageController extends BaseController
     {
         $registrationNumber = session('registration_number');
         $admission = null;
+        $invoices = [];
 
         if ($registrationNumber) {
             $admissionModel = new \Modules\Admission\Models\AdmissionModel();
             $admission = $admissionModel->getByRegistrationNumber($registrationNumber);
+            
+            $invoiceModel = new \Modules\Payment\Models\InvoiceModel();
+            $invoices = $invoiceModel->where('registration_number', $registrationNumber)
+                                     ->where('status', 'unpaid')
+                                     ->findAll();
         }
 
         return view('Modules\Frontend\Views\apply_success', [
             'title' => 'Application Submitted',
             'registrationNumber' => $registrationNumber,
-            'admission' => $admission
+            'admission' => $admission,
+            'invoices' => $invoices
         ]);
     }
 }

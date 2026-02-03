@@ -108,6 +108,10 @@
             background-color: #f8d7da;
             color: #721c24;
         }
+        .status-expired {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
         .payments-table {
             margin-top: 20px;
         }
@@ -138,24 +142,97 @@
             color: #666;
             font-size: 0.9rem;
         }
+        .btn-whatsapp {
+            background-color: #25D366;
+            color: white;
+            border: none;
+            transition: all 0.3s ease;
+            padding: 12px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            font-weight: 600;
+        }
+        .btn-whatsapp:hover {
+            background-color: #128C7E;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+        }
         @media print {
+            @page {
+                size: A4;
+                margin: 10mm;
+            }
             body {
-                background: white;
+                background: white !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
             .invoice-container {
-                box-shadow: none;
-                margin: 0;
+                box-shadow: none !important;
+                margin: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                border: none !important;
             }
-            .no-print {
-                display: none;
-            }
-            /* Ensure QR code prints */
-            img {
-                max-width: 100%;
-                page-break-inside: avoid;
+            .invoice-body {
+                padding: 10mm !important;
+                font-size: 11px !important;
+                line-height: 1.2 !important;
             }
             .info-section {
-                page-break-inside: avoid;
+                margin-bottom: 12px !important;
+                page-break-inside: avoid !important;
+            }
+            .info-section h5 {
+                font-size: 12px !important;
+                margin-bottom: 8px !important;
+                padding-bottom: 5px !important;
+            }
+            .info-row {
+                padding: 3px 0 !important;
+            }
+            .info-label {
+                min-width: 120px !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .amount-box {
+                background: #f8f8f8 !important;
+                border: 2px solid var(--dark-red) !important;
+                margin: 10px 0 !important;
+                padding: 12px !important;
+            }
+            .amount-label { font-size: 10px !important; }
+            .amount-value {
+                font-size: 1.8rem !important;
+            }
+            .invoice-header {
+                padding: 10px 30px !important;
+            }
+            .invoice-header h1 { font-size: 1.5rem !important; }
+            
+            /* Two Column Print Layout */
+            .print-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+            
+            /* Force QR code to be smaller if needed to fit */
+            #qrcode img {
+                width: 100px !important;
+                height: 100px !important;
+            }
+            .footer-note {
+                margin-top: 15px !important;
+                padding: 10px !important;
+                font-size: 10px !important;
             }
         }
     </style>
@@ -170,6 +247,9 @@
                     <div class="invoice-number"><?= esc($invoice['invoice_number']) ?></div>
                 </div>
                 <div class="text-end no-print">
+                    <a href="<?= base_url('/') ?>" class="btn btn-outline-light me-2">
+                        <i class="bi bi-house"></i> Home
+                    </a>
                     <button onclick="window.print()" class="btn btn-light">
                         <i class="bi bi-printer"></i> Print
                     </button>
@@ -179,59 +259,107 @@
 
         <!-- Body -->
         <div class="invoice-body">
-            <!-- Invoice Details -->
-            <div class="info-section">
-                <h5><i class="bi bi-file-text"></i> Invoice Details</h5>
-                <div class="info-row">
-                    <div class="info-label">Invoice Type:</div>
-                    <div class="info-value"><?= ucwords(str_replace('_', ' ', $invoice['invoice_type'])) ?></div>
+            <?php if (session()->has('success')): ?>
+                <!-- ... Session Alert Content Hidden for brevity ... -->
+                <div class="alert alert-success border-0 shadow-sm mb-4 no-print" style="border-left: 5px solid #198754 !important;">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-check-circle-fill fs-4 me-3 text-success"></i>
+                        <div>
+                            <h6 class="alert-heading fw-bold mb-1">Application Submitted!</h6>
+                            <p class="mb-0 small"><?= session('success') ?></p>
+                        </div>
+                    </div>
                 </div>
-                <div class="info-row">
-                    <div class="info-label">Issue Date:</div>
-                    <div class="info-value"><?= date('F d, Y', strtotime($invoice['created_at'])) ?></div>
+                
+                <div class="bg-light p-4 rounded-3 text-center mb-5 no-print border border-success border-2">
+                    <h6 class="fw-bold mb-2">Registration Confirmation</h6>
+                    <p class="small text-muted mb-3">Please click the button below to notify our admin via WhatsApp for fast processing.</p>
+                    
+                    <?php
+                    $waNumber = '6289509778659';
+                    $message = "Hello Admin, I have filled the application form.\n\n";
+                    $message .= "Registration No: " . $invoice['registration_number'] . "\n";
+                    $message .= "Name: " . ($invoice['student']['full_name'] ?? 'N/A') . "\n";
+                    $message .= "Program: " . ($invoice['student']['program_title'] ?? 'N/A') . "\n";
+                    $message .= "Total Fees: Rp " . number_format($invoice['amount'], 0, ',', '.') . "\n";
+                    $message .= "Phone: " . ($invoice['student']['phone'] ?? 'N/A') . "\n";
+                    $message .= "Email: " . ($invoice['student']['email'] ?? 'N/A') . "\n\n";
+                    $message .= "Please help me to process my application. Thank you!";
+                    $waUrl = "https://wa.me/" . $waNumber . "?text=" . urlencode($message);
+                    ?>
+                    
+                    <a href="<?= $waUrl ?>" target="_blank" class="btn btn-whatsapp btn-lg">
+                        <i class="bi bi-whatsapp me-2"></i>Confirm via WhatsApp
+                    </a>
                 </div>
-                <div class="info-row">
-                    <div class="info-label">Due Date:</div>
-                    <div class="info-value"><?= date('F d, Y', strtotime($invoice['due_date'])) ?></div>
+            <?php endif; ?>
+
+            <div class="print-grid">
+                <div>
+                    <!-- Invoice Details -->
+                    <div class="info-section">
+                        <h5><i class="bi bi-file-text"></i> Invoice Details</h5>
+                        <div class="info-row">
+                            <div class="info-label">Invoice Type:</div>
+                            <div class="info-value"><?= ucwords(str_replace('_', ' ', $invoice['invoice_type'])) ?></div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Issue Date:</div>
+                            <div class="info-value"><?= date('F d, Y', strtotime($invoice['created_at'])) ?></div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Due Date:</div>
+                            <div class="info-value"><?= date('F d, Y', strtotime($invoice['due_date'])) ?></div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Status:</div>
+                            <div class="info-value">
+                                <span class="status-badge status-<?= $invoice['status'] ?>">
+                                    <?= ucfirst($invoice['status']) ?>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="info-row">
-                    <div class="info-label">Status:</div>
-                    <div class="info-value">
-                        <span class="status-badge status-<?= $invoice['status'] ?>">
-                            <?= ucfirst($invoice['status']) ?>
-                        </span>
+
+                <div>
+                    <!-- Student Information -->
+                    <div class="info-section">
+                        <h5><i class="bi bi-person"></i> Student Information</h5>
+                        <div class="info-row">
+                            <div class="info-label">Name:</div>
+                            <div class="info-value"><?= esc($invoice['student']['full_name'] ?? 'N/A') ?></div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Reg No:</div>
+                            <div class="info-value"><?= esc($invoice['registration_number']) ?></div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Email:</div>
+                            <div class="info-value"><?= esc($invoice['student']['email'] ?? 'N/A') ?></div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Student Information -->
-            <div class="info-section">
-                <h5><i class="bi bi-person"></i> Student Information</h5>
-                <div class="info-row">
-                    <div class="info-label">Name:</div>
-                    <div class="info-value"><?= esc($invoice['student']['full_name'] ?? 'N/A') ?></div>
+            <div class="print-grid">
+                <div>
+                    <!-- Description -->
+                    <?php if (!empty($invoice['description'])): ?>
+                    <div class="info-section">
+                        <h5><i class="bi bi-card-text"></i> Description</h5>
+                        <p class="mb-0 small"><?= nl2br(esc($invoice['description'])) ?></p>
+                    </div>
+                    <?php endif ?>
                 </div>
-                <div class="info-row">
-                    <div class="info-label">Registration Number:</div>
-                    <div class="info-value"><?= esc($invoice['registration_number']) ?></div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Email:</div>
-                    <div class="info-value"><?= esc($invoice['student']['email'] ?? 'N/A') ?></div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Phone:</div>
-                    <div class="info-value"><?= esc($invoice['student']['phone'] ?? 'N/A') ?></div>
+                <div class="text-end">
+                    <!-- QR Code moved here for print efficiency -->
+                    <div class="info-section">
+                        <div id="qrcode" style="display: inline-block;"></div>
+                        <p class="small text-muted mt-1" style="font-size: 8px !important;">Scan to verify</p>
+                    </div>
                 </div>
             </div>
-
-            <!-- Description -->
-            <?php if (!empty($invoice['description'])): ?>
-            <div class="info-section">
-                <h5><i class="bi bi-card-text"></i> Description</h5>
-                <p class="mb-0"><?= nl2br(esc($invoice['description'])) ?></p>
-            </div>
-            <?php endif ?>
 
             <!-- Amount -->
             <div class="amount-box">

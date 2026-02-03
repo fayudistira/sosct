@@ -33,6 +33,7 @@ $routes->group('invoice', ['namespace' => 'Modules\Payment\Controllers', 'filter
     $routes->post('store', 'InvoiceController::store');
     $routes->get('edit/(:segment)', 'InvoiceController::edit/$1');
     $routes->post('update/(:segment)', 'InvoiceController::update/$1');
+    $routes->get('cancel/(:segment)', 'InvoiceController::cancel/$1');
     $routes->get('pdf/(:segment)', 'InvoiceController::downloadPdf/$1');
 });
 

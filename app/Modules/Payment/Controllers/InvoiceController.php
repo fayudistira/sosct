@@ -23,6 +23,9 @@ class InvoiceController extends BaseController
      */
     public function index()
     {
+        // Auto-expire invoices that are past due
+        $this->invoiceModel->processExpiredInvoices();
+
         $perPage = 10;
         $keyword = $this->request->getGet('search');
         $status = $this->request->getGet('status');
@@ -156,59 +159,41 @@ class InvoiceController extends BaseController
     }
     
     /**
-     * Show edit form
+     * Show edit form (Disabled)
      */
     public function edit($id)
     {
-        $invoice = $this->invoiceModel->find($id);
-        
-        if (!$invoice) {
-            return redirect()->to('/invoice')->with('error', 'Invoice not found.');
-        }
-        
-        // Get all approved admissions with student details for dropdown
-        $students = $this->admissionModel->getAllWithDetails();
-        
-        // Filter only approved admissions
-        $students = array_filter($students, function($student) {
-            return $student['status'] === 'approved';
-        });
-        
-        return view('Modules\Payment\Views\invoices\edit', [
-            'title' => 'Edit Invoice',
-            'invoice' => $invoice,
-            'students' => $students,
-            'menuItems' => $this->loadModuleMenus(),
-            'user' => auth()->user()
-        ]);
+        return redirect()->to('/invoice')->with('error', 'Invoices cannot be edited once issued. Please cancel and recreate if needed.');
     }
     
     /**
-     * Update invoice
+     * Update invoice (Disabled)
      */
     public function update($id)
+    {
+        return redirect()->to('/invoice')->with('error', 'Invoices cannot be edited manually. Status and amounts are updated automatically via the Payment module.');
+    }
+
+    /**
+     * Cancel an invoice
+     */
+    public function cancel($id)
     {
         $invoice = $this->invoiceModel->find($id);
         
         if (!$invoice) {
             return redirect()->to('/invoice')->with('error', 'Invoice not found.');
         }
-        
-        $data = [
-            'id' => $id,
-            'registration_number' => $this->request->getPost('registration_number'),
-            'description' => $this->request->getPost('description'),
-            'amount' => $this->request->getPost('amount'),
-            'due_date' => $this->request->getPost('due_date'),
-            'invoice_type' => $this->request->getPost('invoice_type'),
-            'status' => $this->request->getPost('status')
-        ];
-        
-        if ($this->invoiceModel->save($data)) {
-            return redirect()->to('/invoice')->with('success', 'Invoice updated successfully.');
+
+        if ($invoice['status'] !== 'unpaid') {
+            return redirect()->to('/invoice')->with('error', 'Only unpaid invoices can be cancelled.');
         }
-        
-        return redirect()->back()->withInput()->with('errors', $this->invoiceModel->errors());
+
+        if ($this->invoiceModel->updateInvoiceStatus($id, 'cancelled')) {
+            return redirect()->to('/invoice')->with('success', 'Invoice #' . $invoice['invoice_number'] . ' has been cancelled.');
+        }
+
+        return redirect()->to('/invoice')->with('error', 'Failed to cancel invoice.');
     }
     
     /**

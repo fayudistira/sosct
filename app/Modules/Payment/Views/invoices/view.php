@@ -24,7 +24,12 @@
                 <a href="<?= base_url('invoice/pdf/' . $invoice['id']) ?>" class="btn btn-light" target="_blank">
                     <i class="bi bi-file-pdf"></i> Download PDF
                 </a>
-                <a href="<?= base_url('invoice/edit/' . $invoice['id']) ?>" class="btn btn-light">Edit</a>
+                <?php if ($invoice['status'] === 'unpaid'): ?>
+                    <a href="<?= base_url('invoice/cancel/' . $invoice['id']) ?>" class="btn btn-danger" 
+                       onclick="return confirm('Are you sure you want to cancel this invoice? This action cannot be undone.')">
+                        <i class="bi bi-x-circle"></i> Cancel Invoice
+                    </a>
+                <?php endif; ?>
                 <a href="<?= base_url('invoice') ?>" class="btn btn-outline-light">Back</a>
             </div>
         </div>
@@ -51,7 +56,12 @@
                     </div>
                     <div class="mb-2">
                         <span class="info-label">Status:</span> 
-                        <span class="badge bg-<?= $invoice['status'] === 'paid' ? 'success' : ($invoice['status'] === 'unpaid' ? 'warning' : 'secondary') ?>">
+                        <span class="badge bg-<?php 
+                            if ($invoice['status'] === 'paid') echo 'success';
+                            elseif ($invoice['status'] === 'unpaid') echo 'warning';
+                            elseif ($invoice['status'] === 'expired') echo 'danger';
+                            else echo 'secondary';
+                        ?>">
                             <?= ucfirst($invoice['status']) ?>
                         </span>
                     </div>
