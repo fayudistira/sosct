@@ -4,8 +4,8 @@
 <!-- Hero Section -->
 <div class="hero-section py-5">
     <div class="container text-center">
-        <h1 class="display-4 fw-bold mb-3">Our Programs</h1>
-        <p class="lead">Explore our comprehensive range of educational programs designed to help you achieve your goals</p>
+        <h1 class="display-4 fw-bold mb-3">FEEC Intensive Programs</h1>
+        <p class="lead">Accelerate your English mastery with our specialized intensive programs in Kampung Inggris Pare.</p>
         <?php if (!empty($totalPrograms)): ?>
             <div class="mt-3">
                 <span class="badge bg-white text-dark px-4 py-2 fs-6">

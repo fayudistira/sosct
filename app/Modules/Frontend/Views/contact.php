@@ -70,43 +70,43 @@
         <div class="col-lg-4">
             <div class="card-custom card mb-4">
                 <div class="card-header">
-                    <h4 class="mb-0"><i class="bi bi-geo-alt me-2"></i>Our Location</h4>
+                    <h4 class="mb-0"><i class="bi bi-geo-alt me-2"></i>FEEC Campus</h4>
                 </div>
                 <div class="card-body">
                     <p class="mb-3">
                         <strong>Address:</strong><br>
-                        123 Education Street<br>
-                        City, Province 12345<br>
-                        Indonesia
+                        Jl. Dahlia No. 123, Tulungrejo<br>
+                        Pare, Kediri 64212<br>
+                        East Java, Indonesia
                     </p>
                     <p class="mb-3">
-                        <strong>Phone:</strong><br>
-                        <a href="tel:+621234567890" style="color: var(--dark-red);">+62 123 4567 890</a>
+                        <strong>WhatsApp:</strong><br>
+                        <a href="https://wa.me/6281234567890" style="color: var(--dark-red);">+62 812 3456 7890</a>
                     </p>
                     <p class="mb-0">
                         <strong>Email:</strong><br>
-                        <a href="mailto:info@erpsystem.edu" style="color: var(--dark-red);">info@erpsystem.edu</a>
+                        <a href="mailto:admin@feekampunginggris.com" style="color: var(--dark-red);">admin@feekampunginggris.com</a>
                     </p>
                 </div>
             </div>
             
             <div class="card-custom card">
                 <div class="card-header">
-                    <h4 class="mb-0"><i class="bi bi-clock me-2"></i>Office Hours</h4>
+                    <h4 class="mb-0"><i class="bi bi-clock me-2"></i>Service Hours</h4>
                 </div>
                 <div class="card-body">
                     <ul class="list-unstyled mb-0">
                         <li class="mb-2">
                             <strong>Monday - Friday:</strong><br>
-                            <span class="text-muted">8:00 AM - 5:00 PM</span>
+                            <span class="text-muted">7:00 AM - 9:00 PM</span>
                         </li>
                         <li class="mb-2">
                             <strong>Saturday:</strong><br>
-                            <span class="text-muted">9:00 AM - 1:00 PM</span>
+                            <span class="text-muted">8:00 AM - 5:00 PM</span>
                         </li>
                         <li>
                             <strong>Sunday:</strong><br>
-                            <span class="text-muted">Closed</span>
+                            <span class="text-muted">Closed (Self-Study Day)</span>
                         </li>
                     </ul>
                 </div>
