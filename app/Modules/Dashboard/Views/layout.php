@@ -431,7 +431,7 @@
         <div class="sidebar-header d-flex justify-content-between align-items-center">
             <h3>
                 <i class="bi bi-speedometer2 me-2"></i>
-                <span>ERP.FEEC/span>
+                <span>ERP.FEEC</span>
             </h3>
             <button class="btn btn-link d-none d-lg-block p-0" id="sidebarToggle" style="color: var(--dark-red);">
                 <i class="bi bi-chevron-left" id="toggleIcon"></i>
