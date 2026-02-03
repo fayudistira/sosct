@@ -208,17 +208,22 @@ $(document).ready(function() {
         const invoiceSelect = $('#invoiceSelect');
         const loadingSpinner = $('#invoiceLoading');
         
+        console.log('Selected student registration number:', regNumber);
+        
         // Reset and disable invoice dropdown
         invoiceSelect.empty().append('<option value="">Loading invoices...</option>').prop('disabled', true);
         $('#amountInput').val('');
         
         if (regNumber) {
             loadingSpinner.show();
+            const apiUrl = '<?= base_url('api/invoices/student') ?>/' + regNumber;
+            console.log('Fetching invoices from:', apiUrl);
             
             $.ajax({
-                url: '<?= base_url('api/invoices/student') ?>/' + regNumber,
+                url: apiUrl,
                 method: 'GET',
                 success: function(response) {
+                    console.log('API full response:', response);
                     loadingSpinner.hide();
                     invoiceSelect.prop('disabled', false);
                     invoiceSelect.empty().append('<option value="">-- Choose Invoice --</option>');
@@ -227,8 +232,9 @@ $(document).ready(function() {
                         let unpaidFound = false;
                         response.data.forEach(function(invoice) {
                             if (invoice.status === 'unpaid') {
+                                const typeName = invoice.invoice_type ? invoice.invoice_type.replace(/_/g, ' ').toUpperCase() : 'INVOICE';
                                 invoiceSelect.append(`<option value="${invoice.id}" data-amount="${invoice.amount}">
-                                    ${invoice.invoice_number} - ${invoice.type.replace('_', ' ').toUpperCase()} (Rp ${parseInt(invoice.amount).toLocaleString('id-ID')})
+                                    ${invoice.invoice_number} - ${typeName} (Rp ${parseInt(invoice.amount).toLocaleString('id-ID')})
                                 </option>`);
                                 unpaidFound = true;
                             }
@@ -246,9 +252,13 @@ $(document).ready(function() {
                         invoiceSelect.append('<option disabled>No invoices recorded for this student</option>');
                     }
                 },
-                error: function() {
+                error: function(xhr, status, error) {
                     loadingSpinner.hide();
-                    console.error('Failed to fetch invoices');
+                    console.error('Failed to fetch invoices:', error);
+                    console.log('Response Text:', xhr.responseText);
+                    invoiceSelect.prop('disabled', false);
+                    invoiceSelect.empty().append('<option value="" disabled>Error loading invoices. Please try again.</option>');
+                    alert('Could not fetch invoices. Please check your connection or server logs.');
                 }
             });
         }

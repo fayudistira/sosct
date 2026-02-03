@@ -261,6 +261,7 @@ class InvoiceApiController extends ResourceController
      */
     public function getByStudent($registrationNumber = null)
     {
+        log_message('debug', 'Fetching invoices for student: ' . $registrationNumber);
         $invoiceModel = new InvoiceModel();
         $admissionModel = new AdmissionModel();
         
@@ -274,10 +275,12 @@ class InvoiceApiController extends ResourceController
         // Verify student exists
         $student = $admissionModel->getByRegistrationNumber($registrationNumber);
         if (!$student) {
+            log_message('error', 'Student not found: ' . $registrationNumber);
             return $this->failNotFound('Student not found');
         }
         
         $invoices = $invoiceModel->getInvoicesByStudent($registrationNumber);
+        log_message('debug', 'Found ' . count($invoices) . ' invoices for student ' . $registrationNumber);
         
         return $this->respond([
             'status' => 'success',
