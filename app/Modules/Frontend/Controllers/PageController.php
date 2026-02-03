@@ -369,8 +369,18 @@ class PageController extends BaseController
     
     public function applySuccess(): string
     {
+        $registrationNumber = session('registration_number');
+        $admission = null;
+
+        if ($registrationNumber) {
+            $admissionModel = new \Modules\Admission\Models\AdmissionModel();
+            $admission = $admissionModel->getByRegistrationNumber($registrationNumber);
+        }
+
         return view('Modules\Frontend\Views\apply_success', [
-            'title' => 'Application Submitted'
+            'title' => 'Application Submitted',
+            'registrationNumber' => $registrationNumber,
+            'admission' => $admission
         ]);
     }
 }
