@@ -429,10 +429,12 @@
     <!-- Sidebar -->
     <div id="sidebar">
         <div class="sidebar-header d-flex justify-content-between align-items-center">
-            <h3>
-                <i class="bi bi-speedometer2 me-2"></i>
-                <span>ERP.FEEC</span>
-            </h3>
+            <a href="<?= base_url('/') ?>" class="text-decoration-none" style="color: inherit;">
+                <h3>
+                    <i class="bi bi-speedometer2 me-2"></i>
+                    <span>ERP.FEEC</span>
+                </h3>
+            </a>
             <button class="btn btn-link d-none d-lg-block p-0" id="sidebarToggle" style="color: var(--dark-red);">
                 <i class="bi bi-chevron-left" id="toggleIcon"></i>
             </button>
