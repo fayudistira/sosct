@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Rekap Kalender Absensi - Smart Window</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-body: #f0f2f5;
+      --bg-card: #ffffff;
+      --color-late: #dc3545;       /* Merah */
+      --color-early: #fd7e14;     /* Orange */
+      --color-missing: #ffc107;   /* Kuning */
+      --color-weekend: #e9ecef;   /* Abu-abu (Libur) */
+      --color-extra: #e0cffc;     /* Ungu Pastel (Kerja Weekend) */
+      --color-extra-text: #5a32a3;
+    }
+    
+    body { padding: 20px; background-color: var(--bg-body); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    
+    .container { background: var(--bg-card); padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    
+    /* Custom Calendar Styles */
+    .calendar-container { margin-top: 40px; page-break-inside: avoid; }
+    .employee-header { 
+      border-bottom: 2px solid #0d6efd; 
+      padding-bottom: 10px; 
+      margin-bottom: 20px; 
+      background: #eef5ff;
+      padding: 15px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .month-title {
+      font-size: 1.2rem; font-weight: bold; color: #333; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    .calendar-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      margin-bottom: 30px;
+      font-size: 0.85rem;
+    }
+
+    .calendar-table th {
+      background-color: #343a40;
+      color: white;
+      padding: 8px;
+      text-align: center;
+      width: 13.5%; 
+    }
+
+    .calendar-table td {
+      border: 1px solid #dee2e6;
+      vertical-align: top;
+      height: 100px; 
+      padding: 5px;
+      position: relative;
+      background-color: white;
+    }
+
+    /* Cell Styles */
+    .calendar-table td.weekend {
+      background-color: var(--color-weekend);
+      color: #6c757d;
+    }
+    
+    /* Extra Work Style (Weekend with attendance) */
+    .calendar-table td.extra-work {
+      background-color: var(--color-extra);
+      border: 1px solid var(--color-extra-text);
+    }
+    .calendar-table td.extra-work .day-number { color: var(--color-extra-text); }
+
+    .day-number {
+      font-weight: bold;
+      font-size: 0.9rem;
+      display: block;
+      margin-bottom: 5px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 3px;
+    }
+
+    .day-label {
+      font-size: 0.75rem;
+      text-align: center;
+      font-style: italic;
+      margin-bottom: 2px;
+      color: #888;
+    }
+
+    .time-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2px;
+      font-size: 0.8rem;
+    }
+
+    .badge-location { font-size: 0.6rem; padding: 2px 4px; margin-right: 2px; }
+    .badge-extra { 
+      background-color: #6610f2; 
+      color: white; 
+      font-size: 0.65rem; 
+      padding: 2px 5px; 
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+
+    /* Status Colors inside Calendar */
+    .status-late { color: var(--color-late); font-weight: bold; }
+    .status-early { color: var(--color-early); font-weight: bold; }
+    .status-missing { color: #856404; background: #fff3cd; padding: 2px; font-size: 0.7rem; display: block; text-align: center; }
+    
+    .libur-text {
+      text-align: center; padding-top: 35px; font-weight: bold; color: #adb5bd;
+    }
+
+    /* Summary Cards */
+    .summary-box { font-size: 0.9rem; }
+    .summary-box strong { color: #333; }
+    
+    @media print {
+      body { background: white; padding: 0; }
+      .container { box-shadow: none; padding: 0; }
+      .no-print { display: none; }
+      .calendar-container { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="text-center mb-4 no-print">
+    <h3>📅 Rekap Absensi (Time Window Logic)</h3>
+    <p class="text-muted">
+      In: 06:00 - 10:00 | Out: 14:00 - 18:00 <br>
+      Weekday = Hari Kerja | Weekend = Extra
+    </p>
+  </div>
+
+  <!-- Controls Section (Hidden on Print) -->
+  <div class="card p-3 mb-4 no-print">
+    <div class="row g-3">
+      <div class="col-md-5">
+        <label class="form-label fw-bold">File GPR (.txt)</label>
+        <input type="file" id="fileGPR" class="form-control" accept=".txt">
+      </div>
+      <div class="col-md-5">
+        <label class="form-label fw-bold">File Kirana (.txt)</label>
+        <input type="file" id="fileKirana" class="form-control" accept=".txt">
+      </div>
+      <div class="col-md-2 d-flex align-items-end">
+        <button class="btn btn-primary w-100 shadow-sm" onclick="processData()">Generate</button>
+      </div>
+    </div>
+    
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <label class="form-label">Filter Nama:</label>
+        <select id="filterNama" class="form-select" onchange="renderView()">
+          <option value="">-- Semua Karyawan --</option>
+        </select>
+      </div>
+      <div class="col-md-8 d-flex align-items-end justify-content-end gap-2">
+         <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">🖨️ Print / PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div id="mainContent">
+    <div class="text-center text-muted py-5">Silahkan upload file dan klik Generate untuk memulai.</div>
+  </div>
+
+</div>
+
+<script>
+// --- Konfigurasi Waktu Window ---
+const CONFIG = {
+  // Window Masuk: 06:00 - 10:00
+  inWindowStart: 6 * 60, 
+  inWindowEnd: 10 * 60,
+  lateThreshold: 8 * 60 + 1, // 08:01 considered Late
+
+  // Window Pulang: 14:00 - 18:00
+  outWindowStart: 14 * 60,
+  outWindowEnd: 18 * 60,
+  earlyThreshold: 17 * 60, // < 17:00 considered Early
+  
+  weekendDays: [0, 6] // 0 = Minggu, 6 = Sabtu
+};
+
+let globalData = {}; 
+let employeeList = [];
+
+// --- Helper Functions ---
+
+function timeToMinutes(timeStr) {
+  if (!timeStr) return 0;
+  const [h, m] = timeStr.split(':').map(Number);
+  return h * 60 + m;
+}
+
+function minutesToTime(mins) {
+  if (!mins) return "";
+  const h = Math.floor(mins / 60).toString().padStart(2, '0');
+  const m = (mins % 60).toString().padStart(2, '0');
+  return `${h}:${m}`;
+}
+
+function parseFile(file, locationName) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const lines = reader.result.split(/\r?\n/);
+      const rows = [];
+      lines.forEach(line => {
+        if (!line.trim()) return;
+        const p = line.trim().split(/\s+/);
+        if(p.length < 8) return; 
+
+        rows.push({
+          nama: p[3].trim().toUpperCase(),
+          iomd: p[5],
+          tanggal: p[6],
+          jam: p[7].substring(0, 5),
+          lokasi: locationName
+        });
+      });
+      resolve(rows);
+    };
+    reader.readAsText(file);
+  });
+}
+
+// --- Core Logic ---
+
+async function processData() {
+  const fileGPR = document.getElementById('fileGPR').files[0];
+  const fileKirana = document.getElementById('fileKirana').files[0];
+
+  if (!fileGPR || !fileKirana) {
+    alert('Harap upload kedua file!');
+    return;
+  }
+
+  document.getElementById('mainContent').innerHTML = '<div class="text-center"><div class="spinner-border text-primary"></div><p class="mt-2">Memproses data...</p></div>';
+
+  try {
+    const rawGPR = await parseFile(fileGPR, 'GPR');
+    const rawKirana = await parseFile(fileKirana, 'KIRANA');
+    const rawData = [...rawGPR, ...rawKirana];
+    organizeDataForCalendar(rawData);
+    renderView();
+  } catch (error) {
+    console.error(error);
+    alert("Gagal memproses file.");
+  }
+}
+
+function organizeDataForCalendar(rawData) {
+  globalData = {};
+  
+  // 1. Group by Nama & Tanggal
+  const dailyRecords = {};
+
+  rawData.forEach(row => {
+    const key = `${row.nama}|${row.tanggal}`;
+    if (!dailyRecords[key]) {
+      dailyRecords[key] = {
+        nama: row.nama,
+        tanggal: row.tanggal,
+        scans: []
+      };
+    }
+    dailyRecords[key].scans.push({
+      jam: row.jam,
+      lokasi: row.lokasi
+    });
+  });
+
+  // 2. Process Logic
+  for (const key in dailyRecords) {
+    const rec = dailyRecords[key];
+    const [y, m, d] = rec.tanggal.split('/').map(Number);
+    
+    // Object Date helper untuk cek hari
+    const dateObj = new Date(y, m - 1, d);
+    const yearMonth = `${y}-${m.toString().padStart(2, '0')}`;
+    
+    // Urutkan scan
+    rec.scans.sort((a, b) => a.jam.localeCompare(b.jam));
+
+    // --- LOGIC BARU: Time Window ---
+    
+    // Filter Masuk: 06:00 - 10:00
+    const inCandidates = rec.scans.filter(s => {
+      const mins = timeToMinutes(s.jam);
+      return mins >= CONFIG.inWindowStart && mins <= CONFIG.inWindowEnd;
+    });
+    // Ambil yang paling awal dalam jendela (earliest)
+    const inRecord = inCandidates.length > 0 ? inCandidates[0] : null;
+
+    // Filter Pulang: 14:00 - 18:00
+    const outCandidates = rec.scans.filter(s => {
+      const mins = timeToMinutes(s.jam);
+      return mins >= CONFIG.outWindowStart && mins <= CONFIG.outWindowEnd;
+    });
+    // Ambil yang paling sore dalam jendela (latest)
+    // Kita sort descending candidates untuk ambil terakhir
+    outCandidates.sort((a, b) => b.jam.localeCompare(a.jam));
+    const outRecord = outCandidates.length > 0 ? outCandidates[0] : null;
+
+    // Collect locations involved
+    const locations = new Set(rec.scans.map(s => s.lokasi));
+
+    // Status Calculation
+    const inMins = timeToMinutes(inRecord?.jam);
+    const outMins = timeToMinutes(outRecord?.jam);
+
+    const isLate = (inRecord && inMins > CONFIG.lateThreshold) ? true : false;
+    const isEarly = (outRecord && outMins < CONFIG.earlyThreshold && outMins >= CONFIG.outWindowStart) ? true : false;
+
+    // Check Weekend
+    const dayOfWeek = dateObj.getDay();
+    const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+
+    // Determine Day Type
+    let dayType = 'ABSENT'; // Default
+    if (inRecord || outRecord) {
+      if (isWeekend) {
+        dayType = 'EXTRA';
+      } else {
+        dayType = 'WORK';
+      }
+    }
+
+    if (!globalData[rec.nama]) globalData[rec.nama] = {};
+    if (!globalData[rec.nama][yearMonth]) globalData[rec.nama][yearMonth] = {};
+
+    globalData[rec.nama][yearMonth][d] = {
+      in: inRecord?.jam || null,
+      out: outRecord?.jam || null,
+      locations: Array.from(locations),
+      isLate: isLate,
+      isEarly: isEarly,
+      dateObj: dateObj,
+      dayType: dayType // WORK, EXTRA, ABSENT
+    };
+  }
+
+  employeeList = Object.keys(globalData).sort();
+  
+  const select = document.getElementById('filterNama');
+  select.innerHTML = '<option value="">-- Semua Karyawan --</option>';
+  employeeList.forEach(n => {
+    select.innerHTML += `<option value="${n}">${n}</option>`;
+  });
+}
+
+function renderView() {
+  const filterName = document.getElementById('filterNama').value;
+  const container = document.getElementById('mainContent');
+  container.innerHTML = '';
+
+  const namesToRender = filterName ? [filterName] : employeeList;
+
+  namesToRender.forEach(nama => {
+    const employeeData = globalData[nama];
+    
+    const empDiv = document.createElement('div');
+    empDiv.className = 'calendar-container';
+
+    empDiv.innerHTML = `
+      <div class="employee-header">
+        <div>
+          <h4 class="m-0 fw-bold">${nama}</h4>
+        </div>
+      </div>
+    `;
+
+    const months = Object.keys(employeeData).sort();
+
+    months.forEach(ym => {
+      const daysData = employeeData[ym];
+      const [year, month] = ym.split('-').map(Number);
+      const monthName = new Date(year, month - 1).toLocaleString('id-ID', { month: 'long', year: 'numeric' });
+      
+      const monthDiv = document.createElement('div');
+      monthDiv.innerHTML = `<div class="month-title">📅 ${monthName}</div>`;
+      
+      const table = document.createElement('table');
+      table.className = 'calendar-table table-bordered';
+      
+      const thead = `
+        <thead>
+          <tr>
+            <th>Sen</th><th>Sel</th><th>Rab</th><th>Kam</th><th>Jum</th><th>Sab</th><th>Min</th>
+          </tr>
+        </thead>
+      `;
+      table.innerHTML = thead;
+
+      const tbody = document.createElement('tbody');
+      
+      // Grid Logic
+      const firstDayOfMonth = new Date(year, month - 1, 1).getDay();
+      let startOffset = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
+      const daysInMonth = new Date(year, month, 0).getDate();
+      const totalCells = startOffset + daysInMonth;
+      const rows = Math.ceil(totalCells / 7);
+
+      // Summary Stats
+      let stats = { workDays: 0, extraDays: 0, late: 0, early: 0, absent: 0 };
+
+      let cellIndex = 0;
+      for (let r = 0; r < rows; r++) {
+        const tr = document.createElement('tr');
+        
+        for (let c = 0; c < 7; c++) {
+          const td = document.createElement('td');
+          const currentDayNum = (r * 7 + c + 1) - startOffset;
+          
+          if (currentDayNum > 0 && currentDayNum <= daysInMonth) {
+            const currentDateObj = new Date(year, month - 1, currentDayNum);
+            const dayOfWeekJS = currentDateObj.getDay();
+            const daysIndo = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+            const isWeekend = (dayOfWeekJS === 0 || dayOfWeekJS === 6);
+
+            const dayData = daysData[currentDayNum];
+            
+            let contentHTML = `<span class="day-number">${currentDayNum}</span>`;
+
+            // --- RENDERING LOGIC ---
+            if (!dayData) {
+              // Kosong / Tidak ada data
+              if (isWeekend) {
+                td.classList.add('weekend');
+                contentHTML += `<div class="libur-text">LIBUR</div>`;
+              } else {
+                contentHTML += `<div class="day-label">${daysIndo[dayOfWeekJS]}</div>`;
+                contentHTML += `<div class="status-missing mt-2">ABSEN</div>`;
+                stats.absent++;
+              }
+            } else {
+              // Ada Data
+              if (dayData.dayType === 'EXTRA') {
+                td.classList.add('extra-work');
+                contentHTML += `<span class="badge-extra">EXTRA</span>`;
+                stats.extraDays++;
+              } else {
+                stats.workDays++;
+                if (dayData.isLate) stats.late++;
+                if (dayData.isEarly) stats.early++;
+              }
+
+              const inClass = dayData.isLate ? 'status-late' : '';
+              const outClass = dayData.isEarly ? 'status-early' : '';
+
+              const inHtml = dayData.in ? 
+                `<div class="time-row"><span>In:</span> <span class="${inClass}">${dayData.in}</span></div>` : 
+                `<div class="time-row"><span class="status-missing">-</span></div>`;
+
+              const outHtml = dayData.out ? 
+                `<div class="time-row"><span>Out:</span> <span class="${outClass}">${dayData.out}</span></div>` : 
+                `<div class="time-row"><span class="status-missing">-</span></div>`;
+
+              contentHTML += `
+                <div class="day-label">${daysIndo[dayOfWeekJS]}</div>
+                ${inHtml}
+                ${outHtml}
+              `;
+            }
+
+            td.innerHTML = contentHTML;
+          } else {
+            td.style.backgroundColor = '#f8f9fa';
+          }
+          tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+      }
+      
+      table.appendChild(tbody);
+      monthDiv.appendChild(table);
+
+      // Summary Table
+      const summaryHTML = `
+        <div class="card bg-light mb-4">
+          <div class="card-body py-2">
+            <div class="row text-center summary-box g-0">
+              <div class="col-6 col-md-2 border-end">
+                <small>Hari Kerja</small><br>
+                <strong class="text-primary fs-5">${stats.workDays}</strong>
+              </div>
+              <div class="col-6 col-md-2 border-end">
+                <small>Extra (Libur)</small><br>
+                <strong class="text-primary fs-5" style="color:#6610f2 !important">${stats.extraDays}</strong>
+              </div>
+              <div class="col-6 col-md-2 border-end">
+                <small>Terlambat</small><br>
+                <strong class="text-danger fs-5">${stats.late}</strong>
+              </div>
+              <div class="col-6 col-md-2 border-end">
+                <small>Plg Cepat</small><br>
+                <strong class="text-warning fs-5">${stats.early}</strong>
+              </div>
+              <div class="col-6 col-md-2">
+                <small>Tidak Hadir</small><br>
+                <strong class="text-muted fs-5">${stats.absent}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      monthDiv.innerHTML += summaryHTML;
+
+      empDiv.appendChild(monthDiv);
+    });
+
+    container.appendChild(empDiv);
+    const hr = document.createElement('hr');
+    hr.className = "my-5";
+    container.appendChild(hr);
+  });
+}
+</script>
+</body>
+</html>

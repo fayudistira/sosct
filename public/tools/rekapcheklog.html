@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Rekap Absensi - Smart Multi-Lokasi</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { padding: 20px; background-color: #f8f9fa; }
+    .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    table th, table td { font-size: 13px; vertical-align: middle; }
+    .late-in, .early-out { background-color: #f8d7da !important; font-weight: bold; color: #721c24; }
+    .missing-data { background-color: #fff3cd !important; font-style: italic; color: #856404; }
+    .transfer-info { font-size: 11px; color: #0d6efd; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h3 class="mb-4">📋 Rekap Absensi</h3>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label class="form-label fw-bold">File GPR (.txt)</label>
+      <input type="file" id="fileGPR" class="form-control" accept=".txt">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label fw-bold">File Kirana (.txt)</label>
+      <input type="file" id="fileKirana" class="form-control" accept=".txt">
+    </div>
+  </div>
+
+  <button class="btn btn-primary w-100 mb-4 shadow-sm" onclick="generateRekap()">Generate Rekap</button>
+
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label class="form-label">Cari Nama:</label>
+      <select id="filterNama" class="form-select" onchange="renderTables()">
+        <option value="">-- Semua Nama --</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h4>📄 Detail Log Absensi</h4>
+    <button class="btn btn-outline-success btn-sm" onclick="copyTable('resultTable')">📋 Copy Tabel</button>
+  </div>
+
+  <div class="table-responsive mb-5">
+    <table class="table table-bordered" id="resultTable">
+      <thead class="table-dark">
+        <tr>
+          <th>Nama</th>
+          <th>Tanggal</th>
+          <th>Lokasi</th>
+          <th>Jam Check In</th>
+          <th>Jam Check Out</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h4>📊 Total Rekap Pelanggaran</h4>
+    <button class="btn btn-outline-success btn-sm" onclick="copyTable('summaryTable')">📋 Copy Rekap</button>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped" id="summaryTable">
+      <thead class="table-dark">
+        <tr>
+          <th>Nama</th>
+          <th>Terlambat</th>
+          <th>Pulang Cepat</th>
+          <th>Tanpa Check In</th>
+          <th>Tanpa Check Out</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+let finalResult = [];
+let summaryData = {};
+
+function parseFile(file, lokasi) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const lines = reader.result.split(/\r?\n/).slice(1);
+      const rows = [];
+      lines.forEach(line => {
+        if (!line.trim()) return;
+        const p = line.trim().split(/\s+/);
+        if(p.length < 8) return;
+        rows.push({
+          nama: p[3].trim().toUpperCase(),
+          iomd: p[5],
+          tanggal: p[6],
+          jam: p[7],
+          lokasi: lokasi
+        });
+      });
+      resolve(rows);
+    };
+    reader.readAsText(file);
+  });
+}
+
+function timeToMinutes(t) {
+  if (!t) return null;
+  const p = t.split(':').map(Number);
+  return p[0] * 60 + p[1];
+}
+
+async function generateRekap() {
+  const fileGPR = document.getElementById('fileGPR').files[0];
+  const fileKirana = document.getElementById('fileKirana').files[0];
+
+  if (!fileGPR || !fileKirana) {
+    alert('Harap upload kedua file!');
+    return;
+  }
+
+  const rawData = [
+    ...(await parseFile(fileGPR, 'GPR')),
+    ...(await parseFile(fileKirana, 'KIRANA'))
+  ];
+
+  // 1. Grouping per Nama & Tanggal untuk cek perpindahan lokasi
+  const dailyMovements = {};
+  rawData.forEach(r => {
+    const key = `${r.nama}|${r.tanggal}`;
+    if (!dailyMovements[key]) dailyMovements[key] = new Set();
+    dailyMovements[key].add(r.lokasi);
+  });
+
+  // 2. Grouping per Nama + Tanggal + Lokasi untuk data baris
+  const grouped = {};
+  rawData.forEach(r => {
+    const key = `${r.nama}|${r.tanggal}|${r.lokasi}`;
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(r);
+  });
+
+  finalResult = [];
+  for (const key in grouped) {
+    const scans = grouped[key].sort((a, b) => a.jam.localeCompare(b.jam));
+    const [nama, tanggal, lokasi] = key.split('|');
+    
+    // Cek apakah hari ini dia pindah lokasi (punya lebih dari 1 lokasi)
+    const isTransfer = dailyMovements[`${nama}|${tanggal}`].size > 1;
+
+    let checkIn = scans[0];
+    let checkOut = scans.length > 1 ? scans[scans.length - 1] : null;
+
+    if (scans.length === 1 && checkIn.iomd === '3') {
+        checkOut = checkIn;
+        checkIn = null;
+    }
+
+    finalResult.push({
+      nama, tanggal, lokasi, isTransfer,
+      in: checkIn ? checkIn.jam : null,
+      out: checkOut ? checkOut.jam : null
+    });
+  }
+
+  finalResult.sort((a, b) => a.nama.localeCompare(b.nama) || a.tanggal.localeCompare(b.tanggal));
+  buildNamaFilter();
+  buildSummary();
+  renderTables();
+}
+
+function buildNamaFilter() {
+  const select = document.getElementById('filterNama');
+  const uniqueNames = [...new Set(finalResult.map(r => r.nama))].sort();
+  select.innerHTML = `<option value="">-- Semua Nama --</option>`;
+  uniqueNames.forEach(n => select.innerHTML += `<option value="${n}">${n}</option>`);
+}
+
+function buildSummary() {
+  summaryData = {};
+  finalResult.forEach(r => {
+    if (!summaryData[r.nama]) {
+      summaryData[r.nama] = { late: 0, early: 0, noIn: 0, noOut: 0 };
+    }
+    
+    // LOGIKA: Jika isTransfer true, maka late tidak dihitung
+    const lateValid = r.in && timeToMinutes(r.in) >= 481;
+    if (lateValid && !r.isTransfer) summaryData[r.nama].late++;
+    
+    if (r.out && timeToMinutes(r.out) <= 959) summaryData[r.nama].early++;
+    if (!r.in) summaryData[r.nama].noIn++;
+    if (!r.out) summaryData[r.nama].noOut++;
+  });
+}
+
+function renderTables() {
+  const filterNama = document.getElementById('filterNama').value;
+  const tbody = document.querySelector('#resultTable tbody');
+  const sumBody = document.querySelector('#summaryTable tbody');
+
+  tbody.innerHTML = '';
+  sumBody.innerHTML = '';
+
+  finalResult
+    .filter(r => !filterNama || r.nama === filterNama)
+    .forEach(r => {
+      // Terlambat hanya ditandai jika BUKAN pindah lokasi
+      const isLate = r.in && timeToMinutes(r.in) >= 481 && !r.isTransfer;
+      const isEarly = r.out && timeToMinutes(r.out) <= 959;
+
+      tbody.innerHTML += `
+        <tr>
+          <td>${r.nama}</td>
+          <td>${r.tanggal}</td>
+          <td>
+            <span class="badge ${r.lokasi === 'GPR' ? 'bg-primary' : 'bg-success'}">${r.lokasi}</span>
+            ${r.isTransfer ? '<div class="transfer-info">↔ Pindah Lokasi</div>' : ''}
+          </td>
+          <td class="${!r.in ? 'missing-data' : (isLate ? 'late-in' : '')}">${r.in || 'KOSONG'}</td>
+          <td class="${!r.out ? 'missing-data' : (isEarly ? 'early-out' : '')}">${r.out || 'KOSONG'}</td>
+        </tr>
+      `;
+    });
+
+  Object.keys(summaryData)
+    .filter(n => !filterNama || n === filterNama)
+    .sort()
+    .forEach(nama => {
+      sumBody.innerHTML += `
+        <tr>
+          <td>${nama}</td>
+          <td class="text-center">${summaryData[nama].late}</td>
+          <td class="text-center">${summaryData[nama].early}</td>
+          <td class="text-center ${summaryData[nama].noIn > 0 ? 'table-warning' : ''}">${summaryData[nama].noIn}</td>
+          <td class="text-center ${summaryData[nama].noOut > 0 ? 'table-warning' : ''}">${summaryData[nama].noOut}</td>
+        </tr>
+      `;
+    });
+}
+
+function copyTable(tableId) {
+  const table = document.getElementById(tableId);
+  let text = '';
+  for (const row of table.rows) {
+    const cells = Array.from(row.cells).map(c => c.innerText.trim().replace(/\n/g, ' '));
+    text += cells.join('\t') + '\n';
+  }
+  navigator.clipboard.writeText(text);
+  alert('Data berhasil disalin!');
+}
+</script>
+</body>
+</html>
