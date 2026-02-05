@@ -215,6 +215,10 @@
                             <label class="form-label">Religion <span class="text-danger">*</span></label>
                             <input type="text" name="religion" class="form-control form-control-sm" value="<?= old('religion', $staff['religion'] ?? '') ?>" required>
                         </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Citizen ID (KTP/NIK)</label>
+                            <input type="text" name="citizen_id" class="form-control form-control-sm" value="<?= old('citizen_id', $staff['citizen_id'] ?? '') ?>">
+                        </div>
                     </div>
                 </div>
             </div>

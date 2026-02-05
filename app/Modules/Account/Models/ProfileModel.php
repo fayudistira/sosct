@@ -59,11 +59,11 @@ class ProfileModel extends Model
         'district' => 'required|max_length[100]',
         'regency' => 'required|max_length[100]',
         'province' => 'required|max_length[100]',
-        'emergency_contact_name' => 'required|max_length[100]',
-        'emergency_contact_phone' => 'required|max_length[15]',
-        'emergency_contact_relation' => 'required|max_length[50]',
-        'father_name' => 'required|max_length[100]',
-        'mother_name' => 'required|max_length[100]'
+        'emergency_contact_name' => 'permit_empty|max_length[100]',
+        'emergency_contact_phone' => 'permit_empty|max_length[15]',
+        'emergency_contact_relation' => 'permit_empty|max_length[50]',
+        'father_name' => 'permit_empty|max_length[100]',
+        'mother_name' => 'permit_empty|max_length[100]'
     ];
     
     protected $validationMessages = [

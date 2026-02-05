@@ -272,11 +272,11 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label">Course <span class="text-danger">*</span></label>
-                    <select name="course" class="form-select form-select-sm" required>
+                    <select name="program_id" class="form-select form-select-sm" required>
                         <option value="">Select Program</option>
                         <?php foreach ($programs as $program): ?>
-                            <option value="<?= esc($program['title']) ?>" <?= old('course') === $program['title'] ? 'selected' : '' ?>>
-                                <?= esc($program['title']) ?>
+                            <option value="<?= esc($program['id']) ?>" <?= old('program_id') === $program['id'] ? 'selected' : '' ?>>
+                                <?= esc($program['title']) ?> (Rp <?= number_format($program['registration_fee'] ?? 0, 0, ',', '.') ?>)
                             </option>
                         <?php endforeach ?>
                     </select>

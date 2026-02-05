@@ -8,12 +8,22 @@
         <p class="text-muted mb-0">View complete admission application information</p>
     </div>
     <div class="col-auto">
-        <a href="<?= base_url('admission') ?>" class="btn btn-outline-dark-red">
-            <i class="bi bi-arrow-left me-1"></i> Back
-        </a>
-        <a href="<?= base_url('admission/edit/' . $admission['admission_id']) ?>" class="btn btn-dark-red">
-            <i class="bi bi-pencil me-1"></i> Edit
-        </a>
+        <div class="btn-group">
+            <?php if ($admission['status'] === 'approved'): ?>
+                <a href="<?= base_url('admission/promote/' . $admission['admission_id']) ?>" class="btn btn-primary">
+                    <i class="bi bi-award me-1"></i> Promote to Student
+                </a>
+            <?php endif; ?>
+            <a href="<?= base_url('admission/edit/' . $admission['admission_id']) ?>" class="btn btn-outline-primary">
+                <i class="bi bi-pencil me-1"></i> Edit
+            </a>
+            <button type="button" class="btn btn-outline-danger" onclick="confirmDelete(<?= $admission['admission_id'] ?>)">
+                <i class="bi bi-trash me-1"></i> Delete
+            </button>
+            <a href="<?= base_url('admission') ?>" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back
+            </a>
+        </div>
     </div>
 </div>
 
