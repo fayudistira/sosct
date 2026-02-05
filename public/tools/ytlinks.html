@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOS YouTube Music Watch URLs - Betharia Sonatha Songs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .domain-notice {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            display: inline-block;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-box {
+            background: rgba(255,255,255,0.1);
+            padding: 15px 25px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .filter-bar {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-bar input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .filter-bar input:focus {
+            outline: none;
+            border-color: #ff416c;
+        }
+        
+        .counter {
+            background: #ff416c;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .url-list {
+            display: grid;
+            gap: 15px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .url-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .url-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .url-list::-webkit-scrollbar-thumb {
+            background: #ff416c;
+            border-radius: 4px;
+        }
+        
+        .url-item {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .url-item:hover {
+            border-color: #ff416c;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 65, 108, 0.1);
+        }
+        
+        .url-number {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        
+        .url-content {
+            flex: 1;
+            min-width: 0; /* Prevent overflow */
+        }
+        
+        .url-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .url-link-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+        
+        .url-link {
+            color: #ff416c;
+            text-decoration: none;
+            word-break: break-all;
+            flex: 1;
+            transition: color 0.3s;
+            padding: 5px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+        }
+        
+        .url-link:hover {
+            color: #667eea;
+            text-decoration: underline;
+        }
+        
+        .sos-badge {
+            display: inline-block;
+            background: linear-gradient(to right, #ff0000, #ff6b6b);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+        
+        .copy-btn {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .copy-btn:hover {
+            background: linear-gradient(to right, #5a6fd8, #6a4290);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.2);
+        }
+        
+        .copy-btn.copied {
+            background: #4CAF50;
+        }
+        
+        .copy-btn i {
+            font-size: 0.9rem;
+        }
+        
+        .song-duration {
+            display: inline-block;
+            background: #ffeaea;
+            color: #ff416c;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #ff416c;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .url-transformation {
+            background: #e8f4ff;
+            border-left: 4px solid #667eea;
+            padding: 10px 15px;
+            margin-top: 10px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .original-url {
+            color: #666;
+            text-decoration: line-through;
+            font-size: 0.85rem;
+            margin-top: 3px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #666;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 10px;
+            }
+            
+            header {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .url-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .url-link-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .copy-btn {
+                align-self: flex-start;
+            }
+            
+            .stats {
+                gap: 15px;
+            }
+            
+            .stat-box {
+                padding: 10px 15px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 SOS YouTube Music URLs</h1>
+            <p class="subtitle">Betharia Sonatha Songs Collection (Modified URLs)</p>
+            <div class="domain-notice">
+                <i class="fas fa-exclamation-triangle"></i> URLs modified: "youtube" → "sosyoutube"
+            </div>
+            <div class="stats">
+                <div class="stat-box">
+                    <span class="stat-number" id="totalSongs">0</span>
+                    <span class="stat-label">Songs</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" id="uniqueAlbums">0</span>
+                    <span class="stat-label">Unique Albums</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" id="totalDuration">0:00</span>
+                    <span class="stat-label">Total Duration</span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="content">
+            <div class="filter-bar">
+                <input type="text" id="searchInput" placeholder="Search song titles...">
+                <div class="counter" id="itemCount">Showing 0 items</div>
+            </div>
+            
+            <div class="url-list" id="urlList">
+                <!-- URLs will be populated by JavaScript -->
+            </div>
+            
+            <div class="actions">
+                <button class="btn btn-primary" onclick="copyAllURLs()">
+                    <i class="fas fa-copy"></i> Copy All URLs
+                </button>
+                <button class="btn btn-secondary" onclick="exportToTXT()">
+                    <i class="fas fa-download"></i> Export as TXT
+                </button>
+                <button class="btn btn-primary" onclick="restoreOriginalURLs()">
+                    <i class="fas fa-undo"></i> Restore Original URLs
+                </button>
+            </div>
+        </div>
+        
+        <footer>
+            <p>SOS YouTube Music URLs • All URLs modified from "youtube" to "sosyoutube"</p>
+            <p>Note: These are modified URLs and may not work in your browser</p>
+        </footer>
+    </div>
+
+    <script>
+        // Function to add "sos" before "youtube" in URLs
+        function transformURL(url) {
+            // Replace "youtube" with "sosyoutube" in the domain
+            return url.replace(/youtube\.com/g, 'sosyoutube.com');
+        }
+        
+        // Function to get original URL (reverse transformation)
+        function getOriginalURL(url) {
+            return url.replace(/sosyoutube\.com/g, 'youtube.com');
+        }
+
+        // Original data containing ONLY watch URLs (before transformation)
+        const originalUrlData = [
+            {url: 'https://music.youtube.com/watch?v=fXcIvcllZoU&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Hati Yang Luka'},
+            {url: 'https://music.youtube.com/watch?v=FSRB-98fmvs&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Jangan Ingin Menang Sendiri'},
+            {url: 'https://music.youtube.com/watch?v=6Wx9DQ7cqo4&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Aku Ingin Cinta Yang Nyata'},
+            {url: 'https://music.youtube.com/watch?v=0gEx3T6J1wg&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Tinggal Mimpi'},
+            {url: 'https://music.youtube.com/watch?v=mK_RytgMgMA&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Mungkin Sudah Sifatku'},
+            {url: 'https://music.youtube.com/watch?v=N3dGrtfXl-Y&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Yang Selalu Kusayang'},
+            {url: 'https://music.youtube.com/watch?v=AfJiYqE5nl0&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Kau Tercipta Bukan Untukku'},
+            {url: 'https://music.youtube.com/watch?v=uSaT9BIrpf0&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Hatiku Menangis'},
+            {url: 'https://music.youtube.com/watch?v=6N3iIL_qd90&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Satu Tanda Tangan'},
+            {url: 'https://music.youtube.com/watch?v=spYTOdf4BkE&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Kau Salah Sebut Namaku'},
+            {url: 'https://music.youtube.com/watch?v=aj6BJvONYVk&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Tak Mungkin Lagi'},
+            {url: 'https://music.youtube.com/watch?v=vX8ignj13pQ&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Biar Kusendiri'},
+            {url: 'https://music.youtube.com/watch?v=iBnxma7CpVY&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Biarkanlah Dia Pergi'},
+            {url: 'https://music.youtube.com/watch?v=LIdeHZ3kBhI&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Kemesraan'},
+            {url: 'https://music.youtube.com/watch?v=jY_O39kRso4&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Kau Yang Kusayang'},
+            {url: 'https://music.youtube.com/watch?v=-MC1c63MxZo&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Kau Tercipta Untukku'},
+            {url: 'https://music.youtube.com/watch?v=ZLOoy0kZdig&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Tak Seperti Biasa'},
+            {url: 'https://music.youtube.com/watch?v=UT7YR3abxHU&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Hidup Terkekang'},
+            {url: 'https://music.youtube.com/watch?v=OvhcBeCneu4&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Kau Tercipta Untukku'},
+            {url: 'https://music.youtube.com/watch?v=E00K-t-DgeQ&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Aku Pilih Pegawai Negeri'},
+            {url: 'https://music.youtube.com/watch?v=Er6XSDNJy54&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Seandainya'},
+            {url: 'https://music.youtube.com/watch?v=4YpYdjuXoBE&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Jangan Sebut Namaku'},
+            {url: 'https://music.youtube.com/watch?v=fKpTsbv45O8&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Cukup Satu Kali'},
+            {url: 'https://music.youtube.com/watch?v=zgEJSSg7lkI&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Hitam Putih Jadi Satu'},
+            {url: 'https://music.youtube.com/watch?v=WXu4muI2h88&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Cinta Biru'},
+            {url: 'https://music.youtube.com/watch?v=En9W8ySdyHk&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Hati Seorang Wanita'},
+            {url: 'https://music.youtube.com/watch?v=Zyt99eg0Jp4&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Kekasih'},
+            {url: 'https://music.youtube.com/watch?v=_gV-YpPkfKU&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Kau Untuk Siapa'},
+            {url: 'https://music.youtube.com/watch?v=bUvTxIWsnWo&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Apa Salah Dan Dosaku'},
+            {url: 'https://music.youtube.com/watch?v=jJcUhcpJFCo&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Memori Di SMA'},
+            {url: 'https://music.youtube.com/watch?v=VubYvXTA9x8&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Dalam Kerinduan'},
+            {url: 'https://music.youtube.com/watch?v=9sWEqvF2HW0&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Satukanlah Hati Kami'},
+            {url: 'https://music.youtube.com/watch?v=6eWGFl8jBhw&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: "Do'a"},
+            {url: 'https://music.youtube.com/watch?v=WtdggHJ17Sw&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Tetes Hujan Di Bulan April'},
+            {url: 'https://music.youtube.com/watch?v=0hkd9Nmld2E&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Tiada Duka Lagi'},
+            {url: 'https://music.youtube.com/watch?v=zCprR1KfkHw&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Untuk Apa'},
+            {url: 'https://music.youtube.com/watch?v=ShGzjRu6ATk&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Dia Madu Cintaku'},
+            {url: 'https://music.youtube.com/watch?v=JZtuMHl9-E4&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Air Dalam Gelas'},
+            {url: 'https://music.youtube.com/watch?v=koq6xOX9CYA&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Dodoi Si Dodoi'},
+            {url: 'https://music.youtube.com/watch?v=EK05g38y7v8&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Jangan Tipis Telinga'},
+            {url: 'https://music.youtube.com/watch?v=UOaCRzcNiw8&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Aku Tak Ingin Sandiwara'},
+            {url: 'https://music.youtube.com/watch?v=uwmW39r_ogo&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Tiada Duka Lagi'},
+            {url: 'https://music.youtube.com/watch?v=7QlGOMlN0WU&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Biar Kusendiri'},
+            {url: 'https://music.youtube.com/watch?v=JzS8V06eAy8&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Ding Dong'},
+            {url: 'https://music.youtube.com/watch?v=2n_n2YrcGyQ&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Selamat Hari Lebaran'},
+            {url: 'https://music.youtube.com/watch?v=HibLEvDGypE&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Aku Ingin Cinta Yang Nyata'},
+            {url: 'https://music.youtube.com/watch?v=9g8cYEz0H6w&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Aku Tetap Milikmu'},
+            {url: 'https://music.youtube.com/watch?v=8vNfJf2ei9c&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Kini Kusadari'},
+            {url: 'https://music.youtube.com/watch?v=DLHbqy8lBuU&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Aku Ingin Cinta Yang Nyata'},
+            {url: 'https://music.youtube.com/watch?v=dLgzDCoNU1E&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Kau Sungguh Kejam'},
+            {url: 'https://music.youtube.com/watch?v=--ALMmast34&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Apa Salahku'},
+            {url: 'https://music.youtube.com/watch?v=OOnsAhJQVIA&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Nikmatilah Hidup Ini'},
+            {url: 'https://music.youtube.com/watch?v=UuJoUV5UWxk&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Walau Hati Menangis'},
+            {url: 'https://music.youtube.com/watch?v=zJs6SpRTQe0&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Semua Bisa Bilang'},
+            {url: 'https://music.youtube.com/watch?v=UksqfEg8ZEU&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Patah Hati'},
+            {url: 'https://music.youtube.com/watch?v=-ChEKNnZYwU&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Siapa Bilang Aku Cinta'},
+            {url: 'https://music.youtube.com/watch?v=7BSxOpwN3xI&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Pisang Berjantung Dua'},
+            {url: 'https://music.youtube.com/watch?v=DXIhWf51S58&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Si Buyuang Kini Lah Gadang'},
+            {url: 'https://music.youtube.com/watch?v=x5tEqMC0dwo&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Usah Kau Harap'},
+            {url: 'https://music.youtube.com/watch?v=JOMVPhhyHew&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Burung Nuri'},
+            {url: 'https://music.youtube.com/watch?v=sfHBzTvO3BM&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Maafkan Daku'},
+            {url: 'https://music.youtube.com/watch?v=Yw4ZorSPacM&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Bunga Rindu'},
+            {url: 'https://music.youtube.com/watch?v=Tz-F0rGMdCY&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Kau Untuk Siapa'},
+            {url: 'https://music.youtube.com/watch?v=vqhHqTCvK-o&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Jangan Salahkan Siapa'},
+            {url: 'https://music.youtube.com/watch?v=l7tjcIzR5Lo&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Ku Tak Ingin Dustamu'},
+            {url: 'https://music.youtube.com/watch?v=dNI0t37bT5k&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Kau, Dia Dan Aku'},
+            {url: 'https://music.youtube.com/watch?v=fugcxqzLxpY&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Bila Cinta Terbagi Dua'},
+            {url: 'https://music.youtube.com/watch?v=YF1ESe9Ju68&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Hati Yang Dusta'},
+            {url: 'https://music.youtube.com/watch?v=0dpk6jZVIlw&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Cinta Hampa'},
+            {url: 'https://music.youtube.com/watch?v=cpgj3HlWiMY&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Pulangkan Potret, Surat Cintaku'},
+            {url: 'https://music.youtube.com/watch?v=IkGwlokOW7g&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Duri Cinta'},
+            {url: 'https://music.youtube.com/watch?v=4SRZ3wsHGLI&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Itu Sudah Biasa'},
+            {url: 'https://music.youtube.com/watch?v=NDkXzvxtRD0&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Tak Ingin Sendiri'},
+            {url: 'https://music.youtube.com/watch?v=iWcfXg8CKx8&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Kado Biru'},
+            {url: 'https://music.youtube.com/watch?v=zEHoMu4Qa4M&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Sami Sami'},
+            {url: 'https://music.youtube.com/watch?v=XXgVqhCWS98&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Percuma'},
+            {url: 'https://music.youtube.com/watch?v=rLYPsVs1QVU&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Kucoba Hidup Sendiri'},
+            {url: 'https://music.youtube.com/watch?v=jcs2Xz_H5QM&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Aku Menangis Karenamu'},
+            {url: 'https://music.youtube.com/watch?v=r0Xawct4DtU&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Buka Pintu Hatimu'},
+            {url: 'https://music.youtube.com/watch?v=uSeE9rhQ-Hw&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Tak Punya Perasaan'},
+            {url: 'https://music.youtube.com/watch?v=jdMt6ZK5Gh0&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Butet'},
+            {url: 'https://music.youtube.com/watch?v=Km1fTO2bgzk&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Tarsingot Au Inang'},
+            {url: 'https://music.youtube.com/watch?v=QK2gRoyRt9w&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Selayang Pandang'},
+            {url: 'https://music.youtube.com/watch?v=WWdV_WOv7bA&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Seandainya Tanpa Cintamu'},
+            {url: 'https://music.youtube.com/watch?v=cFPi0z0iX4o&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Aku Tak Ingin Sandiwara'},
+            {url: 'https://music.youtube.com/watch?v=XSciK4wMEbc&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Mengapa Tak Pernah Jujur'},
+            {url: 'https://music.youtube.com/watch?v=rG74XFtAM_Y&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Biarlah Sendiri'},
+            {url: 'https://music.youtube.com/watch?v=-vDOSYphan4&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Terlambat Sudah'},
+            {url: 'https://music.youtube.com/watch?v=TJgZGQUFCgg&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Curahan Hati'},
+            {url: 'https://music.youtube.com/watch?v=u1Gs7GTYWLI&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Seri Serawak'},
+            {url: 'https://music.youtube.com/watch?v=h6MWj9PLe7A&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Tangan Tak Sampai'},
+            {url: 'https://music.youtube.com/watch?v=z9r_ScnRh9c&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Risau'},
+            {url: 'https://music.youtube.com/watch?v=0GdOPv38XR4&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Mangko Denai Tagamang'},
+            {url: 'https://music.youtube.com/watch?v=3soUyjn8dG8&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Kampuang Nan Jauah Di Mato'},
+            {url: 'https://music.youtube.com/watch?v=MUAiePHVfQM&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Yang Disayang Tak Menyayang'},
+            {url: 'https://music.youtube.com/watch?v=kjiszq76of4&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Matahari Dan Bulan'},
+            {url: 'https://music.youtube.com/watch?v=h4AyFNhGhj8&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Dasar Jodoh'},
+            {url: 'https://music.youtube.com/watch?v=jIXfNkn8yN4&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Akhir Cinta'},
+            {url: 'https://music.youtube.com/watch?v=_0NIEfAGnyE&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Eme Ni Simbolon'},
+            {url: 'https://music.youtube.com/watch?v=fWpR1H0Oa2E&list=OLAK5uy_m2WMyVl8setZtbTuaaa14RS2ldZHZTlkQ', title: 'Tak Selebar Telapak Tangan'},
+            {url: 'https://music.youtube.com/watch?v=jY_O39kRso4&list=RDAMVMjY_O39kRso4', title: 'Mulai radio'}
+        ];
+
+        // Transform all URLs to use "sosyoutube" instead of "youtube"
+        let urlData = originalUrlData.map(item => ({
+            ...item,
+            url: transformURL(item.url)
+        }));
+
+        // Function to extract unique albums from URLs
+        function extractUniqueAlbums() {
+            const albums = new Set();
+            urlData.forEach(item => {
+                // Extract album ID from URL (the part after list=)
+                const match = item.url.match(/list=([^&]+)/);
+                if (match && match[1]) {
+                    albums.add(match[1]);
+                }
+            });
+            return albums.size;
+        }
+
+        // Function to generate random duration for demonstration
+        function getRandomDuration() {
+            const minutes = Math.floor(Math.random() * 5) + 3; // 3-7 minutes
+            const seconds = Math.floor(Math.random() * 60);
+            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Function to calculate total duration
+        function calculateTotalDuration() {
+            let totalSeconds = 0;
+            urlData.forEach(() => {
+                // For demo, generate random durations
+                const minutes = Math.floor(Math.random() * 5) + 3;
+                const seconds = Math.floor(Math.random() * 60);
+                totalSeconds += minutes * 60 + seconds;
+            });
+            
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            
+            if (hours > 0) {
+                return `${hours}h ${minutes}m`;
+            }
+            return `${minutes}m`;
+        }
+
+        // Function to copy individual URL to clipboard
+        function copyURLToClipboard(url, button) {
+            navigator.clipboard.writeText(url).then(() => {
+                // Visual feedback
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                button.classList.add('copied');
+                
+                // Reset button after 2 seconds
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                button.innerHTML = '<i class="fas fa-times"></i> Failed';
+                setTimeout(() => {
+                    button.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                }, 2000);
+            });
+        }
+
+        // Function to render the URL list
+        function renderURLList(filter = '') {
+            const urlListElement = document.getElementById('urlList');
+            const itemCountElement = document.getElementById('itemCount');
+            
+            // Filter data if search term is provided
+            let filteredData = urlData;
+            if (filter) {
+                const searchTerm = filter.toLowerCase();
+                filteredData = urlData.filter(item => 
+                    item.title.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            // Clear current list
+            urlListElement.innerHTML = '';
+            
+            // Add each URL to the list
+            filteredData.forEach((item, index) => {
+                const urlItem = document.createElement('div');
+                urlItem.className = 'url-item';
+                
+                // Generate random duration for each song
+                const duration = getRandomDuration();
+                const originalUrl = getOriginalURL(item.url);
+                
+                urlItem.innerHTML = `
+                    <div class="url-number">${index + 1}</div>
+                    <div class="url-content">
+                        <div class="url-title">${item.title || 'Untitled'} <span class="sos-badge">SOS</span></div>
+                        <div class="url-link-container">
+                            <a href="${item.url}" target="_blank" class="url-link">${item.url}</a>
+                            <button class="copy-btn" onclick="copyURLToClipboard('${item.url.replace(/'/g, "\\'")}', this)">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <div class="original-url">Original: ${originalUrl}</div>
+                        <div class="song-duration">${duration}</div>
+                    </div>
+                `;
+                
+                urlListElement.appendChild(urlItem);
+            });
+            
+            // Update counter
+            itemCountElement.textContent = `Showing ${filteredData.length} songs`;
+        }
+
+        // Function to copy all URLs to clipboard
+        function copyAllURLs() {
+            const allUrls = urlData.map(item => item.url).join('\n');
+            navigator.clipboard.writeText(allUrls).then(() => {
+                // Show toast notification
+                showToast(`Copied ${urlData.length} SOS YouTube URLs to clipboard!`);
+            });
+        }
+
+        // Function to export URLs as TXT file
+        function exportToTXT() {
+            const content = urlData.map((item, index) => 
+                `${index + 1}. ${item.title}\n${item.url}\n`
+            ).join('\n');
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sos-youtube-music-watch-urls.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('File downloaded: sos-youtube-music-watch-urls.txt');
+        }
+
+        // Function to restore original URLs
+        function restoreOriginalURLs() {
+            if (confirm('Restore original YouTube URLs (remove "sos" prefix)?')) {
+                urlData = originalUrlData.map(item => ({
+                    ...item,
+                    url: getOriginalURL(item.url)
+                }));
+                renderURLList();
+                showToast('Original YouTube URLs restored!');
+                // Update button text
+                const restoreBtn = document.querySelector('.btn-primary:nth-child(3)');
+                restoreBtn.innerHTML = '<i class="fas fa-magic"></i> Apply SOS Transformation';
+                restoreBtn.onclick = applySOSTransformation;
+            }
+        }
+
+        // Function to apply SOS transformation
+        function applySOSTransformation() {
+            if (confirm('Apply SOS transformation to all URLs (add "sos" before "youtube")?')) {
+                urlData = originalUrlData.map(item => ({
+                    ...item,
+                    url: transformURL(item.url)
+                }));
+                renderURLList();
+                showToast('SOS transformation applied to all URLs!');
+                // Update button text
+                const applyBtn = document.querySelector('.btn-primary:nth-child(3)');
+                applyBtn.innerHTML = '<i class="fas fa-undo"></i> Restore Original URLs';
+                applyBtn.onclick = restoreOriginalURLs;
+            }
+        }
+
+        // Function to show toast notification
+        function showToast(message) {
+            // Remove existing toast if any
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+            
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: #4CAF50;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+                font-weight: 500;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            // Add CSS for animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes fadeOut {
+                    from { opacity: 1; }
+                    to { opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(toast);
+            
+            // Remove toast after 3 seconds
+            setTimeout(() => {
+                toast.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize statistics
+        function initStats() {
+            document.getElementById('totalSongs').textContent = urlData.length;
+            document.getElementById('uniqueAlbums').textContent = extractUniqueAlbums();
+            document.getElementById('totalDuration').textContent = calculateTotalDuration();
+        }
+
+        // Initialize search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            renderURLList(e.target.value);
+        });
+
+        // Initial render
+        initStats();
+        renderURLList();
+    </script>
+</body>
+</html>

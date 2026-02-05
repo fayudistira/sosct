@@ -96,6 +96,8 @@ class AuthGroups extends ShieldAuthGroups
         'payment.view'        => 'Can view payments (read-only)',
         'invoice.manage'      => 'Can manage invoices (CRUD)',
         'invoice.view'        => 'Can view invoices (read-only)',
+        'classroom.manage'    => 'Can manage classrooms (CRUD)',
+        'classroom.view'      => 'Can view classrooms (read-only)',
     ];
 
     /**
@@ -116,6 +118,7 @@ class AuthGroups extends ShieldAuthGroups
             'program.*',
             'payment.*',
             'invoice.*',
+            'classroom.*',
         ],
         'admin' => [
             'admin.access',
@@ -128,11 +131,13 @@ class AuthGroups extends ShieldAuthGroups
             'program.manage',
             'payment.manage',
             'invoice.manage',
+            'classroom.manage',
         ],
         'frontline' => [
             'dashboard.access',
             'admission.manage',
             'program.manage',
+            'classroom.manage',
         ],
         'finance' => [
             'dashboard.access',
@@ -145,11 +150,13 @@ class AuthGroups extends ShieldAuthGroups
             'program.view',
             'payment.view',
             'invoice.view',
+            'classroom.view',
         ],
         'instructor' => [
             'dashboard.access',
             'admission.view',
             'program.view',
+            'classroom.view',
         ],
         'student' => [],
     ];

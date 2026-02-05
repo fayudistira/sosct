@@ -94,6 +94,7 @@
                                         aria-controls="sub-category-<?= $catIndex ?>-<?= $subIndex ?>"
                                         aria-selected="<?= ($subIndex === 0) ? 'true' : 'false' ?>">
                                     <?= esc($subCategory) ?>
+                                    <span class="ms-1 opacity-50 small">(<?= count($programsByCategory[$category]['sub_categories'][$subCategory]) ?>)</span>
                                 </button>
                             <?php endforeach ?>
                         </div>
