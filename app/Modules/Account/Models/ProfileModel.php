@@ -34,7 +34,7 @@ class ProfileModel extends Model
         'emergency_contact_relation',
         'father_name',
         'mother_name',
-        'position',
+
         'photo',
         'documents'
     ];

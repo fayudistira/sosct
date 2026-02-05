@@ -112,6 +112,45 @@
             </div>
         </div>
 
+
+        <!-- Family & Emergency Info -->
+        <div class="dashboard-card mb-4">
+            <div class="card-header"><i class="bi bi-people me-2"></i>Family & Emergency Contact</div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <small class="text-muted d-block">Father's Name</small>
+                        <span class="fw-medium"><?= esc($staff['father_name'] ?? '-') ?></span>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-muted d-block">Mother's Name</small>
+                        <span class="fw-medium"><?= esc($staff['mother_name'] ?? '-') ?></span>
+                    </div>
+                    <div class="col-12"><hr class="my-2"></div>
+                    <div class="col-md-4">
+                        <small class="text-muted d-block">Emergency Contact Name</small>
+                        <span class="fw-medium"><?= esc($staff['emergency_contact_name'] ?? '-') ?></span>
+                    </div>
+                    <div class="col-md-4">
+                        <small class="text-muted d-block">Relation</small>
+                        <span class="fw-medium"><?= esc($staff['emergency_contact_relation'] ?? '-') ?></span>
+                    </div>
+                    <div class="col-md-4">
+                        <small class="text-muted d-block">Emergency Phone</small>
+                        <span class="fw-medium">
+                            <?php if (!empty($staff['emergency_contact_phone'])): ?>
+                                <a href="https://wa.me/<?= format_whatsapp_number($staff['emergency_contact_phone']) ?>" target="_blank" class="text-decoration-none">
+                                    <i class="bi bi-whatsapp text-success me-1"></i> <?= esc($staff['emergency_contact_phone']) ?>
+                                </a>
+                            <?php else: ?>
+                                -
+                            <?php endif; ?>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Documents -->
         <?php if (!empty($staff['documents'])): ?>
             <div class="dashboard-card mb-4">
