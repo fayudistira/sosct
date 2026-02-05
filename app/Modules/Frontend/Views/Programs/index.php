@@ -119,9 +119,15 @@
                                                              alt="<?= esc($program['title']) ?>" 
                                                              class="w-100 h-100 object-fit-cover program-img-zoom">
                                                     <?php else: ?>
-                                                        <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center text-muted opacity-50">
-                                                            <i class="bi bi-image display-4"></i>
-                                                        </div>
+                                                        <?php 
+                                                        // Generate a consistent random seed based on program ID for consistent images
+                                                        $seed = crc32($program['id']);
+                                                        $randomId = ($seed % 1000) + 1;
+                                                        ?>
+                                                        <img src="https://picsum.photos/seed/<?= $randomId ?>/800/600" 
+                                                             alt="<?= esc($program['title']) ?>" 
+                                                             class="w-100 h-100 object-fit-cover program-img-zoom"
+                                                             loading="lazy">
                                                     <?php endif ?>
                                                     
                                                     <!-- Category Overlay -->

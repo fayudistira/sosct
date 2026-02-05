@@ -13,6 +13,93 @@
         </div>
     </div>
     
+    <!-- Superadmin Autofill Tool -->
+    <?php if (isset($user) && $user && $user->inGroup('superadmin')): ?>
+        <div class="row mb-4">
+            <div class="col">
+                <div class="card bg-light border-primary shadow-sm">
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="mb-1 fw-bold text-primary"><i class="bi bi-magic me-2"></i>Testing Tool: Autofill Program Form</h6>
+                                <p class="small mb-0 text-muted">
+                                    Upload a <code>.txt</code> file to populate the form. 
+                                    <a href="<?= base_url('templates/program_autofill_template.txt') ?>" download class="text-decoration-none ms-1 fw-bold">
+                                        <i class="bi bi-download me-1"></i>Download Template
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="ms-3" style="width: 250px;">
+                                <input type="file" id="autofill_file" class="form-control form-control-sm" accept=".txt,.json">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('autofill_file').addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const data = JSON.parse(e.target.result);
+                            const form = document.querySelector('form[action$="program/store"]');
+                            
+                            if (!form) {
+                                alert('Form not found!');
+                                return;
+                            }
+
+                            const inputEl = event.target;
+                            let filledCount = 0;
+                            
+                            for (const key in data) {
+                                const input = form.querySelector(`[name="${key}"], [name="${key}[]"]`);
+                                if (input) {
+                                    if (input.type === 'checkbox' || input.type === 'radio') {
+                                        if (input.value == data[key]) input.checked = true;
+                                    } else if (input.tagName === 'SELECT') {
+                                        let found = false;
+                                        Array.from(input.options).forEach(opt => {
+                                            if (opt.value == data[key] || opt.textContent.trim().toLowerCase() === String(data[key]).toLowerCase()) {
+                                                input.value = opt.value;
+                                                found = true;
+                                            }
+                                        });
+                                        input.dispatchEvent(new Event('change'));
+                                    } else if (input.tagName === 'TEXTAREA') {
+                                        input.value = data[key];
+                                        filledCount++;
+                                    } else if (input.type !== 'file') {
+                                        input.value = data[key];
+                                        filledCount++;
+                                    }
+                                }
+                            }
+                            
+                            const feedback = document.createElement('div');
+                            feedback.className = 'alert alert-success mt-2 mb-0 py-2 small fw-medium';
+                            feedback.innerHTML = `<i class="bi bi-check-circle me-1"></i> Form autofilled with ${filledCount} values!`;
+                            inputEl.parentElement.appendChild(feedback);
+                            
+                            inputEl.value = '';
+                            setTimeout(() => feedback.remove(), 4000);
+                            
+                        } catch (err) {
+                            alert('Error parsing JSON file: ' + err.message);
+                        }
+                    };
+                    reader.readAsText(file);
+                });
+            });
+        </script>
+    <?php endif; ?>
+    
     <?php if (session()->getFlashdata('errors')): ?>
         <div class="alert alert-danger alert-dismissible fade show">
             <ul class="mb-0">

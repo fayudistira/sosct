@@ -1,0 +1,14 @@
+{
+  "title": "Test Program",
+  "description": "This is a test program created using the autofill feature.",
+  "category": "Language",
+  "sub_category": "English",
+  "status": "active",
+  "mode": "offline",
+  "registration_fee": "500000",
+  "tuition_fee": "5000000",
+  "discount": "10",
+  "features": "Interactive Learning\nExpert Instructors\nFlexible Schedule\nCertificate of Completion",
+  "facilities": "Modern Classrooms\nComputer Lab\nLibrary\nStudy Area",
+  "extra_facilities": "Free WiFi\nParking Area\nCafeteria\nPrayer Room"
+}

@@ -1,0 +1,23 @@
+{
+  "full_name": "Test Student",
+  "nickname": "Test",
+  "gender": "Male",
+  "date_of_birth": "2000-01-01",
+  "place_of_birth": "Jakarta",
+  "religion": "Islam",
+  "citizen_id": "1234567890123456",
+  "phone": "081234567890",
+  "email": "test@example.com",
+  "street_address": "Jl. Merdeka No. 1",
+  "district": "Gambir",
+  "regency": "Jakarta Pusat",
+  "province": "DKI Jakarta",
+  "postal_code": "10110",
+  "father_name": "Father Name",
+  "mother_name": "Mother Name",
+  "course": "Intensive English",
+  "emergency_contact_name": "Emergency Name",
+  "emergency_contact_phone": "081234567891",
+  "emergency_contact_relation": "Parent",
+  "notes": "This is a test application filled via autofill tool."
+}

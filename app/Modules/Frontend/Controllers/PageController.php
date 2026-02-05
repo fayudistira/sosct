@@ -43,7 +43,8 @@ class PageController extends BaseController
         return view('Modules\Frontend\Views\apply', [
             'title' => 'Apply for Admission',
             'programs' => $programs,
-            'selectedProgram' => null
+            'selectedProgram' => null,
+            'user' => auth()->user()
         ]);
     }
     
@@ -166,7 +167,8 @@ class PageController extends BaseController
         return view('Modules\Frontend\Views\apply', [
             'title' => 'Apply for ' . $program['title'],
             'programs' => $programs,
-            'selectedProgram' => $program
+            'selectedProgram' => $program,
+            'user' => auth()->user()
         ]);
     }
     
