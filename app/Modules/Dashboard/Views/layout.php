@@ -421,6 +421,7 @@
             }
         }
     </style>
+    <?= $this->renderSection('styles') ?>
 </head>
 <body>
     <!-- Mobile Overlay -->
@@ -484,6 +485,14 @@
                                 <small>No new notifications</small>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Messaging Icon -->
+                    <div class="nav-item dropdown me-3">
+                        <a class="nav-link position-relative" href="<?= base_url('messages') ?>">
+                            <i class="bi bi-chat-dots fs-5"></i>
+                            <span class="notification-badge" id="message-badge" style="display: none;">0</span>
+                        </a>
                     </div>
                     
                     <div class="nav-item dropdown">
@@ -575,5 +584,36 @@
             });
         }
     </script>
+    <script>
+        // Poll for unread messages
+        document.addEventListener('DOMContentLoaded', () => {
+            const updateUnreadCount = () => {
+                fetch('<?= base_url('messages/api/unread-count') ?>')
+                    .then(res => {
+                        if (res.ok) return res.json();
+                        throw new Error('Network response was not ok');
+                    })
+                    .then(data => {
+                        const badge = document.getElementById('message-badge');
+                        if (badge) {
+                            if (data.count > 0) {
+                                badge.textContent = data.count > 99 ? '99+' : data.count;
+                                badge.style.display = 'flex';
+                            } else {
+                                badge.style.display = 'none';
+                            }
+                        }
+                    })
+                    .catch(e => console.error('Error fetching unread count:', e));
+            };
+            
+            // Initial check
+            updateUnreadCount();
+            
+            // Poll every 30 seconds
+            setInterval(updateUnreadCount, 30000);
+        });
+    </script>
+    <?= $this->renderSection('scripts') ?>
 </body>
 </html>
