@@ -12,14 +12,14 @@ class PaymentController extends BaseController
     protected $paymentModel;
     protected $invoiceModel;
     protected $admissionModel;
-    
+
     public function __construct()
     {
         $this->paymentModel = new PaymentModel();
         $this->invoiceModel = new InvoiceModel();
         $this->admissionModel = new AdmissionModel();
     }
-    
+
     /**
      * Display list of payments
      */
@@ -31,7 +31,7 @@ class PaymentController extends BaseController
         $method = $this->request->getGet('method');
         $startDate = $this->request->getGet('start_date');
         $endDate = $this->request->getGet('end_date');
-        
+
         // Build filters
         $filters = [];
         if ($status) {
@@ -46,7 +46,7 @@ class PaymentController extends BaseController
         if ($endDate) {
             $filters['end_date'] = $endDate;
         }
-        
+
         // Get payments
         if ($keyword) {
             $payments = $this->paymentModel->searchPayments($keyword);
@@ -55,15 +55,15 @@ class PaymentController extends BaseController
         } else {
             $payments = $this->paymentModel->paginate($perPage);
         }
-        
+
         // Enrich with student details
         foreach ($payments as &$payment) {
             $student = $this->admissionModel->getByRegistrationNumber($payment['registration_number']);
             $payment['student'] = $student;
         }
-        
+
         $pager = $this->paymentModel->pager;
-        
+
         return view('Modules\Payment\Views\payments\index', [
             'title' => 'Payments',
             'payments' => $payments,
@@ -77,28 +77,28 @@ class PaymentController extends BaseController
             'user' => auth()->user()
         ]);
     }
-    
+
     /**
      * Display payment details
      */
     public function view($id)
     {
         $payment = $this->paymentModel->find($id);
-        
+
         if (!$payment) {
             return redirect()->to('/payment')->with('error', 'Payment not found.');
         }
-        
+
         // Get student details
         $student = $this->admissionModel->getByRegistrationNumber($payment['registration_number']);
         $payment['student'] = $student;
-        
+
         // Get invoice if linked
         if ($payment['invoice_id']) {
             $invoice = $this->invoiceModel->find($payment['invoice_id']);
             $payment['invoice'] = $invoice;
         }
-        
+
         return view('Modules\Payment\Views\payments\view', [
             'title' => 'Payment Details',
             'payment' => $payment,
@@ -106,7 +106,7 @@ class PaymentController extends BaseController
             'user' => auth()->user()
         ]);
     }
-    
+
     /**
      * Show create form
      */
@@ -118,7 +118,7 @@ class PaymentController extends BaseController
             'user' => auth()->user()
         ]);
     }
-    
+
     /**
      * Store new payment
      */
@@ -134,7 +134,7 @@ class PaymentController extends BaseController
             'status' => $this->request->getPost('status') ?: 'pending',
             'notes' => $this->request->getPost('notes')
         ];
-        
+
         // Handle receipt file upload
         $receiptFile = $this->request->getFile('receipt_file');
         if ($receiptFile && $receiptFile->isValid() && !$receiptFile->hasMoved()) {
@@ -143,53 +143,70 @@ class PaymentController extends BaseController
                 $data['receipt_file'] = $filePath;
             }
         }
-        
+
         if ($this->paymentModel->insert($data)) {
             // If linked to invoice and status is paid, recalculate invoice status
             if ($data['invoice_id'] && $data['status'] === 'paid') {
                 $newInvoiceStatus = $this->invoiceModel->recalculateInvoiceStatus($data['invoice_id']);
-                
+
                 // Only auto-approve admission if the invoice is now FULLY paid
                 if ($newInvoiceStatus === 'paid') {
                     $admission = $this->admissionModel->where('registration_number', $data['registration_number'])->first();
                     if ($admission && $admission['status'] === 'pending') {
+                        // Update admission to approved
                         $this->admissionModel->update($admission['id'], [
                             'status' => 'approved',
                             'reviewed_date' => date('Y-m-d H:i:s'),
-                            'notes' => ($admission['notes'] ? $admission['notes'] . "\n" : "") . "Automatically approved upon full payment."
+                            'notes' => ($admission['notes'] ? $admission['notes'] . "\n" : "") . "[" . date('Y-m-d H:i:s') . "] Automatically approved upon full payment."
                         ]);
+
+                        // Send approval notification email to applicant
+                        $profile = (new \Modules\Account\Models\ProfileModel())->find($admission['profile_id']);
+                        if ($profile && !empty($profile['email'])) {
+                            $emailService = new \App\Services\EmailService();
+                            $paymentData = [
+                                'amount' => $data['amount'],
+                                'created_at' => date('Y-m-d H:i:s')
+                            ];
+
+                            $emailService->sendPaymentReceivedNotification(
+                                $profile['email'],
+                                $profile['full_name'],
+                                $paymentData
+                            );
+                        }
                     }
                 }
             }
-            
+
             return redirect()->to('/payment')->with('success', 'Payment created successfully.');
         }
-        
+
         return redirect()->back()->withInput()->with('errors', $this->paymentModel->errors());
     }
-    
+
     /**
      * Show edit form
      */
     public function edit($id)
     {
         $payment = $this->paymentModel->find($id);
-        
+
         if (!$payment) {
             return redirect()->to('/payment')->with('error', 'Payment not found.');
         }
-        
+
         // Get all approved admissions with student details for dropdown
         $students = $this->admissionModel->getAllWithDetails();
-        
+
         // Filter only approved admissions
-        $students = array_filter($students, function($student) {
+        $students = array_filter($students, function ($student) {
             return $student['status'] === 'approved';
         });
-        
+
         // Get outstanding invoices for dropdown
         $invoices = $this->invoiceModel->where('status', 'outstanding')->findAll();
-        
+
         return view('Modules\Payment\Views\payments\edit', [
             'title' => 'Edit Payment',
             'payment' => $payment,
@@ -199,18 +216,18 @@ class PaymentController extends BaseController
             'user' => auth()->user()
         ]);
     }
-    
+
     /**
      * Update payment
      */
     public function update($id)
     {
         $payment = $this->paymentModel->find($id);
-        
+
         if (!$payment) {
             return redirect()->to('/payment')->with('error', 'Payment not found.');
         }
-        
+
         $data = [
             'id' => $id,
             'registration_number' => $this->request->getPost('registration_number'),
@@ -222,7 +239,7 @@ class PaymentController extends BaseController
             'status' => $this->request->getPost('status'),
             'notes' => $this->request->getPost('notes')
         ];
-        
+
         // Handle receipt file upload
         $receiptFile = $this->request->getFile('receipt_file');
         if ($receiptFile && $receiptFile->isValid() && !$receiptFile->hasMoved()) {
@@ -231,12 +248,12 @@ class PaymentController extends BaseController
                 $data['receipt_file'] = $filePath;
             }
         }
-        
+
         if ($this->paymentModel->save($data)) {
             // If linked to invoice and status is paid, recalculate invoice status
             if ($data['invoice_id'] && $data['status'] === 'paid') {
                 $newInvoiceStatus = $this->invoiceModel->recalculateInvoiceStatus($data['invoice_id']);
-                
+
                 // Only auto-approve admission if the invoice is now FULLY paid
                 if ($newInvoiceStatus === 'paid') {
                     $admission = $this->admissionModel->where('registration_number', $data['registration_number'])->first();
@@ -249,10 +266,10 @@ class PaymentController extends BaseController
                     }
                 }
             }
-            
+
             return redirect()->to('/payment')->with('success', 'Payment updated successfully.');
         }
-        
+
         return redirect()->back()->withInput()->with('errors', $this->paymentModel->errors());
     }
 
@@ -263,20 +280,20 @@ class PaymentController extends BaseController
     {
         $startDate = $this->request->getGet('start_date') ?? date('Y-01-01');
         $endDate = $this->request->getGet('end_date') ?? date('Y-m-d');
-        
+
         // Get statistics
         $stats = $this->paymentModel->getDashboardStatistics($startDate, $endDate);
         $revenueByMethod = $this->paymentModel->getRevenueByMethod();
         $revenueByType = $this->paymentModel->getRevenueByType();
         $monthlyTrend = $this->paymentModel->getMonthlyRevenueTrend(date('Y'));
-        
+
         // Get detailed payments for export
         $payments = $this->paymentModel->filterPayments([
             'status' => 'paid',
             'start_date' => $startDate,
             'end_date' => $endDate
         ]);
-        
+
         return view('Modules\Payment\Views\reports\revenue', [
             'title' => 'Revenue Report',
             'stats' => $stats,
@@ -290,14 +307,14 @@ class PaymentController extends BaseController
             'user' => auth()->user()
         ]);
     }
-    
+
     /**
      * Overdue invoices report
      */
     public function overdueReport()
     {
         $overdueInvoices = $this->paymentModel->getOverduePayments();
-        
+
         return view('Modules\Payment\Views\reports\overdue', [
             'title' => 'Overdue Invoices Report',
             'invoices' => $overdueInvoices,
@@ -305,7 +322,7 @@ class PaymentController extends BaseController
             'user' => auth()->user()
         ]);
     }
-    
+
     /**
      * Export report to CSV
      */
@@ -314,7 +331,7 @@ class PaymentController extends BaseController
         $type = $this->request->getGet('type');
         $startDate = $this->request->getGet('start_date') ?? date('Y-01-01');
         $endDate = $this->request->getGet('end_date') ?? date('Y-m-d');
-        
+
         if ($type === 'revenue') {
             $data = $this->paymentModel->filterPayments([
                 'status' => 'paid',
@@ -328,9 +345,9 @@ class PaymentController extends BaseController
         } else {
             return redirect()->back()->with('error', 'Invalid report type');
         }
-        
+
         $csv = $this->paymentModel->exportToCSV($data);
-        
+
         return $this->response
             ->setHeader('Content-Type', 'text/csv')
             ->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"')

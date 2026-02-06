@@ -6,8 +6,8 @@ use CodeIgniter\Config\BaseConfig;
 
 class Email extends BaseConfig
 {
-    public string $fromEmail  = 'kampunginggrisfeecenter@gmail.com';
-    public string $fromName   = 'Admin FEEC';
+    public string $fromEmail  = 'admin@kursusbahasa.org';
+    public string $fromName   = 'Admin SOS';
     public string $recipients = '';
 
     /**
@@ -33,13 +33,13 @@ class Email extends BaseConfig
     /**
      * SMTP Username
      */
-    public string $SMTPUser = 'kampunginggrisfeecenter@gmail.com';
+    public string $SMTPUser = 'kursusbahasa.sos@gmail.com';
 
     /**
      * SMTP Password
      */
-    public string $SMTPPass = '';
-    //fdql htbx lcry ukxy
+    public string $SMTPPass = 'fdql htbx lcry ukxy';
+
 
     /**
      * SMTP Port

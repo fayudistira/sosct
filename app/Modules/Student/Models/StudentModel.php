@@ -11,7 +11,7 @@ class StudentModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
     protected $useSoftDeletes = true;
-    
+
     protected $allowedFields = [
         'student_number',
         'profile_id',
@@ -25,12 +25,12 @@ class StudentModel extends Model
         'graduation_date',
         'graduation_gpa'
     ];
-    
+
     protected $useTimestamps = true;
     protected $createdField = 'created_at';
     protected $updatedField = 'updated_at';
     protected $deletedField = 'deleted_at';
-    
+
     protected $validationRules = [
         'student_number' => 'required|max_length[20]|is_unique[students.student_number,id,{id}]',
         'profile_id' => 'required|is_natural_no_zero',
@@ -38,7 +38,7 @@ class StudentModel extends Model
         'program_id' => 'permit_empty|max_length[36]',
         'enrollment_date' => 'required|valid_date'
     ];
-    
+
     /**
      * Generate unique student number
      * Format: STU-YYYY-NNNN (e.g., STU-2026-0001)
@@ -47,21 +47,21 @@ class StudentModel extends Model
     {
         $year = date('Y');
         $prefix = "STU-{$year}-";
-        
+
         $lastRecord = $this->like('student_number', $prefix)
-                          ->orderBy('id', 'DESC')
-                          ->first();
-        
+            ->orderBy('id', 'DESC')
+            ->first();
+
         if ($lastRecord) {
             $lastNumber = (int) substr($lastRecord['student_number'], -4);
             $newNumber = $lastNumber + 1;
         } else {
             $newNumber = 1;
         }
-        
+
         return $prefix . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
     }
-    
+
     /**
      * Get all students with details (Profile, Program)
      */
@@ -81,10 +81,12 @@ class StudentModel extends Model
             ->join('profiles', 'profiles.id = students.profile_id')
             ->join('programs', 'programs.id = students.program_id', 'left')
             ->join('users', 'users.id = profiles.user_id', 'left')
+            ->where('students.deleted_at IS NULL')
+            ->where('profiles.deleted_at IS NULL')
             ->orderBy('students.created_at', 'DESC')
             ->findAll();
     }
-    
+
     /**
      * Get specific student with details
      */
@@ -113,8 +115,7 @@ class StudentModel extends Model
                 profiles.father_name,
                 profiles.mother_name,
                 programs.title as program_title,
-                users.username,
-                users.email as user_email
+                users.username
             ')
             ->join('profiles', 'profiles.id = students.profile_id')
             ->join('programs', 'programs.id = students.program_id', 'left')

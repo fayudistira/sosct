@@ -7,19 +7,19 @@ use Modules\Admission\Models\AdmissionModel;
 use Modules\Account\Models\ProfileModel;
 use Modules\Program\Models\ProgramModel;
 use Modules\Payment\Models\InvoiceModel;
+use Modules\Student\Models\StudentModel;
 use CodeIgniter\Shield\Entities\User;
 use CodeIgniter\Shield\Models\UserModel;
-use Modules\Student\Models\StudentModel;
 
 class AdmissionController extends BaseController
 {
     protected $admissionModel;
-    
+
     public function __construct()
     {
         $this->admissionModel = new AdmissionModel();
     }
-    
+
     /**
      * List all admissions with pagination and stats
      * 
@@ -29,25 +29,25 @@ class AdmissionController extends BaseController
     {
         // Use getAllWithDetails to get joined data from profiles and programs
         $allAdmissions = $this->admissionModel->getAllWithDetails();
-        
+
         // Manual pagination (since we're using a custom query)
         $perPage = 10;
         $page = $this->request->getGet('page') ?? 1;
         $offset = ($page - 1) * $perPage;
-        
+
         $data['admissions'] = array_slice($allAdmissions, $offset, $perPage);
         $data['totalAdmissions'] = count($allAdmissions);
         $data['currentPage'] = $page;
         $data['perPage'] = $perPage;
         $data['totalPages'] = ceil(count($allAdmissions) / $perPage);
-        
+
         $data['statusCounts'] = $this->admissionModel->getStatusCounts();
         $data['menuItems'] = $this->loadModuleMenus();
         $data['user'] = auth()->user();
-        
+
         return view('Modules\Admission\Views\index', $data);
     }
-    
+
     /**
      * View admission details with file links
      * 
@@ -58,11 +58,11 @@ class AdmissionController extends BaseController
     {
         // Use getWithDetails to get joined data
         $data['admission'] = $this->admissionModel->getWithDetails($id);
-        
+
         if (!$data['admission']) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Admission not found');
         }
-        
+
         // Decode documents JSON if it exists
         if (!empty($data['admission']['documents'])) {
             $decoded = json_decode($data['admission']['documents'], true);
@@ -75,13 +75,13 @@ class AdmissionController extends BaseController
         $invoiceModel = new InvoiceModel();
         $invoices = $invoiceModel->getInvoicesByStudent($data['admission']['registration_number']);
         $data['invoice'] = !empty($invoices) ? $invoices[0] : null; // Get latest invoice
-        
+
         $data['menuItems'] = $this->loadModuleMenus();
         $data['user'] = auth()->user();
-        
+
         return view('Modules\Admission\Views\view', $data);
     }
-    
+
     /**
      * Show create form for manual entry
      * 
@@ -92,7 +92,7 @@ class AdmissionController extends BaseController
         // Load active programs for course selection
         $programModel = new ProgramModel();
         $programs = $programModel->where('status', 'active')->findAll();
-        
+
         return view('Modules\Admission\Views\create', [
             'title' => 'Create Admission',
             'programs' => $programs,
@@ -101,7 +101,7 @@ class AdmissionController extends BaseController
         ]);
     }
 
-    
+
     /**
      * Store new admission (Creates Profile -> Admission -> Invoice)
      * 
@@ -197,12 +197,12 @@ class AdmissionController extends BaseController
 
             // 4. Create Registration Invoice
             $regFee = (float)($program['registration_fee'] ?? 0);
-            
+
             log_message('error', '[Debug] Program ID: ' . $programId . ' | Title: ' . $program['title'] . ' | Fee Raw: ' . ($program['registration_fee'] ?? 'NULL') . ' | Fee Cast: ' . $regFee);
 
             if ($regFee > 0) {
                 log_message('error', '[Debug] Attempting to create invoice for amount: ' . $regFee);
-                
+
                 $invoiceData = [
                     'registration_number' => $admissionData['registration_number'],
                     'description' => 'Registration Fee for ' . $program['title'],
@@ -211,7 +211,7 @@ class AdmissionController extends BaseController
                     'invoice_type' => 'registration_fee',
                     'status' => 'outstanding'
                 ];
-                
+
                 if (!$invoiceModel->createInvoice($invoiceData)) {
                     log_message('error', '[Debug] Invoice creation FAILED: ' . json_encode($invoiceModel->errors()));
                     throw new \Exception('Failed to create invoice: ' . json_encode($invoiceModel->errors()));
@@ -227,9 +227,35 @@ class AdmissionController extends BaseController
                 throw new \Exception('Database transaction failed.');
             }
 
-            return redirect()->to('/admission')
-                ->with('success', 'Admission created successfully. Invoice generated.');
+            // 5. Send Invoice Email to Guest
+            if ($regFee > 0) {
+                $emailService = new \App\Services\EmailService();
+                $invoiceDetails = $invoiceModel->where('registration_number', $admissionData['registration_number'])->first();
 
+                if ($invoiceDetails) {
+                    $emailData = [
+                        'amount' => $invoiceDetails['amount'],
+                        'due_date' => $invoiceDetails['due_date'],
+                        'description' => $invoiceDetails['description']
+                    ];
+
+                    $admissionContext = [
+                        'registration_number' => $admissionData['registration_number'],
+                        'program_title' => $program['title']
+                    ];
+
+                    // Send email (async - doesn't block if it fails)
+                    $emailService->sendInvoiceNotification(
+                        $emailData,
+                        $profileData['email'],
+                        $profileData['full_name'],
+                        $admissionContext
+                    );
+                }
+            }
+
+            return redirect()->to('/admission')
+                ->with('success', 'Admission created successfully. Invoice generated and sent to email.');
         } catch (\Exception $e) {
             $db->transRollback();
             return redirect()->back()
@@ -237,7 +263,7 @@ class AdmissionController extends BaseController
                 ->with('error', $e->getMessage());
         }
     }
-    
+
     /**
      * Show edit form
      * 
@@ -248,21 +274,21 @@ class AdmissionController extends BaseController
     {
         // Use getWithDetails to get joined data
         $data['admission'] = $this->admissionModel->getWithDetails($id);
-        
+
         if (!$data['admission']) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Admission not found');
         }
-        
+
         // Load active programs for program selection
         $programModel = new ProgramModel();
         $data['programs'] = $programModel->where('status', 'active')->findAll();
-        
+
         $data['menuItems'] = $this->loadModuleMenus();
         $data['user'] = auth()->user();
-        
+
         return view('Modules\Admission\Views\edit', $data);
     }
-    
+
     /**
      * Update admission (updates both profile and admission data)
      * 
@@ -276,13 +302,13 @@ class AdmissionController extends BaseController
         if (!$existing) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Admission not found');
         }
-        
+
         $profileId = $existing['profile_id'];
-        
+
         // Start transaction
         $db = \Config\Database::connect();
         $db->transStart();
-        
+
         try {
             // Update Profile Data
             $profileModel = new ProfileModel();
@@ -308,13 +334,13 @@ class AdmissionController extends BaseController
                 'father_name' => $this->request->getPost('father_name'),
                 'mother_name' => $this->request->getPost('mother_name'),
             ];
-            
+
             // Handle photo upload
             $photo = $this->request->getFile('photo');
             if ($photo && $photo->isValid() && !$photo->hasMoved()) {
                 $profileData['photo'] = $profileModel->uploadPhoto($photo);
             }
-            
+
             // Handle documents upload
             // Note: In update we might append or replace. For simplicity, appending or replacing based on logic?
             // Existing logic seemed to replace or add. Let's keep it simple: Add new ones.
@@ -323,12 +349,12 @@ class AdmissionController extends BaseController
                 // ... logic for docs
                 // For now, let's keep it simple as before
             }
-            
+
             // Update profile
             if (!$profileModel->update($profileId, $profileData)) {
                 throw new \Exception('Failed to update profile: ' . json_encode($profileModel->errors()));
             }
-            
+
             // Update Admission Data
             $admissionData = [
                 'program_id' => $this->request->getPost('program_id'),
@@ -336,27 +362,26 @@ class AdmissionController extends BaseController
                 'notes' => $this->request->getPost('notes'),
                 'applicant_notes' => $this->request->getPost('applicant_notes'),
             ];
-            
+
             // If status is being changed to approved/rejected, set reviewed date and reviewer
             if ($admissionData['status'] !== $existing['status'] && in_array($admissionData['status'], ['approved', 'rejected'])) {
                 $admissionData['reviewed_date'] = date('Y-m-d');
                 $admissionData['reviewed_by'] = auth()->user()->id ?? null;
             }
-            
+
             if (!$this->admissionModel->update($id, $admissionData)) {
                 throw new \Exception('Failed to update admission: ' . json_encode($this->admissionModel->errors()));
             }
-            
+
             // Commit transaction
             $db->transComplete();
-            
+
             if ($db->transStatus() === false) {
                 throw new \Exception('Transaction failed');
             }
-            
+
             return redirect()->to('/admission/view/' . $id)
                 ->with('success', 'Admission and profile updated successfully.');
-                
         } catch (\Exception $e) {
             $db->transRollback();
             return redirect()->back()
@@ -364,7 +389,7 @@ class AdmissionController extends BaseController
                 ->with('error', 'Failed to update admission: ' . $e->getMessage());
         }
     }
-    
+
     /**
      * Soft delete admission
      * 
@@ -374,11 +399,11 @@ class AdmissionController extends BaseController
     public function delete($id)
     {
         $this->admissionModel->delete($id);
-        
+
         return redirect()->to('/admission')
             ->with('success', 'Admission deleted successfully.');
     }
-    
+
     /**
      * Search admissions
      * 
@@ -393,10 +418,10 @@ class AdmissionController extends BaseController
         $data['totalAdmissions'] = count($data['admissions']);
         $data['menuItems'] = $this->loadModuleMenus();
         $data['user'] = auth()->user();
-        
+
         return view('Modules\Admission\Views\index', $data);
     }
-    
+
     /**
      * Update admission status via AJAX
      * 
@@ -407,27 +432,27 @@ class AdmissionController extends BaseController
         if (!$this->request->isAJAX()) {
             return $this->response->setJSON(['success' => false, 'message' => 'Invalid request']);
         }
-        
+
         $json = $this->request->getJSON();
         $admissionId = $json->admission_id ?? null;
         $newStatus = $json->status ?? null;
         $notes = $json->notes ?? '';
-        
+
         if (!$admissionId || !$newStatus) {
             return $this->response->setJSON(['success' => false, 'message' => 'Missing required fields']);
         }
-        
+
         // Get existing admission
         $existing = $this->admissionModel->find($admissionId);
         if (!$existing) {
             return $this->response->setJSON(['success' => false, 'message' => 'Admission not found']);
         }
-        
+
         // Prepare update data
         $data = [
             'status' => $newStatus,
         ];
-        
+
         // Append notes if provided
         if (!empty($notes)) {
             $existingNotes = $existing['notes'] ?? '';
@@ -436,13 +461,13 @@ class AdmissionController extends BaseController
             $newNote = "\n[{$timestamp}] {$userName}: {$notes}";
             $data['notes'] = $existingNotes . $newNote;
         }
-        
+
         // If status is being changed to approved/rejected, set reviewed date and reviewer
         if ($newStatus !== $existing['status'] && in_array($newStatus, ['approved', 'rejected'])) {
             $data['reviewed_date'] = date('Y-m-d');
             $data['reviewed_by'] = auth()->user()->id ?? null;
         }
-        
+
         // Update admission
         if ($this->admissionModel->update($admissionId, $data)) {
             return $this->response->setJSON([
@@ -456,7 +481,7 @@ class AdmissionController extends BaseController
             ]);
         }
     }
-    
+
     /**
      * Download document file
      * 
@@ -468,11 +493,11 @@ class AdmissionController extends BaseController
     {
         // Get admission with profile data
         $admission = $this->admissionModel->getWithDetails($id);
-        
+
         if (!$admission) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Admission not found');
         }
-        
+
         // Documents are stored in profiles table
         $documents = [];
         if (!empty($admission['documents'])) {
@@ -482,21 +507,21 @@ class AdmissionController extends BaseController
                 $documents = $admission['documents'];
             }
         }
-        
+
         // Check if filename is in the documents array
         if (!in_array($filename, $documents)) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Document not found in profile');
         }
-        
+
         // Build file path - filename already includes the relative path (e.g., profiles/documents/xxx.pdf)
         $filepath = FCPATH . 'uploads/' . $filename;
-        
+
         if (!file_exists($filepath)) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('File not found on disk: ' . $filename);
         }
         return $this->response->download($filepath, null);
     }
-    
+
     /**
      * Search students for AJAX (Select2)
      */
@@ -505,27 +530,27 @@ class AdmissionController extends BaseController
         if (!$this->request->isAJAX()) {
             return $this->response->setJSON(['success' => false, 'message' => 'Invalid request']);
         }
-        
+
         $keyword = $this->request->getGet('q');
         if (!$keyword) {
             return $this->response->setJSON(['results' => []]);
         }
-        
+
         $results = $this->admissionModel->searchAdmissions($keyword);
-        
+
         // Filter only approved or pending students for payment
-    $filtered = array_filter($results, function($item) {
-        return in_array($item['status'], ['approved', 'pending']);
-    });
-    
-    $formatted = array_map(function($item) {
-        $statusSuffix = $item['status'] === 'pending' ? ' [PENDING]' : '';
-        return [
-            'id' => $item['registration_number'],
-            'text' => $item['full_name'] . ' (' . $item['registration_number'] . ')' . $statusSuffix
-        ];
-    }, array_values($filtered));
-        
+        $filtered = array_filter($results, function ($item) {
+            return in_array($item['status'], ['approved', 'pending']);
+        });
+
+        $formatted = array_map(function ($item) {
+            $statusSuffix = $item['status'] === 'pending' ? ' [PENDING]' : '';
+            return [
+                'id' => $item['registration_number'],
+                'text' => $item['full_name'] . ' (' . $item['registration_number'] . ')' . $statusSuffix
+            ];
+        }, array_values($filtered));
+
         return $this->response->setJSON(['results' => $formatted]);
     }
 
@@ -562,63 +587,69 @@ class AdmissionController extends BaseController
         }
 
         $db = \Config\Database::connect();
-        $db->transStart();
+        $db->transBegin();
 
         try {
-            // 1. Create User
-            $userModel = new UserModel();
+            // 1. Create User using Shield's User entity
+            $userProvider = auth()->getProvider();
+
             $userEntity = new User([
                 'username' => $this->request->getPost('username'),
                 'email'    => $admission['email'],
                 'password' => $this->request->getPost('password'),
             ]);
-            $userEntity->activate();
-            
-            if (!$userModel->save($userEntity)) {
+
+            if (!$userProvider->save($userEntity)) {
                 throw new \Exception('Failed to create user account.');
             }
-            $userId = $userModel->getInsertID();
-            $user = $userModel->findById($userId);
+
+            $userId = $userProvider->getInsertID();
+            $user = $userProvider->findById($userId);
+
+            if (!$user) {
+                throw new \Exception('Failed to retrieve created user.');
+            }
+
+            // Activate and add to student group
+            $user->activate();
             $user->addGroup('student');
 
+            if (!$userProvider->save($user)) {
+                throw new \Exception('Failed to activate user and add group.');
+            }
+
             // 2. Update Profile with User ID
-            $profileModel = new ProfileModel();
-            $profileModel->update($admission['profile_id'], ['user_id' => $userId]);
+            if (!$db->table('profiles')
+                ->where('id', $admission['profile_id'])
+                ->update(['user_id' => $userId])) {
+                throw new \Exception('Failed to update profile: ' . json_encode($db->error()));
+            }
 
             // 3. Create Student Record
-            
-            // Check if student record already exists (to prevent dupes if double promoted)
-            // But assume checking logic handles this or unique constraint
-            
-            // We need a StudentModel here.
-            // Assumption: StudentModel exists (I will create it next)
-            $studentModel = new StudentModel(); 
-            // ... generate student number ...
-            
-            // For now, I'll assume StudentModel is ready or I will implement it in next step.
-            // I'll leave this method incomplete for a moment or implement it fully if I can define StudentModel usage now.
-            // I will implement the StudentModel in the NEXT step, so I will comment out the actual student creation for THIS specific file write, 
-            // or better yet, I will include the StudentModel usage assuming I'll create the file immediately after.
-            // Yes, I'll write the code assuming StudentModel exists.
+            $studentNumber = 'STU-' . date('Y') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
 
-            $studentData = [
-                'student_number' => 'STU-' . date('Y') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT), // Temporary gen logic
+            if (!$db->table('students')->insert([
+                'student_number' => $studentNumber,
                 'profile_id' => $admission['profile_id'],
                 'admission_id' => $id,
                 'enrollment_date' => date('Y-m-d'),
                 'status' => 'active',
                 'program_id' => $admission['program_id'],
-                'batch' => date('Y')
-            ];
-            $studentModel->insert($studentData);
+                'batch' => date('Y'),
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+                'deleted_at' => null
+            ])) {
+                throw new \Exception('Failed to create student record: ' . json_encode($db->error()));
+            }
 
-            $db->transComplete();
+            $db->transCommit();
 
             return redirect()->to('/student')->with('success', 'Student promoted successfully.');
-
         } catch (\Exception $e) {
             $db->transRollback();
-            return redirect()->back()->withInput()->with('error', $e->getMessage());
+            log_message('error', 'Promotion error: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Promotion failed: ' . $e->getMessage());
         }
     }
 }

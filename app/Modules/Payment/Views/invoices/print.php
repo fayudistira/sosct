@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice #<?= esc($invoice['invoice_number']) ?></title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
         @media print {
             .no-print {
@@ -187,6 +188,128 @@
             color: #721c24;
         }
 
+        .invoice-actions {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .invoice-actions {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+
+        .payment-instructions {
+            background: #f9f3e6;
+            border-left: 4px solid #8B0000;
+            padding: 20px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .payment-instructions h5 {
+            color: #8B0000;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .payment-instructions ol {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .payment-instructions li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .whatsapp-section {
+            background: linear-gradient(135deg, #25D366 0%, #20BA5A 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .whatsapp-section h5 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .whatsapp-section p {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .btn-whatsapp {
+            background: white;
+            color: #25D366;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-whatsapp:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-whatsapp i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-print {
+            background: #8B0000;
+            color: white;
+        }
+
+        .btn-print:hover {
+            background: #6b0000;
+        }
+
         .print-button {
             position: fixed;
             top: 20px;
@@ -308,7 +431,62 @@
             </div>
         </div>
 
-        <!-- Footer -->
+        <!-- Payment Instructions & Actions Section (No Print) -->
+        <div class="invoice-actions no-print">
+            <!-- Payment Instructions -->
+            <div class="payment-instructions">
+                <h5><i class="bi bi-building"></i> Payment Instructions</h5>
+                <ol>
+                    <li><strong>Bank Transfer</strong> to the account details below</li>
+                    <li><strong>Include Invoice #</strong> in transfer description: <code><?= esc($invoice['invoice_number']) ?></code></li>
+                    <li><strong>Due Date:</strong> <?= date('F d, Y', strtotime($invoice['due_date'])) ?></li>
+                    <li><strong>Confirm Payment</strong> via WhatsApp with proof of transfer</li>
+                    <li><strong>Status Update</strong> will be sent via email after verification</li>
+                </ol>
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd; font-size: 12px;">
+                    <strong>Bank Account:</strong><br>
+                    Bank: BNI | Account: 2205502277<br>
+                    Name: SOS Course and Training
+                </div>
+            </div>
+
+            <!-- WhatsApp Confirmation -->
+            <div class="whatsapp-section">
+                <h5><i class="bi bi-whatsapp"></i> Confirm Payment</h5>
+                <p>Click to notify admin via WhatsApp after making payment</p>
+                <?php
+                $waNumber = '6289509778659';
+                $message = "Halo Admin, saya sudah melakukan pembayaran untuk Invoice berikut:\n\n";
+                $message .= "Invoice #: " . $invoice['invoice_number'] . "\n";
+
+                if (isset($student)) {
+                    $message .= "Nama: " . $student['full_name'] . "\n";
+                    $message .= "Reg No: " . $invoice['registration_number'] . "\n";
+                    if (!empty($student['program_title'])) {
+                        $message .= "Program: " . $student['program_title'] . "\n";
+                    }
+                }
+
+                $message .= "Jumlah: Rp " . number_format($invoice['amount'], 0, ',', '.') . "\n";
+                $message .= "Tanggal jatuh tempo: " . date('d F Y', strtotime($invoice['due_date'])) . "\n\n";
+                $message .= "Mohon verifikasi pembayaran saya. Terima kasih!";
+
+                $waUrl = "https://wa.me/" . $waNumber . "?text=" . urlencode($message);
+                ?>
+                <a href="<?= $waUrl ?>" target="_blank" class="btn-whatsapp">
+                    <i class="bi bi-whatsapp"></i> Send Confirmation
+                </a>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons no-print" style="margin-top: 30px;">
+            <button onclick="window.print()" class="btn-action btn-print">
+                <i class="bi bi-printer"></i> Print / Download
+            </button>
+        </div>
+
+        <!-- Footer (Print View) -->
         <div class="invoice-footer">
             <div class="payment-info">
                 <h4>Informasi Pembayaran</h4>

@@ -98,6 +98,7 @@ class AuthGroups extends ShieldAuthGroups
         'invoice.view'        => 'Can view invoices (read-only)',
         'classroom.manage'    => 'Can manage classrooms (CRUD)',
         'classroom.view'      => 'Can view classrooms (read-only)',
+        'student.manage'      => 'Can manage student records (view)',
     ];
 
     /**
@@ -119,6 +120,7 @@ class AuthGroups extends ShieldAuthGroups
             'payment.*',
             'invoice.*',
             'classroom.*',
+            'student.manage',
         ],
         'admin' => [
             'admin.access',

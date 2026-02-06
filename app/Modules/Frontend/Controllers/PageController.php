@@ -7,39 +7,39 @@ use App\Controllers\BaseController;
 class PageController extends BaseController
 {
     protected $admissionModel;
-    
+
     public function __construct()
     {
         // Will be loaded after Admission module is created
         // $this->admissionModel = new \Modules\Admission\Models\AdmissionModel();
     }
-    
+
     public function home(): string
     {
         return view('Modules\Frontend\Views\home', [
             'title' => 'Home'
         ]);
     }
-    
+
     public function about(): string
     {
         return view('Modules\Frontend\Views\about', [
             'title' => 'About Us'
         ]);
     }
-    
+
     public function contact(): string
     {
         return view('Modules\Frontend\Views\contact', [
             'title' => 'Contact Us'
         ]);
     }
-    
+
     public function apply(): string
     {
         // Fetch programs from API
         $programs = $this->fetchProgramsFromAPI();
-        
+
         return view('Modules\Frontend\Views\apply', [
             'title' => 'Apply for Admission',
             'programs' => $programs,
@@ -47,33 +47,33 @@ class PageController extends BaseController
             'user' => auth()->user()
         ]);
     }
-    
+
     /**
      * Display programs listing page with category tabs
      */
     public function programs(): string
     {
         $programModel = new \Modules\Program\Models\ProgramModel();
-        
+
         // Get selected category and sub-category from query string
         $selectedCategory = $this->request->getGet('category');
         $selectedSubCategory = $this->request->getGet('sub_category');
-        
+
         // Get all active programs
         $allPrograms = $programModel->where('status', 'active')
-                                    ->orderBy('category', 'ASC')
-                                    ->orderBy('sub_category', 'ASC')
-                                    ->orderBy('title', 'ASC')
-                                    ->findAll();
-        
+            ->orderBy('category', 'ASC')
+            ->orderBy('sub_category', 'ASC')
+            ->orderBy('title', 'ASC')
+            ->findAll();
+
         // Group programs by category then by sub_category
         $programsByCategory = [];
         $categories = [];
-        
+
         foreach ($allPrograms as $program) {
             $category = $program['category'] ?? 'Uncategorized';
             $subCategory = $program['sub_category'] ?? 'General';
-            
+
             if (!isset($programsByCategory[$category])) {
                 $programsByCategory[$category] = [
                     'sub_categories' => [],
@@ -81,26 +81,26 @@ class PageController extends BaseController
                 ];
                 $categories[] = $category;
             }
-            
+
             if (!isset($programsByCategory[$category]['sub_categories'][$subCategory])) {
                 $programsByCategory[$category]['sub_categories'][$subCategory] = [];
             }
-            
+
             $programsByCategory[$category]['sub_categories'][$subCategory][] = $program;
             $programsByCategory[$category]['total_programs']++;
         }
-        
+
         // If no category selected, select the first one
         if (empty($selectedCategory) && !empty($categories)) {
             $selectedCategory = $categories[0];
         }
-        
+
         // If no sub-category selected, select the first one of the selected category
         if (empty($selectedSubCategory) && !empty($selectedCategory) && !empty($programsByCategory[$selectedCategory]['sub_categories'])) {
             $subCategories = array_keys($programsByCategory[$selectedCategory]['sub_categories']);
             $selectedSubCategory = $subCategories[0];
         }
-        
+
         return view('Modules\Frontend\Views\Programs\index', [
             'title' => 'Our Programs',
             'programsByCategory' => $programsByCategory,
@@ -110,7 +110,7 @@ class PageController extends BaseController
             'totalPrograms' => count($allPrograms)
         ]);
     }
-    
+
     /**
      * Display program detail page
      */
@@ -118,22 +118,22 @@ class PageController extends BaseController
     {
         // Fetch single program from API
         $program = $this->fetchProgramFromAPI($id);
-        
+
         if (!$program || $program['status'] !== 'active') {
             return redirect()->to('/programs')
                 ->with('error', 'Program not found or not available.');
         }
-        
+
         // Calculate final price with discount
         $finalPrice = $program['tuition_fee'] * (1 - $program['discount'] / 100);
-        
+
         return view('Modules\Frontend\Views\Programs\detail', [
             'title' => $program['title'],
             'program' => $program,
             'finalPrice' => $finalPrice
         ]);
     }
-    
+
     /**
      * Display apply form with pre-selected program
      */
@@ -141,29 +141,29 @@ class PageController extends BaseController
     {
         // Fetch single program from API
         $program = $this->fetchProgramFromAPI($programId);
-        
+
         // Debug logging
         if (!$program) {
             log_message('error', 'Program not found with ID: ' . $programId);
             return redirect()->to('/programs')
                 ->with('error', 'Program not found.');
         }
-        
+
         if (!isset($program['status'])) {
             log_message('error', 'Program status not set for ID: ' . $programId);
             return redirect()->to('/programs')
                 ->with('error', 'Program status is not configured.');
         }
-        
+
         if ($program['status'] !== 'active') {
             log_message('error', 'Program is not active. ID: ' . $programId . ', Status: ' . $program['status']);
             return redirect()->to('/programs')
                 ->with('error', 'This program is currently not available for enrollment.');
         }
-        
+
         // Fetch all programs for dropdown
         $programs = $this->fetchProgramsFromAPI();
-        
+
         return view('Modules\Frontend\Views\apply', [
             'title' => 'Apply for ' . $program['title'],
             'programs' => $programs,
@@ -171,7 +171,7 @@ class PageController extends BaseController
             'user' => auth()->user()
         ]);
     }
-    
+
     /**
      * Fetch programs from API (optimized - direct model access)
      */
@@ -186,7 +186,7 @@ class PageController extends BaseController
             return [];
         }
     }
-    
+
     /**
      * Fetch single program from API (optimized - direct model access)
      */
@@ -202,13 +202,13 @@ class PageController extends BaseController
             return null;
         }
     }
-    
+
     public function submitApplication()
     {
         // Load models
         $profileModel = new \Modules\Account\Models\ProfileModel();
         $admissionModel = new \Modules\Admission\Models\AdmissionModel();
-        
+
         // Validate input
         $rules = [
             'full_name' => 'required|min_length[3]|max_length[100]',
@@ -231,32 +231,32 @@ class PageController extends BaseController
             'photo' => 'uploaded[photo]|max_size[photo,2048]|is_image[photo]|mime_in[photo,image/jpg,image/jpeg,image/png]',
             'documents.*' => 'max_size[documents,5120]|ext_in[documents,pdf,doc,docx]',
         ];
-        
+
         if (!$this->validate($rules)) {
             return redirect()->back()
                 ->withInput()
                 ->with('errors', $this->validator->getErrors());
         }
-        
+
         // Start database transaction
         $db = \Config\Database::connect();
         $db->transStart();
-        
+
         try {
             // Handle photo upload
             $photo = $this->request->getFile('photo');
             $photoPath = null;
-            
+
             if ($photo && $photo->isValid() && !$photo->hasMoved()) {
                 $photoPath = $photo->getRandomName();
                 $photo->move(FCPATH . 'uploads/profiles/photos', $photoPath);
                 $photoPath = 'profiles/photos/' . $photoPath;
             }
-            
+
             // Handle documents upload
             $documents = $this->request->getFileMultiple('documents');
             $documentPaths = [];
-            
+
             if ($documents) {
                 foreach ($documents as $doc) {
                     if ($doc->isValid() && !$doc->hasMoved()) {
@@ -266,7 +266,7 @@ class PageController extends BaseController
                     }
                 }
             }
-            
+
             // STEP 1: Create Profile
             $profileData = [
                 'profile_number' => $profileModel->generateProfileNumber(),
@@ -293,25 +293,25 @@ class PageController extends BaseController
                 'photo' => $photoPath,
                 'documents' => !empty($documentPaths) ? json_encode($documentPaths) : null,
             ];
-            
+
             $profileId = $profileModel->insert($profileData);
-            
+
             if (!$profileId) {
                 throw new \Exception('Failed to create profile');
             }
-            
+
             // STEP 2: Create Admission
             // Get program_id from form (either directly or by looking up course name)
             $programId = $this->request->getPost('program_id');
             $program = null;
             $programModel = new \Modules\Program\Models\ProgramModel();
-            
+
             if ($programId) {
                 $program = $programModel->find($programId);
             } else {
                 // Fallback: Look up program by ID from 'course' field (which now contains ID)
                 $courseValue = $this->request->getPost('course');
-                
+
                 if ($courseValue) {
                     // Check if it's a UUID (program ID) or a title
                     if (preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $courseValue)) {
@@ -327,11 +327,11 @@ class PageController extends BaseController
                     }
                 }
             }
-            
+
             if (!$program) {
                 throw new \Exception('Program selection is required');
             }
-            
+
             $admissionData = [
                 'registration_number' => $admissionModel->generateRegistrationNumber(),
                 'profile_id' => $profileId,
@@ -340,19 +340,22 @@ class PageController extends BaseController
                 'application_date' => date('Y-m-d'),
                 'applicant_notes' => $this->request->getPost('notes'),
             ];
-            
+
             $admissionId = $admissionModel->insert($admissionData);
-            
+
             if (!$admissionId) {
                 throw new \Exception('Failed to create admission');
             }
 
             // STEP 3: Auto-generate Invoice
+            $invoiceId = null;
             $regFee = $program['registration_fee'] ?? 0;
             $tuitionFee = $program['tuition_fee'] ?? 0;
             $discount = $program['discount'] ?? 0;
             $finalTuition = $tuitionFee * (1 - $discount / 100);
             $totalAmount = $regFee + $finalTuition;
+
+            log_message('error', '[Frontend Apply] Program: ' . $program['title'] . ' | RegFee: ' . $regFee . ' | TuitionFee: ' . $tuitionFee . ' | Discount: ' . $discount . ' | TotalAmount: ' . $totalAmount);
 
             if ($totalAmount > 0) {
                 $invoiceModel = new \Modules\Payment\Models\InvoiceModel();
@@ -362,18 +365,29 @@ class PageController extends BaseController
                     'amount' => $totalAmount,
                     'due_date' => date('Y-m-d', strtotime('+3 days')), // Due in 3 days
                     'invoice_type' => 'tuition_fee',
-                    'status' => 'unpaid'
+                    'status' => 'outstanding'
                 ];
+
+                log_message('error', '[Frontend Apply] Creating invoice with data: ' . json_encode($invoiceData));
+
                 $invoiceId = $invoiceModel->createInvoice($invoiceData);
+
+                if (!$invoiceId) {
+                    log_message('error', '[Frontend Apply] Invoice creation FAILED. Errors: ' . json_encode($invoiceModel->errors()));
+                } else {
+                    log_message('error', '[Frontend Apply] Invoice created successfully with ID: ' . $invoiceId);
+                }
+            } else {
+                log_message('error', '[Frontend Apply] Skipping invoice creation - totalAmount is 0');
             }
-            
+
             // Commit transaction
             $db->transComplete();
-            
+
             if ($db->transStatus() === false) {
                 throw new \Exception('Transaction failed');
             }
-            
+
             // Success - redirect to public invoice if it exists, otherwise success page
             if (isset($invoiceId) && $invoiceId) {
                 return redirect()->to('invoice/public/' . $invoiceId)
@@ -384,18 +398,17 @@ class PageController extends BaseController
             return redirect()->to('/apply/success')
                 ->with('success', 'Your application has been submitted successfully!')
                 ->with('registration_number', $admissionData['registration_number']);
-                
         } catch (\Exception $e) {
             // Rollback transaction
             $db->transRollback();
             log_message('error', 'Application submission failed: ' . $e->getMessage());
-            
+
             return redirect()->back()
                 ->withInput()
                 ->with('error', 'Failed to submit application. Please try again.');
         }
     }
-    
+
     public function applySuccess(): string
     {
         $registrationNumber = session('registration_number');
@@ -405,11 +418,13 @@ class PageController extends BaseController
         if ($registrationNumber) {
             $admissionModel = new \Modules\Admission\Models\AdmissionModel();
             $admission = $admissionModel->getByRegistrationNumber($registrationNumber);
-            
+
             $invoiceModel = new \Modules\Payment\Models\InvoiceModel();
+            // Get all invoices for this registration, including paid ones
             $invoices = $invoiceModel->where('registration_number', $registrationNumber)
-                                     ->where('status', 'unpaid')
-                                     ->findAll();
+                ->where('deleted_at IS NULL', null, false)
+                ->orderBy('created_at', 'DESC')
+                ->findAll();
         }
 
         return view('Modules\Frontend\Views\apply_success', [
