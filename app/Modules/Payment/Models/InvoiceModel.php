@@ -11,7 +11,7 @@ class InvoiceModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
     protected $useSoftDeletes = true;
-    
+
     protected $allowedFields = [
         'invoice_number',
         'registration_number',
@@ -19,14 +19,15 @@ class InvoiceModel extends Model
         'amount',
         'due_date',
         'invoice_type',
-        'status'
+        'status',
+        'items'
     ];
-    
+
     protected $useTimestamps = true;
     protected $createdField = 'created_at';
     protected $updatedField = 'updated_at';
     protected $deletedField = 'deleted_at';
-    
+
     protected $validationRules = [
         'registration_number' => 'required|max_length[20]',
         'description' => 'required|min_length[10]',
@@ -44,11 +45,11 @@ class InvoiceModel extends Model
     public function processExpiredInvoices(): int
     {
         return $this->where('status', 'outstanding')
-                    ->where('due_date <', date('Y-m-d'))
-                    ->set(['status' => 'expired'])
-                    ->update();
+            ->where('due_date <', date('Y-m-d'))
+            ->set(['status' => 'expired'])
+            ->update();
     }
-    
+
     protected $validationMessages = [
         'registration_number' => [
             'required' => 'Registration number is required'
@@ -82,12 +83,12 @@ class InvoiceModel extends Model
     {
         $year = date('Y');
         $prefix = "INV-{$year}-";
-        
+
         // Get the last invoice number for current year
         $lastRecord = $this->like('invoice_number', $prefix)
-                          ->orderBy('id', 'DESC')
-                          ->first();
-        
+            ->orderBy('id', 'DESC')
+            ->first();
+
         if ($lastRecord) {
             // Extract the number part and increment
             $lastNumber = (int) substr($lastRecord['invoice_number'], -4);
@@ -96,7 +97,7 @@ class InvoiceModel extends Model
             // First invoice of the year
             $newNumber = 1;
         }
-        
+
         // Format with leading zeros (4 digits)
         return $prefix . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
     }
@@ -113,12 +114,12 @@ class InvoiceModel extends Model
         if (!isset($data['invoice_number'])) {
             $data['invoice_number'] = $this->generateInvoiceNumber();
         }
-        
+
         // Set default status to outstanding
         if (!isset($data['status'])) {
             $data['status'] = 'outstanding';
         }
-        
+
         return $this->insert($data);
     }
 
@@ -131,16 +132,16 @@ class InvoiceModel extends Model
     public function getInvoicesByStudent(string $registrationNumber): array
     {
         return $this->where('registration_number', $registrationNumber)
-                    ->orderBy('created_at', 'DESC')
-                    ->findAll();
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
     }
 
     public function getOverdueInvoices(): array
     {
         return $this->where('status', 'outstanding')
-                    ->where('due_date <', date('Y-m-d'))
-                    ->orderBy('due_date', 'ASC')
-                    ->findAll();
+            ->where('due_date <', date('Y-m-d'))
+            ->orderBy('due_date', 'ASC')
+            ->findAll();
     }
 
     /**
@@ -154,18 +155,18 @@ class InvoiceModel extends Model
     {
         $db = \Config\Database::connect();
         $builder = $db->table($this->table);
-        
+
         return $builder->select('invoices.*')
-                      ->join('admissions', 'admissions.registration_number = invoices.registration_number')
-                      ->join('profiles', 'profiles.id = admissions.profile_id')
-                      ->where('invoices.deleted_at', null)
-                      ->groupStart()
-                          ->like('invoices.invoice_number', $keyword)
-                          ->orLike('profiles.full_name', $keyword)
-                      ->groupEnd()
-                      ->orderBy('invoices.created_at', 'DESC')
-                      ->get()
-                      ->getResultArray();
+            ->join('admissions', 'admissions.registration_number = invoices.registration_number')
+            ->join('profiles', 'profiles.id = admissions.profile_id')
+            ->where('invoices.deleted_at', null)
+            ->groupStart()
+            ->like('invoices.invoice_number', $keyword)
+            ->orLike('profiles.full_name', $keyword)
+            ->groupEnd()
+            ->orderBy('invoices.created_at', 'DESC')
+            ->get()
+            ->getResultArray();
     }
 
     /**
@@ -177,23 +178,23 @@ class InvoiceModel extends Model
     public function filterInvoices(array $filters): array
     {
         $builder = $this->builder();
-        
+
         if (isset($filters['status'])) {
             $builder->where('status', $filters['status']);
         }
-        
+
         if (isset($filters['type'])) {
             $builder->where('invoice_type', $filters['type']);
         }
-        
+
         if (isset($filters['start_date'])) {
             $builder->where('due_date >=', $filters['start_date']);
         }
-        
+
         if (isset($filters['end_date'])) {
             $builder->where('due_date <=', $filters['end_date']);
         }
-        
+
         return $builder->orderBy('created_at', 'DESC')->get()->getResultArray();
     }
 
@@ -211,13 +212,13 @@ class InvoiceModel extends Model
         // Get sum of all 'paid' payments for this invoice
         $db = \Config\Database::connect();
         $paidAmount = $db->table('payments')
-                         ->where('invoice_id', $invoiceId)
-                         ->where('status', 'paid')
-                         ->where('deleted_at', null)
-                         ->selectSum('amount')
-                         ->get()
-                         ->getRowArray();
-        
+            ->where('invoice_id', $invoiceId)
+            ->where('status', 'paid')
+            ->where('deleted_at', null)
+            ->selectSum('amount')
+            ->get()
+            ->getRowArray();
+
         $totalPaid = (float) ($paidAmount['amount'] ?? 0);
         $invoiceAmount = (float) $invoice['amount'];
 
@@ -262,26 +263,97 @@ class InvoiceModel extends Model
     {
         $db = \Config\Database::connect();
         $builder = $db->table($this->table);
-        
+
         $invoice = $builder->select('invoices.*')
-                          ->where('invoices.id', $id)
-                          ->where('invoices.deleted_at', null)
-                          ->get()
-                          ->getRowArray();
-        
+            ->where('invoices.id', $id)
+            ->where('invoices.deleted_at', null)
+            ->get()
+            ->getRowArray();
+
         if (!$invoice) {
             return null;
         }
-        
+
         // Get associated payments
         $paymentsBuilder = $db->table('payments');
         $payments = $paymentsBuilder->where('invoice_id', $id)
-                                   ->where('deleted_at', null)
-                                   ->get()
-                                   ->getResultArray();
-        
+            ->where('deleted_at', null)
+            ->get()
+            ->getResultArray();
+
         $invoice['payments'] = $payments;
-        
+
         return $invoice;
+    }
+
+    /**
+     * Get invoice with associated items
+     * 
+     * @param int $id Invoice ID
+     * @return array|null
+     */
+    public function getInvoiceWithItems(int $id): ?array
+    {
+        $db = \Config\Database::connect();
+        $builder = $db->table($this->table);
+
+        $invoice = $builder->select('invoices.*')
+            ->where('invoices.id', $id)
+            ->where('invoices.deleted_at', null)
+            ->get()
+            ->getRowArray();
+
+        if (!$invoice) {
+            return null;
+        }
+
+        // Get associated items from JSON
+        $items = !empty($invoice['items']) ? json_decode($invoice['items'], true) : [];
+        $invoice['items'] = $items;
+
+        return $invoice;
+    }
+
+    /**
+     * Encode items array to JSON
+     */
+    public function encodeItems(array $items): string
+    {
+        return json_encode($items, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    }
+
+    /**
+     * Decode items JSON to array
+     */
+    public function decodeItems(?string $itemsJson): array
+    {
+        if (empty($itemsJson)) {
+            return [];
+        }
+
+        $decoded = json_decode($itemsJson, true);
+        return is_array($decoded) ? $decoded : [];
+    }
+
+    /**
+     * Get items from an invoice
+     */
+    public function getItems(int $invoiceId): array
+    {
+        $invoice = $this->find($invoiceId);
+        if (!$invoice) {
+            return [];
+        }
+
+        return $this->decodeItems($invoice['items'] ?? null);
+    }
+
+    /**
+     * Save items for an invoice
+     */
+    public function saveItems(int $invoiceId, array $items): bool
+    {
+        $encoded = $this->encodeItems($items);
+        return $this->update($invoiceId, ['items' => $encoded]);
     }
 }

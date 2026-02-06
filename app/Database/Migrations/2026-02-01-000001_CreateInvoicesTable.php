@@ -39,8 +39,8 @@ class CreateInvoicesTable extends Migration
             ],
             'status' => [
                 'type' => 'ENUM',
-                'constraint' => ['unpaid', 'paid', 'cancelled'],
-                'default' => 'unpaid',
+                'constraint' => ['outstanding', 'paid', 'cancelled', 'expired', 'partially_paid'],
+                'default' => 'outstanding',
             ],
             'created_at' => [
                 'type' => 'DATETIME',
@@ -55,7 +55,7 @@ class CreateInvoicesTable extends Migration
                 'null' => true,
             ],
         ]);
-        
+
         $this->forge->addKey('id', true);
         $this->forge->addUniqueKey('invoice_number');
         $this->forge->addKey('registration_number');
