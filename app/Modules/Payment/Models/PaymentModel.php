@@ -11,7 +11,7 @@ class PaymentModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
     protected $useSoftDeletes = true;
-    
+
     protected $allowedFields = [
         'registration_number',
         'invoice_id',
@@ -26,12 +26,12 @@ class PaymentModel extends Model
         'refund_reason',
         'notes'
     ];
-    
+
     protected $useTimestamps = true;
     protected $createdField = 'created_at';
     protected $updatedField = 'updated_at';
     protected $deletedField = 'deleted_at';
-    
+
     protected $validationRules = [
         'registration_number' => 'required|max_length[20]',
         'invoice_id' => 'required|is_natural_no_zero',
@@ -42,7 +42,7 @@ class PaymentModel extends Model
         'receipt_file' => 'permit_empty|max_length[255]',
         'status' => 'permit_empty|in_list[pending,paid,failed,refunded]'
     ];
-    
+
     protected $validationMessages = [
         'registration_number' => [
             'required' => 'Registration number is required'
@@ -78,7 +78,7 @@ class PaymentModel extends Model
         if (!isset($data['status'])) {
             $data['status'] = 'pending';
         }
-        
+
         return $this->insert($data);
     }
 
@@ -91,8 +91,8 @@ class PaymentModel extends Model
     public function getPaymentsByStudent(string $registrationNumber): array
     {
         return $this->where('registration_number', $registrationNumber)
-                    ->orderBy('payment_date', 'DESC')
-                    ->findAll();
+            ->orderBy('payment_date', 'DESC')
+            ->findAll();
     }
 
     /**
@@ -105,9 +105,9 @@ class PaymentModel extends Model
     public function getPaymentsByDateRange(string $startDate, string $endDate): array
     {
         return $this->where('payment_date >=', $startDate)
-                    ->where('payment_date <=', $endDate)
-                    ->orderBy('payment_date', 'DESC')
-                    ->findAll();
+            ->where('payment_date <=', $endDate)
+            ->orderBy('payment_date', 'DESC')
+            ->findAll();
     }
 
     /**
@@ -121,19 +121,19 @@ class PaymentModel extends Model
     {
         $db = \Config\Database::connect();
         $builder = $db->table($this->table);
-        
+
         return $builder->select('payments.*')
-                      ->join('admissions', 'admissions.registration_number = payments.registration_number')
-                      ->join('profiles', 'profiles.id = admissions.profile_id')
-                      ->where('payments.deleted_at', null)
-                      ->groupStart()
-                          ->like('profiles.full_name', $keyword)
-                          ->orLike('payments.registration_number', $keyword)
-                          ->orLike('payments.document_number', $keyword)
-                      ->groupEnd()
-                      ->orderBy('payments.payment_date', 'DESC')
-                      ->get()
-                      ->getResultArray();
+            ->join('admissions', 'admissions.registration_number = payments.registration_number')
+            ->join('profiles', 'profiles.id = admissions.profile_id')
+            ->where('payments.deleted_at', null)
+            ->groupStart()
+            ->like('profiles.full_name', $keyword)
+            ->orLike('payments.registration_number', $keyword)
+            ->orLike('payments.document_number', $keyword)
+            ->groupEnd()
+            ->orderBy('payments.payment_date', 'DESC')
+            ->get()
+            ->getResultArray();
     }
 
     /**
@@ -147,19 +147,19 @@ class PaymentModel extends Model
         if (isset($filters['status'])) {
             $this->where('status', $filters['status']);
         }
-        
+
         if (isset($filters['method'])) {
             $this->where('payment_method', $filters['method']);
         }
-        
+
         if (isset($filters['start_date'])) {
             $this->where('payment_date >=', $filters['start_date']);
         }
-        
+
         if (isset($filters['end_date'])) {
             $this->where('payment_date <=', $filters['end_date']);
         }
-        
+
         return $this->orderBy('payment_date', 'DESC')->findAll();
     }
 
@@ -175,23 +175,23 @@ class PaymentModel extends Model
     {
         // Get current payment
         $payment = $this->find($id);
-        
+
         if (!$payment) {
             return false;
         }
-        
+
         // Validate status transitions - prevent refunded → pending
         if ($payment['status'] === 'refunded' && $status === 'pending') {
             return false;
         }
-        
+
         $updateData = ['status' => $status];
-        
+
         // Handle failure_reason for status='failed'
         if ($status === 'failed' && isset($additionalData['failure_reason'])) {
             $updateData['failure_reason'] = $additionalData['failure_reason'];
         }
-        
+
         // Handle refund_date and refund_reason for status='refunded'
         if ($status === 'refunded') {
             if (isset($additionalData['refund_date'])) {
@@ -201,7 +201,7 @@ class PaymentModel extends Model
                 $updateData['refund_reason'] = $additionalData['refund_reason'];
             }
         }
-        
+
         return $this->update($id, $updateData);
     }
 
@@ -217,35 +217,35 @@ class PaymentModel extends Model
         if (!$file->isValid()) {
             return false;
         }
-        
+
         // Validate file format (PDF, JPG, JPEG, PNG)
         $allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
         if (!in_array($file->getMimeType(), $allowedTypes)) {
             return false;
         }
-        
+
         // Validate file size (max 2MB)
         if ($file->getSize() > 2048 * 1024) {
             return false;
         }
-        
+
         // Store files in public/uploads/receipts/ directory
         $uploadPath = FCPATH . 'uploads/receipts/';
-        
+
         // Create directory if it doesn't exist
         if (!is_dir($uploadPath)) {
             mkdir($uploadPath, 0755, true);
         }
-        
+
         // Generate unique filename
         $newName = $file->getRandomName();
-        
+
         // Move file
         if ($file->move($uploadPath, $newName)) {
             // Return relative path for database storage
             return 'receipts/' . $newName;
         }
-        
+
         return false;
     }
 
@@ -259,40 +259,40 @@ class PaymentModel extends Model
     public function getDashboardStatistics(string $startDate, string $endDate): array
     {
         $db = \Config\Database::connect();
-        
+
         // Calculate total revenue (sum of paid payments in date range)
         $revenueResult = $db->table($this->table)
-                           ->selectSum('amount', 'total')
-                           ->where('status', 'paid')
-                           ->where('payment_date >=', $startDate)
-                           ->where('payment_date <=', $endDate)
-                           ->where('deleted_at', null)
-                           ->get()
-                           ->getRowArray();
-        
+            ->selectSum('amount', 'total')
+            ->where('status', 'paid')
+            ->where('payment_date >=', $startDate)
+            ->where('payment_date <=', $endDate)
+            ->where('deleted_at', null)
+            ->get()
+            ->getRowArray();
+
         $totalRevenue = $revenueResult['total'] ?? 0;
-        
+
         // Count pending payments
         $pendingCount = $db->table($this->table)
-                          ->where('status', 'pending')
-                          ->where('deleted_at', null)
-                          ->countAllResults();
-        
+            ->where('status', 'pending')
+            ->where('deleted_at', null)
+            ->countAllResults();
+
         // Count completed payments in date range
         $completedCount = $db->table($this->table)
-                            ->where('status', 'paid')
-                            ->where('payment_date >=', $startDate)
-                            ->where('payment_date <=', $endDate)
-                            ->where('deleted_at', null)
-                            ->countAllResults();
-        
+            ->where('status', 'paid')
+            ->where('payment_date >=', $startDate)
+            ->where('payment_date <=', $endDate)
+            ->where('deleted_at', null)
+            ->countAllResults();
+
         // Count overdue invoices
         $overdueCount = $db->table('invoices')
-                          ->where('status', 'outstanding')
-                          ->where('due_date <', date('Y-m-d'))
-                          ->where('deleted_at', null)
-                          ->countAllResults();
-        
+            ->where('status', 'unpaid')
+            ->where('due_date <', date('Y-m-d'))
+            ->where('deleted_at', null)
+            ->countAllResults();
+
         return [
             'total_revenue' => (float) $totalRevenue,
             'pending_count' => $pendingCount,
@@ -309,20 +309,20 @@ class PaymentModel extends Model
     public function getRevenueByMethod(): array
     {
         $db = \Config\Database::connect();
-        
+
         $results = $db->table($this->table)
-                     ->select('payment_method, SUM(amount) as total')
-                     ->where('status', 'paid')
-                     ->where('deleted_at', null)
-                     ->groupBy('payment_method')
-                     ->get()
-                     ->getResultArray();
-        
+            ->select('payment_method, SUM(amount) as total')
+            ->where('status', 'paid')
+            ->where('deleted_at', null)
+            ->groupBy('payment_method')
+            ->get()
+            ->getResultArray();
+
         $breakdown = [];
         foreach ($results as $row) {
             $breakdown[$row['payment_method']] = (float) $row['total'];
         }
-        
+
         return $breakdown;
     }
 
@@ -334,22 +334,22 @@ class PaymentModel extends Model
     public function getRevenueByType(): array
     {
         $db = \Config\Database::connect();
-        
+
         $results = $db->table($this->table)
-                     ->select('invoices.invoice_type, SUM(payments.amount) as total')
-                     ->join('invoices', 'invoices.id = payments.invoice_id', 'left')
-                     ->where('payments.status', 'paid')
-                     ->where('payments.deleted_at', null)
-                     ->where('invoices.invoice_type IS NOT', null)
-                     ->groupBy('invoices.invoice_type')
-                     ->get()
-                     ->getResultArray();
-        
+            ->select('invoices.invoice_type, SUM(payments.amount) as total')
+            ->join('invoices', 'invoices.id = payments.invoice_id', 'left')
+            ->where('payments.status', 'paid')
+            ->where('payments.deleted_at', null)
+            ->where('invoices.invoice_type IS NOT', null)
+            ->groupBy('invoices.invoice_type')
+            ->get()
+            ->getResultArray();
+
         $breakdown = [];
         foreach ($results as $row) {
             $breakdown[$row['invoice_type']] = (float) $row['total'];
         }
-        
+
         return $breakdown;
     }
 
@@ -362,23 +362,32 @@ class PaymentModel extends Model
     public function getMonthlyRevenueTrend(int $year): array
     {
         $db = \Config\Database::connect();
-        
+
         $results = $db->table($this->table)
-                     ->select('MONTH(payment_date) as month, SUM(amount) as total')
-                     ->where('status', 'paid')
-                     ->where('YEAR(payment_date)', $year)
-                     ->where('deleted_at', null)
-                     ->groupBy('MONTH(payment_date)')
-                     ->orderBy('month', 'ASC')
-                     ->get()
-                     ->getResultArray();
-        
+            ->select('MONTH(payment_date) as month, SUM(amount) as total')
+            ->where('status', 'paid')
+            ->where('YEAR(payment_date)', $year)
+            ->where('deleted_at', null)
+            ->groupBy('MONTH(payment_date)')
+            ->orderBy('month', 'ASC')
+            ->get()
+            ->getResultArray();
+
         $months = [
-            1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April',
-            5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August',
-            9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'
+            1 => 'January',
+            2 => 'February',
+            3 => 'March',
+            4 => 'April',
+            5 => 'May',
+            6 => 'June',
+            7 => 'July',
+            8 => 'August',
+            9 => 'September',
+            10 => 'October',
+            11 => 'November',
+            12 => 'December'
         ];
-        
+
         $trend = [];
         foreach ($results as $row) {
             $monthNum = (int) $row['month'];
@@ -387,7 +396,7 @@ class PaymentModel extends Model
                 'revenue' => (float) $row['total']
             ];
         }
-        
+
         return $trend;
     }
 
@@ -399,17 +408,17 @@ class PaymentModel extends Model
     public function getOverduePayments(): array
     {
         $db = \Config\Database::connect();
-        
+
         return $db->table('invoices')
-                 ->select('invoices.*, profiles.full_name, profiles.email')
-                 ->join('admissions', 'admissions.registration_number = invoices.registration_number')
-                 ->join('profiles', 'profiles.id = admissions.profile_id')
-                 ->where('invoices.status', 'outstanding')
-                 ->where('invoices.due_date <', date('Y-m-d'))
-                 ->where('invoices.deleted_at', null)
-                 ->orderBy('invoices.due_date', 'ASC')
-                 ->get()
-                 ->getResultArray();
+            ->select('invoices.*, profiles.full_name, profiles.email')
+            ->join('admissions', 'admissions.registration_number = invoices.registration_number')
+            ->join('profiles', 'profiles.id = admissions.profile_id')
+            ->where('invoices.status', 'unpaid')
+            ->where('invoices.due_date <', date('Y-m-d'))
+            ->where('invoices.deleted_at', null)
+            ->orderBy('invoices.due_date', 'ASC')
+            ->get()
+            ->getResultArray();
     }
 
     /**
@@ -420,8 +429,8 @@ class PaymentModel extends Model
     public function getRefundedPayments(): array
     {
         return $this->where('status', 'refunded')
-                    ->orderBy('refund_date', 'DESC')
-                    ->findAll();
+            ->orderBy('refund_date', 'DESC')
+            ->findAll();
     }
 
     /**
@@ -435,26 +444,26 @@ class PaymentModel extends Model
         if (empty($data)) {
             return '';
         }
-        
+
         $csv = '';
-        
+
         // Add headers
         $headers = array_keys($data[0]);
         $csv .= implode(',', $headers) . "\n";
-        
+
         // Add data rows
         foreach ($data as $row) {
-            $values = array_map(function($value) {
+            $values = array_map(function ($value) {
                 // Escape values containing commas or quotes
                 if (strpos($value, ',') !== false || strpos($value, '"') !== false) {
                     return '"' . str_replace('"', '""', $value) . '"';
                 }
                 return $value;
             }, array_values($row));
-            
+
             $csv .= implode(',', $values) . "\n";
         }
-        
+
         return $csv;
     }
 }

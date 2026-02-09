@@ -18,7 +18,7 @@
                     <div>
                         <h6 class="mb-1 fw-bold text-dark"><i class="bi bi-magic me-2"></i>Superadmin Tool: Autofill Form</h6>
                         <p class="small mb-0 opacity-75">
-                            Upload a <code>.txt</code> file to test this form. 
+                            Upload a <code>.txt</code> file to test this form.
                             <a href="<?= base_url('templates/admission_autofill_template.txt') ?>" download class="text-decoration-none ms-1 fw-bold text-dark">
                                 <i class="bi bi-download me-1"></i>Download Template
                             </a>
@@ -30,7 +30,7 @@
                 </div>
             </div>
         </div>
-        
+
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('autofill_file').addEventListener('change', function(event) {
@@ -42,7 +42,7 @@
                         try {
                             const data = JSON.parse(e.target.result);
                             const form = document.querySelector('form[action$="apply/submit"]');
-                            
+
                             if (!form) {
                                 alert('Form not found!');
                                 return;
@@ -50,7 +50,7 @@
 
                             const inputEl = event.target;
                             let filledCount = 0;
-                            
+
                             for (const key in data) {
                                 const input = form.querySelector(`[name="${key}"], [name="${key}[]"]`);
                                 if (input) {
@@ -77,15 +77,15 @@
                                     }
                                 }
                             }
-                            
+
                             const feedback = document.createElement('div');
                             feedback.className = 'alert alert-success mt-2 mb-0 py-2 small fw-medium';
                             feedback.innerHTML = `<i class="bi bi-check-circle me-1"></i> Form autofilled with ${filledCount} values!`;
                             inputEl.parentElement.appendChild(feedback);
-                            
+
                             inputEl.value = '';
                             setTimeout(() => feedback.remove(), 4000);
-                            
+
                         } catch (err) {
                             alert('Error parsing JSON file: ' + err.message);
                         }
@@ -108,14 +108,14 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     <?php endif ?>
-    
+
     <?php if (session('error')): ?>
         <div class="alert alert-danger alert-dismissible fade show">
             <i class="bi bi-exclamation-triangle me-2"></i><?= session('error') ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     <?php endif ?>
-    
+
     <!-- Selected Program Banner -->
     <?php if (isset($selectedProgram) && $selectedProgram): ?>
         <div class="alert alert-info border-0 shadow-sm mb-4">
@@ -125,8 +125,8 @@
                         <i class="bi bi-mortarboard me-2"></i>Applying for: <?= esc($selectedProgram['title']) ?>
                     </h5>
                     <p class="mb-0">
-                        <strong>Category:</strong> <?= esc($selectedProgram['category'] ?? 'N/A') ?> | 
-                        <strong>Tuition Fee:</strong> 
+                        <strong>Category:</strong> <?= esc($selectedProgram['category'] ?? 'N/A') ?> |
+                        <strong>Tuition Fee:</strong>
                         <?php if ($selectedProgram['discount'] > 0): ?>
                             <span class="text-decoration-line-through">Rp <?= number_format($selectedProgram['tuition_fee'], 0, ',', '.') ?></span>
                             <span class="text-success fw-bold">
@@ -146,10 +146,10 @@
             </div>
         </div>
     <?php endif ?>
-    
+
     <form action="<?= base_url('apply/submit') ?>" method="post" enctype="multipart/form-data">
         <?= csrf_field() ?>
-        
+
         <!-- Personal Information -->
         <div class="card-custom card mb-4">
             <div class="card-header">
@@ -193,7 +193,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Contact Information -->
         <div class="card-custom card mb-4">
             <div class="card-header">
@@ -212,7 +212,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Address -->
         <div class="card-custom card mb-4">
             <div class="card-header">
@@ -243,7 +243,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Emergency Contact -->
         <div class="card-custom card mb-4">
             <div class="card-header">
@@ -266,7 +266,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Family Information -->
         <div class="card-custom card mb-4">
             <div class="card-header">
@@ -285,7 +285,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Course Selection -->
         <div class="card-custom card mb-4">
             <div class="card-header">
@@ -301,7 +301,7 @@
                         <input type="hidden" name="course" value="<?= esc($selectedProgram['title']) ?>">
                         <small class="text-muted">
                             <i class="bi bi-info-circle me-1"></i>
-                            You are applying for this program. 
+                            You are applying for this program.
                             <a href="<?= base_url('apply') ?>">Click here</a> to choose a different program.
                         </small>
                     <?php else: ?>
@@ -325,7 +325,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- File Uploads -->
         <div class="card-custom card mb-4">
             <div class="card-header">
@@ -340,13 +340,13 @@
                     </div>
                     <div class="col-md-6">
                         <label for="documents" class="form-label">Supporting Documents</label>
-                        <input type="file" class="form-control" id="documents" name="documents[]" accept=".pdf,.doc,.docx" multiple>
-                        <small class="text-muted">Accepted: PDF, DOC, DOCX. Max: 5MB per file</small>
+                        <input type="file" class="form-control" id="documents" name="documents[]" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,image/*" multiple>
+                        <small class="text-muted">Accepted: PDF, DOC, DOCX, JPG, PNG, GIF. Max: 5MB per file</small>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <!-- Additional Notes -->
         <div class="card-custom card mb-4">
             <div class="card-header">
@@ -359,7 +359,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="text-center">
             <button type="submit" class="btn btn-dark-red btn-lg px-5">
                 <i class="bi bi-send me-2"></i>Submit Application

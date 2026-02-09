@@ -242,6 +242,7 @@
                             let payableFound = false;
                             response.data.forEach(function(invoice) {
                                 console.log('Invoice:', invoice.invoice_number, 'Status:', invoice.status, 'Type:', invoice.invoice_type);
+                                // Check for payable statuses: unpaid or partially_paid
                                 if (invoice.status === 'unpaid' || invoice.status === 'partially_paid') {
                                     console.log('  -> MATCH: Adding to dropdown');
                                     const typeName = invoice.invoice_type ? invoice.invoice_type.replace(/_/g, ' ').toUpperCase() : 'INVOICE';

@@ -20,8 +20,13 @@ class EmailService
         // Load email configuration
         $this->emailConfig = config('Email');
 
-        // Load encryption for secure tokens
-        $this->encryption = service('encrypter');
+        // Load encryption for secure tokens (with fallback)
+        try {
+            $this->encryption = service('encrypter');
+        } catch (\Exception $e) {
+            log_message('error', 'EmailService: Encryption not available - ' . $e->getMessage());
+            $this->encryption = null;
+        }
     }
 
     /**
@@ -33,6 +38,17 @@ class EmailService
      */
     private function generateInvoiceToken(int $invoiceId, string $email): string
     {
+        // If encryption is not available, return a simple fallback token
+        if ($this->encryption === null) {
+            // Create a simple base64-encoded token without encryption
+            $data = [
+                'invoice_id' => $invoiceId,
+                'email' => $email,
+                'timestamp' => time()
+            ];
+            return rtrim(strtr(base64_encode(json_encode($data)), '+/', '-_'), '=');
+        }
+
         $data = [
             'invoice_id' => $invoiceId,
             'email' => $email,
@@ -40,7 +56,9 @@ class EmailService
             'hash' => hash('sha256', $invoiceId . $email . time() . 'invoice_salt')
         ];
 
-        return $this->encryption->encrypt(json_encode($data));
+        // Encrypt and then encode as URL-safe base64 to avoid disallowed URI characters
+        $encrypted = $this->encryption->encrypt(json_encode($data));
+        return rtrim(strtr(base64_encode($encrypted), '+/', '-_'), '=');
     }
 
     /**
@@ -52,7 +70,9 @@ class EmailService
     public function verifyInvoiceToken(string $token)
     {
         try {
-            $decoded = json_decode($this->encryption->decrypt($token), true);
+            // Decode URL-safe base64 back to raw encrypted data
+            $encrypted = base64_decode(strtr($token, '-_', '+/'));
+            $decoded = json_decode($this->encryption->decrypt($encrypted), true);
 
             if (!$decoded || !isset($decoded['invoice_id'], $decoded['email'], $decoded['timestamp'], $decoded['hash'])) {
                 return false;
@@ -89,9 +109,25 @@ class EmailService
     public function sendInvoiceNotification($invoice, $recipientEmail, $recipientName, $admissionData = [], $invoiceId = null)
     {
         try {
-            // Generate secure token for invoice link
-            $token = $this->generateInvoiceToken($invoiceId, $recipientEmail);
-            $invoiceLink = base_url('invoice/secure/' . $token);
+            // Generate secure token for invoice link, fallback to simple link if encryption fails
+            try {
+                if ($this->encryption !== null) {
+                    $token = $this->generateInvoiceToken($invoiceId, $recipientEmail);
+                    $invoiceLink = base_url('invoice/secure/' . $token);
+                } else {
+                    // Encryption not available, use simple invoice link
+                    $invoiceLink = base_url('invoice/public/' . $invoiceId);
+                }
+            } catch (\Exception $e) {
+                log_message('error', 'Token generation failed, using simple invoice link: ' . $e->getMessage());
+                $invoiceLink = base_url('invoice/public/' . $invoiceId);
+            }
+
+            // Check if email is properly configured
+            if (empty($this->emailConfig->fromEmail) || empty($this->emailConfig->SMTPHost)) {
+                log_message('error', 'Email not configured properly');
+                return false;
+            }
 
             // Set email properties
             $this->email->setFrom($this->emailConfig->fromEmail, $this->emailConfig->fromName);
@@ -105,7 +141,7 @@ class EmailService
 
             // Send email and check result
             if ($this->email->send()) {
-                log_message('info', "Invoice email sent to {$recipientEmail} with secure token");
+                log_message('info', "Invoice email sent to {$recipientEmail}");
 
                 // Clear the email like Shield does
                 $this->email->clear();
@@ -113,11 +149,12 @@ class EmailService
                 return true;
             } else {
                 // Log detailed error information like Shield does
-                log_message('error', "Failed to send invoice email to {$recipientEmail}: " . $this->email->printDebugger(['headers']));
+                $error = $this->email->printDebugger(['headers']);
+                log_message('error', "Failed to send invoice email to {$recipientEmail}: " . $error);
                 return false;
             }
         } catch (\Exception $e) {
-            log_message('error', "Email service error: " . $e->getMessage());
+            log_message('error', 'Email service exception: ' . $e->getMessage());
             return false;
         }
     }

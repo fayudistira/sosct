@@ -9,6 +9,7 @@
         border-radius: 5px;
         margin-bottom: 20px;
     }
+
     .btn-invoice {
         background: linear-gradient(to right, #8B0000, #6B0000);
         color: white;
@@ -20,47 +21,47 @@
     <div class="invoice-header">
         <h3 class="mb-0">Edit Invoice <?= esc($invoice['invoice_number']) ?></h3>
     </div>
-    
+
     <div class="card">
         <div class="card-body">
             <form action="<?= base_url('invoice/update/' . $invoice['id']) ?>" method="post">
                 <?= csrf_field() ?>
-                
+
                 <div class="mb-3">
                     <label class="form-label">Student *</label>
                     <select name="registration_number" class="form-select" required>
                         <?php foreach ($students as $student): ?>
-                            <option value="<?= esc($student['registration_number']) ?>" 
-                                    <?= $student['registration_number'] === $invoice['registration_number'] ? 'selected' : '' ?>>
+                            <option value="<?= esc($student['registration_number']) ?>"
+                                <?= $student['registration_number'] === $invoice['registration_number'] ? 'selected' : '' ?>>
                                 <?= esc($student['full_name']) ?> (<?= esc($student['registration_number']) ?>)
                             </option>
                         <?php endforeach ?>
                     </select>
                 </div>
-                
+
                 <div class="mb-3">
                     <label class="form-label">Description *</label>
-                    <textarea name="description" class="form-control" rows="3" required><?= esc($invoice['description']) ?></textarea>
+                    <textarea name="description" class="form-control" rows="3" required><?= esc((string)($invoice['description'] ?? '')) ?></textarea>
                 </div>
-                
+
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label">Amount *</label>
-                            <input type="number" name="amount" class="form-control" step="0.01" 
-                                   value="<?= esc($invoice['amount']) ?>" required>
+                            <input type="number" name="amount" class="form-control" step="0.01"
+                                value="<?= esc($invoice['amount']) ?>" required>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label">Due Date *</label>
-                            <input type="date" name="due_date" class="form-control" 
-                                   value="<?= esc($invoice['due_date']) ?>" required>
+                            <input type="date" name="due_date" class="form-control"
+                                value="<?= esc($invoice['due_date']) ?>" required>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
@@ -72,12 +73,12 @@
                             </select>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label">Status</label>
-                            <?php 
-                                $isLocked = in_array($invoice['status'], ['paid', 'cancelled']);
+                            <?php
+                            $isLocked = in_array($invoice['status'], ['paid', 'cancelled']);
                             ?>
                             <select name="status" class="form-select" <?= $isLocked ? 'disabled' : '' ?>>
                                 <?php if ($invoice['status'] === 'unpaid'): ?>
@@ -98,7 +99,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="d-flex justify-content-between">
                     <a href="<?= base_url('invoice') ?>" class="btn btn-secondary">Cancel</a>
                     <button type="submit" class="btn btn-invoice">Update Invoice</button>

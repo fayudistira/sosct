@@ -29,7 +29,7 @@
 
 <form action="<?= base_url('admission/update/' . $admission['admission_id']) ?>" method="post" enctype="multipart/form-data">
     <?= csrf_field() ?>
-    
+
     <!-- Personal Information -->
     <div class="dashboard-card mb-3">
         <div class="card-header">
@@ -199,10 +199,10 @@
                     <label class="form-label">Profile Photo</label>
                     <?php if (!empty($admission['photo'])): ?>
                         <div class="mb-2">
-                            <img src="<?= base_url('uploads/' . $admission['photo']) ?>" 
-                                 alt="Current Photo" 
-                                 class="img-thumbnail"
-                                 style="max-height: 100px;">
+                            <img src="<?= base_url('uploads/' . $admission['photo']) ?>"
+                                alt="Current Photo"
+                                class="img-thumbnail"
+                                style="max-height: 100px;">
                         </div>
                     <?php endif ?>
                     <input type="file" name="photo" class="form-control form-control-sm" accept="image/*">
@@ -215,12 +215,26 @@
                 </div>
                 <div class="col-12">
                     <label class="form-label">Applicant Notes</label>
-                    <textarea name="applicant_notes" class="form-control form-control-sm" rows="2"><?= old('applicant_notes', $admission['applicant_notes'] ?? '') ?></textarea>
+                    <?php
+                    $applicantNotesValue = $admission['applicant_notes'] ?? '';
+                    if (is_array($applicantNotesValue)) {
+                        $applicantNotesValue = json_encode($applicantNotesValue);
+                    }
+                    /** @var string $applicantNotesValue */
+                    ?>
+                    <textarea name="applicant_notes" class="form-control form-control-sm" rows="2"><?= old('applicant_notes', $applicantNotesValue) ?></textarea>
                     <small class="text-muted">Notes from the applicant</small>
                 </div>
                 <div class="col-12">
                     <label class="form-label">Admin Notes</label>
-                    <textarea name="notes" class="form-control form-control-sm" rows="2"><?= old('notes', $admission['notes'] ?? '') ?></textarea>
+                    <?php
+                    $adminNotesValue = $admission['notes'] ?? '';
+                    if (is_array($adminNotesValue)) {
+                        $adminNotesValue = json_encode($adminNotesValue);
+                    }
+                    /** @var string $adminNotesValue */
+                    ?>
+                    <textarea name="notes" class="form-control form-control-sm" rows="2"><?= old('notes', $adminNotesValue) ?></textarea>
                     <small class="text-muted">Internal notes for staff only</small>
                 </div>
             </div>

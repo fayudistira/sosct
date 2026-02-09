@@ -9,11 +9,13 @@
         border-radius: 5px;
         margin-bottom: 20px;
     }
+
     .btn-invoice {
         background: linear-gradient(to right, #8B0000, #6B0000);
         color: white;
         border: none;
     }
+
     .btn-invoice:hover {
         background: linear-gradient(to right, #6B0000, #8B0000);
         color: white;
@@ -33,27 +35,27 @@
             </div>
         </div>
     </div>
-    
+
     <?php if (session()->getFlashdata('success')): ?>
         <div class="alert alert-success alert-dismissible fade show">
             <?= session()->getFlashdata('success') ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     <?php endif ?>
-    
+
     <!-- Search and Filter -->
     <div class="card mb-3">
         <div class="card-body">
             <form method="get" action="<?= base_url('invoice') ?>">
                 <div class="row g-3">
                     <div class="col-md-3">
-                        <input type="text" name="search" class="form-control" 
-                               placeholder="Search..." value="<?= esc($keyword ?? '') ?>">
+                        <input type="text" name="search" class="form-control"
+                            placeholder="Search..." value="<?= esc($keyword ?? '') ?>">
                     </div>
                     <div class="col-md-2">
                         <select name="status" class="form-select">
                             <option value="">All Status</option>
-                            <option value="outstanding" <?= ($status ?? '') === 'outstanding' ? 'selected' : '' ?>>Outstanding</option>
+                            <option value="unpaid" <?= ($status ?? '') === 'unpaid' ? 'selected' : '' ?>>Unpaid</option>
                             <option value="paid" <?= ($status ?? '') === 'paid' ? 'selected' : '' ?>>Paid</option>
                             <option value="partially_paid" <?= ($status ?? '') === 'partially_paid' ? 'selected' : '' ?>>Partially Paid</option>
                             <option value="cancelled" <?= ($status ?? '') === 'cancelled' ? 'selected' : '' ?>>Cancelled</option>
@@ -81,7 +83,7 @@
             </form>
         </div>
     </div>
-    
+
     <!-- Invoices Table -->
     <div class="card">
         <div class="card-body">
@@ -111,26 +113,26 @@
                                     <td>Rp <?= number_format($invoice['amount'], 0, ',', '.') ?></td>
                                     <td><?= date('M d, Y', strtotime($invoice['due_date'])) ?></td>
                                     <td>
-                                        <span class="badge bg-<?php 
-                                            if ($invoice['status'] === 'paid') echo 'success';
-                                            elseif ($invoice['status'] === 'partially_paid') echo 'info';
-                                            elseif ($invoice['status'] === 'outstanding') echo 'warning';
-                                            elseif ($invoice['status'] === 'expired') echo 'danger';
-                                            else echo 'secondary';
-                                        ?>">
+                                        <span class="badge bg-<?php
+                                                                if ($invoice['status'] === 'paid') echo 'success';
+                                                                elseif ($invoice['status'] === 'partially_paid') echo 'info';
+                                                                elseif ($invoice['status'] === 'unpaid') echo 'warning';
+                                                                elseif ($invoice['status'] === 'expired') echo 'danger';
+                                                                else echo 'secondary';
+                                                                ?>">
                                             <?= str_replace('_', ' ', ucfirst($invoice['status'])) ?>
                                         </span>
                                     </td>
                                     <td>
-                                        <a href="<?= base_url('invoice/view/' . $invoice['id']) ?>" 
-                                           class="btn btn-sm btn-info" title="View Details"><i class="bi bi-eye"></i></a>
-                                        <a href="<?= base_url('invoice/pdf/' . $invoice['id']) ?>" 
-                                           class="btn btn-sm btn-danger" target="_blank" title="Download PDF"><i class="bi bi-file-pdf"></i></a>
-                                        
-                                        <?php if ($invoice['status'] === 'outstanding' || $invoice['status'] === 'expired'): ?>
-                                            <a href="<?= base_url('invoice/cancel/' . $invoice['id']) ?>" 
-                                               class="btn btn-sm btn-secondary" title="Cancel Invoice" 
-                                               onclick="return confirm('Are you sure you want to cancel this invoice? This action cannot be undone.')">
+                                        <a href="<?= base_url('invoice/view/' . $invoice['id']) ?>"
+                                            class="btn btn-sm btn-info" title="View Details"><i class="bi bi-eye"></i></a>
+                                        <a href="<?= base_url('invoice/pdf/' . $invoice['id']) ?>"
+                                            class="btn btn-sm btn-danger" target="_blank" title="Download PDF"><i class="bi bi-file-pdf"></i></a>
+
+                                        <?php if ($invoice['status'] === 'unpaid' || $invoice['status'] === 'expired'): ?>
+                                            <a href="<?= base_url('invoice/cancel/' . $invoice['id']) ?>"
+                                                class="btn btn-sm btn-secondary" title="Cancel Invoice"
+                                                onclick="return confirm('Are you sure you want to cancel this invoice? This action cannot be undone.')">
                                                 <i class="bi bi-x-circle"></i>
                                             </a>
                                         <?php else: ?>
@@ -149,7 +151,7 @@
                     </tbody>
                 </table>
             </div>
-            
+
             <?php if (isset($pager)): ?>
                 <div class="mt-3">
                     <?= $pager->links() ?>

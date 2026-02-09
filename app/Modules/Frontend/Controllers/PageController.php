@@ -3,31 +3,37 @@
 namespace Modules\Frontend\Controllers;
 
 use App\Controllers\BaseController;
+use Modules\Account\Models\ProfileModel;
+use Modules\Admission\Models\AdmissionModel;
+use Modules\Program\Models\ProgramModel;
+use Modules\Payment\Models\InvoiceModel;
 
 class PageController extends BaseController
 {
-    protected $admissionModel;
+    protected $db;
 
     public function __construct()
     {
-        // Will be loaded after Admission module is created
-        // $this->admissionModel = new \Modules\Admission\Models\AdmissionModel();
+        $this->db = \Config\Database::connect();
     }
 
-    public function home(): string
+    /**
+     * Display homepage
+     */
+    public function index(): string
     {
+        $programModel = new ProgramModel();
+        $programs = $programModel->where('status', 'active')->orderBy('created_at', 'DESC')->findAll();
+
         return view('Modules\Frontend\Views\home', [
-            'title' => 'Home'
+            'title' => 'Welcome',
+            'programs' => $programs
         ]);
     }
 
-    public function about(): string
-    {
-        return view('Modules\Frontend\Views\about', [
-            'title' => 'About Us'
-        ]);
-    }
-
+    /**
+     * Display contact page
+     */
     public function contact(): string
     {
         return view('Modules\Frontend\Views\contact', [
@@ -35,102 +41,52 @@ class PageController extends BaseController
         ]);
     }
 
+    /**
+     * Display about page
+     */
+    public function about(): string
+    {
+        return view('Modules\Frontend\Views\about', [
+            'title' => 'About Us'
+        ]);
+    }
+
+    /**
+     * Handle contact form submission
+     */
+    public function submitContact()
+    {
+        $rules = [
+            'name' => 'required|min_length[3]',
+            'email' => 'required|valid_email',
+            'subject' => 'required|min_length[3]',
+            'message' => 'required|min_length[10]'
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->back()
+                ->withInput()
+                ->with('errors', $this->validator->getErrors());
+        }
+
+        // Here you could send email, save to database, etc.
+        // For now, just show success message
+        return redirect()->to('/contact')
+            ->with('success', 'Thank you for your message! We will get back to you soon.');
+    }
+
+    /**
+     * Display apply form
+     */
     public function apply(): string
     {
-        // Fetch programs from API
-        $programs = $this->fetchProgramsFromAPI();
+        $programModel = new ProgramModel();
+        $programs = $programModel->where('status', 'active')->findAll();
 
         return view('Modules\Frontend\Views\apply', [
             'title' => 'Apply for Admission',
             'programs' => $programs,
-            'selectedProgram' => null,
             'user' => auth()->user()
-        ]);
-    }
-
-    /**
-     * Display programs listing page with category tabs
-     */
-    public function programs(): string
-    {
-        $programModel = new \Modules\Program\Models\ProgramModel();
-
-        // Get selected category and sub-category from query string
-        $selectedCategory = $this->request->getGet('category');
-        $selectedSubCategory = $this->request->getGet('sub_category');
-
-        // Get all active programs
-        $allPrograms = $programModel->where('status', 'active')
-            ->orderBy('category', 'ASC')
-            ->orderBy('sub_category', 'ASC')
-            ->orderBy('title', 'ASC')
-            ->findAll();
-
-        // Group programs by category then by sub_category
-        $programsByCategory = [];
-        $categories = [];
-
-        foreach ($allPrograms as $program) {
-            $category = $program['category'] ?? 'Uncategorized';
-            $subCategory = $program['sub_category'] ?? 'General';
-
-            if (!isset($programsByCategory[$category])) {
-                $programsByCategory[$category] = [
-                    'sub_categories' => [],
-                    'total_programs' => 0
-                ];
-                $categories[] = $category;
-            }
-
-            if (!isset($programsByCategory[$category]['sub_categories'][$subCategory])) {
-                $programsByCategory[$category]['sub_categories'][$subCategory] = [];
-            }
-
-            $programsByCategory[$category]['sub_categories'][$subCategory][] = $program;
-            $programsByCategory[$category]['total_programs']++;
-        }
-
-        // If no category selected, select the first one
-        if (empty($selectedCategory) && !empty($categories)) {
-            $selectedCategory = $categories[0];
-        }
-
-        // If no sub-category selected, select the first one of the selected category
-        if (empty($selectedSubCategory) && !empty($selectedCategory) && !empty($programsByCategory[$selectedCategory]['sub_categories'])) {
-            $subCategories = array_keys($programsByCategory[$selectedCategory]['sub_categories']);
-            $selectedSubCategory = $subCategories[0];
-        }
-
-        return view('Modules\Frontend\Views\Programs\index', [
-            'title' => 'Our Programs',
-            'programsByCategory' => $programsByCategory,
-            'categories' => $categories,
-            'selectedCategory' => $selectedCategory,
-            'selectedSubCategory' => $selectedSubCategory,
-            'totalPrograms' => count($allPrograms)
-        ]);
-    }
-
-    /**
-     * Display program detail page
-     */
-    public function programDetail($id)
-    {
-        // Fetch single program from API
-        $program = $this->fetchProgramFromAPI($id);
-
-        if (!$program || $program['status'] !== 'active') {
-            return redirect()->to('/programs')
-                ->with('error', 'Program not found or not available.');
-        }
-
-        // Calculate final price with discount
-        $finalPrice = $program['tuition_fee'] * (1 - $program['discount'] / 100);
-
-        return view('Modules\Frontend\Views\Programs\detail', [
-            'title' => $program['title'],
-            'program' => $program,
-            'finalPrice' => $finalPrice
         ]);
     }
 
@@ -139,30 +95,14 @@ class PageController extends BaseController
      */
     public function applyWithProgram($programId)
     {
-        // Fetch single program from API
-        $program = $this->fetchProgramFromAPI($programId);
+        $programModel = new ProgramModel();
+        $program = $programModel->find($programId);
 
-        // Debug logging
         if (!$program) {
-            log_message('error', 'Program not found with ID: ' . $programId);
-            return redirect()->to('/programs')
-                ->with('error', 'Program not found.');
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Program not found');
         }
 
-        if (!isset($program['status'])) {
-            log_message('error', 'Program status not set for ID: ' . $programId);
-            return redirect()->to('/programs')
-                ->with('error', 'Program status is not configured.');
-        }
-
-        if ($program['status'] !== 'active') {
-            log_message('error', 'Program is not active. ID: ' . $programId . ', Status: ' . $program['status']);
-            return redirect()->to('/programs')
-                ->with('error', 'This program is currently not available for enrollment.');
-        }
-
-        // Fetch all programs for dropdown
-        $programs = $this->fetchProgramsFromAPI();
+        $programs = $programModel->where('status', 'active')->findAll();
 
         return view('Modules\Frontend\Views\apply', [
             'title' => 'Apply for ' . $program['title'],
@@ -173,38 +113,12 @@ class PageController extends BaseController
     }
 
     /**
-     * Fetch programs from API (optimized - direct model access)
+     * Handle application form submission
      */
-    private function fetchProgramsFromAPI(): array
-    {
-        try {
-            // Direct model access instead of HTTP call for better performance
-            $programModel = new \Modules\Program\Models\ProgramModel();
-            return $programModel->getActivePrograms();
-        } catch (\Exception $e) {
-            log_message('error', 'Failed to fetch programs: ' . $e->getMessage());
-            return [];
-        }
-    }
-
-    /**
-     * Fetch single program from API (optimized - direct model access)
-     */
-    private function fetchProgramFromAPI($id): ?array
-    {
-        try {
-            // Direct model access instead of HTTP call for better performance
-            $programModel = new \Modules\Program\Models\ProgramModel();
-            $program = $programModel->find($id);
-            return $program ?: null;
-        } catch (\Exception $e) {
-            log_message('error', 'Failed to fetch program: ' . $e->getMessage());
-            return null;
-        }
-    }
-
     public function submitApplication()
     {
+        log_message('error', '[Frontend Apply] Starting application submission');
+
         // Load models
         $profileModel = new \Modules\Account\Models\ProfileModel();
         $admissionModel = new \Modules\Admission\Models\AdmissionModel();
@@ -229,14 +143,17 @@ class PageController extends BaseController
             'mother_name' => 'required|min_length[3]|max_length[100]',
             'course' => 'permit_empty|min_length[3]', // Optional - for backward compatibility
             'photo' => 'uploaded[photo]|max_size[photo,2048]|is_image[photo]|mime_in[photo,image/jpg,image/jpeg,image/png]',
-            'documents.*' => 'max_size[documents,5120]|ext_in[documents,pdf,doc,docx]',
+            'documents.*' => 'max_size[documents,5120]|ext_in[documents,pdf,doc,docx,jpg,jpeg,png,gif]',
         ];
 
         if (!$this->validate($rules)) {
+            log_message('error', '[Frontend Apply] Validation failed: ' . json_encode($this->validator->getErrors()));
             return redirect()->back()
                 ->withInput()
                 ->with('errors', $this->validator->getErrors());
         }
+
+        log_message('error', '[Frontend Apply] Validation passed');
 
         // Start database transaction
         $db = \Config\Database::connect();
@@ -295,9 +212,10 @@ class PageController extends BaseController
             ];
 
             $profileId = $profileModel->insert($profileData);
+            log_message('error', '[Frontend Apply] Profile created with ID: ' . $profileId);
 
             if (!$profileId) {
-                throw new \Exception('Failed to create profile');
+                throw new \Exception('Failed to create profile: ' . json_encode($profileModel->errors()));
             }
 
             // STEP 2: Create Admission
@@ -332,6 +250,8 @@ class PageController extends BaseController
                 throw new \Exception('Program selection is required');
             }
 
+            log_message('error', '[Frontend Apply] Selected program: ' . $program['title']);
+
             $admissionData = [
                 'registration_number' => $admissionModel->generateRegistrationNumber(),
                 'profile_id' => $profileId,
@@ -342,9 +262,10 @@ class PageController extends BaseController
             ];
 
             $admissionId = $admissionModel->insert($admissionData);
+            log_message('error', '[Frontend Apply] Admission created with ID: ' . $admissionId);
 
             if (!$admissionId) {
-                throw new \Exception('Failed to create admission');
+                throw new \Exception('Failed to create admission: ' . json_encode($admissionModel->errors()));
             }
 
             // STEP 3: Auto-generate Invoice
@@ -365,17 +286,14 @@ class PageController extends BaseController
                     'amount' => $totalAmount,
                     'due_date' => date('Y-m-d', strtotime('+3 days')), // Due in 3 days
                     'invoice_type' => 'tuition_fee',
-                    'status' => 'outstanding'
+                    'status' => 'unpaid'
                 ];
 
-                log_message('error', '[Frontend Apply] Creating invoice with data: ' . json_encode($invoiceData));
-
                 $invoiceId = $invoiceModel->createInvoice($invoiceData);
+                log_message('error', '[Frontend Apply] Invoice created with ID: ' . $invoiceId);
 
                 if (!$invoiceId) {
-                    log_message('error', '[Frontend Apply] Invoice creation FAILED. Errors: ' . json_encode($invoiceModel->errors()));
-                } else {
-                    log_message('error', '[Frontend Apply] Invoice created successfully with ID: ' . $invoiceId);
+                    log_message('error', '[Frontend Apply] Invoice creation FAILED: ' . json_encode($invoiceModel->errors()));
                 }
             } else {
                 log_message('error', '[Frontend Apply] Skipping invoice creation - totalAmount is 0');
@@ -384,43 +302,45 @@ class PageController extends BaseController
             // Commit transaction
             $db->transComplete();
 
+            log_message('error', '[Frontend Apply] Transaction status: ' . ($db->transStatus() ? 'SUCCESS' : 'FAILED'));
+
             if ($db->transStatus() === false) {
-                throw new \Exception('Transaction failed');
+                throw new \Exception('Transaction failed - database error');
             }
 
-            // Send Invoice Email to Applicant
-            if ($totalAmount > 0) {
+            // Send confirmation email with invoice link using EmailService
+            log_message('error', '[Frontend Apply] Preparing to send email to: ' . $this->request->getPost('email'));
+
+            try {
                 $emailService = new \App\Services\EmailService();
-                $invoiceModel = new \Modules\Payment\Models\InvoiceModel();
-                $invoiceDetails = $invoiceModel->where('registration_number', $admissionData['registration_number'])->first();
 
-                if ($invoiceDetails) {
-                    $emailData = [
-                        'amount' => $invoiceDetails['amount'],
-                        'due_date' => $invoiceDetails['due_date'],
-                        'description' => $invoiceDetails['description']
-                    ];
+                $invoiceData = [
+                    'amount' => $totalAmount,
+                    'due_date' => date('Y-m-d', strtotime('+3 days')),
+                    'description' => $program['title'] ?? 'Program Registration'
+                ];
 
-                    $admissionContext = [
-                        'registration_number' => $admissionData['registration_number'],
-                        'program_title' => $program['title']
-                    ];
+                $emailAdmissionData = [
+                    'registration_number' => $admissionData['registration_number'],
+                    'program_title' => $program['title'] ?? 'N/A'
+                ];
 
-                    // Send email (async - doesn't block if it fails)
-                    $emailService->sendInvoiceNotification(
-                        $emailData,
-                        $profileData['email'],
-                        $profileData['full_name'],
-                        $admissionContext,
-                        $invoiceId
-                    );
+                $emailSent = $emailService->sendInvoiceNotification(
+                    $invoiceData,
+                    $this->request->getPost('email'),
+                    $this->request->getPost('full_name'),
+                    $emailAdmissionData,
+                    $invoiceId
+                );
 
-                    log_message('info', 'Invoice email sent to ' . $profileData['email'] . ' for registration ' . $admissionData['registration_number']);
-                }
+                log_message('error', '[Frontend Apply] Email send result: ' . ($emailSent ? 'SUCCESS' : 'FAILED'));
+            } catch (\Exception $emailEx) {
+                log_message('error', '[Frontend Apply] Email exception: ' . $emailEx->getMessage());
+                // Continue even if email fails - don't let it break the flow
             }
 
             // Success - redirect to public invoice if it exists, otherwise success page
-            if (isset($invoiceId) && $invoiceId) {
+            if (!empty($invoiceId)) {
                 return redirect()->to('invoice/public/' . $invoiceId)
                     ->with('success', 'Your application has been submitted successfully!')
                     ->with('registration_number', $admissionData['registration_number']);
@@ -432,7 +352,8 @@ class PageController extends BaseController
         } catch (\Exception $e) {
             // Rollback transaction
             $db->transRollback();
-            log_message('error', 'Application submission failed: ' . $e->getMessage());
+            log_message('error', '[Frontend Apply] Exception: ' . $e->getMessage());
+            log_message('error', '[Frontend Apply] Stack trace: ' . $e->getTraceAsString());
 
             return redirect()->back()
                 ->withInput()
@@ -440,29 +361,89 @@ class PageController extends BaseController
         }
     }
 
+    /**
+     * Display application success page
+     */
     public function applySuccess(): string
     {
         $registrationNumber = session('registration_number');
-        $admission = null;
-        $invoices = [];
-
-        if ($registrationNumber) {
-            $admissionModel = new \Modules\Admission\Models\AdmissionModel();
-            $admission = $admissionModel->getByRegistrationNumber((string)$registrationNumber);
-
-            $invoiceModel = new \Modules\Payment\Models\InvoiceModel();
-            // Get all invoices for this registration, including paid ones
-            $invoices = $invoiceModel->where('registration_number', $registrationNumber)
-                ->where('deleted_at IS NULL', null, false)
-                ->orderBy('created_at', 'DESC')
-                ->findAll();
-        }
 
         return view('Modules\Frontend\Views\apply_success', [
             'title' => 'Application Submitted',
-            'registrationNumber' => $registrationNumber,
-            'admission' => $admission,
-            'invoices' => $invoices
+            'registrationNumber' => $registrationNumber
+        ]);
+    }
+
+    /**
+     * Programs listing
+     */
+    public function programs(): string
+    {
+        $programModel = new ProgramModel();
+        $programs = $programModel->where('status', 'active')->orderBy('created_at', 'DESC')->findAll();
+
+        // Build data structure expected by the view
+        $programsByCategory = [];
+        $categories = [];
+        $totalPrograms = count($programs);
+
+        foreach ($programs as $program) {
+            $category = !empty($program['category']) ? $program['category'] : 'General';
+            $subCategory = !empty($program['sub_category']) ? $program['sub_category'] : 'Standard';
+
+            // Add category to list if not exists
+            if (!in_array($category, $categories)) {
+                $categories[] = $category;
+                $programsByCategory[$category] = [
+                    'total_programs' => 0,
+                    'sub_categories' => []
+                ];
+            }
+
+            // Add sub-category to list if not exists
+            if (!isset($programsByCategory[$category]['sub_categories'][$subCategory])) {
+                $programsByCategory[$category]['sub_categories'][$subCategory] = [];
+            }
+
+            // Add program to sub-category
+            $programsByCategory[$category]['sub_categories'][$subCategory][] = $program;
+            $programsByCategory[$category]['total_programs']++;
+        }
+
+        // Sort categories and sub-categories
+        sort($categories);
+        foreach ($categories as $category) {
+            ksort($programsByCategory[$category]['sub_categories']);
+        }
+
+        // Default selected category (first one or 'All')
+        $selectedCategory = !empty($categories) ? $categories[0] : 'General';
+
+        return view('Modules\Frontend\Views\Programs\index', [
+            'title' => 'Our Programs',
+            'programs' => $programs,
+            'totalPrograms' => $totalPrograms,
+            'categories' => $categories,
+            'programsByCategory' => $programsByCategory,
+            'selectedCategory' => $selectedCategory
+        ]);
+    }
+
+    /**
+     * Program details
+     */
+    public function programDetail($id): string
+    {
+        $programModel = new ProgramModel();
+        $program = $programModel->find($id);
+
+        if (!$program) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Program not found');
+        }
+
+        return view('Modules\Frontend\Views\Programs\detail', [
+            'title' => $program['title'],
+            'program' => $program
         ]);
     }
 }

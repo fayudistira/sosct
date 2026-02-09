@@ -39,8 +39,8 @@ class CreateInvoicesTable extends Migration
             ],
             'status' => [
                 'type' => 'ENUM',
-                'constraint' => ['outstanding', 'paid', 'cancelled', 'expired', 'partially_paid'],
-                'default' => 'outstanding',
+                'constraint' => ['unpaid', 'paid', 'cancelled', 'expired', 'partially_paid'],
+                'default' => 'unpaid',
             ],
             'created_at' => [
                 'type' => 'DATETIME',

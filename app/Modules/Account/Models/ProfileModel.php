@@ -11,7 +11,7 @@ class ProfileModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
     protected $useSoftDeletes = true;
-    
+
     protected $allowedFields = [
         'profile_number',
         'user_id',
@@ -38,12 +38,12 @@ class ProfileModel extends Model
         'photo',
         'documents'
     ];
-    
+
     protected $useTimestamps = true;
     protected $createdField = 'created_at';
     protected $updatedField = 'updated_at';
     protected $deletedField = 'deleted_at';
-    
+
     protected $validationRules = [
         'id' => 'permit_empty|is_natural_no_zero',
         'profile_number' => 'permit_empty|is_unique[profiles.profile_number,id,{id}]',
@@ -65,7 +65,7 @@ class ProfileModel extends Model
         'father_name' => 'permit_empty|max_length[100]',
         'mother_name' => 'permit_empty|max_length[100]'
     ];
-    
+
     protected $validationMessages = [
         'email' => [
             'is_unique' => 'This email is already registered.'
@@ -85,12 +85,12 @@ class ProfileModel extends Model
     {
         $year = date('Y');
         $prefix = "PROF-{$year}-";
-        
+
         // Get the last profile number for current year
         $lastRecord = $this->like('profile_number', $prefix)
-                          ->orderBy('id', 'DESC')
-                          ->first();
-        
+            ->orderBy('id', 'DESC')
+            ->first();
+
         if ($lastRecord) {
             // Extract the number part and increment
             $lastNumber = (int) substr($lastRecord['profile_number'], -4);
@@ -99,7 +99,7 @@ class ProfileModel extends Model
             // First profile of the year
             $newNumber = 1;
         }
-        
+
         // Format with leading zeros (4 digits)
         return $prefix . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
     }
@@ -128,28 +128,28 @@ class ProfileModel extends Model
         if (!$file->isValid()) {
             return false;
         }
-        
+
         $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
         if (!in_array($file->getMimeType(), $allowedTypes)) {
             return false;
         }
-        
+
         if ($file->getSize() > 2048 * 1024) {
             return false;
         }
-        
+
         $uploadPath = FCPATH . 'uploads/profiles/photos/';
-        
+
         if (!is_dir($uploadPath)) {
             mkdir($uploadPath, 0755, true);
         }
-        
+
         $newName = $file->getRandomName();
-        
+
         if ($file->move($uploadPath, $newName)) {
             return 'profiles/photos/' . $newName;
         }
-        
+
         return false;
     }
 
@@ -161,28 +161,36 @@ class ProfileModel extends Model
         if (!$file->isValid()) {
             return false;
         }
-        
-        $allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+
+        $allowedTypes = [
+            'application/pdf',
+            'image/jpeg',
+            'image/jpg',
+            'image/png',
+            'image/gif',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        ];
         if (!in_array($file->getMimeType(), $allowedTypes)) {
             return false;
         }
-        
+
         if ($file->getSize() > 5120 * 1024) {
             return false;
         }
-        
+
         $uploadPath = FCPATH . 'uploads/profiles/documents/';
-        
+
         if (!is_dir($uploadPath)) {
             mkdir($uploadPath, 0755, true);
         }
-        
+
         $newName = $file->getRandomName();
-        
+
         if ($file->move($uploadPath, $newName)) {
             return 'profiles/documents/' . $newName;
         }
-        
+
         return false;
     }
 }

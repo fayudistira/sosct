@@ -24,7 +24,7 @@
                         <div>
                             <h6 class="mb-1 fw-bold text-primary"><i class="bi bi-magic me-2"></i>Testing Tool: Autofill From JSON</h6>
                             <p class="small mb-0 text-muted">
-                                Upload a <code>.txt</code> file to populate the form. 
+                                Upload a <code>.txt</code> file to populate the form.
                                 <a href="<?= base_url('templates/admission_autofill_template.txt') ?>" download class="text-decoration-none ms-1 fw-bold">
                                     <i class="bi bi-download me-1"></i>Download Template
                                 </a>
@@ -38,7 +38,7 @@
             </div>
         </div>
     </div>
-    
+
     <script>
         document.getElementById('autofill_file').addEventListener('change', function(event) {
             const file = event.target.files[0];
@@ -49,7 +49,7 @@
                 try {
                     const data = JSON.parse(e.target.result);
                     const form = document.querySelector('form[action$="admission/store"]');
-                    
+
                     if (!form) {
                         alert('Form not found!');
                         return;
@@ -57,7 +57,7 @@
 
                     // Reset selected file if something goes wrong
                     const inputEl = event.target;
-                    
+
                     let filledCount = 0;
                     for (const key in data) {
                         const input = form.querySelector(`[name="${key}"], [name="${key}[]"]`);
@@ -82,7 +82,7 @@
                             }
                         }
                     }
-                    
+
                     // Specific handling for 'course' since it might trigger Select2 if present
                     if (data.course) {
                         const courseSelect = form.querySelector('select[name="course"]');
@@ -91,18 +91,18 @@
                             courseSelect.dispatchEvent(new Event('change'));
                         }
                     }
-                    
+
                     // Show a quick success feedback
                     const feedback = document.createElement('div');
                     feedback.className = 'alert alert-success mt-2 mb-0 py-2 small fw-medium';
                     feedback.innerHTML = `<i class="bi bi-check-circle me-1"></i> Form autofilled with ${filledCount} values!`;
                     inputEl.parentElement.appendChild(feedback);
-                    
+
                     // Clear file input so it can be re-selected if file changes
                     inputEl.value = '';
-                    
+
                     setTimeout(() => feedback.remove(), 4000);
-                    
+
                 } catch (err) {
                     alert('Error parsing JSON file. Please ensure it is a valid JSON format.\n\nError: ' + err.message);
                 }
@@ -127,7 +127,7 @@
 
 <form action="<?= base_url('admission/store') ?>" method="post" enctype="multipart/form-data">
     <?= csrf_field() ?>
-    
+
     <!-- Personal Information -->
     <div class="dashboard-card mb-3">
         <div class="card-header">
@@ -296,8 +296,8 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Supporting Documents</label>
-                    <input type="file" name="documents[]" class="form-control form-control-sm" accept=".pdf,.doc,.docx" multiple>
-                    <small class="text-muted">Accepted formats: PDF, DOC, DOCX</small>
+                    <input type="file" name="documents[]" class="form-control form-control-sm" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,image/*" multiple>
+                    <small class="text-muted">Accepted formats: PDF, DOC, DOCX, JPG, PNG, GIF (Max 5MB each)</small>
                 </div>
                 <div class="col-12">
                     <label class="form-label">Notes</label>

@@ -402,7 +402,7 @@
                 <?php else: ?>
                     <tr>
                         <td>
-                            <strong><?= esc($invoice['description']) ?></strong>
+                            <strong><?= esc((string)($invoice['description'] ?? '')) ?></strong>
                             <?php if (!empty($invoice['notes'])): ?>
                                 <br><small style="color: #666;"><?= nl2br(esc((string)($invoice['notes'] ?? ''))) ?></small>
                             <?php endif ?>

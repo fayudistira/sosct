@@ -209,7 +209,7 @@ class AdmissionController extends BaseController
                     'amount' => $regFee,
                     'due_date' => date('Y-m-d', strtotime('+3 days')), // 3 days to pay
                     'invoice_type' => 'registration_fee',
-                    'status' => 'outstanding'
+                    'status' => 'unpaid'
                 ];
 
                 if (!$invoiceModel->createInvoice($invoiceData)) {

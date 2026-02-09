@@ -9,12 +9,12 @@ class UpdateInvoicesStatusEnum extends Migration
     public function up()
     {
         // Modify status enum to include new values
-        $this->db->query("ALTER TABLE invoices MODIFY COLUMN status ENUM('outstanding', 'paid', 'cancelled', 'expired', 'partially_paid') DEFAULT 'outstanding'");
+        $this->db->query("ALTER TABLE invoices MODIFY COLUMN status ENUM('unpaid', 'paid', 'cancelled', 'expired', 'partially_paid') DEFAULT 'unpaid'");
     }
 
     public function down()
     {
         // Revert to old status enum
-        $this->db->query("ALTER TABLE invoices MODIFY COLUMN status ENUM('unpaid', 'paid', 'cancelled') DEFAULT 'unpaid'");
+        $this->db->query("ALTER TABLE invoices MODIFY COLUMN status ENUM('outstanding', 'paid', 'cancelled') DEFAULT 'outstanding'");
     }
 }

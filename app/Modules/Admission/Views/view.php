@@ -47,7 +47,7 @@
                         <div class="p-3 border rounded" style="background-color: var(--light-red);">
                             <div class="stat-label mb-2">Status</div>
                             <?php
-                            $badgeClass = match($admission['status']) {
+                            $badgeClass = match ($admission['status']) {
                                 'pending' => 'bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25',
                                 'approved' => 'bg-success bg-opacity-10 text-success border border-success border-opacity-25',
                                 'rejected' => 'bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25',
@@ -211,13 +211,27 @@
                 <?php if (!empty($admission['applicant_notes'])): ?>
                     <div class="mt-3">
                         <label class="stat-label">Applicant Notes</label>
-                        <div class="fw-medium"><?= nl2br(esc($admission['applicant_notes'])) ?></div>
+                        <?php
+                        $applicantNotes = $admission['applicant_notes'];
+                        if (is_array($applicantNotes)) {
+                            $applicantNotes = json_encode($applicantNotes);
+                        }
+                        /** @var string $applicantNotes */
+                        ?>
+                        <div class="fw-medium"><?= nl2br(esc($applicantNotes)) ?></div>
                     </div>
                 <?php endif ?>
                 <?php if (!empty($admission['notes'])): ?>
                     <div class="mt-3">
                         <label class="stat-label">Admin Notes</label>
-                        <div class="fw-medium"><?= nl2br(esc($admission['notes'])) ?></div>
+                        <?php
+                        $adminNotes = $admission['notes'];
+                        if (is_array($adminNotes)) {
+                            $adminNotes = json_encode($adminNotes);
+                        }
+                        /** @var string $adminNotes */
+                        ?>
+                        <div class="fw-medium"><?= nl2br(esc($adminNotes)) ?></div>
                     </div>
                 <?php endif ?>
             </div>
@@ -233,10 +247,10 @@
             </div>
             <div class="card-body text-center">
                 <?php if (!empty($admission['photo'])): ?>
-                    <img src="<?= base_url('uploads/' . $admission['photo']) ?>" 
-                         alt="Profile Photo" 
-                         class="img-fluid rounded"
-                         style="max-height: 300px; border: 2px solid var(--border-color);">
+                    <img src="<?= base_url('uploads/' . $admission['photo']) ?>"
+                        alt="Profile Photo"
+                        class="img-fluid rounded"
+                        style="max-height: 300px; border: 2px solid var(--border-color);">
                 <?php else: ?>
                     <div class="p-5 border rounded" style="background-color: var(--light-red);">
                         <i class="bi bi-person-circle" style="font-size: 4rem; color: var(--dark-red);"></i>
@@ -260,8 +274,8 @@
                                     <i class="bi bi-file-pdf text-danger me-2"></i>
                                     Document <?= $index + 1 ?>
                                 </span>
-                                <a href="<?= base_url('admission/download/' . $admission['admission_id'] . '/' . $doc) ?>" 
-                                   class="btn btn-outline-dark-red btn-sm">
+                                <a href="<?= base_url('admission/download/' . $admission['admission_id'] . '/' . $doc) ?>"
+                                    class="btn btn-outline-dark-red btn-sm">
                                     <i class="bi bi-download"></i>
                                 </a>
                             </div>
@@ -322,62 +336,62 @@
 </div>
 
 <script>
-document.getElementById('saveStatusBtn').addEventListener('click', function() {
-    const newStatus = document.getElementById('newStatus').value;
-    const notes = document.getElementById('statusNotes').value;
-    const admissionId = <?= $admission['admission_id'] ?>;
-    const saveBtn = this;
-    
-    // Disable button and show loading
-    saveBtn.disabled = true;
-    saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Updating...';
-    
-    // Send AJAX request
-    fetch('<?= base_url('admission/update-status') ?>', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': '<?= csrf_hash() ?>'
-        },
-        body: JSON.stringify({
-            admission_id: admissionId,
-            status: newStatus,
-            notes: notes
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Close modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('changeStatusModal'));
-            modal.hide();
-            
-            // Show success message
-            const alertDiv = document.createElement('div');
-            alertDiv.className = 'alert alert-success alert-dismissible fade show';
-            alertDiv.innerHTML = `
+    document.getElementById('saveStatusBtn').addEventListener('click', function() {
+        const newStatus = document.getElementById('newStatus').value;
+        const notes = document.getElementById('statusNotes').value;
+        const admissionId = <?= $admission['admission_id'] ?>;
+        const saveBtn = this;
+
+        // Disable button and show loading
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Updating...';
+
+        // Send AJAX request
+        fetch('<?= base_url('admission/update-status') ?>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': '<?= csrf_hash() ?>'
+                },
+                body: JSON.stringify({
+                    admission_id: admissionId,
+                    status: newStatus,
+                    notes: notes
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('changeStatusModal'));
+                    modal.hide();
+
+                    // Show success message
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-success alert-dismissible fade show';
+                    alertDiv.innerHTML = `
                 <i class="bi bi-check-circle me-2"></i>${data.message}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             `;
-            document.querySelector('.row.mb-4').after(alertDiv);
-            
-            // Reload page after 1 second
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
-        } else {
-            alert('Error: ' + (data.message || 'Failed to update status'));
-            saveBtn.disabled = false;
-            saveBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i> Update Status';
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while updating the status');
-        saveBtn.disabled = false;
-        saveBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i> Update Status';
+                    document.querySelector('.row.mb-4').after(alertDiv);
+
+                    // Reload page after 1 second
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    alert('Error: ' + (data.message || 'Failed to update status'));
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i> Update Status';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating the status');
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i> Update Status';
+            });
     });
-});
 </script>
 <?= $this->endSection() ?>
