@@ -1,6 +1,13 @@
 <?= $this->extend('Modules\Frontend\Views\layout') ?>
 
 <?= $this->section('content') ?>
+<?php
+// Calculate final price with discount
+$finalPrice = $program['tuition_fee'];
+if (!empty($program['discount']) && $program['discount'] > 0) {
+    $finalPrice = $program['tuition_fee'] * (1 - $program['discount'] / 100);
+}
+?>
 <!-- Breadcrumb -->
 <div class="bg-light py-2 border-bottom">
     <div class="container">
@@ -22,24 +29,24 @@
             <!-- Program Image -->
             <div class="card border-0 shadow-sm mb-3 overflow-hidden">
                 <?php if (!empty($program['thumbnail'])): ?>
-                    <img src="<?= base_url('uploads/programs/thumbs/' . $program['thumbnail']) ?>" 
-                         alt="<?= esc($program['title']) ?>" 
-                         class="card-img-top"
-                         style="width: 100%; height: 220px; object-fit: cover;">
+                    <img src="<?= base_url('uploads/programs/thumbs/' . $program['thumbnail']) ?>"
+                        alt="<?= esc($program['title']) ?>"
+                        class="card-img-top"
+                        style="width: 100%; height: 220px; object-fit: cover;">
                 <?php else: ?>
-                    <?php 
+                    <?php
                     // Generate a consistent random seed based on program ID for consistent images
                     $seed = crc32($program['id']);
                     $randomId = ($seed % 1000) + 1;
                     ?>
-                    <img src="https://picsum.photos/seed/<?= $randomId ?>/800/600" 
-                         alt="<?= esc($program['title']) ?>" 
-                         class="card-img-top"
-                         style="width: 100%; height: 220px; object-fit: cover;"
-                         loading="lazy">
+                    <img src="https://picsum.photos/seed/<?= $randomId ?>/800/600"
+                        alt="<?= esc($program['title']) ?>"
+                        class="card-img-top"
+                        style="width: 100%; height: 220px; object-fit: cover;"
+                        loading="lazy">
                 <?php endif ?>
             </div>
-            
+
             <!-- Quick Info Card -->
             <div class="card border-0 shadow-sm sticky-info mb-3">
                 <div class="card-header text-white py-2" style="background: linear-gradient(135deg, var(--dark-red) 0%, var(--medium-red) 100%);">
@@ -55,7 +62,7 @@
                             <span class="fw-bold small">Rp <?= number_format($program['registration_fee'], 0, ',', '.') ?></span>
                         </div>
                     </div>
-                    
+
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
                             <i class="bi bi-credit-card fs-5 text-success"></i>
@@ -82,35 +89,35 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Action Buttons -->
             <div class="card border-0 shadow-sm action-card-compact">
                 <div class="card-body p-3">
                     <div class="d-grid gap-2">
-                        <a href="<?= base_url('apply/' . $program['id']) ?>" 
-                           class="btn btn-apply-compact">
+                        <a href="<?= base_url('apply/' . $program['id']) ?>"
+                            class="btn btn-apply-compact">
                             <i class="bi bi-pencil-square me-1"></i>Apply Now
                         </a>
-                        <a href="https://wa.me/<?= config('App')->adminWhatsApp ?? '6281234567890' ?>?text=<?= urlencode("Hello, I'm interested in the " . $program['title'] . " program.") ?>" 
-                           target="_blank"
-                           class="btn btn-success-compact">
+                        <a href="https://wa.me/<?= config('App')->adminWhatsApp ?? '6281234567890' ?>?text=<?= urlencode("Hello, I'm interested in the " . $program['title'] . " program.") ?>"
+                            target="_blank"
+                            class="btn btn-success-compact">
                             <i class="bi bi-whatsapp me-1"></i>Ask via WhatsApp
                         </a>
-                        <a href="<?= base_url('programs') ?>" 
-                           class="btn btn-outline-secondary btn-sm">
+                        <a href="<?= base_url('programs') ?>"
+                            class="btn btn-outline-secondary btn-sm">
                             <i class="bi bi-arrow-left me-1"></i>Back to Programs
                         </a>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <!-- Right Column: Program Details -->
         <div class="col-lg-8">
             <!-- Program Title -->
             <div class="mb-3">
                 <h2 class="fw-bold mb-2" style="color: #2c3e50; font-size: 1.75rem;"><?= esc($program['title']) ?></h2>
-                
+
                 <!-- Meta Badges -->
                 <div class="d-flex flex-wrap gap-2 align-items-center">
                     <?php if (!empty($program['mode'])): ?>
@@ -124,13 +131,13 @@
                             </span>
                         <?php endif ?>
                     <?php endif ?>
-                    
+
                     <?php if (!empty($program['category'])): ?>
                         <span class="badge px-2 py-1" style="background-color: var(--dark-red); font-size: 0.75rem;">
                             <i class="bi bi-bookmark-fill me-1"></i><?= esc($program['category']) ?>
                         </span>
                     <?php endif ?>
-                    
+
                     <?php if (!empty($program['sub_category'])): ?>
                         <span class="badge bg-secondary px-2 py-1" style="font-size: 0.75rem;">
                             <i class="bi bi-tag me-1"></i><?= esc($program['sub_category']) ?>
@@ -138,7 +145,7 @@
                     <?php endif ?>
                 </div>
             </div>
-            
+
             <!-- Description -->
             <?php if (!empty($program['description'])): ?>
                 <div class="card border-0 shadow-sm mb-3">
@@ -150,11 +157,12 @@
                     </div>
                 </div>
             <?php endif ?>
-            
+
             <!-- Features, Facilities, Extra Facilities in Tabs -->
-            <?php if ((!empty($program['features']) && is_array($program['features'])) || 
-                      (!empty($program['facilities']) && is_array($program['facilities'])) || 
-                      (!empty($program['extra_facilities']) && is_array($program['extra_facilities']))): ?>
+            <?php if ((!empty($program['features']) && is_array($program['features'])) ||
+                (!empty($program['facilities']) && is_array($program['facilities'])) ||
+                (!empty($program['extra_facilities']) && is_array($program['extra_facilities']))
+            ): ?>
                 <div class="card border-0 shadow-sm mb-3">
                     <div class="card-body p-3">
                         <ul class="nav nav-pills nav-fill mb-3" id="programTabs" role="tablist">
@@ -180,7 +188,7 @@
                                 </li>
                             <?php endif ?>
                         </ul>
-                        
+
                         <div class="tab-content" id="programTabsContent">
                             <?php if (!empty($program['features']) && is_array($program['features'])): ?>
                                 <div class="tab-pane fade show active" id="features" role="tabpanel">
@@ -196,7 +204,7 @@
                                     </div>
                                 </div>
                             <?php endif ?>
-                            
+
                             <?php if (!empty($program['facilities']) && is_array($program['facilities'])): ?>
                                 <div class="tab-pane fade <?= empty($program['features']) ? 'show active' : '' ?>" id="facilities" role="tabpanel">
                                     <div class="row g-2">
@@ -211,7 +219,7 @@
                                     </div>
                                 </div>
                             <?php endif ?>
-                            
+
                             <?php if (!empty($program['extra_facilities']) && is_array($program['extra_facilities'])): ?>
                                 <div class="tab-pane fade <?= empty($program['features']) && empty($program['facilities']) ? 'show active' : '' ?>" id="extra" role="tabpanel">
                                     <div class="row g-2">
@@ -230,7 +238,7 @@
                     </div>
                 </div>
             <?php endif ?>
-            
+
             <!-- Curriculum -->
             <?php if (!empty($program['curriculum']) && is_array($program['curriculum'])): ?>
                 <div class="card border-0 shadow-sm mb-3">
@@ -242,18 +250,18 @@
                             <?php foreach ($program['curriculum'] as $index => $chapter): ?>
                                 <div class="accordion-item border rounded mb-2">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button <?= $index !== 0 ? 'collapsed' : '' ?> py-2 small" 
-                                                type="button" 
-                                                data-bs-toggle="collapse" 
-                                                data-bs-target="#chapter-<?= $index ?>" 
-                                                aria-expanded="<?= $index === 0 ? 'true' : 'false' ?>">
+                                        <button class="accordion-button <?= $index !== 0 ? 'collapsed' : '' ?> py-2 small"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#chapter-<?= $index ?>"
+                                            aria-expanded="<?= $index === 0 ? 'true' : 'false' ?>">
                                             <span class="badge bg-dark me-2" style="font-size: 0.7rem;"><?= $index + 1 ?></span>
                                             <strong style="font-size: 0.9rem;"><?= esc($chapter['chapter']) ?></strong>
                                         </button>
                                     </h2>
-                                    <div id="chapter-<?= $index ?>" 
-                                         class="accordion-collapse collapse <?= $index === 0 ? 'show' : '' ?>" 
-                                         data-bs-parent="#curriculumAccordion">
+                                    <div id="chapter-<?= $index ?>"
+                                        class="accordion-collapse collapse <?= $index === 0 ? 'show' : '' ?>"
+                                        data-bs-parent="#curriculumAccordion">
                                         <div class="accordion-body py-2 px-3">
                                             <p class="text-muted mb-0 small">
                                                 <i class="bi bi-info-circle me-1"></i>
@@ -272,169 +280,169 @@
 </div>
 
 <style>
-/* Breadcrumb Styling */
-.breadcrumb {
-    background-color: transparent;
-    padding: 0;
-    font-size: 0.85rem;
-}
-
-.breadcrumb-item + .breadcrumb-item::before {
-    content: "›";
-    color: #6c757d;
-}
-
-.breadcrumb-item a {
-    color: var(--dark-red);
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
-
-.breadcrumb-item a:hover {
-    color: var(--medium-red);
-}
-
-.breadcrumb-item.active {
-    color: #6c757d;
-}
-
-/* Sticky Info Card */
-.sticky-info {
-    position: sticky;
-    top: 20px;
-}
-
-/* Feature Items Compact */
-.feature-item-compact {
-    display: flex;
-    align-items: start;
-    padding: 0.4rem 0.6rem;
-    background-color: #f8f9fa;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-    font-size: 0.85rem;
-}
-
-.feature-item-compact:hover {
-    background-color: #e9ecef;
-    transform: translateX(3px);
-}
-
-.feature-item-compact i {
-    font-size: 0.9rem;
-    margin-top: 2px;
-    margin-right: 0.5rem;
-}
-
-.feature-item-compact span {
-    flex: 1;
-    color: #495057;
-}
-
-/* Action Card Compact */
-.action-card-compact {
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-    border: 1px solid #e0e0e0 !important;
-}
-
-/* Apply Button Compact */
-.btn-apply-compact {
-    background: linear-gradient(135deg, var(--dark-red) 0%, var(--medium-red) 100%);
-    border: none;
-    color: white;
-    font-weight: 600;
-    padding: 0.6rem 1rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(139, 0, 0, 0.2);
-    font-size: 0.9rem;
-}
-
-.btn-apply-compact:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(139, 0, 0, 0.3);
-    color: white;
-}
-
-/* WhatsApp Button Compact */
-.btn-success-compact {
-    background-color: #25d366;
-    border: none;
-    color: white;
-    font-weight: 600;
-    padding: 0.6rem 1rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(37, 211, 102, 0.2);
-    font-size: 0.9rem;
-}
-
-.btn-success-compact:hover {
-    background-color: #20ba5a;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
-    color: white;
-}
-
-/* Card Hover Effects */
-.card {
-    transition: all 0.2s ease;
-}
-
-.card:hover {
-    transform: translateY(-1px);
-}
-
-/* Tabs Styling */
-.nav-pills .nav-link {
-    color: #6c757d;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-}
-
-.nav-pills .nav-link:hover {
-    background-color: #f8f9fa;
-}
-
-.nav-pills .nav-link.active {
-    background: linear-gradient(135deg, var(--dark-red) 0%, var(--medium-red) 100%);
-}
-
-/* Curriculum Accordion Compact */
-.accordion-item {
-    border: 1px solid #e0e0e0 !important;
-}
-
-.accordion-button {
-    background-color: #f8f9fa;
-    color: #2c3e50;
-    font-weight: 500;
-}
-
-.accordion-button:not(.collapsed) {
-    background-color: var(--light-red);
-    color: var(--dark-red);
-    box-shadow: none;
-}
-
-.accordion-button:focus {
-    box-shadow: none;
-    border-color: var(--dark-red);
-}
-
-.accordion-button::after {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%238B0000'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
-}
-
-.accordion-body {
-    background-color: white;
-}
-
-/* Responsive */
-@media (max-width: 991px) {
-    .sticky-info {
-        position: relative;
-        top: 0;
+    /* Breadcrumb Styling */
+    .breadcrumb {
+        background-color: transparent;
+        padding: 0;
+        font-size: 0.85rem;
     }
-}
+
+    .breadcrumb-item+.breadcrumb-item::before {
+        content: "›";
+        color: #6c757d;
+    }
+
+    .breadcrumb-item a {
+        color: var(--dark-red);
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .breadcrumb-item a:hover {
+        color: var(--medium-red);
+    }
+
+    .breadcrumb-item.active {
+        color: #6c757d;
+    }
+
+    /* Sticky Info Card */
+    .sticky-info {
+        position: sticky;
+        top: 20px;
+    }
+
+    /* Feature Items Compact */
+    .feature-item-compact {
+        display: flex;
+        align-items: start;
+        padding: 0.4rem 0.6rem;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        font-size: 0.85rem;
+    }
+
+    .feature-item-compact:hover {
+        background-color: #e9ecef;
+        transform: translateX(3px);
+    }
+
+    .feature-item-compact i {
+        font-size: 0.9rem;
+        margin-top: 2px;
+        margin-right: 0.5rem;
+    }
+
+    .feature-item-compact span {
+        flex: 1;
+        color: #495057;
+    }
+
+    /* Action Card Compact */
+    .action-card-compact {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border: 1px solid #e0e0e0 !important;
+    }
+
+    /* Apply Button Compact */
+    .btn-apply-compact {
+        background: linear-gradient(135deg, var(--dark-red) 0%, var(--medium-red) 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.6rem 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(139, 0, 0, 0.2);
+        font-size: 0.9rem;
+    }
+
+    .btn-apply-compact:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(139, 0, 0, 0.3);
+        color: white;
+    }
+
+    /* WhatsApp Button Compact */
+    .btn-success-compact {
+        background-color: #25d366;
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.6rem 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(37, 211, 102, 0.2);
+        font-size: 0.9rem;
+    }
+
+    .btn-success-compact:hover {
+        background-color: #20ba5a;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+        color: white;
+    }
+
+    /* Card Hover Effects */
+    .card {
+        transition: all 0.2s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-1px);
+    }
+
+    /* Tabs Styling */
+    .nav-pills .nav-link {
+        color: #6c757d;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .nav-pills .nav-link:hover {
+        background-color: #f8f9fa;
+    }
+
+    .nav-pills .nav-link.active {
+        background: linear-gradient(135deg, var(--dark-red) 0%, var(--medium-red) 100%);
+    }
+
+    /* Curriculum Accordion Compact */
+    .accordion-item {
+        border: 1px solid #e0e0e0 !important;
+    }
+
+    .accordion-button {
+        background-color: #f8f9fa;
+        color: #2c3e50;
+        font-weight: 500;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background-color: var(--light-red);
+        color: var(--dark-red);
+        box-shadow: none;
+    }
+
+    .accordion-button:focus {
+        box-shadow: none;
+        border-color: var(--dark-red);
+    }
+
+    .accordion-button::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%238B0000'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    }
+
+    .accordion-body {
+        background-color: white;
+    }
+
+    /* Responsive */
+    @media (max-width: 991px) {
+        .sticky-info {
+            position: relative;
+            top: 0;
+        }
+    }
 </style>
 
 <?= $this->endSection() ?>

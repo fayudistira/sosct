@@ -446,4 +446,169 @@ class PageController extends BaseController
             'program' => $program
         ]);
     }
+
+    /**
+     * Mandarin Chinese landing page
+     */
+    public function mandarin(): string
+    {
+        $programModel = new ProgramModel();
+        $programs = $programModel->where('status', 'active')
+            ->where('category', 'Chinese')
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
+
+        // Organize programs by subcategory
+        $programsBySubCategory = [];
+        $subCategories = [];
+        foreach ($programs as $program) {
+            $subCategory = !empty($program['sub_category']) ? $program['sub_category'] : 'Standard';
+            if (!in_array($subCategory, $subCategories)) {
+                $subCategories[] = $subCategory;
+            }
+            if (!isset($programsBySubCategory[$subCategory])) {
+                $programsBySubCategory[$subCategory] = [];
+            }
+            $programsBySubCategory[$subCategory][] = $program;
+        }
+
+        return view('Modules\Frontend\Views\landings\mandarin', [
+            'title' => 'Kursus Bahasa Mandarin - SOS Course and Training',
+            'programs' => $programs,
+            'programsBySubCategory' => $programsBySubCategory,
+            'subCategories' => $subCategories
+        ]);
+    }
+
+    /**
+     * Japanese landing page
+     */
+    public function japanese(): string
+    {
+        $programModel = new ProgramModel();
+        $programs = $programModel->where('status', 'active')
+            ->where('category', 'Japanese')
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
+
+        // Organize programs by subcategory
+        $programsBySubCategory = [];
+        $subCategories = [];
+        foreach ($programs as $program) {
+            $subCategory = !empty($program['sub_category']) ? $program['sub_category'] : 'Standard';
+            if (!in_array($subCategory, $subCategories)) {
+                $subCategories[] = $subCategory;
+            }
+            if (!isset($programsBySubCategory[$subCategory])) {
+                $programsBySubCategory[$subCategory] = [];
+            }
+            $programsBySubCategory[$subCategory][] = $program;
+        }
+
+        return view('Modules\Frontend\Views\landings\japanese', [
+            'title' => 'Kursus Bahasa Jepang - SOS Course and Training',
+            'programs' => $programs,
+            'programsBySubCategory' => $programsBySubCategory,
+            'subCategories' => $subCategories
+        ]);
+    }
+
+    /**
+     * Korean landing page
+     */
+    public function korean(): string
+    {
+        $programModel = new ProgramModel();
+        $programs = $programModel->where('status', 'active')
+            ->where('category', 'Korean')
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
+
+        // Organize programs by subcategory
+        $programsBySubCategory = [];
+        $subCategories = [];
+        foreach ($programs as $program) {
+            $subCategory = !empty($program['sub_category']) ? $program['sub_category'] : 'Standard';
+            if (!in_array($subCategory, $subCategories)) {
+                $subCategories[] = $subCategory;
+            }
+            if (!isset($programsBySubCategory[$subCategory])) {
+                $programsBySubCategory[$subCategory] = [];
+            }
+            $programsBySubCategory[$subCategory][] = $program;
+        }
+
+        return view('Modules\Frontend\Views\landings\korean', [
+            'title' => 'Kursus Bahasa Korea - SOS Course and Training',
+            'programs' => $programs,
+            'programsBySubCategory' => $programsBySubCategory,
+            'subCategories' => $subCategories
+        ]);
+    }
+
+    /**
+     * German landing page
+     */
+    public function german(): string
+    {
+        $programModel = new ProgramModel();
+        $programs = $programModel->where('status', 'active')
+            ->where('category', 'German')
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
+
+        // Organize programs by subcategory
+        $programsBySubCategory = [];
+        $subCategories = [];
+        foreach ($programs as $program) {
+            $subCategory = !empty($program['sub_category']) ? $program['sub_category'] : 'Standard';
+            if (!in_array($subCategory, $subCategories)) {
+                $subCategories[] = $subCategory;
+            }
+            if (!isset($programsBySubCategory[$subCategory])) {
+                $programsBySubCategory[$subCategory] = [];
+            }
+            $programsBySubCategory[$subCategory][] = $program;
+        }
+
+        return view('Modules\Frontend\Views\landings\german', [
+            'title' => 'Kursus Bahasa Jerman - SOS Course and Training',
+            'programs' => $programs,
+            'programsBySubCategory' => $programsBySubCategory,
+            'subCategories' => $subCategories
+        ]);
+    }
+
+    /**
+     * English landing page
+     */
+    public function english(): string
+    {
+        $programModel = new ProgramModel();
+        $programs = $programModel->where('status', 'active')
+            ->where('category', 'English')
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
+
+        // Organize programs by subcategory
+        $programsBySubCategory = [];
+        $subCategories = [];
+        foreach ($programs as $program) {
+            $subCategory = !empty($program['sub_category']) ? $program['sub_category'] : 'Standard';
+            if (!in_array($subCategory, $subCategories)) {
+                $subCategories[] = $subCategory;
+            }
+            if (!isset($programsBySubCategory[$subCategory])) {
+                $programsBySubCategory[$subCategory] = [];
+            }
+            $programsBySubCategory[$subCategory][] = $program;
+        }
+
+        return view('Modules\Frontend\Views\landings\english', [
+            'title' => 'Kursus Bahasa Inggris - SOS Course and Training',
+            'programs' => $programs,
+            'programsBySubCategory' => $programsBySubCategory,
+            'subCategories' => $subCategories
+        ]);
+    }
 }
