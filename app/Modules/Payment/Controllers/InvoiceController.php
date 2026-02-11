@@ -136,10 +136,47 @@ class InvoiceController extends BaseController
     }
 
     /**
-     * Store new invoice
+     * Get unpaid/partially_paid invoices for a student (AJAX endpoint)
+     */
+    public function getStudentInvoices()
+    {
+        $registrationNumber = $this->request->getGet('registration_number');
+
+        if (!$registrationNumber) {
+            return $this->response->setJSON(['error' => 'Registration number is required']);
+        }
+
+        $invoices = $this->invoiceModel->getExtendableInvoices($registrationNumber);
+
+        return $this->response->setJSON(['invoices' => $invoices]);
+    }
+
+    /**
+     * Get extended invoice summary (AJAX endpoint)
+     */
+    public function getInvoiceSummary()
+    {
+        $invoiceId = $this->request->getGet('invoice_id');
+
+        if (!$invoiceId) {
+            return $this->response->setJSON(['error' => 'Invoice ID is required']);
+        }
+
+        $summary = $this->invoiceModel->getExtendedInvoiceSummary($invoiceId);
+
+        if (!$summary) {
+            return $this->response->setJSON(['error' => 'Invoice not found or no program data available']);
+        }
+
+        return $this->response->setJSON(['summary' => $summary]);
+    }
+
+    /**
+     * Store new invoice or extend existing invoice
      */
     public function store()
     {
+        $action = $this->request->getPost('action'); // 'new' or 'extend'
         $items = $this->request->getPost('items');
 
         // Validate that items exist
@@ -169,24 +206,41 @@ class InvoiceController extends BaseController
             return redirect()->back()->withInput()->with('error', 'Please add at least one valid line item with amount greater than zero.');
         }
 
-        // Create invoice with total amount
-        $invoiceData = [
-            'registration_number' => $this->request->getPost('registration_number'),
-            'description' => 'Invoice with ' . count($validItems) . ' item(s)',
-            'amount' => $totalAmount,
-            'due_date' => $this->request->getPost('due_date'),
-            'invoice_type' => $this->request->getPost('invoice_type'),
-            'items' => $this->invoiceModel->encodeItems($validItems)
-        ];
+        if ($action === 'extend') {
+            // EXTEND EXISTING INVOICE
+            $invoiceId = $this->request->getPost('invoice_id');
 
-        // Create invoice with items
-        $invoiceId = $this->invoiceModel->createInvoice($invoiceData);
+            if (!$invoiceId) {
+                return redirect()->back()->withInput()->with('error', 'Please select an invoice to extend.');
+            }
 
-        if ($invoiceId) {
-            return redirect()->to('/invoice')->with('success', 'Invoice created successfully.');
+            // Extend the invoice (updates the existing record)
+            if ($this->invoiceModel->extendInvoice($invoiceId, $validItems)) {
+                return redirect()->to('/invoice/view/' . $invoiceId)
+                    ->with('success', 'Invoice extended successfully.');
+            }
+
+            return redirect()->back()->withInput()->with('error', 'Failed to extend invoice. The invoice may not be extendable.');
+        } else {
+            // CREATE NEW INVOICE
+            $invoiceData = [
+                'registration_number' => $this->request->getPost('registration_number'),
+                'description' => 'Invoice with ' . count($validItems) . ' item(s)',
+                'amount' => $totalAmount,
+                'due_date' => $this->request->getPost('due_date'),
+                'invoice_type' => $this->request->getPost('invoice_type'),
+                'items' => $this->invoiceModel->encodeItems($validItems)
+            ];
+
+            // Create invoice with items
+            $invoiceId = $this->invoiceModel->createInvoice($invoiceData);
+
+            if ($invoiceId) {
+                return redirect()->to('/invoice')->with('success', 'Invoice created successfully.');
+            }
+
+            return redirect()->back()->withInput()->with('errors', $this->invoiceModel->errors());
         }
-
-        return redirect()->back()->withInput()->with('errors', $this->invoiceModel->errors());
     }
 
     /**

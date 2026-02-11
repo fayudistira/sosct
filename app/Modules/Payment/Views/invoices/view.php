@@ -72,6 +72,12 @@
                         <span class="info-label">Description:</span><br>
                         <?= nl2br(esc((string)($invoice['description'] ?? ''))) ?>
                     </div>
+                    <?php if (!empty($invoice['parent_invoice_id'])): ?>
+                        <div class="mt-3 pt-3 border-top">
+                            <span class="info-label"><i class="bi bi-info-circle"></i> Extended Invoice:</span>
+                            <small class="text-muted">This invoice was created by extending invoice #<?= esc($invoice['parent_invoice_id']) ?></small>
+                        </div>
+                    <?php endif ?>
                 </div>
             </div>
 

@@ -1,0 +1,23 @@
+{
+  "full_name": "Siti Aminah",
+  "nickname": "Siti",
+  "gender": "Female",
+  "date_of_birth": "2006-12-10",
+  "place_of_birth": "Bandung",
+  "religion": "Islam",
+  "citizen_id": "3273123456780005",
+  "phone": "085612345678",
+  "email": "siti.aminah@email.com",
+  "street_address": "Jl. Ganesha No. 10",
+  "district": "Coblong",
+  "regency": "Bandung",
+  "province": "Jawa Barat",
+  "postal_code": "40132",
+  "father_name": "Ahmad Subarjo",
+  "mother_name": "Lilis Sumarni",
+  "course": "Coding for Teens",
+  "emergency_contact_name": "Ahmad Subarjo",
+  "emergency_contact_phone": "085622223333",
+  "emergency_contact_relation": "Father",
+  "notes": "Siswa tertarik pada pengembangan web."
+}

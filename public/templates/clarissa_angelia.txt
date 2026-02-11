@@ -1,0 +1,23 @@
+{
+  "full_name": "Clarissa Angelia",
+  "nickname": "Clarissa",
+  "gender": "Female",
+  "date_of_birth": "2008-04-18",
+  "place_of_birth": "Denpasar",
+  "religion": "Hindu",
+  "citizen_id": "5171123456780006",
+  "phone": "081955556666",
+  "email": "clarissa.a@email.com",
+  "street_address": "Jl. Bypass Ngurah Rai No. 12",
+  "district": "Denpasar Selatan",
+  "regency": "Denpasar",
+  "province": "Bali",
+  "postal_code": "80227",
+  "father_name": "I Wayan Putra",
+  "mother_name": "Ni Made Sari",
+  "course": "Photography",
+  "emergency_contact_name": "Ni Made Sari",
+  "emergency_contact_phone": "081977778888",
+  "emergency_contact_relation": "Mother",
+  "notes": "Sudah memiliki kamera DSLR sendiri."
+}

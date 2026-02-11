@@ -1,0 +1,23 @@
+{
+  "full_name": "Bagus Saputra",
+  "nickname": "Bagus",
+  "gender": "Male",
+  "date_of_birth": "2005-11-25",
+  "place_of_birth": "Surabaya",
+  "religion": "Islam",
+  "citizen_id": "3578123456780011",
+  "phone": "085711112222",
+  "email": "bagus.saputra@email.com",
+  "street_address": "Jl. Manyar Kertoarjo No. 7",
+  "district": "Mulyorejo",
+  "regency": "Surabaya",
+  "province": "Jawa Timur",
+  "postal_code": "60115",
+  "father_name": "Hadi Saputra",
+  "mother_name": "Rini",
+  "course": "Python for Data Science",
+  "emergency_contact_name": "Hadi Saputra",
+  "emergency_contact_phone": "085733334444",
+  "emergency_contact_relation": "Father",
+  "notes": "Mahasiswa tahun pertama yang ingin belajar data."
+}

@@ -361,7 +361,7 @@
         </div>
 
         <div class="text-center">
-            <button type="submit" class="btn btn-dark-red btn-lg px-5">
+            <button type="submit" class="btn btn-dark-red btn-lg px-5" id="submitBtn">
                 <i class="bi bi-send me-2"></i>Submit Application
             </button>
             <a href="<?= base_url('/') ?>" class="btn btn-outline-dark-red btn-lg px-5 ms-2">
@@ -370,4 +370,24 @@
         </div>
     </form>
 </div>
+
+<script>
+    // Disable submit button when clicked to prevent multiple submissions
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form[action$="apply/submit"]');
+        const submitBtn = document.getElementById('submitBtn');
+
+        if (form && submitBtn) {
+            form.addEventListener('submit', function(e) {
+                // Disable the submit button
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Submitting...';
+                submitBtn.classList.add('disabled');
+
+                // Allow the form to submit normally
+                // The button will remain disabled until the page reloads
+            });
+        }
+    });
+</script>
 <?= $this->endSection() ?>

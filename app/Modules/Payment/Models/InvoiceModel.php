@@ -20,7 +20,8 @@ class InvoiceModel extends Model
         'due_date',
         'invoice_type',
         'status',
-        'items'
+        'items',
+        'parent_invoice_id'
     ];
 
     protected $useTimestamps = true;
@@ -75,31 +76,26 @@ class InvoiceModel extends Model
 
     /**
      * Generate unique invoice number
-     * Format: INV-YYYY-NNNN (e.g., INV-2026-0001)
-     * 
+     * Format: INV-YYYYMMDD-HHMMSS-ID (e.g., INV-20260211-150901-123)
+     *
      * @return string
      */
     public function generateInvoiceNumber(): string
     {
-        $year = date('Y');
-        $prefix = "INV-{$year}-";
+        $now = new \DateTime();
+        $datePart = $now->format('Ymd');
+        $timePart = $now->format('His');
 
-        // Get the last invoice number for current year
-        $lastRecord = $this->like('invoice_number', $prefix)
-            ->orderBy('id', 'DESC')
-            ->first();
+        // Get the next invoice ID
+        $db = \Config\Database::connect();
+        $nextId = $db->table($this->table)
+            ->selectMax('id')
+            ->get()
+            ->getRowArray();
 
-        if ($lastRecord) {
-            // Extract the number part and increment
-            $lastNumber = (int) substr($lastRecord['invoice_number'], -4);
-            $newNumber = $lastNumber + 1;
-        } else {
-            // First invoice of the year
-            $newNumber = 1;
-        }
+        $invoiceId = ($nextId['id'] ?? 0) + 1;
 
-        // Format with leading zeros (4 digits)
-        return $prefix . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
+        return "INV-{$datePart}-{$timePart}-{$invoiceId}";
     }
 
     /**
@@ -393,5 +389,156 @@ class InvoiceModel extends Model
     {
         $encoded = $this->encodeItems($items);
         return $this->update($invoiceId, ['items' => $encoded]);
+    }
+
+    /**
+     * Get unpaid or partially_paid invoices for a student that can be extended
+     *
+     * @param string $registrationNumber Student registration number
+     * @return array
+     */
+    public function getExtendableInvoices(string $registrationNumber): array
+    {
+        return $this->where('registration_number', $registrationNumber)
+            ->whereIn('status', ['unpaid', 'partially_paid'])
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
+    }
+
+    /**
+     * Extend an existing invoice by adding new items (informational only, does not change the invoice amount)
+     *
+     * @param int $invoiceId Invoice ID to extend
+     * @param array $newItems New items to add (for informational purposes only)
+     * @param string|null $newDescription Optional new description
+     * @return bool
+     */
+    public function extendInvoice(int $invoiceId, array $newItems, ?string $newDescription = null): bool
+    {
+        $invoice = $this->find($invoiceId);
+
+        if (!$invoice) {
+            return false;
+        }
+
+        // Check if invoice can be extended
+        if (!in_array($invoice['status'], ['unpaid', 'partially_paid'])) {
+            return false;
+        }
+
+        // Get existing items
+        $existingItems = $this->decodeItems($invoice['items'] ?? null);
+
+        // Merge existing and new items (for tracking/informational purposes)
+        $allItems = array_merge($existingItems, $newItems);
+
+        // Prepare update data - NOTE: We do NOT update the amount
+        // The amount remains the same as the original invoice amount
+        $updateData = [
+            'items' => $this->encodeItems($allItems)
+        ];
+
+        // Update description if provided
+        if ($newDescription) {
+            $updateData['description'] = $newDescription;
+        }
+
+        return $this->update($invoiceId, $updateData);
+    }
+
+    /**
+     * Get the extension history for an invoice
+     *
+     * @param int $invoiceId Invoice ID
+     * @return array
+     */
+    public function getInvoiceExtensionHistory(int $invoiceId): array
+    {
+        $history = [];
+        $currentId = $invoiceId;
+
+        while ($currentId) {
+            $invoice = $this->find($currentId);
+            if (!$invoice) {
+                break;
+            }
+
+            $history[] = [
+                'id' => $invoice['id'],
+                'invoice_number' => $invoice['invoice_number'],
+                'amount' => $invoice['amount'],
+                'status' => $invoice['status'],
+                'created_at' => $invoice['created_at']
+            ];
+
+            $currentId = $invoice['parent_invoice_id'] ?? null;
+        }
+
+        return $history;
+    }
+
+    /**
+     * Get extended invoice summary for display when extending an invoice
+     *
+     * @param int $invoiceId Invoice ID to extend
+     * @return array|null Summary data or null if invoice not found
+     */
+    public function getExtendedInvoiceSummary(int $invoiceId): ?array
+    {
+        $invoice = $this->find($invoiceId);
+        if (!$invoice) {
+            return null;
+        }
+
+        $db = \Config\Database::connect();
+
+        // Get admission details with program information
+        $admission = $db->table('admissions')
+            ->select('
+                admissions.program_id,
+                programs.tuition_fee,
+                programs.registration_fee
+            ')
+            ->join('programs', 'programs.id = admissions.program_id')
+            ->where('admissions.registration_number', $invoice['registration_number'])
+            ->first();
+
+        if (!$admission) {
+            return null;
+        }
+
+        // Get sum of all paid payments for this student
+        $totalPaidResult = $db->table('payments')
+            ->selectSum('amount', 'total')
+            ->where('registration_number', $invoice['registration_number'])
+            ->where('status', 'paid')
+            ->where('deleted_at', null)
+            ->get()
+            ->getRowArray();
+
+        $totalPaid = (float) ($totalPaidResult['total'] ?? 0);
+
+        // Calculate values
+        $initialProgramAmount = (float) ($admission['tuition_fee'] ?? 0);
+        $registrationFee = (float) ($admission['registration_fee'] ?? 0);
+        $totalInitialAmount = $initialProgramAmount + $registrationFee;
+        $outstandingBalance = $totalInitialAmount - $totalPaid;
+
+        // Get current invoice items
+        $currentItems = $this->decodeItems($invoice['items'] ?? null);
+
+        return [
+            'invoice_id' => $invoiceId,
+            'invoice_number' => $invoice['invoice_number'],
+            'registration_number' => $invoice['registration_number'],
+            'initial_program_amount' => $initialProgramAmount,
+            'registration_fee' => $registrationFee,
+            'total_initial_amount' => $totalInitialAmount,
+            'total_paid' => $totalPaid,
+            'outstanding_balance' => $outstandingBalance,
+            'current_invoice_amount' => (float) $invoice['amount'],
+            'current_items' => $currentItems,
+            'invoice_status' => $invoice['status']
+        ];
     }
 }

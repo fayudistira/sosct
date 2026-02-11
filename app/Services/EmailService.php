@@ -72,6 +72,20 @@ class EmailService
         try {
             // Decode URL-safe base64 back to raw encrypted data
             $encrypted = base64_decode(strtr($token, '-_', '+/'));
+
+            // If encryption is not available, try to decode as simple base64 JSON
+            if ($this->encryption === null) {
+                $decoded = json_decode($encrypted, true);
+                if (!$decoded || !isset($decoded['invoice_id'], $decoded['email'], $decoded['timestamp'])) {
+                    return false;
+                }
+                // Check if token is expired (24 hours)
+                if (time() - $decoded['timestamp'] > 86400) {
+                    return false;
+                }
+                return $decoded;
+            }
+
             $decoded = json_decode($this->encryption->decrypt($encrypted), true);
 
             if (!$decoded || !isset($decoded['invoice_id'], $decoded['email'], $decoded['timestamp'], $decoded['hash'])) {
@@ -139,6 +153,20 @@ class EmailService
         try {
             // Decode URL-safe base64 back to raw encrypted data
             $encrypted = base64_decode(strtr($token, '-_', '+/'));
+
+            // If encryption is not available, try to decode as simple base64 JSON
+            if ($this->encryption === null) {
+                $decoded = json_decode($encrypted, true);
+                if (!$decoded || !isset($decoded['payment_id'], $decoded['email'], $decoded['timestamp'])) {
+                    return false;
+                }
+                // Check if token is expired (24 hours)
+                if (time() - $decoded['timestamp'] > 86400) {
+                    return false;
+                }
+                return $decoded;
+            }
+
             $decoded = json_decode($this->encryption->decrypt($encrypted), true);
 
             if (!$decoded || !isset($decoded['payment_id'], $decoded['email'], $decoded['timestamp'], $decoded['hash'])) {

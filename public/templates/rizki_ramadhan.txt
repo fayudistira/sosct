@@ -1,0 +1,23 @@
+{
+  "full_name": "Rizky Ramadhan",
+  "nickname": "Rizky",
+  "gender": "Male",
+  "date_of_birth": "2005-10-12",
+  "place_of_birth": "Makassar",
+  "religion": "Islam",
+  "citizen_id": "7371123456780002",
+  "phone": "081344445555",
+  "email": "rizky.ramadhan@email.com",
+  "street_address": "Jl. Sultan Alauddin No. 20",
+  "district": "Rappocini",
+  "regency": "Makassar",
+  "province": "Sulawesi Selatan",
+  "postal_code": "90221",
+  "father_name": "Mansyur",
+  "mother_name": "Nurbaya",
+  "course": "Public Speaking",
+  "emergency_contact_name": "Mansyur",
+  "emergency_contact_phone": "081366667777",
+  "emergency_contact_relation": "Father",
+  "notes": "Ingin meningkatkan kepercayaan diri."
+}

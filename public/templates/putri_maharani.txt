@@ -1,0 +1,23 @@
+{
+  "full_name": "Putri Maharani",
+  "nickname": "Putri",
+  "gender": "Female",
+  "date_of_birth": "2006-01-30",
+  "place_of_birth": "Yogyakarta",
+  "religion": "Islam",
+  "citizen_id": "3471123456780009",
+  "phone": "087812349999",
+  "email": "putri.maharani@email.com",
+  "street_address": "Jl. Malioboro No. 1",
+  "district": "Danurejan",
+  "regency": "Yogyakarta",
+  "province": "DI Yogyakarta",
+  "postal_code": "55213",
+  "father_name": "Suryo Probo",
+  "mother_name": "Endang Sri",
+  "course": "Graphic Design",
+  "emergency_contact_name": "Endang Sri",
+  "emergency_contact_phone": "087855556666",
+  "emergency_contact_relation": "Mother",
+  "notes": "Memiliki hobi menggambar digital."
+}

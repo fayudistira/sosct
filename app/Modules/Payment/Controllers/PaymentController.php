@@ -167,32 +167,30 @@ class PaymentController extends BaseController
             if ($data['invoice_id'] && $data['status'] === 'paid') {
                 $newInvoiceStatus = $this->invoiceModel->recalculateInvoiceStatus($data['invoice_id']);
 
-                // Only auto-approve admission if the invoice is now FULLY paid
-                if ($newInvoiceStatus === 'paid') {
-                    $admission = $this->admissionModel->where('registration_number', $data['registration_number'])->first();
-                    if ($admission && $admission['status'] === 'pending') {
-                        // Update admission to approved
-                        $this->admissionModel->update($admission['id'], [
-                            'status' => 'approved',
-                            'reviewed_date' => date('Y-m-d H:i:s'),
-                            'notes' => ($admission['notes'] ? $admission['notes'] . "\n" : "") . "[" . date('Y-m-d H:i:s') . "] Automatically approved upon full payment."
-                        ]);
+                // Auto-approve admission when ANY payment is recorded for the initial invoice
+                $admission = $this->admissionModel->where('registration_number', $data['registration_number'])->first();
+                if ($admission && $admission['status'] === 'pending') {
+                    // Update admission to approved
+                    $this->admissionModel->update($admission['id'], [
+                        'status' => 'approved',
+                        'reviewed_date' => date('Y-m-d H:i:s'),
+                        'notes' => ($admission['notes'] ? $admission['notes'] . "\n" : "") . "[" . date('Y-m-d H:i:s') . "] Automatically approved upon payment of invoice #" . $this->invoiceModel->find($data['invoice_id'])['invoice_number'] . ". Amount: Rp " . number_format($data['amount'], 0, ',', '.') . ". Invoice status: " . $newInvoiceStatus . "."
+                    ]);
 
-                        // Send approval notification email to applicant
-                        $profile = (new \Modules\Account\Models\ProfileModel())->find($admission['profile_id']);
-                        if ($profile && !empty($profile['email'])) {
-                            $emailService = new \App\Services\EmailService();
-                            $paymentData = [
-                                'amount' => $data['amount'],
-                                'created_at' => date('Y-m-d H:i:s')
-                            ];
+                    // Send approval notification email to applicant
+                    $profile = (new \Modules\Account\Models\ProfileModel())->find($admission['profile_id']);
+                    if ($profile && !empty($profile['email'])) {
+                        $emailService = new \App\Services\EmailService();
+                        $paymentData = [
+                            'amount' => $data['amount'],
+                            'created_at' => date('Y-m-d H:i:s')
+                        ];
 
-                            $emailService->sendPaymentReceivedNotification(
-                                $profile['email'],
-                                $profile['full_name'],
-                                $paymentData
-                            );
-                        }
+                        $emailService->sendPaymentReceivedNotification(
+                            $profile['email'],
+                            $profile['full_name'],
+                            $paymentData
+                        );
                     }
                 }
             }
@@ -274,16 +272,14 @@ class PaymentController extends BaseController
             if ($data['invoice_id'] && $data['status'] === 'paid') {
                 $newInvoiceStatus = $this->invoiceModel->recalculateInvoiceStatus($data['invoice_id']);
 
-                // Only auto-approve admission if the invoice is now FULLY paid
-                if ($newInvoiceStatus === 'paid') {
-                    $admission = $this->admissionModel->where('registration_number', $data['registration_number'])->first();
-                    if ($admission && $admission['status'] === 'pending') {
-                        $this->admissionModel->update($admission['id'], [
-                            'status' => 'approved',
-                            'reviewed_date' => date('Y-m-d H:i:s'),
-                            'notes' => ($admission['notes'] ? $admission['notes'] . "\n" : "") . "Automatically approved upon full payment update."
-                        ]);
-                    }
+                // Auto-approve admission when ANY payment is recorded for the initial invoice
+                $admission = $this->admissionModel->where('registration_number', $data['registration_number'])->first();
+                if ($admission && $admission['status'] === 'pending') {
+                    $this->admissionModel->update($admission['id'], [
+                        'status' => 'approved',
+                        'reviewed_date' => date('Y-m-d H:i:s'),
+                        'notes' => ($admission['notes'] ? $admission['notes'] . "\n" : "") . "[" . date('Y-m-d H:i:s') . "] Automatically approved upon payment update of invoice #" . $this->invoiceModel->find($data['invoice_id'])['invoice_number'] . ". Amount: Rp " . number_format($data['amount'], 0, ',', '.') . ". Invoice status: " . $newInvoiceStatus . "."
+                    ]);
                 }
             }
 

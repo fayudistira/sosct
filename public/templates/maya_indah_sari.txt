@@ -1,0 +1,23 @@
+{
+  "full_name": "Maya Indah Sari",
+  "nickname": "Maya",
+  "gender": "Female",
+  "date_of_birth": "2007-02-14",
+  "place_of_birth": "Semarang",
+  "religion": "Kristen",
+  "citizen_id": "3374123456780010",
+  "phone": "089912341234",
+  "email": "maya.indah@email.com",
+  "street_address": "Jl. Pandanaran No. 5",
+  "district": "Semarang Tengah",
+  "regency": "Semarang",
+  "province": "Jawa Tengah",
+  "postal_code": "50134",
+  "father_name": "Bambang Sari",
+  "mother_name": "Diana",
+  "course": "Japanese Beginner",
+  "emergency_contact_name": "Diana",
+  "emergency_contact_phone": "089988889999",
+  "emergency_contact_relation": "Mother",
+  "notes": "Sangat menyukai budaya Jepang."
+}

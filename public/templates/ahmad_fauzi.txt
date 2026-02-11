@@ -1,0 +1,23 @@
+{
+  "full_name": "Ahmad Fauzi",
+  "nickname": "Fauzi",
+  "gender": "Male",
+  "date_of_birth": "2006-07-07",
+  "place_of_birth": "Palembang",
+  "religion": "Islam",
+  "citizen_id": "1671123456780004",
+  "phone": "085233334444",
+  "email": "ahmad.fauzi@email.com",
+  "street_address": "Jl. Sudirman No. 500",
+  "district": "Ilir Timur I",
+  "regency": "Palembang",
+  "province": "Sumatera Selatan",
+  "postal_code": "30114",
+  "father_name": "Zulkifli",
+  "mother_name": "Fatimah",
+  "course": "Digital Marketing",
+  "emergency_contact_name": "Zulkifli",
+  "emergency_contact_phone": "085211110000",
+  "emergency_contact_relation": "Father",
+  "notes": "Membantu usaha keluarga di bidang retail."
+}

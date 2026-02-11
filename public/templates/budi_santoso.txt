@@ -1,0 +1,23 @@
+{
+  "full_name": "Budi Santoso",
+  "nickname": "Budi",
+  "gender": "Male",
+  "date_of_birth": "2005-08-15",
+  "place_of_birth": "Jakarta",
+  "religion": "Islam",
+  "citizen_id": "3171123456780001",
+  "phone": "081234567890",
+  "email": "budi.santoso@email.com",
+  "street_address": "Jl. Mawar No. 45",
+  "district": "Tebet",
+  "regency": "Jakarta Selatan",
+  "province": "DKI Jakarta",
+  "postal_code": "12810",
+  "father_name": "Agus Santoso",
+  "mother_name": "Siti Aminah",
+  "course": "English Intermediate",
+  "emergency_contact_name": "Agus Santoso",
+  "emergency_contact_phone": "081211112222",
+  "emergency_contact_relation": "Father",
+  "notes": "Data pendaftaran untuk kelas bahasa Inggris."
+}

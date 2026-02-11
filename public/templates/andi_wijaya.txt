@@ -1,0 +1,23 @@
+{
+  "full_name": "Andi Wijaya",
+  "nickname": "Andi",
+  "gender": "Male",
+  "date_of_birth": "2007-05-20",
+  "place_of_birth": "Medan",
+  "religion": "Kristen",
+  "citizen_id": "1271123456780003",
+  "phone": "082198765432",
+  "email": "andi.wijaya@email.com",
+  "street_address": "Jl. Merdeka No. 88",
+  "district": "Medan Baru",
+  "regency": "Medan",
+  "province": "Sumatera Utara",
+  "postal_code": "20154",
+  "father_name": "Hendro Wijaya",
+  "mother_name": "Merryana",
+  "course": "Mandarin Beginner",
+  "emergency_contact_name": "Merryana",
+  "emergency_contact_phone": "082144445555",
+  "emergency_contact_relation": "Mother",
+  "notes": "Pernah mengikuti kursus dasar di sekolah."
+}

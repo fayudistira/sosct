@@ -314,7 +314,7 @@
                 <h3>Program Terdaftar:</h3>
                 <p><strong><?= esc($student['program_title'] ?? 'N/A') ?></strong></p>
                 <?php if (!empty($student['category'])): ?>
-                    <p>Category: <?= esc($student['category']) ?></p>
+                    <p>Kategori Kursus : Bahasa <?= esc($student['category']) ?></p>
                 <?php endif ?>
             </div>
         </div>
@@ -369,23 +369,23 @@
                 </div>
             <?php endif ?>
             <div class="total-row grand-total">
-                <span>Balance Due:</span>
+                <span>Sisa Tagihan:</span>
                 <span>Rp <?= number_format($invoice['amount'] - ($invoice['total_paid'] ?? 0), 0, ',', '.') ?></span>
             </div>
         </div>
 
         <!-- Action Buttons -->
         <div class="action-buttons no-print">
-            <button onclick="window.print()" class="btn-action btn-print">
+            <!-- <button onclick="window.print()" class="btn-action btn-print">
                 <i class="bi bi-printer"></i> Print / Download
-            </button>
+            </button> -->
             <?php
-            $waNumber = '6289509778659';
+            $waNumber = '6285810310950';
             $message = "Hello Admin, I need help with my invoice #" . $invoice['invoice_number'] . ".";
             $waUrl = "https://wa.me/" . $waNumber . "?text=" . urlencode($message);
             ?>
             <a href="<?= $waUrl ?>" target="_blank" class="btn-action btn-whatsapp">
-                <i class="bi bi-whatsapp"></i> Contact via WhatsApp
+                <i class="bi bi-whatsapp"></i> Konfirmasi : 0858 1031 0950
             </a>
         </div>
 
