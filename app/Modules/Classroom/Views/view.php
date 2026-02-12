@@ -3,15 +3,15 @@
 <?= $this->section('content') ?>
 <div class="row mb-4">
     <div class="col-md-6">
-        <h2 class="fw-bold"><i class="bi bi-info-circle me-2"></i>Classroom Details</h2>
-        <p class="text-muted">Viewing details for <?= esc($classroom['title']) ?></p>
+        <h2 class="fw-bold"><i class="bi bi-info-circle me-2"></i>Detail Kelas</h2>
+        <p class="text-muted">Detail Kelas <?= esc($classroom['title']) ?></p>
     </div>
     <div class="col-md-6 text-end">
         <a href="<?= base_url('classroom') ?>" class="btn btn-outline-secondary me-2">
-            <i class="bi bi-arrow-left me-1"></i> Back to List
+            <i class="bi bi-arrow-left me-1"></i> Kembali
         </a>
         <a href="<?= base_url('classroom/edit/' . $classroom['id']) ?>" class="btn btn-dark-red">
-            <i class="bi bi-pencil me-1"></i> Edit Class
+            <i class="bi bi-pencil me-1"></i> Edit Kelas
         </a>
     </div>
 </div>
@@ -21,14 +21,14 @@
     <div class="col-lg-7">
         <!-- Basic Info -->
         <div class="card dashboard-card mb-4">
-            <div class="card-header">General Information</div>
+            <div class="card-header">Informasi Umum</div>
             <div class="card-body">
                 <div class="row mb-3">
-                    <div class="col-sm-4 fw-bold">Class Title:</div>
+                    <div class="col-sm-4 fw-bold">Nama Kelas:</div>
                     <div class="col-sm-8"><?= esc($classroom['title']) ?></div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-sm-4 fw-bold">Batch / Grade:</div>
+                    <div class="col-sm-4 fw-bold">Angkatan / Tingkat:</div>
                     <div class="col-sm-8"><?= esc($classroom['batch'] ?: '-') ?> / <?= esc($classroom['grade'] ?: '-') ?></div>
                 </div>
                 <div class="row mb-3">
@@ -48,10 +48,10 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-sm-4 fw-bold">Active Period:</div>
+                    <div class="col-sm-4 fw-bold">Periode:</div>
                     <div class="col-sm-8">
-                        <?= $classroom['start_date'] ? date('d F Y', strtotime($classroom['start_date'])) : 'Not set' ?> 
-                        <strong>to</strong> 
+                        <?= $classroom['start_date'] ? date('d F Y', strtotime($classroom['start_date'])) : 'Not set' ?>
+                        <strong>to</strong>
                         <?= $classroom['end_date'] ? date('d F Y', strtotime($classroom['end_date'])) : 'Not set' ?>
                     </div>
                 </div>
@@ -60,14 +60,14 @@
 
         <!-- Schedule -->
         <div class="card dashboard-card mb-4">
-            <div class="card-header">Class Schedule</div>
+            <div class="card-header">Jadwal Kelas</div>
             <div class="card-body p-0">
                 <table class="table table-hover compact-table mb-0">
                     <thead>
                         <tr>
-                            <th>Subject</th>
-                            <th>Instructor</th>
-                            <th>Time</th>
+                            <th>Materi</th>
+                            <th>Instruktur</th>
+                            <th>Waktu</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -81,7 +81,7 @@
                             <?php endforeach ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="3" class="text-center py-4 text-muted">No schedule defined.</td>
+                                <td colspan="3" class="text-center py-4 text-muted">Tidak ada Jadwal</td>
                             </tr>
                         <?php endif ?>
                     </tbody>
@@ -94,7 +94,7 @@
     <div class="col-lg-5">
         <div class="card dashboard-card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span>Class Members</span>
+                <span>Anggota Kelas</span>
                 <span class="badge bg-dark-red"><?= count($members) ?> Students</span>
             </div>
             <div class="card-body p-0">

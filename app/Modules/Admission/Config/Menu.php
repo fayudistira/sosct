@@ -7,7 +7,7 @@
 
 return [
     [
-        'title' => 'Admissions',
+        'title' => 'Data Pendaftaran',
         'url' => 'admission',
         'icon' => 'file-earmark-text',
         'permission' => 'admission.manage',

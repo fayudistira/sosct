@@ -40,9 +40,9 @@
 
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3>Payments</h3>
+        <h3>Riwayat Pembayaran</h3>
         <a href="<?= base_url('payment/create') ?>" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Add Payment
+            <i class="bi bi-plus-circle"></i> Input Pembayaran
         </a>
     </div>
 
@@ -71,7 +71,7 @@
                     </div>
                     <div class="col-md-2">
                         <select name="status" class="form-select">
-                            <option value="">All Status</option>
+                            <option value="">Status</option>
                             <option value="pending" <?= ($status ?? '') === 'pending' ? 'selected' : '' ?>>Pending</option>
                             <option value="paid" <?= ($status ?? '') === 'paid' ? 'selected' : '' ?>>Paid</option>
                             <option value="failed" <?= ($status ?? '') === 'failed' ? 'selected' : '' ?>>Failed</option>
@@ -80,7 +80,7 @@
                     </div>
                     <div class="col-md-2">
                         <select name="method" class="form-select">
-                            <option value="">All Methods</option>
+                            <option value="">Metode</option>
                             <option value="cash" <?= ($method ?? '') === 'cash' ? 'selected' : '' ?>>Cash</option>
                             <option value="bank_transfer" <?= ($method ?? '') === 'bank_transfer' ? 'selected' : '' ?>>Bank Transfer</option>
                         </select>
@@ -106,11 +106,11 @@
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Invoice</th>
-                            <th>Student</th>
-                            <th>Amount</th>
-                            <th>Method</th>
+                            <th>Tgl.</th>
+                            <th>No.Invoice</th>
+                            <th>Nama Siswa</th>
+                            <th>Jumlah</th>
+                            <th>Metode</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>

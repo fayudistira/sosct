@@ -2,27 +2,27 @@
 
 <?= $this->section('content') ?>
 <div class="d-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Student Management</h1>
+    <h1 class="h3 mb-0 text-gray-800">Manajemen Siswa</h1>
     <a href="<?= base_url('student/promote') ?>" class="btn btn-primary">
-        <i class="bi bi-plus-circle me-2"></i>Promote New Student
+        <i class="bi bi-plus-circle me-2"></i>Tambahkan Siswa Baru
     </a>
 </div>
 
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">List of Students</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Daftar Siswa</h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
-                        <th>Student No</th>
-                        <th>Name</th>
+                        <th>No. Siswa</th>
+                        <th>Nama</th>
                         <th>Program</th>
-                        <th>Batch</th>
+                        <th>Angkatan</th>
                         <th>Status</th>
-                        <th>Actions</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -60,7 +60,7 @@
                                 <span class="badge bg-<?= $statusClass ?>"><?= ucfirst($student['status']) ?></span>
                             </td>
                             <td>
-                                <a href="<?= base_url('student/view/' . $student['id']) ?>" class="btn btn-sm btn-info" title="View Details">
+                                <a href="<?= base_url('student/view/' . $student['id']) ?>" class="btn btn-sm btn-info" title="Lihat Detail">
                                     <i class="bi bi-eye"></i>
                                 </a>
                                 <a href="<?= base_url('student/edit/' . $student['id']) ?>" class="btn btn-sm btn-warning" title="Edit Status">

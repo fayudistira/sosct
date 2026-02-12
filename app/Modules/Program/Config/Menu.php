@@ -2,7 +2,7 @@
 
 return [
     [
-        'title' => 'Programs',
+        'title' => 'Master Program',
         'url' => 'program',
         'icon' => 'mortarboard',
         'permission' => ['program.view', 'program.manage'],

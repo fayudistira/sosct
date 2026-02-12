@@ -7,7 +7,7 @@
 
 return [
     [
-        'title' => 'Classrooms',
+        'title' => 'Data Kelas',
         'url' => 'classroom',
         'icon' => 'door-open',
         'permission' => 'classroom.manage',

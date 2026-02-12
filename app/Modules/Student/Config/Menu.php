@@ -2,7 +2,7 @@
 
 return [
     [
-        'title' => 'Student',
+        'title' => 'Manajemen Siswa',
         'icon'  => 'bi bi-mortarboard',
         'url'   => 'student',
         'order' => 4,

@@ -12,7 +12,7 @@
         <p class="lead text-white-50 mx-auto animate-slide-up-delay-1" style="max-width: 700px;">
             Accelerate your English mastery with our specialized intensive programs in Kampung Inggris Pare. Engineered for rapid progress and real-world results.
         </p>
-        
+
         <?php if (!empty($totalPrograms)): ?>
             <div class="mt-4 animate-slide-up-delay-2">
                 <div class="d-inline-flex align-items-center bg-white bg-opacity-10 border border-white border-opacity-20 rounded-pill p-1 ps-3 shadow-lg">
@@ -31,12 +31,12 @@
             <ul class="nav nav-pills nav-fill category-pill-nav gap-2" role="tablist">
                 <?php foreach ($categories as $index => $category): ?>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link rounded-pill border <?= ($category === $selectedCategory) ? 'active' : '' ?>" 
-                                id="tab-<?= $index ?>" 
-                                data-bs-toggle="pill" 
-                                data-bs-target="#category-<?= $index ?>" 
-                                type="button" 
-                                role="tab">
+                        <button class="nav-link rounded-pill border <?= ($category === $selectedCategory) ? 'active' : '' ?>"
+                            id="tab-<?= $index ?>"
+                            data-bs-toggle="pill"
+                            data-bs-target="#category-<?= $index ?>"
+                            type="button"
+                            role="tab">
                             <span class="d-flex align-items-center justify-content-center">
                                 <i class="bi bi-grid-fill me-2 small"></i>
                                 <?= esc($category) ?>
@@ -58,7 +58,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     <?php endif ?>
-    
+
     <?php if (empty($programsByCategory)): ?>
         <div class="text-center py-5">
             <div class="feature-icon mb-4 mx-auto" style="width: 100px; height: 100px; font-size: 3rem; background: var(--light-red); color: var(--dark-red);">
@@ -69,30 +69,30 @@
             <a href="<?= base_url('programs') ?>" class="btn btn-dark-red rounded-pill mt-3">Reset Filters</a>
         </div>
     <?php else: ?>
-        
+
         <!-- Tab Content -->
         <div class="tab-content" id="pills-tabContent">
             <?php foreach ($categories as $catIndex => $category): ?>
-                <div class="tab-pane fade <?= ($category === $selectedCategory) ? 'show active' : '' ?>" 
-                     id="category-<?= $catIndex ?>" 
-                     role="tabpanel">
-                    
+                <div class="tab-pane fade <?= ($category === $selectedCategory) ? 'show active' : '' ?>"
+                    id="category-<?= $catIndex ?>"
+                    role="tabpanel">
+
                     <!-- Sub-Category Filter -->
                     <div class="d-flex align-items-center mb-4 pb-2 border-bottom">
                         <h4 class="fw-bold mb-0 me-4"><?= esc($category) ?></h4>
                         <div class="nav nav-pills sub-category-pills d-flex gap-2" role="tablist">
-                            <?php 
+                            <?php
                             $subCats = array_keys($programsByCategory[$category]['sub_categories']);
-                            foreach ($subCats as $subIndex => $subCategory): 
+                            foreach ($subCats as $subIndex => $subCategory):
                             ?>
-                                <button class="nav-link btn btn-sm rounded-pill btn-sub-cat <?= ($subIndex === 0) ? 'active' : '' ?>" 
-                                        id="sub-tab-<?= $catIndex ?>-<?= $subIndex ?>"
-                                        data-bs-toggle="pill" 
-                                        data-bs-target="#sub-category-<?= $catIndex ?>-<?= $subIndex ?>" 
-                                        type="button" 
-                                        role="tab"
-                                        aria-controls="sub-category-<?= $catIndex ?>-<?= $subIndex ?>"
-                                        aria-selected="<?= ($subIndex === 0) ? 'true' : 'false' ?>">
+                                <button class="nav-link btn btn-sm rounded-pill btn-sub-cat <?= ($subIndex === 0) ? 'active' : '' ?>"
+                                    id="sub-tab-<?= $catIndex ?>-<?= $subIndex ?>"
+                                    data-bs-toggle="pill"
+                                    data-bs-target="#sub-category-<?= $catIndex ?>-<?= $subIndex ?>"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="sub-category-<?= $catIndex ?>-<?= $subIndex ?>"
+                                    aria-selected="<?= ($subIndex === 0) ? 'true' : 'false' ?>">
                                     <?= esc($subCategory) ?>
                                     <span class="ms-1 opacity-50 small">(<?= count($programsByCategory[$category]['sub_categories'][$subCategory]) ?>)</span>
                                 </button>
@@ -103,10 +103,10 @@
                     <!-- Sub-Tab Content -->
                     <div class="tab-content">
                         <?php foreach ($subCats as $subIndex => $subCategory): ?>
-                            <div class="tab-pane fade <?= ($subIndex === 0) ? 'show active' : '' ?>" 
-                                 id="sub-category-<?= $catIndex ?>-<?= $subIndex ?>" 
-                                 role="tabpanel">
-                                
+                            <div class="tab-pane fade <?= ($subIndex === 0) ? 'show active' : '' ?>"
+                                id="sub-category-<?= $catIndex ?>-<?= $subIndex ?>"
+                                role="tabpanel">
+
                                 <!-- Programs Grid -->
                                 <div class="row g-4">
                                     <?php foreach ($programsByCategory[$category]['sub_categories'][$subCategory] as $program): ?>
@@ -115,21 +115,21 @@
                                                 <!-- Image Container -->
                                                 <div class="position-relative overflow-hidden" style="height: 200px;">
                                                     <?php if (!empty($program['thumbnail'])): ?>
-                                                        <img src="<?= base_url('uploads/programs/thumbs/' . $program['thumbnail']) ?>" 
-                                                             alt="<?= esc($program['title']) ?>" 
-                                                             class="w-100 h-100 object-fit-cover program-img-zoom">
+                                                        <img src="<?= base_url('uploads/programs/thumbs/' . $program['thumbnail']) ?>"
+                                                            alt="<?= esc($program['title']) ?>"
+                                                            class="w-100 h-100 object-fit-cover program-img-zoom">
                                                     <?php else: ?>
-                                                        <?php 
+                                                        <?php
                                                         // Generate a consistent random seed based on program ID for consistent images
                                                         $seed = crc32($program['id']);
                                                         $randomId = ($seed % 1000) + 1;
                                                         ?>
-                                                        <img src="https://picsum.photos/seed/<?= $randomId ?>/800/600" 
-                                                             alt="<?= esc($program['title']) ?>" 
-                                                             class="w-100 h-100 object-fit-cover program-img-zoom"
-                                                             loading="lazy">
+                                                        <img src="https://picsum.photos/seed/<?= $randomId ?>/800/600"
+                                                            alt="<?= esc($program['title']) ?>"
+                                                            class="w-100 h-100 object-fit-cover program-img-zoom"
+                                                            loading="lazy">
                                                     <?php endif ?>
-                                                    
+
                                                     <!-- Category Overlay -->
                                                     <div class="position-absolute top-0 end-0 m-3">
                                                         <span class="badge bg-white text-dark shadow-sm py-2 px-3 rounded-pill fw-bold" style="font-size: 0.7rem;">
@@ -148,18 +148,32 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="card-body d-flex flex-column p-4">
                                                     <h5 class="fw-bold mb-2 text-dark"><?= esc($program['title']) ?></h5>
                                                     <p class="text-muted small flex-grow-1 mb-4">
                                                         <?= esc(strlen($program['description'] ?? '') > 120 ? substr($program['description'], 0, 120) . '...' : ($program['description'] ?? 'Unlock your potential with our immersive educational experience.')) ?>
                                                     </p>
-                                                    
-                                                    <div class="d-flex align-items-center gap-3 pt-3 border-top mt-auto">
-                                                        <a href="<?= base_url('programs/' . $program['id']) ?>" class="btn btn-outline-dark btn-sm rounded-pill flex-grow-1 fw-bold">
+
+                                                    <div class="d-flex align-items-center gap-2 pt-3 border-top mt-auto">
+                                                        <?php
+                                                        // Prepare WhatsApp share message
+                                                        $shareUrl = urlencode(base_url('programs/' . $program['id']));
+                                                        $shareText = "Program: " . $program['title'] . "%0A%0A";
+                                                        $shareText .= "Registrasi: Rp " . number_format($program['registration_fee'], 0, ',', '.') . "%0A";
+                                                        $shareText .= "Biaya Kursus: Rp " . number_format($program['tuition_fee'] * (1 - ($program['discount'] ?? 0) / 100), 0, ',', '.') . "%0A";
+                                                        if (!empty($program['discount']) && $program['discount'] > 0) {
+                                                            $shareText .= "Diskon: " . $program['discount'] . "%25";
+                                                        }
+                                                        $whatsappShareUrl = 'https://wa.me/?text=' . $shareText . '%0A%0A' . $shareUrl;
+                                                        ?>
+                                                        <a href="<?= $whatsappShareUrl ?>" target="_blank" class="btn btn-outline-success btn-sm rounded" title="Share ke WhatsApp">
+                                                            <i class="bi bi-share"></i>
+                                                        </a>
+                                                        <a href="<?= base_url('programs/' . $program['id']) ?>" class="btn btn-outline-dark btn-sm rounded flex-grow-1 fw-bold">
                                                             DETAILS
                                                         </a>
-                                                        <a href="<?= base_url('apply/' . $program['id']) ?>" class="btn btn-dark-red btn-sm rounded-pill flex-grow-1 fw-bold">
+                                                        <a href="<?= base_url('apply/' . $program['id']) ?>" class="btn btn-dark-red btn-sm rounded flex-grow-1 fw-bold">
                                                             APPLY NOW
                                                         </a>
                                                     </div>
@@ -202,7 +216,7 @@
         transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
         padding: 0.8rem 1.5rem;
     }
-    
+
     .category-pill-nav .nav-link.active {
         background: var(--dark-red) !important;
         color: white !important;
@@ -210,7 +224,7 @@
         box-shadow: 0 4px 15px rgba(139, 0, 0, 0.2);
         transform: translateY(-2px);
     }
-    
+
     .category-pill-nav .nav-link:hover:not(.active) {
         background: #f8f9fa;
         border-color: #ddd !important;
@@ -241,34 +255,34 @@
         color: #212529;
         border-color: #212529 !important;
     }
-    
+
     /* Modern Card */
     .program-card-modern {
         transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         border: 1px solid #f0f0f0 !important;
     }
-    
+
     .program-card-modern:hover {
         transform: translateY(-8px);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
     }
-    
+
     .program-img-zoom {
         transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
     }
-    
+
     .program-card-modern:hover .program-img-zoom {
         transform: scale(1.1);
     }
-    
+
     .bg-gradient-dark {
-        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
     }
 
     .hover-lift {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    
+
     .hover-lift:hover {
         transform: translateY(-5px);
     }
@@ -279,23 +293,52 @@
     }
 
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     /* Animations from home page */
     @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .animate-slide-up { animation: fadeInUp 0.8s ease-out forwards; }
-    .animate-slide-up-delay-1 { animation: fadeInUp 0.8s ease-out 0.2s forwards; opacity: 0; }
-    .animate-slide-up-delay-2 { animation: fadeInUp 0.8s ease-out 0.4s forwards; opacity: 0; }
-    .animate-fade-in { animation: fadeIn 1s ease-out forwards; }
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
 
-    .rounded-5 { border-radius: 2rem !important; }
-    
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-slide-up {
+        animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .animate-slide-up-delay-1 {
+        animation: fadeInUp 0.8s ease-out 0.2s forwards;
+        opacity: 0;
+    }
+
+    .animate-slide-up-delay-2 {
+        animation: fadeInUp 0.8s ease-out 0.4s forwards;
+        opacity: 0;
+    }
+
+    .animate-fade-in {
+        animation: fadeIn 1s ease-out forwards;
+    }
+
+    .rounded-5 {
+        border-radius: 2rem !important;
+    }
+
     /* Sticky nav adjustments */
     #explore {
         transition: all 0.3s;

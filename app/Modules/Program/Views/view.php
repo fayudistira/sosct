@@ -10,6 +10,20 @@
             <a href="<?= base_url('program') ?>" class="btn btn-secondary">
                 <i class="bi bi-arrow-left"></i> Back to List
             </a>
+            <?php
+            // Prepare WhatsApp share message
+            $shareUrl = urlencode(base_url('programs/' . $program['id']));
+            $shareText = urlencode('Check out this program: ' . $program['title'] . '\n\n');
+            $shareText .= urlencode('Registration Fee: Rp ' . number_format($program['registration_fee'], 0, ',', '.') . '\n');
+            $shareText .= urlencode('Tuition Fee: Rp ' . number_format($program['tuition_fee'], 0, ',', '.') . '\n');
+            if ($program['discount'] > 0) {
+                $shareText .= urlencode('Discount: ' . $program['discount'] . '%');
+            }
+            $whatsappUrl = 'https://wa.me/?text=' . $shareText . '%0A' . $shareUrl;
+            ?>
+            <a href="<?= $whatsappUrl ?>" target="_blank" class="btn btn-success">
+                <i class="bi bi-whatsapp"></i> Share
+            </a>
             <a href="<?= base_url('program/edit/' . $program['id']) ?>" class="btn btn-warning">
                 <i class="bi bi-pencil"></i> Edit
             </a>

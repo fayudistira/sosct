@@ -4,12 +4,12 @@
 <!-- Page Header -->
 <div class="row mb-4">
     <div class="col">
-        <h4 class="fw-bold">Admission Management</h4>
-        <p class="text-muted mb-0">Manage student admission applications</p>
+        <h4 class="fw-bold">Manajemen Pendaftaran</h4>
+        <p class="text-muted mb-0">Manajemen Data Pendaftaran Siswa</p>
     </div>
     <div class="col-auto">
-        <a href="<?= base_url('admission/create') ?>" class="btn btn-dark-red">
-            <i class="bi bi-plus-circle me-1"></i> Create New
+        <a href="<?= base_url('admission/create') ?>" class="btn btn-dark-red disabled">
+            <i class="bi bi-plus-circle me-1"></i> Input Pendaftaran
         </a>
     </div>
 </div>
@@ -19,7 +19,7 @@
     <div class="col-md-6">
         <form action="<?= base_url('admission/search') ?>" method="get">
             <div class="input-group">
-                <input type="text" name="keyword" class="form-control" placeholder="Search by name, email, registration number..." value="<?= esc($keyword ?? '') ?>">
+                <input type="text" name="keyword" class="form-control" placeholder="Cari berdasarkan nama, email, atau nomor registrasi" value="<?= esc($keyword ?? '') ?>">
                 <button type="submit" class="btn btn-dark-red">
                     <i class="bi bi-search"></i>
                 </button>
@@ -31,20 +31,20 @@
 <!-- Admissions Table -->
 <div class="dashboard-card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <span><i class="bi bi-file-earmark-text me-2"></i>Admission Applications</span>
+        <span><i class="bi bi-file-earmark-text me-2"></i>Data Pendaftaran</span>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover compact-table mb-0">
                 <thead>
                     <tr>
-                        <th>Registration #</th>
-                        <th>Full Name</th>
+                        <th>No. Registrasi</th>
+                        <th>Nama Lengkap</th>
                         <th>Email</th>
-                        <th>Phone</th>
+                        <th>Telp.</th>
                         <th>Program</th>
                         <th>Status</th>
-                        <th>Application Date</th>
+                        <th>Tgl. Daftar</th>
                         <th class="text-end">Actions</th>
                     </tr>
                 </thead>

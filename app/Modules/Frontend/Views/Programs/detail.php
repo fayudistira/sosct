@@ -95,16 +95,32 @@ if (!empty($program['discount']) && $program['discount'] > 0) {
                 <div class="card-body p-3">
                     <div class="d-grid gap-2">
                         <a href="<?= base_url('apply/' . $program['id']) ?>"
-                            class="btn btn-apply-compact">
+                            class="btn btn-apply-compact rounded">
                             <i class="bi bi-pencil-square me-1"></i>Daftar Sekarang
+                        </a>
+                        <?php
+                        // Prepare WhatsApp share message
+                        $shareUrl = urlencode(base_url('programs/' . $program['id']));
+                        $shareText = "Check out this program:%0A" . urlencode($program['title']) . "%0A%0A";
+                        $shareText .= "Registration Fee: Rp " . number_format($program['registration_fee'], 0, ',', '.') . "%0A";
+                        $shareText .= "Tuition Fee: Rp " . number_format($program['tuition_fee'], 0, ',', '.') . "%0A";
+                        if ($program['discount'] > 0) {
+                            $shareText .= "Discount: " . $program['discount'] . "%25";
+                        }
+                        $whatsappShareUrl = 'https://wa.me/?text=' . $shareText . '%0A%0A' . $shareUrl;
+                        ?>
+                        <a href="<?= $whatsappShareUrl ?>"
+                            target="_blank"
+                            class="btn btn-outline-success btn-sm rounded">
+                            <i class="bi bi-share me-1"></i>Share ke WhatsApp
                         </a>
                         <a href="https://wa.me/<?= config('App')->adminWhatsApp ?? '6281234567890' ?>?text=<?= urlencode("Hello, I'm interested in the " . $program['title'] . " program.") ?>"
                             target="_blank"
-                            class="btn btn-success-compact">
+                            class="btn btn-success-compact rounded">
                             <i class="bi bi-whatsapp me-1"></i>Konsultasi dengan Admin
                         </a>
                         <a href="<?= base_url('programs') ?>"
-                            class="btn btn-outline-secondary btn-sm">
+                            class="btn btn-outline-secondary btn-sm rounded">
                             <i class="bi bi-arrow-left me-1"></i>Kembali
                         </a>
                     </div>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Receipt #<?= esc($payment['payment_number']) ?></title>
+    <title>Kwitansi Pembayaran #<?= esc($payment['payment_number']) ?></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
         body {
@@ -244,29 +244,29 @@
         </div>
 
         <!-- Receipt Title -->
-        <div class="receipt-title">PAYMENT RECEIPT</div>
+        <div class="receipt-title">KWITANSI PEMBAYARAN</div>
 
         <!-- Receipt Meta -->
         <div class="receipt-meta">
             <div class="left">
-                <p><strong>Receipt #:</strong> <?= esc($payment['payment_number']) ?></p>
-                <p><strong>Date:</strong> <?= date('F d, Y', strtotime($payment['payment_date'])) ?></p>
+                <p><strong>No. Kwitansi:</strong> <?= esc($payment['payment_number']) ?></p>
+                <p><strong>Tanggal:</strong> <?= date('d F Y', strtotime($payment['payment_date'])) ?></p>
             </div>
             <div class="right">
-                <p><strong>Time:</strong> <?= date('H:i', strtotime($payment['created_at'])) ?></p>
-                <p><strong>Payment Method:</strong> <?= ucwords(str_replace('_', ' ', $payment['payment_method'])) ?></p>
+                <p><strong>Waktu:</strong> <?= date('H:i', strtotime($payment['created_at'])) ?></p>
+                <p><strong>Metode Pembayaran:</strong> <?= ucwords(str_replace('_', ' ', $payment['payment_method'])) ?></p>
             </div>
         </div>
 
         <!-- Student Information -->
         <div class="receipt-details">
-            <h4>Student Information</h4>
+            <h4>Informasi Siswa</h4>
             <div class="detail-row">
-                <div class="detail-label">Name:</div>
+                <div class="detail-label">Nama:</div>
                 <div class="detail-value"><?= esc($student['full_name']) ?></div>
             </div>
             <div class="detail-row">
-                <div class="detail-label">Registration No:</div>
+                <div class="detail-label">No. Registrasi:</div>
                 <div class="detail-value"><?= esc($invoice['registration_number']) ?></div>
             </div>
             <div class="detail-row">
@@ -274,20 +274,20 @@
                 <div class="detail-value"><?= esc($student['email']) ?></div>
             </div>
             <div class="detail-row">
-                <div class="detail-label">Phone:</div>
+                <div class="detail-label">Telepon:</div>
                 <div class="detail-value"><?= esc($student['phone']) ?></div>
             </div>
         </div>
 
         <!-- Invoice Information -->
         <div class="receipt-details">
-            <h4>Invoice Information</h4>
+            <h4>Informasi Invoice</h4>
             <div class="detail-row">
-                <div class="detail-label">Invoice #:</div>
+                <div class="detail-label">No. Invoice:</div>
                 <div class="detail-value"><?= esc($invoice['invoice_number']) ?></div>
             </div>
             <div class="detail-row">
-                <div class="detail-label">Invoice Type:</div>
+                <div class="detail-label">Tipe Invoice:</div>
                 <div class="detail-value"><?= ucwords(str_replace('_', ' ', $invoice['invoice_type'])) ?></div>
             </div>
             <div class="detail-row">
@@ -305,21 +305,21 @@
             $progress = $totalAmount > 0 ? ($totalPaid / $totalAmount * 100) : 0;
             ?>
             <div class="payment-summary">
-                <h4>Payment Summary</h4>
+                <h4>Ringkasan Pembayaran</h4>
                 <div class="summary-row">
-                    <span class="summary-label">Total Amount:</span>
+                    <span class="summary-label">Total Tagihan:</span>
                     <span class="summary-value">Rp <?= number_format($totalAmount, 0, ',', '.') ?></span>
                 </div>
                 <div class="summary-row">
-                    <span class="summary-label">Total Paid:</span>
+                    <span class="summary-label">Total Dibayar:</span>
                     <span class="summary-value highlight">Rp <?= number_format($totalPaid, 0, ',', '.') ?></span>
                 </div>
                 <div class="summary-row">
-                    <span class="summary-label">Remaining Balance:</span>
+                    <span class="summary-label">Sisa Saldo:</span>
                     <span class="summary-value">Rp <?= number_format($remainingBalance, 0, ',', '.') ?></span>
                 </div>
                 <div class="summary-row" style="margin-top: 10px;">
-                    <span class="summary-label">Payment Progress:</span>
+                    <span class="summary-label">Progres Pembayaran:</span>
                 </div>
                 <div class="progress">
                     <div class="progress-bar" style="width: <?= min($progress, 100) ?>%;">
@@ -331,22 +331,22 @@
 
         <!-- Payment Information -->
         <div class="payment-info">
-            <h4>Payment Details</h4>
+            <h4>Detail Pembayaran</h4>
             <div class="detail-row">
-                <div class="detail-label">Payment Status:</div>
+                <div class="detail-label">Status Pembayaran:</div>
                 <div class="detail-value">
-                    <span class="badge bg-success">Paid</span>
+                    <span class="badge bg-success">Lunas</span>
                 </div>
             </div>
             <?php if (!empty($payment['transaction_id'])): ?>
                 <div class="detail-row">
-                    <div class="detail-label">Transaction ID:</div>
+                    <div class="detail-label">ID Transaksi:</div>
                     <div class="detail-value"><?= esc($payment['transaction_id']) ?></div>
                 </div>
             <?php endif ?>
             <?php if (!empty($payment['notes'])): ?>
                 <div class="detail-row">
-                    <div class="detail-label">Notes:</div>
+                    <div class="detail-label">Catatan:</div>
                     <div class="detail-value"><?= nl2br(esc((string)$payment['notes'])) ?></div>
                 </div>
             <?php endif ?>
@@ -354,20 +354,20 @@
 
         <!-- Amount -->
         <div class="amount-box">
-            <div class="amount-label">Amount Paid</div>
+            <div class="amount-label">Jumlah Dibayar</div>
             <div class="amount-value">Rp <?= number_format($payment['amount'], 0, ',', '.') ?></div>
         </div>
 
         <!-- QR Code -->
         <div class="qr-code">
             <img src="<?= base_url('payment/qr/' . $payment['id']) ?>" alt="QR Code" width="100" height="100">
-            <p>Scan to verify payment</p>
+            <p>Scan untuk verifikasi pembayaran</p>
         </div>
 
         <!-- Footer -->
         <div class="receipt-footer">
-            <p>This is a computer-generated receipt. No signature required.</p>
-            <p>Thank you for your payment!</p>
+            <p>Ini adalah kwitansi yang dihasilkan komputer. Tidak memerlukan tanda tangan.</p>
+            <p>Terima kasih atas pembayaran Anda!</p>
         </div>
     </div>
 </body>

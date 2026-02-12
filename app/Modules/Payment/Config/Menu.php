@@ -7,7 +7,7 @@
 
 return [
     [
-        'title' => 'Payments',
+        'title' => 'Pembayaran',
         'url' => 'payment',
         'icon' => 'cash-coin',
         'permission' => 'payment.manage',

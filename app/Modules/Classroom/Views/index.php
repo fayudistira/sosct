@@ -3,19 +3,19 @@
 <?= $this->section('content') ?>
 <div class="row mb-4">
     <div class="col-md-6">
-        <h2 class="fw-bold"><i class="bi bi-door-open me-2"></i>Classroom Management</h2>
-        <p class="text-muted">Manage your classes, schedules, and members.</p>
+        <h2 class="fw-bold"><i class="bi bi-door-open me-2"></i>Manajemen Kelas</h2>
+        <p class="text-muted">Pengaturan Kelas, Jadwal dan Siswa</p>
     </div>
     <div class="col-md-6 text-end">
         <a href="<?= base_url('classroom/create') ?>" class="btn btn-dark-red">
-            <i class="bi bi-plus-lg me-1"></i> Create New Class
+            <i class="bi bi-plus-lg me-1"></i> Buat Kelas Baru
         </a>
     </div>
 </div>
 
 <div class="card dashboard-card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <span>Classroom List</span>
+        <span>Daftar Kelas</span>
         <div class="input-group input-group-sm" style="width: 250px;">
             <input type="text" class="form-control" placeholder="Search classes...">
             <button class="btn btn-outline-secondary" type="button"><i class="bi bi-search"></i></button>
@@ -27,12 +27,12 @@
                 <thead>
                     <tr>
                         <th style="width: 50px;">#</th>
-                        <th>Class Title</th>
-                        <th>Batch / Grade</th>
+                        <th>Nama Kelas</th>
+                        <th>Angkatan / Tingkat</th>
                         <th>Program</th>
-                        <th>Schedule Summary</th>
+                        <th>Jadwal</th>
                         <th>Status</th>
-                        <th>Active Period</th>
+                        <th>Periode</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -47,14 +47,14 @@
                                 <td><?= esc($class['batch'] ?: '-') ?> / <?= esc($class['grade'] ?: '-') ?></td>
                                 <td><?= esc($class['program'] ?: '-') ?></td>
                                 <td>
-                                    <?php 
-                                        $schedule = json_decode($class['schedule'] ?? '[]', true);
-                                        if (!empty($schedule)) {
-                                            $keys = array_keys($schedule);
-                                            echo count($keys) . " Subjects";
-                                        } else {
-                                            echo "-";
-                                        }
+                                    <?php
+                                    $schedule = json_decode($class['schedule'] ?? '[]', true);
+                                    if (!empty($schedule)) {
+                                        $keys = array_keys($schedule);
+                                        echo count($keys) . " Subjects";
+                                    } else {
+                                        echo "-";
+                                    }
                                     ?>
                                 </td>
                                 <td>
@@ -68,7 +68,7 @@
                                 </td>
                                 <td>
                                     <small class="text-muted">
-                                        <?= $class['start_date'] ? date('d M Y', strtotime($class['start_date'])) : 'N/A' ?> - 
+                                        <?= $class['start_date'] ? date('d M Y', strtotime($class['start_date'])) : 'N/A' ?> -
                                         <?= $class['end_date'] ? date('d M Y', strtotime($class['end_date'])) : 'N/A' ?>
                                     </small>
                                 </td>

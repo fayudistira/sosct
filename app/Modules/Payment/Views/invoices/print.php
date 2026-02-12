@@ -465,7 +465,7 @@
             </button> -->
             <?php
             $waNumber = '6285810310950';
-            $message = "Halo Admin, saya butuh bantuan dengan faktur saya #" . $invoice['invoice_number'] . ".";
+            $message = "Halo Admin, saya sudah mendaftar dan menerima invoice dengan nomor #" . $invoice['invoice_number'] . ".";
             $waUrl = "https://wa.me/" . $waNumber . "?text=" . urlencode($message);
             ?>
             <a href="<?= $waUrl ?>" target="_blank" class="btn-action btn-whatsapp">

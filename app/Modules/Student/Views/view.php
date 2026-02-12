@@ -3,11 +3,11 @@
 <?= $this->section('content') ?>
 <div class="row mb-4">
     <div class="col">
-        <h4 class="fw-bold">Student Profile</h4>
+        <h4 class="fw-bold">Profil Siswa</h4>
     </div>
     <div class="col-auto">
         <a href="<?= base_url('student') ?>" class="btn btn-outline-dark-red">
-            <i class="bi bi-arrow-left me-1"></i> Back to List
+            <i class="bi bi-arrow-left me-1"></i> Kembali ke Daftar
         </a>
     </div>
 </div>
@@ -25,13 +25,13 @@
                         <?= substr($student['full_name'], 0, 1) ?>
                     </div>
                 <?php endif; ?>
-                
+
                 <h5 class="fw-bold mb-1"><?= esc($student['full_name']) ?></h5>
                 <p class="text-muted mb-2"><?= esc($student['student_number']) ?></p>
-                
+
                 <div class="mb-3">
                     <?php
-                    $statusClass = match($student['status']) {
+                    $statusClass = match ($student['status']) {
                         'active' => 'success',
                         'inactive' => 'secondary',
                         'graduated' => 'primary',
@@ -48,7 +48,7 @@
         <!-- Academic Info -->
         <div class="card shadow-sm mb-4">
             <div class="card-header bg-white py-3">
-                <h6 class="m-0 fw-bold text-primary"><i class="bi bi-mortarboard me-2"></i>Academic Information</h6>
+                <h6 class="m-0 fw-bold text-primary"><i class="bi bi-mortarboard me-2"></i>Informasi Akademik</h6>
             </div>
             <div class="card-body">
                 <div class="mb-3">
@@ -56,11 +56,11 @@
                     <div class="fw-medium"><?= esc($student['program_title']) ?></div>
                 </div>
                 <div class="mb-3">
-                    <small class="text-muted d-block">Batch</small>
+                    <small class="text-muted d-block">Angkatan</small>
                     <div class="fw-medium"><?= esc($student['batch']) ?></div>
                 </div>
                 <div class="mb-3">
-                    <small class="text-muted d-block">Enrollment Date</small>
+                    <small class="text-muted d-block">Tanggal Pendaftaran</small>
                     <div class="fw-medium"><?= date('d F Y', strtotime($student['enrollment_date'])) ?></div>
                 </div>
                 <!-- Future: GPA/Credits -->
@@ -73,36 +73,36 @@
         <!-- Personal Info -->
         <div class="card shadow-sm mb-4">
             <div class="card-header bg-white py-3">
-                <h6 class="m-0 fw-bold text-primary"><i class="bi bi-person me-2"></i>Personal Details</h6>
+                <h6 class="m-0 fw-bold text-primary"><i class="bi bi-person me-2"></i>Data Pribadi</h6>
             </div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <small class="text-muted d-block">Full Name</small>
+                        <small class="text-muted d-block">Nama Lengkap</small>
                         <div><?= esc($student['full_name']) ?></div>
                     </div>
                     <div class="col-md-6">
-                        <small class="text-muted d-block">Nickname</small>
+                        <small class="text-muted d-block">Nama Panggilan</small>
                         <div><?= esc($student['nickname'] ?? '-') ?></div>
                     </div>
                     <div class="col-md-6">
-                        <small class="text-muted d-block">Gender</small>
+                        <small class="text-muted d-block">Jenis Kelamin</small>
                         <div><?= esc($student['gender'] ?? '-') ?></div>
                     </div>
                     <div class="col-md-6">
-                        <small class="text-muted d-block">Citizen ID</small>
+                        <small class="text-muted d-block">KTP</small>
                         <div><?= esc($student['citizen_id'] ?? '-') ?></div>
                     </div>
                     <div class="col-md-6">
-                        <small class="text-muted d-block">Place of Birth</small>
+                        <small class="text-muted d-block">Tempat Lahir</small>
                         <div><?= esc($student['place_of_birth'] ?? '-') ?></div>
                     </div>
                     <div class="col-md-6">
-                        <small class="text-muted d-block">Date of Birth</small>
+                        <small class="text-muted d-block">Tanggal Lahir</small>
                         <div><?= esc($student['date_of_birth'] ?? '-') ?></div>
                     </div>
                     <div class="col-md-6">
-                        <small class="text-muted d-block">Religion</small>
+                        <small class="text-muted d-block">Agama</small>
                         <div><?= esc($student['religion'] ?? '-') ?></div>
                     </div>
                 </div>
@@ -112,12 +112,12 @@
         <!-- Contact & Address -->
         <div class="card shadow-sm mb-4">
             <div class="card-header bg-white py-3">
-                <h6 class="m-0 fw-bold text-primary"><i class="bi bi-geo-alt me-2"></i>Contact & Address</h6>
+                <h6 class="m-0 fw-bold text-primary"><i class="bi bi-geo-alt me-2"></i>Kontak & Alamat</h6>
             </div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <small class="text-muted d-block">Phone</small>
+                        <small class="text-muted d-block">Telepon</small>
                         <div><?= esc($student['phone'] ?? '-') ?></div>
                     </div>
                     <div class="col-md-6">
@@ -125,7 +125,7 @@
                         <div><?= esc($student['profile_email'] ?? '-') ?></div>
                     </div>
                     <div class="col-12">
-                        <small class="text-muted d-block">Address</small>
+                        <small class="text-muted d-block">Alamat</small>
                         <div>
                             <?= esc($student['street_address'] ?? '') ?><br>
                             <?= esc($student['district'] ?? '') ?>, <?= esc($student['regency'] ?? '') ?><br>
@@ -139,32 +139,34 @@
         <!-- Family -->
         <div class="card shadow-sm mb-4">
             <div class="card-header bg-white py-3">
-                <h6 class="m-0 fw-bold text-primary"><i class="bi bi-people me-2"></i>Family & Emergency</h6>
+                <h6 class="m-0 fw-bold text-primary"><i class="bi bi-people me-2"></i>Keluarga & Darurat</h6>
             </div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <small class="text-muted d-block">Father's Name</small>
+                        <small class="text-muted d-block">Nama Ayah</small>
                         <div><?= esc($student['father_name'] ?? '-') ?></div>
                     </div>
                     <div class="col-md-6">
-                        <small class="text-muted d-block">Mother's Name</small>
+                        <small class="text-muted d-block">Nama Ibu</small>
                         <div><?= esc($student['mother_name'] ?? '-') ?></div>
                     </div>
-                    <div class="col-12"><hr class="my-2"></div>
+                    <div class="col-12">
+                        <hr class="my-2">
+                    </div>
                     <div class="col-md-12">
-                        <strong class="text-primary d-block mb-2">Emergency Contact</strong>
+                        <strong class="text-primary d-block mb-2">Kontak Darurat</strong>
                     </div>
                     <div class="col-md-4">
-                        <small class="text-muted d-block">Name</small>
+                        <small class="text-muted d-block">Nama</small>
                         <div><?= esc($student['emergency_contact_name'] ?? '-') ?></div>
                     </div>
                     <div class="col-md-4">
-                        <small class="text-muted d-block">Relationship</small>
+                        <small class="text-muted d-block">Hubungan</small>
                         <div><?= esc($student['emergency_contact_relation'] ?? '-') ?></div>
                     </div>
                     <div class="col-md-4">
-                        <small class="text-muted d-block">Phone</small>
+                        <small class="text-muted d-block">Telepon</small>
                         <div><?= esc($student['emergency_contact_phone'] ?? '-') ?></div>
                     </div>
                 </div>

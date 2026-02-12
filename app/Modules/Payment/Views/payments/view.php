@@ -20,14 +20,14 @@
     <div class="payment-header">
         <div class="row">
             <div class="col-md-6">
-                <h3 class="mb-0">Payment Details #<?= esc($payment['id']) ?></h3>
+                <h3 class="mb-0">Detail Pembayaran #<?= esc($payment['id']) ?></h3>
             </div>
             <div class="col-md-6 text-end">
                 <a href="<?= base_url('payment/receipt/' . $payment['id']) ?>" class="btn btn-light" target="_blank">
-                    <i class="bi bi-printer"></i> Print Receipt
+                    <i class="bi bi-printer"></i> Cetak Kwitansi
                 </a>
                 <a href="<?= base_url('payment/edit/' . $payment['id']) ?>" class="btn btn-light">Edit</a>
-                <a href="<?= base_url('payment') ?>" class="btn btn-outline-light">Back to List</a>
+                <a href="<?= base_url('payment') ?>" class="btn btn-outline-light">Kembali</a>
             </div>
         </div>
     </div>
@@ -36,20 +36,20 @@
         <div class="col-md-6">
             <div class="card mb-3">
                 <div class="card-header" style="background-color: #8B0000; color: white;">
-                    <h5 class="mb-0">Payment Information</h5>
+                    <h5 class="mb-0">Informasi Pembayaran</h5>
                 </div>
                 <div class="card-body">
                     <div class="mb-2">
-                        <span class="info-label">Amount:</span> Rp <?= number_format($payment['amount'], 0, ',', '.') ?>
+                        <span class="info-label">Jumlah:</span> Rp <?= number_format($payment['amount'], 0, ',', '.') ?>
                     </div>
                     <div class="mb-2">
-                        <span class="info-label">Payment Method:</span> <?= ucwords(str_replace('_', ' ', $payment['payment_method'])) ?>
+                        <span class="info-label">Metode Pembayaran:</span> <?= ucwords(str_replace('_', ' ', $payment['payment_method'])) ?>
                     </div>
                     <div class="mb-2">
-                        <span class="info-label">Document Number:</span> <?= esc($payment['document_number']) ?>
+                        <span class="info-label">Nomor Dokumen:</span> <?= esc($payment['document_number']) ?>
                     </div>
                     <div class="mb-2">
-                        <span class="info-label">Payment Date:</span> <?= date('F d, Y', strtotime($payment['payment_date'])) ?>
+                        <span class="info-label">Tgl. Pembayaran:</span> <?= date('F d, Y', strtotime($payment['payment_date'])) ?>
                     </div>
                     <div class="mb-2">
                         <span class="info-label">Status:</span>
@@ -59,7 +59,7 @@
                     </div>
                     <?php if ($payment['notes']): ?>
                         <div class="mb-2">
-                            <span class="info-label">Notes:</span><br>
+                            <span class="info-label">Keterangan:</span><br>
                             <?= nl2br(esc((string)$payment['notes'])) ?>
                         </div>
                     <?php endif ?>
@@ -69,7 +69,7 @@
             <?php if (!empty($payment['receipt_file'])): ?>
                 <div class="card mb-3">
                     <div class="card-header" style="background-color: #8B0000; color: white;">
-                        <h5 class="mb-0">Receipt Document</h5>
+                        <h5 class="mb-0">Bukti Pembayaran</h5>
                     </div>
                     <div class="card-body">
                         <?php
@@ -105,7 +105,7 @@
                             <a href="<?= $fileUrl ?>"
                                 target="_blank"
                                 class="btn btn-outline-secondary">
-                                <i class="bi bi-download"></i> Download Receipt
+                                <i class="bi bi-download"></i> Unduh Bukti Pembayaran
                             </a>
                         </div>
                     </div>
@@ -116,20 +116,20 @@
         <div class="col-md-6">
             <div class="card mb-3">
                 <div class="card-header" style="background-color: #8B0000; color: white;">
-                    <h5 class="mb-0">Student Information</h5>
+                    <h5 class="mb-0">Informasi Siswa</h5>
                 </div>
                 <div class="card-body">
                     <div class="mb-2">
-                        <span class="info-label">Name:</span> <?= esc($payment['student']['full_name'] ?? 'N/A') ?>
+                        <span class="info-label">Nama Siswa:</span> <?= esc($payment['student']['full_name'] ?? 'N/A') ?>
                     </div>
                     <div class="mb-2">
-                        <span class="info-label">Registration Number:</span> <?= esc($payment['registration_number']) ?>
+                        <span class="info-label">No. Registrasi:</span> <?= esc($payment['registration_number']) ?>
                     </div>
                     <div class="mb-2">
                         <span class="info-label">Email:</span> <?= esc($payment['student']['email'] ?? 'N/A') ?>
                     </div>
                     <div class="mb-2">
-                        <span class="info-label">Phone:</span> <?= esc($payment['student']['phone'] ?? 'N/A') ?>
+                        <span class="info-label">Telp:</span> <?= esc($payment['student']['phone'] ?? 'N/A') ?>
                     </div>
                 </div>
             </div>

@@ -9,11 +9,13 @@
         border-radius: 5px;
         margin-bottom: 20px;
     }
+
     .btn-payment {
         background: linear-gradient(to right, #8B0000, #6B0000);
         color: white;
         border: none;
     }
+
     .btn-payment:hover {
         background: linear-gradient(to right, #6B0000, #8B0000);
         color: white;
@@ -22,67 +24,67 @@
 
 <div class="container-fluid">
     <div class="payment-header">
-        <h3 class="mb-0">Edit Payment #<?= esc($payment['id']) ?></h3>
+        <h3 class="mb-0">Edit Pembayaran #<?= esc($payment['id']) ?></h3>
     </div>
-    
+
     <div class="card">
         <div class="card-body">
             <form action="<?= base_url('payment/update/' . $payment['id']) ?>" method="post" enctype="multipart/form-data">
                 <?= csrf_field() ?>
-                
+
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">Student *</label>
+                            <label class="form-label">Nama Siswa *</label>
                             <select name="registration_number" class="form-select" required>
                                 <?php foreach ($students as $student): ?>
-                                    <option value="<?= esc($student['registration_number']) ?>" 
-                                            <?= $student['registration_number'] === $payment['registration_number'] ? 'selected' : '' ?>>
+                                    <option value="<?= esc($student['registration_number']) ?>"
+                                        <?= $student['registration_number'] === $payment['registration_number'] ? 'selected' : '' ?>>
                                         <?= esc($student['full_name']) ?> (<?= esc($student['registration_number']) ?>)
                                     </option>
                                 <?php endforeach ?>
                             </select>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">Amount *</label>
-                            <input type="number" name="amount" class="form-control" step="0.01" 
-                                   value="<?= esc($payment['amount']) ?>" required>
+                            <label class="form-label">Jumlah Pembayaran *</label>
+                            <input type="number" name="amount" class="form-control" step="0.01"
+                                value="<?= esc($payment['amount']) ?>" required>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">Payment Method *</label>
+                            <label class="form-label">Metode Pembayaran *</label>
                             <select name="payment_method" class="form-select" required>
                                 <option value="cash" <?= $payment['payment_method'] === 'cash' ? 'selected' : '' ?>>Cash</option>
                                 <option value="bank_transfer" <?= $payment['payment_method'] === 'bank_transfer' ? 'selected' : '' ?>>Bank Transfer</option>
                             </select>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">Document Number *</label>
-                            <input type="text" name="document_number" class="form-control" 
-                                   value="<?= esc($payment['document_number']) ?>" required>
+                            <label class="form-label">No. Bukti *</label>
+                            <input type="text" name="document_number" class="form-control"
+                                value="<?= esc($payment['document_number']) ?>" required>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">Payment Date *</label>
-                            <input type="date" name="payment_date" class="form-control" 
-                                   value="<?= esc($payment['payment_date']) ?>" required>
+                            <label class="form-label">Tgl. Pembayaran *</label>
+                            <input type="date" name="payment_date" class="form-control"
+                                value="<?= esc($payment['payment_date']) ?>" required>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label">Status</label>
@@ -95,34 +97,34 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="row">
                     <div class="col-md-12">
                         <div class="mb-3">
-                            <label class="form-label">Receipt File</label>
+                            <label class="form-label">Bukti Pembayaran</label>
                             <?php if (!empty($payment['receipt_file'])): ?>
                                 <div class="mb-2">
-                                    <a href="<?= base_url('uploads/' . $payment['receipt_file']) ?>" 
-                                       target="_blank" class="btn btn-sm btn-outline-secondary">
-                                        <i class="bi bi-file-earmark"></i> View Current Receipt
+                                    <a href="<?= base_url('uploads/' . $payment['receipt_file']) ?>"
+                                        target="_blank" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-file-earmark"></i> Tampilkan Bukti Pembayaran
                                     </a>
-                                    <small class="text-muted d-block mt-1">Current file: <?= basename($payment['receipt_file']) ?></small>
+                                    <small class="text-muted d-block mt-1">Berkas: <?= basename($payment['receipt_file']) ?></small>
                                 </div>
                             <?php endif; ?>
                             <input type="file" name="receipt_file" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
-                            <small class="text-muted">Upload new receipt file (PDF, JPG, PNG - Max 2MB). Leave empty to keep current file.</small>
+                            <small class="text-muted">Unggah Bukti baru (PDF, JPG, PNG - Max 2MB). Biarkan kosong jika menggunakan bukti yang lama.</small>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="mb-3">
-                    <label class="form-label">Notes</label>
+                    <label class="form-label">Keterangan</label>
                     <textarea name="notes" class="form-control" rows="3"><?= esc($payment['notes'] ?? '') ?></textarea>
                 </div>
-                
+
                 <div class="d-flex justify-content-between">
-                    <a href="<?= base_url('payment') ?>" class="btn btn-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-payment">Update Payment</button>
+                    <a href="<?= base_url('payment') ?>" class="btn btn-secondary">Batal</a>
+                    <button type="submit" class="btn btn-payment">Update Pembayaran</button>
                 </div>
             </form>
         </div>

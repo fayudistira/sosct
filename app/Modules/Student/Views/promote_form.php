@@ -4,23 +4,23 @@
 <div class="row justify-content-center">
     <div class="col-md-10">
         <div class="d-flex align-items-center justify-content-between mb-4">
-            <h4 class="fw-bold">Promote Student from Admissions</h4>
+            <h4 class="fw-bold">Tambahkan SIswa Baru dari Data Pendaftar</h4>
             <a href="<?= base_url('student') ?>" class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-arrow-left me-1"></i> Back to Students
+                <i class="bi bi-arrow-left me-1"></i> Kembali
             </a>
         </div>
 
         <div class="card shadow-sm">
             <div class="card-header bg-light">
                 <h6 class="m-0 text-dark">
-                    <i class="bi bi-person-badge me-2"></i>Available Admissions (Approved Only)
+                    <i class="bi bi-person-badge me-2"></i>Data Pendaftar yang tersedia (approved)
                 </h6>
             </div>
             <div class="card-body">
                 <?php if (empty($admissions)): ?>
                     <div class="alert alert-info">
                         <i class="bi bi-info-circle me-2"></i>
-                        No approved admissions available for promotion. (Pending admissions must be approved first)
+                        Tidak ada pendaftaran yang disetujui(approved) untuk ditambahkan. (Pendaftaran harus disetujui terlebih dahulu)
                     </div>
                 <?php else: ?>
                     <form action="<?= base_url('student/do-promote') ?>" method="post">
@@ -30,12 +30,12 @@
                             <table class="table table-hover">
                                 <thead class="table-light">
                                     <tr>
-                                        <th style="width: 50px;">Select</th>
-                                        <th>Name</th>
+                                        <th style="width: 50px;">Pilih</th>
+                                        <th>Nama</th>
                                         <th>Email</th>
                                         <th>Program</th>
                                         <th>Status</th>
-                                        <th>Applied Date</th>
+                                        <th>Tanggal Pendaftaran</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -63,9 +63,9 @@
                         </div>
 
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="<?= base_url('student') ?>" class="btn btn-outline-secondary">Cancel</a>
+                            <a href="<?= base_url('student') ?>" class="btn btn-outline-secondary">Batal</a>
                             <button type="submit" class="btn btn-primary px-4">
-                                <i class="bi bi-check-circle me-2"></i>Proceed to Promote
+                                <i class="bi bi-check-circle me-2"></i>Lanjutkan Naik Tingkat
                             </button>
                         </div>
                     </form>
