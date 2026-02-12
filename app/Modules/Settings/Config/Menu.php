@@ -9,7 +9,7 @@ return [
         'title' => 'Settings',
         'url' => 'settings',
         'icon' => 'bi-gear',
-        'permission' => null,
+        'permission' => 'admin.settings',
         'order' => 100
     ]
 ];

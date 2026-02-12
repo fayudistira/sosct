@@ -3,9 +3,9 @@
 return [
     [
         'title' => 'Employee Management',
-        'icon' => 'bi bi-people-fill',
+        'icon' => 'people-fill',
         'url' => 'admin/employee',
-        'permission' => ['admin.access', 'users.manage-admins'], // Adjust based on requirements
+        'permission' => 'admin.settings',
         'order' => 50,
     ],
 ];

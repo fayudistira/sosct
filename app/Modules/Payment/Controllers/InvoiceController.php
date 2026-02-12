@@ -177,19 +177,33 @@ class InvoiceController extends BaseController
     public function store()
     {
         $action = $this->request->getPost('action'); // 'new' or 'extend'
+
+        // Default to 'new' if action is not set (e.g., when JavaScript is disabled)
+        if (empty($action)) {
+            $action = 'new';
+        }
+
         $items = $this->request->getPost('items');
 
+        // Log for debugging
+        log_message('debug', 'Invoice store action: ' . $action);
+        log_message('debug', 'Items data: ' . print_r($items, true));
+
         // Validate that items exist
-        if (!$items || !is_array($items)) {
-            return redirect()->back()->withInput()->with('error', 'Please add at least one line item.');
+        if (!$items || !is_array($items) || empty($items)) {
+            log_message('error', 'Invoice store failed: No items submitted');
+            return redirect()->back()->withInput()->with('error', 'Silakan tambahkan minimal satu item faktur.');
         }
 
         // Filter and validate items, calculate total
         $validItems = [];
         $totalAmount = 0;
 
-        foreach ($items as $item) {
-            if (!empty($item['description']) && !empty($item['amount'])) {
+        foreach ($items as $key => $item) {
+            if (!isset($item['description']) || !isset($item['amount'])) {
+                continue;
+            }
+            if (!empty(trim($item['description'])) && !empty($item['amount'])) {
                 $amount = (float) $item['amount'];
                 if ($amount > 0) {
                     $validItems[] = [
@@ -203,7 +217,8 @@ class InvoiceController extends BaseController
 
         // Validate total amount
         if (empty($validItems) || $totalAmount <= 0) {
-            return redirect()->back()->withInput()->with('error', 'Please add at least one valid line item with amount greater than zero.');
+            log_message('error', 'Invoice store failed: No valid items with amount > 0');
+            return redirect()->back()->withInput()->with('error', 'Silakan tambahkan minimal satu item dengan jumlah yang valid.');
         }
 
         if ($action === 'extend') {
@@ -211,35 +226,59 @@ class InvoiceController extends BaseController
             $invoiceId = $this->request->getPost('invoice_id');
 
             if (!$invoiceId) {
-                return redirect()->back()->withInput()->with('error', 'Please select an invoice to extend.');
+                return redirect()->back()->withInput()->with('error', 'Silakan pilih faktur untuk diperpanjang.');
             }
 
             // Extend the invoice (updates the existing record)
             if ($this->invoiceModel->extendInvoice($invoiceId, $validItems)) {
                 return redirect()->to('/invoice/view/' . $invoiceId)
-                    ->with('success', 'Invoice extended successfully.');
+                    ->with('success', 'Faktur berhasil diperpanjang.');
             }
 
-            return redirect()->back()->withInput()->with('error', 'Failed to extend invoice. The invoice may not be extendable.');
+            return redirect()->back()->withInput()->with('error', 'Gagal memperpanjang faktur. Faktur mungkin tidak dapat diperpanjang.');
         } else {
             // CREATE NEW INVOICE
+            $registrationNumber = $this->request->getPost('registration_number');
+            $invoiceType = $this->request->getPost('invoice_type');
+            $dueDate = $this->request->getPost('due_date');
+
+            // Validate required fields for new invoice
+            if (empty($registrationNumber)) {
+                return redirect()->back()->withInput()->with('error', 'Silakan pilih siswa.');
+            }
+
+            if (empty($invoiceType)) {
+                return redirect()->back()->withInput()->with('error', 'Silakan pilih jenis faktur.');
+            }
+
+            if (empty($dueDate)) {
+                return redirect()->back()->withInput()->with('error', 'Silakan pilih tanggal jatuh tempo.');
+            }
+
             $invoiceData = [
-                'registration_number' => $this->request->getPost('registration_number'),
-                'description' => 'Invoice with ' . count($validItems) . ' item(s)',
+                'registration_number' => $registrationNumber,
+                'description' => 'Invoice with ' . count($validItems) . ' item(s) - ' . $validItems[0]['description'],
                 'amount' => $totalAmount,
-                'due_date' => $this->request->getPost('due_date'),
-                'invoice_type' => $this->request->getPost('invoice_type'),
+                'due_date' => $dueDate,
+                'invoice_type' => $invoiceType,
                 'items' => $this->invoiceModel->encodeItems($validItems)
             ];
+
+            log_message('debug', 'Creating invoice with data: ' . print_r($invoiceData, true));
 
             // Create invoice with items
             $invoiceId = $this->invoiceModel->createInvoice($invoiceData);
 
             if ($invoiceId) {
-                return redirect()->to('/invoice')->with('success', 'Invoice created successfully.');
+                log_message('info', 'Invoice created successfully with ID: ' . $invoiceId);
+                return redirect()->to('/invoice')->with('success', 'Faktur berhasil dibuat.');
             }
 
-            return redirect()->back()->withInput()->with('errors', $this->invoiceModel->errors());
+            // Get validation errors
+            $errors = $this->invoiceModel->errors();
+            log_message('error', 'Invoice creation failed with errors: ' . print_r($errors, true));
+
+            return redirect()->back()->withInput()->with('errors', $errors);
         }
     }
 

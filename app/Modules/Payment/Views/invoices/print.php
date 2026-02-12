@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice #<?= esc($invoice['invoice_number']) ?></title>
+    <title>Faktur #<?= esc($invoice['invoice_number']) ?></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
         @media print {
@@ -53,10 +53,28 @@
             font-size: 20px;
         }
 
+        .company-info h1 {
+            margin: 0;
+            color: #8B0000;
+            font-size: 20px;
+        }
+
         .company-info p {
             margin: 3px 0;
             color: #666;
             font-size: 12px;
+        }
+
+        .company-logo {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .company-logo img {
+            max-width: 50px;
+            height: auto;
+            display: block;
         }
 
         .invoice-meta {
@@ -270,18 +288,82 @@
         .print-button:hover {
             background: #6B0000;
         }
+
+        .copy-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 2px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 10px;
+            margin-left: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #5a6268;
+        }
+
+        .copy-btn.copied {
+            background: #28a745;
+        }
+
+        .copy-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 2px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 10px;
+            margin-left: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #5a6268;
+        }
+
+        .copy-btn.copied {
+            background: #28a745;
+        }
     </style>
+
+    <script>
+        function copyToClipboard(text, element) {
+            navigator.clipboard.writeText(text).then(() => {
+                element.classList.add('copied');
+                setTimeout(() => {
+                    element.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+
+        // Add click listeners to all copy buttons
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const textToCopy = this.getAttribute('data-copy');
+                copyToClipboard(textToCopy, this);
+            });
+        });
+    </script>
 </head>
 
 <body>
     <button class="print-button no-print" onclick="window.print()">
-        🖨️ Print / Save as PDF
+        🖨️ Cetak / Simpan sebagai PDF
     </button>
 
     <div class="invoice-container">
         <!-- Header -->
         <div class="invoice-header">
             <div class="company-info">
+                <div class="company-logo">
+                    <img src="/assets/images/sos-logo.png" alt="SOS Logo" onerror="this.style.display='none'">
+                </div>
                 <h1>SOSCT</h1>
                 <p>SOS Course & Training</p>
                 <p>Perum GPR 1 Blok C No.4, Jl. Veteran Tulungrejo, Pare, Kediri 64212</p>
@@ -289,8 +371,8 @@
                 <p>Telp: +62 858 1031 0950</p>
             </div>
             <div class="invoice-meta">
-                <h2>INVOICE</h2>
-                <p><strong>#<?= esc($invoice['invoice_number']) ?></strong></p>
+                <h2>FAKTUR</h2>
+                <p><strong>#<?= esc($invoice['invoice_number']) ?></strong> <button class="copy-btn no-print" data-copy="#<?= esc($invoice['invoice_number']) ?>" title="Salin Nomor Faktur"><i class="bi bi-clipboard"></i></button></p>
                 <p>Tgl: <?= date('d M Y', strtotime($invoice['created_at'])) ?></p>
                 <p>Jt.Tempo: <?= date('d M Y', strtotime($invoice['due_date'])) ?></p>
                 <p>
@@ -308,7 +390,7 @@
                 <p><strong><?= esc($student['full_name'] ?? 'N/A') ?></strong></p>
                 <p><?= esc($student['email'] ?? '') ?></p>
                 <p><?= esc($student['phone'] ?? '') ?></p>
-                <p>Reg. No: <?= esc($invoice['registration_number']) ?></p>
+                <p>No. Reg: <?= esc($invoice['registration_number']) ?></p>
             </div>
             <div class="detail-section">
                 <h3>Program Terdaftar:</h3>
@@ -323,8 +405,8 @@
         <table class="invoice-table">
             <thead>
                 <tr>
-                    <th>Description</th>
-                    <th style="width: 150px; text-align: right;">Amount</th>
+                    <th>Keterangan</th>
+                    <th style="width: 150px; text-align: right;">Jumlah</th>
                 </tr>
             </thead>
             <tbody>
@@ -364,7 +446,7 @@
             </div>
             <?php if (!empty($invoice['total_paid']) && $invoice['total_paid'] > 0): ?>
                 <div class="total-row">
-                    <span>Paid:</span>
+                    <span>Dibayar:</span>
                     <span style="color: green;">- Rp <?= number_format($invoice['total_paid'], 0, ',', '.') ?></span>
                 </div>
             <?php endif ?>
@@ -373,15 +455,17 @@
                 <span>Rp <?= number_format($invoice['amount'] - ($invoice['total_paid'] ?? 0), 0, ',', '.') ?></span>
             </div>
         </div>
-
+        <p style="margin-top: 10px; font-size: 11px;">
+            Konfirmasi Pendaftaran Anda via Whatsap di bawah untuk fast response Admin
+        </p>
         <!-- Action Buttons -->
         <div class="action-buttons no-print">
             <!-- <button onclick="window.print()" class="btn-action btn-print">
-                <i class="bi bi-printer"></i> Print / Download
+                <i class="bi bi-printer"></i> Cetak / Unduh
             </button> -->
             <?php
             $waNumber = '6285810310950';
-            $message = "Hello Admin, I need help with my invoice #" . $invoice['invoice_number'] . ".";
+            $message = "Halo Admin, saya butuh bantuan dengan faktur saya #" . $invoice['invoice_number'] . ".";
             $waUrl = "https://wa.me/" . $waNumber . "?text=" . urlencode($message);
             ?>
             <a href="<?= $waUrl ?>" target="_blank" class="btn-action btn-whatsapp">
@@ -394,18 +478,20 @@
             <div class="payment-info">
                 <h4>Informasi Pembayaran</h4>
                 <p>Bank: BNI</p>
-                <p>Account: 2205502277</p>
-                <p>Name: SOS Course and Training</p>
+                <p>Rekening: 2205502277</p>
+                <p>Nama: SOS Course and Training</p>
                 <p style="margin-top: 10px; font-size: 11px;">
-                    Harap cantumkan nomor Invoice <strong>#<?= esc($invoice['invoice_number']) ?></strong>pada keterangan Transfer.
+                    Harap cantumkan nomor Faktur <strong>#<?= esc($invoice['invoice_number']) ?></strong> pada keterangan Transfer.
                 </p>
             </div>
             <div class="qr-code">
                 <img src="<?= base_url('invoice/qr/' . $invoice['id']) ?>" alt="QR Code" width="100" height="100">
-                <p>Scan to view online</p>
+                <p>Scan untuk mencocokkan</p>
             </div>
         </div>
-    </div>
+        <div class="qr-code">
+            <p>Dokumen ini diterbitkan secara elektronik dan tidak memerlukan stempel basah atau tanda tangan.</p>
+        </div>
 </body>
 
 </html>

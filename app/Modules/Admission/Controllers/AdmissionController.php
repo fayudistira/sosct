@@ -195,30 +195,47 @@ class AdmissionController extends BaseController
                 throw new \Exception('Failed to create admission: ' . json_encode($admissionModel->errors()));
             }
 
-            // 4. Create Registration Invoice
+            // 4. Create Registration Invoice with 2 items (Registration Fee + Course Fee)
             $regFee = (float)($program['registration_fee'] ?? 0);
+            $tuitionFee = (float)($program['tuition_fee'] ?? 0);
+            $totalAmount = $regFee + $tuitionFee;
 
-            log_message('error', '[Debug] Program ID: ' . $programId . ' | Title: ' . $program['title'] . ' | Fee Raw: ' . ($program['registration_fee'] ?? 'NULL') . ' | Fee Cast: ' . $regFee);
+            log_message('error', '[Debug] Program ID: ' . $programId . ' | Title: ' . $program['title'] . ' | Reg Fee: ' . $regFee . ' | Tuition Fee: ' . $tuitionFee . ' | Total: ' . $totalAmount);
 
-            if ($regFee > 0) {
-                log_message('error', '[Debug] Attempting to create invoice for amount: ' . $regFee);
+            if ($totalAmount > 0) {
+                log_message('error', '[Debug] Attempting to create invoice for total amount: ' . $totalAmount);
+
+                // Create items array with 2 entries
+                $items = [
+                    [
+                        'description' => 'Registration Fee for ' . $program['title'],
+                        'amount' => $regFee,
+                        'type' => 'registration_fee'
+                    ],
+                    [
+                        'description' => 'Course Fee for ' . $program['title'],
+                        'amount' => $tuitionFee,
+                        'type' => 'tuition_fee'
+                    ]
+                ];
 
                 $invoiceData = [
                     'registration_number' => $admissionData['registration_number'],
-                    'description' => 'Registration Fee for ' . $program['title'],
-                    'amount' => $regFee,
+                    'description' => 'Payment for ' . $program['title'] . ' Program',
+                    'amount' => $totalAmount,
                     'due_date' => date('Y-m-d', strtotime('+3 days')), // 3 days to pay
-                    'invoice_type' => 'registration_fee',
-                    'status' => 'unpaid'
+                    'invoice_type' => 'tuition_fee',
+                    'status' => 'unpaid',
+                    'items' => json_encode($items, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
                 ];
 
                 if (!$invoiceModel->createInvoice($invoiceData)) {
                     log_message('error', '[Debug] Invoice creation FAILED: ' . json_encode($invoiceModel->errors()));
                     throw new \Exception('Failed to create invoice: ' . json_encode($invoiceModel->errors()));
                 }
-                log_message('error', '[Debug] Invoice created successfully.');
+                log_message('error', '[Debug] Invoice created successfully with 2 items.');
             } else {
-                log_message('error', '[Debug] Skipping invoice creation because fee is 0.');
+                log_message('error', '[Debug] Skipping invoice creation because total fee is 0.');
             }
 
             $db->transComplete();
@@ -587,17 +604,29 @@ class AdmissionController extends BaseController
             return redirect()->back()->with('error', 'Invalid admission for promotion.');
         }
 
+        // Validate that citizen_id and phone are available
+        if (empty($admission['citizen_id'])) {
+            return redirect()->back()->with('error', 'Citizen ID is required for account creation. Please update the profile first.');
+        }
+        if (empty($admission['phone'])) {
+            return redirect()->back()->with('error', 'Phone number is required for account creation. Please update the profile first.');
+        }
+
         $db = \Config\Database::connect();
         $db->transBegin();
 
         try {
             // 1. Create User using Shield's User entity
+            // Auto-generate username and password
+            $username = $admission['citizen_id'];
+            $password = $admission['phone'];
+
             $userProvider = auth()->getProvider();
 
             $userEntity = new User([
-                'username' => $this->request->getPost('username'),
+                'username' => $username,
                 'email'    => $admission['email'],
-                'password' => $this->request->getPost('password'),
+                'password' => $password,
             ]);
 
             if (!$userProvider->save($userEntity)) {
@@ -646,7 +675,7 @@ class AdmissionController extends BaseController
 
             $db->transCommit();
 
-            return redirect()->to('/student')->with('success', 'Student promoted successfully.');
+            return redirect()->to('/student')->with('success', 'Student promoted successfully. Username: ' . $username . ', Password: ' . $password);
         } catch (\Exception $e) {
             $db->transRollback();
             log_message('error', 'Promotion error: ' . $e->getMessage());

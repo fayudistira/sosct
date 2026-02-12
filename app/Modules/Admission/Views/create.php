@@ -40,74 +40,108 @@
     </div>
 
     <script>
-        document.getElementById('autofill_file').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        document.addEventListener('DOMContentLoaded', function() {
+            const autofillFile = document.getElementById('autofill_file');
+            console.log('Autofill file element:', autofillFile);
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    const form = document.querySelector('form[action$="admission/store"]');
+            if (!autofillFile) {
+                console.error('Autofill file input not found!');
+                return;
+            }
 
-                    if (!form) {
-                        alert('Form not found!');
-                        return;
-                    }
+            autofillFile.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (!file) return;
 
-                    // Reset selected file if something goes wrong
-                    const inputEl = event.target;
+                console.log('Processing file:', file.name);
 
-                    let filledCount = 0;
-                    for (const key in data) {
-                        const input = form.querySelector(`[name="${key}"], [name="${key}[]"]`);
-                        if (input) {
-                            if (input.type === 'checkbox' || input.type === 'radio') {
-                                // For radioactive/checkbox, check if value matches
-                                if (input.value == data[key]) input.checked = true;
-                            } else if (input.tagName === 'SELECT') {
-                                // Match by value or text
-                                let found = false;
-                                Array.from(input.options).forEach(opt => {
-                                    if (opt.value == data[key] || opt.textContent.trim().includes(data[key])) {
-                                        input.value = opt.value;
-                                        found = true;
-                                    }
-                                });
-                                if (!found && key === 'course') console.warn('Program not found:', data[key]);
-                                input.dispatchEvent(new Event('change'));
-                            } else if (input.type !== 'file') {
-                                input.value = data[key];
-                                filledCount++;
+                // Check file type
+                if (file.type !== 'application/json' && !file.name.endsWith('.txt') && !file.name.endsWith('.json')) {
+                    alert('Please upload a .txt or .json file.\nDetected file type: ' + file.type);
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const rawContent = e.target.result;
+                        console.log('File content length:', rawContent.length);
+
+                        // Try to parse JSON
+                        const data = JSON.parse(rawContent);
+                        console.log('Parsed JSON data:', data);
+
+                        const form = document.querySelector('form[action$="admission/store"]');
+                        console.log('Form found:', !!form);
+
+                        if (!form) {
+                            alert('Form not found! Check console for details.');
+                            console.log('All form actions on page:', Array.from(document.querySelectorAll('form')).map(f => f.action));
+                            return;
+                        }
+
+                        const inputEl = event.target;
+                        let filledCount = 0;
+                        let notFound = [];
+
+                        for (const key in data) {
+                            const input = form.querySelector(`[name="${key}"], [name="${key}[]"]`);
+                            console.log(`Field "${key}":`, input ? 'FOUND' : 'NOT FOUND');
+
+                            if (input) {
+                                if (input.type === 'checkbox' || input.type === 'radio') {
+                                    if (input.value == data[key]) input.checked = true;
+                                } else if (input.tagName === 'SELECT') {
+                                    let found = false;
+                                    Array.from(input.options).forEach(opt => {
+                                        if (opt.value == data[key] || opt.textContent.trim().includes(data[key])) {
+                                            input.value = opt.value;
+                                            found = true;
+                                        }
+                                    });
+                                    if (!found && key === 'course') console.warn('Program not found:', data[key]);
+                                    input.dispatchEvent(new Event('change'));
+                                } else if (input.type !== 'file') {
+                                    console.log(`Setting "${key}" = "${data[key]}"`);
+                                    input.value = data[key];
+                                    filledCount++;
+                                }
+                            } else {
+                                notFound.push(key);
                             }
                         }
-                    }
 
-                    // Specific handling for 'course' since it might trigger Select2 if present
-                    if (data.course) {
-                        const courseSelect = form.querySelector('select[name="course"]');
-                        if (courseSelect) {
-                            courseSelect.value = data.course;
-                            courseSelect.dispatchEvent(new Event('change'));
+                        if (notFound.length > 0) {
+                            console.warn('Fields not in form:', notFound);
                         }
+
+                        // Specific handling for 'course'
+                        if (data.course) {
+                            const courseSelect = form.querySelector('select[name="course"]');
+                            if (courseSelect) {
+                                courseSelect.value = data.course;
+                                courseSelect.dispatchEvent(new Event('change'));
+                            }
+                        }
+
+                        // Show feedback
+                        const feedback = document.createElement('div');
+                        feedback.className = 'alert alert-success mt-2 mb-0 py-2 small fw-medium';
+                        feedback.innerHTML = `<i class="bi bi-check-circle me-1"></i> Form autofilled with ${filledCount} values!`;
+                        inputEl.parentElement.appendChild(feedback);
+
+                        console.log('Total fields filled:', filledCount);
+
+                        inputEl.value = '';
+                        setTimeout(() => feedback.remove(), 4000);
+
+                    } catch (err) {
+                        console.error('JSON Parse Error:', err);
+                        alert('Error parsing JSON: ' + err.message + '\nCheck console for details.');
                     }
-
-                    // Show a quick success feedback
-                    const feedback = document.createElement('div');
-                    feedback.className = 'alert alert-success mt-2 mb-0 py-2 small fw-medium';
-                    feedback.innerHTML = `<i class="bi bi-check-circle me-1"></i> Form autofilled with ${filledCount} values!`;
-                    inputEl.parentElement.appendChild(feedback);
-
-                    // Clear file input so it can be re-selected if file changes
-                    inputEl.value = '';
-
-                    setTimeout(() => feedback.remove(), 4000);
-
-                } catch (err) {
-                    alert('Error parsing JSON file. Please ensure it is a valid JSON format.\n\nError: ' + err.message);
-                }
-            };
-            reader.readAsText(file);
+                };
+                reader.readAsText(file);
+            });
         });
     </script>
 <?php endif; ?>

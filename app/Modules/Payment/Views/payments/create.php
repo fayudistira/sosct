@@ -363,6 +363,22 @@
                 $('#invoiceSummary').hide();
             }
         });
+
+        // Handle form submission - re-enable button on page reload
+        $('#paymentForm').on('submit', function() {
+            // The button will be re-enabled when the page reloads
+            // This is just to prevent double-submission during the same page load
+            const submitBtn = $(this).find('button[type="submit"]');
+            submitBtn.data('original-text', submitBtn.html());
+            submitBtn.html('<i class="bi bi-hourglass-split me-1"></i> Processing...');
+            submitBtn.prop('disabled', true);
+
+            // Re-enable after 10 seconds as fallback (in case of error)
+            setTimeout(function() {
+                submitBtn.html(submitBtn.data('original-text'));
+                submitBtn.prop('disabled', false);
+            }, 10000);
+        });
     });
 </script>
 <?= $this->endSection() ?>

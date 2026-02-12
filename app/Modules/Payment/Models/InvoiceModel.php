@@ -31,7 +31,7 @@ class InvoiceModel extends Model
 
     protected $validationRules = [
         'registration_number' => 'required|max_length[20]',
-        'description' => 'required|min_length[10]',
+        'description' => 'required|min_length[3]',
         'amount' => 'required|decimal|greater_than[0]',
         'due_date' => 'required|valid_date',
         'invoice_type' => 'required|in_list[registration_fee,tuition_fee,miscellaneous_fee]',
@@ -116,7 +116,21 @@ class InvoiceModel extends Model
             $data['status'] = 'unpaid';
         }
 
-        return $this->insert($data);
+        // Run validation before insert
+        if (!$this->validate($data)) {
+            log_message('error', 'Invoice validation failed: ' . print_r($this->errors(), true));
+            return false;
+        }
+
+        // Attempt to insert
+        $result = $this->insert($data);
+
+        if (!$result) {
+            log_message('error', 'Invoice insert failed: ' . print_r($this->errors(), true));
+            return false;
+        }
+
+        return (int) $this->insertID();
     }
 
     /**
@@ -540,5 +554,39 @@ class InvoiceModel extends Model
             'current_items' => $currentItems,
             'invoice_status' => $invoice['status']
         ];
+    }
+
+    /**
+     * Get paginated invoices for a specific student
+     *
+     * @param string $registrationNumber Student registration number
+     * @param int $perPage Number of records per page
+     * @return array
+     */
+    public function getStudentInvoices(string $registrationNumber, int $perPage = 10): array
+    {
+        return $this->where('registration_number', $registrationNumber)
+            ->where('deleted_at', null)
+            ->orderBy('created_at', 'DESC')
+            ->paginate($perPage);
+    }
+
+    /**
+     * Search invoices for a specific student
+     *
+     * @param string $registrationNumber Student registration number
+     * @param string $keyword Search keyword
+     * @return array
+     */
+    public function searchStudentInvoices(string $registrationNumber, string $keyword): array
+    {
+        return $this->where('registration_number', $registrationNumber)
+            ->where('deleted_at', null)
+            ->groupStart()
+            ->like('invoice_number', $keyword)
+            ->orLike('description', $keyword)
+            ->groupEnd()
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
     }
 }

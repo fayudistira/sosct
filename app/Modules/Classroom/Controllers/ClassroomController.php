@@ -31,9 +31,13 @@ class ClassroomController extends BaseController
 
     public function create()
     {
+        $staffModel = new \Modules\Employee\Models\StaffModel();
+        $instructors = $staffModel->getInstructors();
+
         return view('Modules\Classroom\Views\form', [
             'title'      => 'Create Classroom',
             'admissions' => $this->admissionModel->getAllWithDetails(),
+            'instructors' => $instructors,
             'action'     => base_url('classroom/store'),
             'method'     => 'post',
             'menu'       => ['index' => base_url('classroom')]
@@ -43,7 +47,7 @@ class ClassroomController extends BaseController
     public function store()
     {
         $data = $this->request->getPost();
-        
+
         // Handle Schedule JSON
         $schedule = [];
         if (isset($data['schedule_subject'])) {
@@ -115,10 +119,14 @@ class ClassroomController extends BaseController
         $classroom['schedule'] = json_decode($classroom['schedule'] ?? '[]', true);
         $classroom['members'] = json_decode($classroom['members'] ?? '[]', true);
 
+        $staffModel = new \Modules\Employee\Models\StaffModel();
+        $instructors = $staffModel->getInstructors();
+
         return view('Modules\Classroom\Views\form', [
             'title'      => 'Edit Classroom',
             'classroom'  => $classroom,
             'admissions' => $this->admissionModel->getAllWithDetails(),
+            'instructors' => $instructors,
             'action'     => base_url('classroom/update/' . $id),
             'method'     => 'post',
             'menu'       => [

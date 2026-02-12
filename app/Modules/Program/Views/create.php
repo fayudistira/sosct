@@ -40,14 +40,28 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                document.getElementById('autofill_file').addEventListener('change', function(event) {
+                const autofillFile = document.getElementById('autofill_file');
+                if (!autofillFile) return;
+
+                autofillFile.addEventListener('change', function(event) {
                     const file = event.target.files[0];
                     if (!file) return;
+
+                    // Check file type
+                    if (file.type !== 'application/json' && !file.name.endsWith('.txt') && !file.name.endsWith('.json')) {
+                        alert('Please upload a .txt or .json file.\nDetected file type: ' + file.type);
+                        return;
+                    }
 
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         try {
-                            const data = JSON.parse(e.target.result);
+                            const rawContent = e.target.result;
+                            console.log('File content length:', rawContent.length);
+                            console.log('First 100 chars:', rawContent.substring(0, 100));
+
+                            const data = JSON.parse(rawContent);
+                            console.log('Parsed data:', data);
                             const form = document.querySelector('form[action$="program/store"]');
 
                             if (!form) {
@@ -91,7 +105,9 @@
                             setTimeout(() => feedback.remove(), 4000);
 
                         } catch (err) {
-                            alert('Error parsing JSON file: ' + err.message);
+                            console.error('JSON Parse Error:', err);
+                            console.log('Raw content:', e.target.result);
+                            alert('Error parsing JSON file. Please ensure it is a valid JSON format.\n\nError: ' + err.message + '\n\nTip: Check the browser console (F12) for more details.');
                         }
                     };
                     reader.readAsText(file);

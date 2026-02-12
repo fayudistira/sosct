@@ -20,19 +20,19 @@
     <div class="invoice-header">
         <div class="row">
             <div class="col-md-6">
-                <h3 class="mb-0">Invoice <?= esc($invoice['invoice_number']) ?></h3>
+                <h3 class="mb-0">Faktur <?= esc($invoice['invoice_number']) ?></h3>
             </div>
             <div class="col-md-6 text-end">
                 <a href="<?= base_url('invoice/pdf/' . $invoice['id']) ?>" class="btn btn-light" target="_blank">
-                    <i class="bi bi-file-pdf"></i> Download PDF
+                    <i class="bi bi-file-pdf"></i> Unduh PDF
                 </a>
                 <?php if (in_array($invoice['status'], ['unpaid', 'expired'])): ?>
                     <a href="<?= base_url('invoice/cancel/' . $invoice['id']) ?>" class="btn btn-danger"
-                        onclick="return confirm('Are you sure you want to cancel this invoice? This action cannot be undone.')">
-                        <i class="bi bi-x-circle"></i> Cancel Invoice
+                        onclick="return confirm('Apakah Anda yakin ingin membatalkan faktur ini? Tindakan ini tidak dapat dibatalkan.')">
+                        <i class="bi bi-x-circle"></i> Batalkan Faktur
                     </a>
                 <?php endif; ?>
-                <a href="<?= base_url('invoice') ?>" class="btn btn-outline-light">Back</a>
+                <a href="<?= base_url('invoice') ?>" class="btn btn-outline-light">Kembali</a>
             </div>
         </div>
     </div>
@@ -41,20 +41,20 @@
         <div class="col-md-6">
             <div class="card mb-3">
                 <div class="card-header" style="background-color: #8B0000; color: white;">
-                    <h5 class="mb-0">Invoice Details</h5>
+                    <h5 class="mb-0">Detail Faktur</h5>
                 </div>
                 <div class="card-body">
                     <div class="mb-2">
-                        <span class="info-label">Invoice Number:</span> <?= esc($invoice['invoice_number']) ?>
+                        <span class="info-label">Nomor Faktur:</span> <?= esc($invoice['invoice_number']) ?>
                     </div>
                     <div class="mb-2">
-                        <span class="info-label">Type:</span> <?= ucwords(str_replace('_', ' ', $invoice['invoice_type'])) ?>
+                        <span class="info-label">Jenis:</span> <?= ucwords(str_replace('_', ' ', $invoice['invoice_type'])) ?>
                     </div>
                     <div class="mb-2">
-                        <span class="info-label">Amount:</span> Rp <?= number_format($invoice['amount'], 0, ',', '.') ?>
+                        <span class="info-label">Jumlah:</span> Rp <?= number_format($invoice['amount'], 0, ',', '.') ?>
                     </div>
                     <div class="mb-2">
-                        <span class="info-label">Due Date:</span> <?= date('F d, Y', strtotime($invoice['due_date'])) ?>
+                        <span class="info-label">Tanggal Jatuh Tempo:</span> <?= date('F d, Y', strtotime($invoice['due_date'])) ?>
                     </div>
                     <div class="mb-2">
                         <span class="info-label">Status:</span>
@@ -69,13 +69,13 @@
                         </span>
                     </div>
                     <div class="mb-2">
-                        <span class="info-label">Description:</span><br>
+                        <span class="info-label">Deskripsi:</span><br>
                         <?= nl2br(esc((string)($invoice['description'] ?? ''))) ?>
                     </div>
                     <?php if (!empty($invoice['parent_invoice_id'])): ?>
                         <div class="mt-3 pt-3 border-top">
-                            <span class="info-label"><i class="bi bi-info-circle"></i> Extended Invoice:</span>
-                            <small class="text-muted">This invoice was created by extending invoice #<?= esc($invoice['parent_invoice_id']) ?></small>
+                            <span class="info-label"><i class="bi bi-info-circle"></i> Faktur Diperpanjang:</span>
+                            <small class="text-muted">Faktur ini dibuat dengan memperpanjang faktur #<?= esc($invoice['parent_invoice_id']) ?></small>
                         </div>
                     <?php endif ?>
                 </div>
@@ -84,21 +84,21 @@
             <?php if ($invoice['status'] === 'partially_paid' || !empty($invoice['total_paid'])): ?>
                 <div class="card mb-3">
                     <div class="card-header" style="background-color: #8B0000; color: white;">
-                        <h5 class="mb-0">Payment Summary</h5>
+                        <h5 class="mb-0">Ringkasan Pembayaran</h5>
                     </div>
                     <div class="card-body">
                         <div class="mb-2">
-                            <span class="info-label">Total Amount:</span> Rp <?= number_format($invoice['amount'], 0, ',', '.') ?>
+                            <span class="info-label">Total Jumlah:</span> Rp <?= number_format($invoice['amount'], 0, ',', '.') ?>
                         </div>
                         <div class="mb-2">
-                            <span class="info-label">Total Paid:</span> Rp <?= number_format($invoice['total_paid'] ?? 0, 0, ',', '.') ?>
+                            <span class="info-label">Total Dibayar:</span> Rp <?= number_format($invoice['total_paid'] ?? 0, 0, ',', '.') ?>
                         </div>
                         <div class="mb-2">
-                            <span class="info-label">Remaining Balance:</span>
+                            <span class="info-label">Sisa Saldo:</span>
                             <span class="badge bg-warning">Rp <?= number_format(($invoice['amount'] ?? 0) - ($invoice['total_paid'] ?? 0), 0, ',', '.') ?></span>
                         </div>
                         <div class="mb-2">
-                            <span class="info-label">Payment Progress:</span>
+                            <span class="info-label">Progres Pembayaran:</span>
                             <div class="progress" style="height: 20px;">
                                 <?php
                                 $progress = ($invoice['total_paid'] ?? 0) / ($invoice['amount'] ?? 1) * 100;
@@ -117,20 +117,20 @@
         <div class="col-md-6">
             <div class="card mb-3">
                 <div class="card-header" style="background-color: #8B0000; color: white;">
-                    <h5 class="mb-0">Student Information</h5>
+                    <h5 class="mb-0">Informasi Siswa</h5>
                 </div>
                 <div class="card-body">
                     <div class="mb-2">
-                        <span class="info-label">Name:</span> <?= esc($invoice['student']['full_name'] ?? 'N/A') ?>
+                        <span class="info-label">Nama:</span> <?= esc($invoice['student']['full_name'] ?? 'N/A') ?>
                     </div>
                     <div class="mb-2">
-                        <span class="info-label">Registration Number:</span> <?= esc($invoice['registration_number']) ?>
+                        <span class="info-label">Nomor Registrasi:</span> <?= esc($invoice['registration_number']) ?>
                     </div>
                     <div class="mb-2">
                         <span class="info-label">Email:</span> <?= esc($invoice['student']['email'] ?? 'N/A') ?>
                     </div>
                     <div class="mb-2">
-                        <span class="info-label">Phone:</span> <?= esc($invoice['student']['phone'] ?? 'N/A') ?>
+                        <span class="info-label">Telepon:</span> <?= esc($invoice['student']['phone'] ?? 'N/A') ?>
                     </div>
                 </div>
             </div>
@@ -140,15 +140,15 @@
     <?php if (!empty($invoice['payments'])): ?>
         <div class="card">
             <div class="card-header" style="background-color: #8B0000; color: white;">
-                <h5 class="mb-0">Associated Payments</h5>
+                <h5 class="mb-0">Pembayaran Terkait</h5>
             </div>
             <div class="card-body">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Amount</th>
-                            <th>Method</th>
+                            <th>Tanggal</th>
+                            <th>Jumlah</th>
+                            <th>Metode</th>
                             <th>Status</th>
                         </tr>
                     </thead>

@@ -99,6 +99,7 @@ class AuthGroups extends ShieldAuthGroups
         'classroom.manage'    => 'Can manage classrooms (CRUD)',
         'classroom.view'      => 'Can view classrooms (read-only)',
         'student.manage'      => 'Can manage student records (view)',
+        'student.access'      => 'Can access student portal (invoices, payments)',
     ];
 
     /**
@@ -160,6 +161,9 @@ class AuthGroups extends ShieldAuthGroups
             'program.view',
             'classroom.view',
         ],
-        'student' => [],
+        'student' => [
+            'dashboard.access',
+            'student.access',
+        ],
     ];
 }

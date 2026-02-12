@@ -9,7 +9,7 @@ return [
         'title' => 'User Management',
         'url' => 'users',
         'icon' => 'people',
-        'permission' => 'users.edit',
+        'permission' => 'admin.settings',
         'order' => 90
     ]
 ];

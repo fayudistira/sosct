@@ -26,11 +26,11 @@
     <div class="invoice-header">
         <div class="row">
             <div class="col-md-6">
-                <h3 class="mb-0">Invoices</h3>
+                <h3 class="mb-0">Faktur</h3>
             </div>
             <div class="col-md-6 text-end">
                 <a href="<?= base_url('invoice/create') ?>" class="btn btn-light">
-                    <i class="bi bi-plus-circle"></i> Create Invoice
+                    <i class="bi bi-plus-circle"></i> Buat Faktur
                 </a>
             </div>
         </div>
@@ -50,21 +50,21 @@
                 <div class="row g-3">
                     <div class="col-md-3">
                         <input type="text" name="search" class="form-control"
-                            placeholder="Search..." value="<?= esc($keyword ?? '') ?>">
+                            placeholder="Cari..." value="<?= esc($keyword ?? '') ?>">
                     </div>
                     <div class="col-md-2">
                         <select name="status" class="form-select">
-                            <option value="">All Status</option>
+                            <option value="">Semua Status</option>
                             <option value="unpaid" <?= ($status ?? '') === 'unpaid' ? 'selected' : '' ?>>Belum Dibayar</option>
                             <option value="paid" <?= ($status ?? '') === 'paid' ? 'selected' : '' ?>>Lunas</option>
                             <option value="partially_paid" <?= ($status ?? '') === 'partially_paid' ? 'selected' : '' ?>>Dibayar Sebagian</option>
                             <option value="cancelled" <?= ($status ?? '') === 'cancelled' ? 'selected' : '' ?>>Dibatalkan</option>
-                            <option value="expired" <?= ($status ?? '') === 'expired' ? 'selected' : '' ?>>Expired</option>
+                            <option value="expired" <?= ($status ?? '') === 'expired' ? 'selected' : '' ?>>Kedaluwarsa</option>
                         </select>
                     </div>
                     <div class="col-md-2">
                         <select name="type" class="form-select">
-                            <option value="">All Types</option>
+                            <option value="">Semua Jenis</option>
                             <option value="registration_fee" <?= ($type ?? '') === 'registration_fee' ? 'selected' : '' ?>>Biaya Registrasi</option>
                             <option value="tuition_fee" <?= ($type ?? '') === 'tuition_fee' ? 'selected' : '' ?>>Biaya Program</option>
                             <option value="miscellaneous_fee" <?= ($type ?? '') === 'miscellaneous_fee' ? 'selected' : '' ?>>Biaya Lainnya</option>
@@ -91,13 +91,13 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Invoice #</th>
-                            <th>Student</th>
-                            <th>Type</th>
-                            <th>Amount</th>
-                            <th>Due Date</th>
+                            <th>No. Faktur</th>
+                            <th>Siswa</th>
+                            <th>Jenis</th>
+                            <th>Jumlah</th>
+                            <th>Tanggal Jatuh Tempo</th>
                             <th>Status</th>
-                            <th>Actions</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -125,18 +125,18 @@
                                     </td>
                                     <td>
                                         <a href="<?= base_url('invoice/view/' . $invoice['id']) ?>"
-                                            class="btn btn-sm btn-info" title="View Details"><i class="bi bi-eye"></i></a>
+                                            class="btn btn-sm btn-info" title="Lihat Detail"><i class="bi bi-eye"></i></a>
                                         <a href="<?= base_url('invoice/pdf/' . $invoice['id']) ?>"
-                                            class="btn btn-sm btn-danger" target="_blank" title="Download PDF"><i class="bi bi-file-pdf"></i></a>
+                                            class="btn btn-sm btn-danger" target="_blank" title="Unduh PDF"><i class="bi bi-file-pdf"></i></a>
 
                                         <?php if ($invoice['status'] === 'unpaid' || $invoice['status'] === 'expired'): ?>
                                             <a href="<?= base_url('invoice/cancel/' . $invoice['id']) ?>"
-                                                class="btn btn-sm btn-secondary" title="Cancel Invoice"
-                                                onclick="return confirm('Are you sure you want to cancel this invoice? This action cannot be undone.')">
+                                                class="btn btn-sm btn-secondary" title="Batalkan Faktur"
+                                                onclick="return confirm('Apakah Anda yakin ingin membatalkan faktur ini? Tindakan ini tidak dapat dibatalkan.')">
                                                 <i class="bi bi-x-circle"></i>
                                             </a>
                                         <?php else: ?>
-                                            <button class="btn btn-sm btn-light disabled" title="Locked: Payment in Progress/Completed">
+                                            <button class="btn btn-sm btn-light disabled" title="Terkunci: Pembayaran Sedang Berjalan/Selesai">
                                                 <i class="bi bi-lock-fill"></i>
                                             </button>
                                         <?php endif; ?>
@@ -145,7 +145,7 @@
                             <?php endforeach ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="7" class="text-center">No invoices found</td>
+                                <td colspan="7" class="text-center">Tidak ada faktur ditemukan</td>
                             </tr>
                         <?php endif ?>
                     </tbody>

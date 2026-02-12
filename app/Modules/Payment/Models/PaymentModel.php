@@ -476,4 +476,68 @@ class PaymentModel extends Model
 
         return $csv;
     }
+
+    /**
+     * Get paginated payments for a specific student
+     *
+     * @param string $registrationNumber Student registration number
+     * @param int $perPage Number of records per page
+     * @return array
+     */
+    public function getStudentPayments(string $registrationNumber, int $perPage = 10): array
+    {
+        return $this->where('registration_number', $registrationNumber)
+            ->where('deleted_at', null)
+            ->orderBy('payment_date', 'DESC')
+            ->paginate($perPage);
+    }
+
+    /**
+     * Search payments for a specific student
+     *
+     * @param string $registrationNumber Student registration number
+     * @param string $keyword Search keyword
+     * @return array
+     */
+    public function searchStudentPayments(string $registrationNumber, string $keyword): array
+    {
+        return $this->where('registration_number', $registrationNumber)
+            ->where('deleted_at', null)
+            ->groupStart()
+            ->like('document_number', $keyword)
+            ->orLike('payment_method', $keyword)
+            ->groupEnd()
+            ->orderBy('payment_date', 'DESC')
+            ->findAll();
+    }
+
+    /**
+     * Get payment summary for a student
+     *
+     * @param string $registrationNumber Student registration number
+     * @return array
+     */
+    public function getStudentPaymentSummary(string $registrationNumber): array
+    {
+        $db = \Config\Database::connect();
+
+        $result = $db->table($this->table)
+            ->select("
+                COUNT(*) as total_payments,
+                SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) as total_paid,
+                SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) as total_pending,
+                SUM(CASE WHEN status = 'refunded' THEN amount ELSE 0 END) as total_refunded
+            ")
+            ->where('registration_number', $registrationNumber)
+            ->where('deleted_at', null)
+            ->get()
+            ->getRowArray();
+
+        return [
+            'total_payments' => $result['total_payments'] ?? 0,
+            'total_paid' => (float) ($result['total_paid'] ?? 0),
+            'total_pending' => (float) ($result['total_pending'] ?? 0),
+            'total_refunded' => (float) ($result['total_refunded'] ?? 0)
+        ];
+    }
 }

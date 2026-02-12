@@ -23,7 +23,7 @@
                         <div>
                             <h6 class="mb-1 fw-bold text-primary"><i class="bi bi-magic me-2"></i>Testing Tool: Autofill Employee Form</h6>
                             <p class="small mb-0 text-muted">
-                                Upload a <code>.txt</code> file to populate the form. 
+                                Upload a <code>.txt</code> file to populate the form.
                                 <a href="<?= base_url('templates/employee_autofill_template.txt') ?>" download class="text-decoration-none ms-1 fw-bold">
                                     <i class="bi bi-download me-1"></i>Download Template
                                 </a>
@@ -37,19 +37,33 @@
             </div>
         </div>
     </div>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('autofill_file').addEventListener('change', function(event) {
+            const autofillFile = document.getElementById('autofill_file');
+            if (!autofillFile) return;
+
+            autofillFile.addEventListener('change', function(event) {
                 const file = event.target.files[0];
                 if (!file) return;
+
+                // Check file type
+                if (file.type !== 'application/json' && !file.name.endsWith('.txt') && !file.name.endsWith('.json')) {
+                    alert('Please upload a .txt or .json file.\nDetected file type: ' + file.type);
+                    return;
+                }
 
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     try {
-                        const data = JSON.parse(e.target.result);
+                        const rawContent = e.target.result;
+                        console.log('File content length:', rawContent.length);
+                        console.log('First 100 chars:', rawContent.substring(0, 100));
+
+                        const data = JSON.parse(rawContent);
+                        console.log('Parsed data:', data);
                         const form = document.querySelector('form[action$="admin/employee/store"]');
-                        
+
                         if (!form) {
                             alert('Form not found!');
                             return;
@@ -57,7 +71,7 @@
 
                         const inputEl = event.target;
                         let filledCount = 0;
-                        
+
                         for (const key in data) {
                             const input = form.querySelector(`[name="${key}"], [name="${key}[]"]`);
                             if (input) {
@@ -79,17 +93,19 @@
                                 }
                             }
                         }
-                        
+
                         const feedback = document.createElement('div');
                         feedback.className = 'alert alert-success mt-2 mb-0 py-2 small fw-medium';
                         feedback.innerHTML = `<i class="bi bi-check-circle me-1"></i> Form autofilled with ${filledCount} values!`;
                         inputEl.parentElement.appendChild(feedback);
-                        
+
                         inputEl.value = '';
                         setTimeout(() => feedback.remove(), 4000);
-                        
+
                     } catch (err) {
-                        alert('Error parsing JSON file: ' + err.message);
+                        console.error('JSON Parse Error:', err);
+                        console.log('Raw content:', e.target.result);
+                        alert('Error parsing JSON file. Please ensure it is a valid JSON format.\n\nError: ' + err.message + '\n\nTip: Check the browser console (F12) for more details.');
                     }
                 };
                 reader.readAsText(file);
@@ -113,7 +129,7 @@
 
 <form action="<?= isset($staff) ? base_url('admin/employee/update/' . $staff['id']) : base_url('admin/employee/store') ?>" method="post" enctype="multipart/form-data">
     <?= csrf_field() ?>
-    
+
     <div class="row">
         <!-- Sidebar: Account & Essentials -->
         <div class="col-md-4">
@@ -124,7 +140,7 @@
                     <div class="mb-3">
                         <label class="form-label">Username <span class="text-danger">*</span></label>
                         <input type="text" name="username" class="form-control form-control-sm" value="<?= old('username', $staff['username'] ?? '') ?>" <?= isset($staff) ? 'readonly' : 'required' ?>>
-                        <?php if(isset($staff)): ?>
+                        <?php if (isset($staff)): ?>
                             <small class="text-muted">Username cannot be changed.</small>
                         <?php endif; ?>
                     </div>
