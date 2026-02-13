@@ -86,7 +86,7 @@ class StaffModel extends Model
      * @param int|null $id
      * @return array|null
      */
-    public function getStaffWithDetails(int $id = null)
+    public function getStaffWithDetails(?int $id = null)
     {
         $builder = $this->select('staff.*, profiles.full_name, profiles.email, profiles.phone, profiles.photo, profiles.gender, profiles.place_of_birth, profiles.date_of_birth, profiles.street_address, profiles.district, profiles.regency, profiles.province, profiles.postal_code, profiles.citizen_id, profiles.documents, profiles.emergency_contact_name, profiles.emergency_contact_phone, profiles.emergency_contact_relation, profiles.father_name, profiles.mother_name, users.username, users.active as account_status')
             ->join('profiles', 'profiles.id = staff.profile_id')
