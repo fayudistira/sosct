@@ -7,6 +7,7 @@ use Modules\Admission\Models\AdmissionModel;
 use Modules\Account\Models\ProfileModel;
 use Modules\Program\Models\ProgramModel;
 use Modules\Payment\Models\InvoiceModel;
+use Modules\Payment\Models\InstallmentModel;
 use Modules\Student\Models\StudentModel;
 use CodeIgniter\Shield\Entities\User;
 use CodeIgniter\Shield\Models\UserModel;
@@ -73,8 +74,14 @@ class AdmissionController extends BaseController
 
         // Get Invoice Status for this admission (by registration number)
         $invoiceModel = new InvoiceModel();
+        $installmentModel = new InstallmentModel();
+
         $invoices = $invoiceModel->getInvoicesByStudent($data['admission']['registration_number']);
         $data['invoice'] = !empty($invoices) ? $invoices[0] : null; // Get latest invoice
+
+        // Get installment record
+        $installment = $installmentModel->getByRegistrationNumber($data['admission']['registration_number']);
+        $data['installment'] = $installment;
 
         $data['menuItems'] = $this->loadModuleMenus();
         $data['user'] = auth()->user();
@@ -195,13 +202,30 @@ class AdmissionController extends BaseController
                 throw new \Exception('Failed to create admission: ' . json_encode($admissionModel->errors()));
             }
 
-            // 4. Create Registration Invoice with 2 items (Registration Fee + Course Fee)
+            // 4. Calculate total fees and create Installment Record
             $regFee = (float)($program['registration_fee'] ?? 0);
             $tuitionFee = (float)($program['tuition_fee'] ?? 0);
             $totalAmount = $regFee + $tuitionFee;
+            $dueDate = date('Y-m-d', strtotime('+2 weeks')); // 2 weeks to pay
+
+            $installmentModel = new InstallmentModel();
+            $installmentData = [
+                'registration_number' => $admissionData['registration_number'],
+                'total_contract_amount' => $totalAmount,
+                'total_paid' => 0,
+                'remaining_balance' => $totalAmount,
+                'status' => 'unpaid',
+                'due_date' => $dueDate
+            ];
+
+            if (!$installmentModel->createInstallment($installmentData)) {
+                throw new \Exception('Failed to create installment record: ' . json_encode($installmentModel->errors()));
+            }
+            $installmentId = $installmentModel->insertID();
 
             log_message('error', '[Debug] Program ID: ' . $programId . ' | Title: ' . $program['title'] . ' | Reg Fee: ' . $regFee . ' | Tuition Fee: ' . $tuitionFee . ' | Total: ' . $totalAmount);
 
+            // 5. Create Registration Invoice with 2 items (Registration Fee + Course Fee)
             if ($totalAmount > 0) {
                 log_message('error', '[Debug] Attempting to create invoice for total amount: ' . $totalAmount);
 
@@ -221,9 +245,11 @@ class AdmissionController extends BaseController
 
                 $invoiceData = [
                     'registration_number' => $admissionData['registration_number'],
+                    'contract_number' => $admissionData['registration_number'],
+                    'installment_id' => $installmentId,
                     'description' => 'Payment for ' . $program['title'] . ' Program',
                     'amount' => $totalAmount,
-                    'due_date' => date('Y-m-d', strtotime('+3 days')), // 3 days to pay
+                    'due_date' => $dueDate, // Use installment due date
                     'invoice_type' => 'tuition_fee',
                     'status' => 'unpaid',
                     'items' => json_encode($items, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)

@@ -15,6 +15,8 @@ class InvoiceModel extends Model
     protected $allowedFields = [
         'invoice_number',
         'registration_number',
+        'contract_number',
+        'installment_id',
         'description',
         'amount',
         'due_date',
@@ -31,11 +33,13 @@ class InvoiceModel extends Model
 
     protected $validationRules = [
         'registration_number' => 'required|max_length[20]',
+        'contract_number' => 'permit_empty|max_length[20]',
+        'installment_id' => 'permit_empty|is_natural',
         'description' => 'required|min_length[3]',
         'amount' => 'required|decimal|greater_than[0]',
         'due_date' => 'required|valid_date',
         'invoice_type' => 'required|in_list[registration_fee,tuition_fee,miscellaneous_fee]',
-        'status' => 'permit_empty|in_list[unpaid,paid,cancelled,expired,partially_paid]'
+        'status' => 'permit_empty|in_list[unpaid,paid,cancelled,expired,partially_paid,extended]'
     ];
 
     /**
@@ -588,5 +592,82 @@ class InvoiceModel extends Model
             ->groupEnd()
             ->orderBy('created_at', 'DESC')
             ->findAll();
+    }
+
+    /**
+     * Get invoice with installment details
+     *
+     * @param int $id Invoice ID
+     * @return array|null
+     */
+    public function getInvoiceWithInstallment(int $id): ?array
+    {
+        $invoice = $this->find($id);
+        if (!$invoice) {
+            return null;
+        }
+
+        // Get installment details if linked
+        if (!empty($invoice['installment_id'])) {
+            $installmentModel = new InstallmentModel();
+            $installment = $installmentModel->find($invoice['installment_id']);
+            $invoice['installment'] = $installment;
+        } else {
+            $invoice['installment'] = null;
+        }
+
+        return $invoice;
+    }
+
+    /**
+     * Get extended invoice history (parent and child invoices)
+     *
+     * @param int $invoiceId Invoice ID
+     * @return array
+     */
+    public function getInvoiceHistory(int $invoiceId): array
+    {
+        $history = [];
+        $currentId = $invoiceId;
+
+        // Get root invoice (follow parent chain up)
+        while ($currentId) {
+            $invoice = $this->find($currentId);
+            if (!$invoice) {
+                break;
+            }
+
+            if (empty($invoice['parent_invoice_id'])) {
+                // This is the root, add it first
+                array_unshift($history, [
+                    'id' => $invoice['id'],
+                    'invoice_number' => $invoice['invoice_number'],
+                    'amount' => $invoice['amount'],
+                    'status' => $invoice['status'],
+                    'created_at' => $invoice['created_at'],
+                    'is_parent' => true
+                ]);
+                break;
+            }
+            $currentId = $invoice['parent_invoice_id'];
+        }
+
+        // Get all child invoices
+        $children = $this->where('parent_invoice_id', $invoiceId)
+            ->orderBy('created_at', 'ASC')
+            ->findAll();
+
+        foreach ($children as $child) {
+            $history[] = [
+                'id' => $child['id'],
+                'invoice_number' => $child['invoice_number'],
+                'amount' => $child['amount'],
+                'status' => $child['status'],
+                'created_at' => $child['created_at'],
+                'is_parent' => false
+            ];
+        }
+
+        return $history;
     }
 }

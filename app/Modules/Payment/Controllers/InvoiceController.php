@@ -467,4 +467,144 @@ class InvoiceController extends BaseController
             'student' => $student
         ]);
     }
+
+    /**
+     * Re-issue invoice for remaining balance
+     * Creates a new invoice with remaining amount and marks old invoice as extended
+     */
+    public function reissue($id)
+    {
+        $invoice = $this->invoiceModel->find($id);
+
+        if (!$invoice) {
+            return redirect()->to('/invoice')->with('error', 'Invoice not found.');
+        }
+
+        // Only partially_paid or expired invoices can be re-issued
+        if (!in_array($invoice['status'], ['partially_paid', 'expired'])) {
+            return redirect()->to('/invoice/view/' . $id)->with('error', 'Only partially paid or expired invoices can be re-issued.');
+        }
+
+        // Get installment details
+        $installmentModel = new \Modules\Payment\Models\InstallmentModel();
+        $installment = null;
+
+        if (!empty($invoice['installment_id'])) {
+            $installment = $installmentModel->find($invoice['installment_id']);
+        }
+
+        // Calculate remaining balance
+        if ($installment) {
+            $remainingBalance = (float) $installment['remaining_balance'];
+        } else {
+            // Fallback: calculate from invoice amount and payments
+            $paymentModel = new \Modules\Payment\Models\PaymentModel();
+            $payments = $paymentModel->where('invoice_id', $id)
+                ->where('status', 'paid')
+                ->findAll();
+            $totalPaid = array_sum(array_column($payments, 'amount'));
+            $remainingBalance = (float) $invoice['amount'] - $totalPaid;
+        }
+
+        if ($remainingBalance <= 0) {
+            return redirect()->to('/invoice/view/' . $id)->with('error', 'Invoice is already fully paid. Cannot re-issue.');
+        }
+
+        // Show confirmation form
+        return view('Modules\Payment\Views\invoices\reissue', [
+            'title' => 'Re-issue Invoice',
+            'invoice' => $invoice,
+            'installment' => $installment,
+            'remainingBalance' => $remainingBalance,
+            'menuItems' => $this->loadModuleMenus(),
+            'user' => auth()->user()
+        ]);
+    }
+
+    /**
+     * Process re-issue invoice
+     */
+    public function processReissue()
+    {
+        $id = $this->request->getPost('invoice_id');
+        $newDueDate = $this->request->getPost('due_date');
+        $notes = $this->request->getPost('notes');
+
+        $invoice = $this->invoiceModel->find($id);
+
+        if (!$invoice) {
+            return redirect()->to('/invoice')->with('error', 'Invoice not found.');
+        }
+
+        // Get installment details
+        $installmentModel = new \Modules\Payment\Models\InstallmentModel();
+        $installment = null;
+
+        if (!empty($invoice['installment_id'])) {
+            $installment = $installmentModel->find($invoice['installment_id']);
+        }
+
+        // Calculate remaining balance
+        if ($installment) {
+            $remainingBalance = (float) $installment['remaining_balance'];
+        } else {
+            $paymentModel = new \Modules\Payment\Models\PaymentModel();
+            $payments = $paymentModel->where('invoice_id', $id)
+                ->where('status', 'paid')
+                ->findAll();
+            $totalPaid = array_sum(array_column($payments, 'amount'));
+            $remainingBalance = (float) $invoice['amount'] - $totalPaid;
+        }
+
+        if ($remainingBalance <= 0) {
+            return redirect()->to('/invoice/view/' . $id)->with('error', 'Invoice is already fully paid. Cannot re-issue.');
+        }
+
+        $db = \Config\Database::connect();
+        $db->transStart();
+
+        try {
+            // 1. Update old invoice status to 'extended'
+            $this->invoiceModel->update($id, [
+                'status' => 'extended',
+                'description' => $invoice['description'] . ' (Extended - Replaced by new invoice)'
+            ]);
+
+            // 2. Create new invoice for remaining balance
+            $newInvoiceData = [
+                'registration_number' => $invoice['registration_number'],
+                'contract_number' => $invoice['contract_number'] ?? $invoice['registration_number'],
+                'installment_id' => $invoice['installment_id'],
+                'parent_invoice_id' => $id,
+                'description' => 'Remaining Balance - ' . ($invoice['description'] ?? 'Invoice'),
+                'amount' => $remainingBalance,
+                'due_date' => $newDueDate,
+                'invoice_type' => $invoice['invoice_type'],
+                'status' => 'unpaid',
+                'items' => json_encode([
+                    [
+                        'description' => 'Remaining Balance from Invoice ' . $invoice['invoice_number'],
+                        'amount' => $remainingBalance
+                    ]
+                ], JSON_UNESCAPED_UNICODE)
+            ];
+
+            $newInvoiceId = $this->invoiceModel->createInvoice($newInvoiceData);
+
+            if (!$newInvoiceId) {
+                throw new \Exception('Failed to create new invoice');
+            }
+
+            $db->transComplete();
+
+            if ($db->transStatus() === false) {
+                throw new \Exception('Database transaction failed');
+            }
+
+            return redirect()->to('/invoice/view/' . $newInvoiceId)->with('success', 'Invoice re-issued successfully. Old invoice marked as extended.');
+        } catch (\Exception $e) {
+            $db->transRollback();
+            return redirect()->to('/invoice/view/' . $id)->with('error', 'Failed to re-issue invoice: ' . $e->getMessage());
+        }
+    }
 }

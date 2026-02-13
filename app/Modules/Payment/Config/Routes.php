@@ -42,6 +42,8 @@ $routes->group('invoice', ['namespace' => 'Modules\Payment\Controllers', 'filter
     $routes->post('update/(:segment)', 'InvoiceController::update/$1');
     $routes->get('cancel/(:segment)', 'InvoiceController::cancel/$1');
     $routes->get('pdf/(:segment)', 'InvoiceController::downloadPdf/$1');
+    $routes->get('reissue/(:segment)', 'InvoiceController::reissue/$1');
+    $routes->post('process-reissue', 'InvoiceController::processReissue');
     $routes->get('student-invoices', 'InvoiceController::getStudentInvoices');
     $routes->get('invoice-summary', 'InvoiceController::getInvoiceSummary');
 });
@@ -115,4 +117,11 @@ $routes->group('my', ['namespace' => 'Modules\Payment\Controllers', 'filter' => 
 
     // API endpoints for dashboard widget
     $routes->get('invoice-summary', 'StudentPaymentController::myInvoiceSummary');
+});
+
+// Contract Routes
+$routes->group('contract', ['namespace' => 'Modules\Payment\Controllers', 'filter' => 'session'], function ($routes) {
+    $routes->get('/', 'ContractController::index');
+    $routes->get('view/(:segment)', 'ContractController::view/$1');
+    $routes->get('print/(:segment)', 'ContractController::print/$1');
 });

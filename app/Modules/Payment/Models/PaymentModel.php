@@ -14,6 +14,7 @@ class PaymentModel extends Model
 
     protected $allowedFields = [
         'registration_number',
+        'installment_id',
         'invoice_id',
         'amount',
         'payment_method',
@@ -79,7 +80,30 @@ class PaymentModel extends Model
             $data['status'] = 'pending';
         }
 
-        return $this->insert($data);
+        // Auto-link installment based on registration_number if not provided
+        if (!isset($data['installment_id']) && isset($data['registration_number'])) {
+            $installmentModel = new InstallmentModel();
+            $installment = $installmentModel->getByRegistrationNumber($data['registration_number']);
+            if ($installment) {
+                $data['installment_id'] = $installment['id'];
+            }
+        }
+
+        $result = $this->insert($data);
+
+        if ($result) {
+            $paymentId = $this->insertID();
+
+            // If payment is immediately marked as paid, update installment
+            if ($data['status'] === 'paid' && !empty($data['installment_id'])) {
+                $installmentModel = new InstallmentModel();
+                $installmentModel->updatePaymentTotal($data['installment_id']);
+            }
+
+            return $paymentId;
+        }
+
+        return false;
     }
 
     /**
@@ -212,7 +236,19 @@ class PaymentModel extends Model
             }
         }
 
-        return $this->update($id, $updateData);
+        $result = $this->update($id, $updateData);
+
+        // Update installment if payment is linked and status changed to/from paid
+        if ($result && !empty($payment['installment_id'])) {
+            $installmentModel = new InstallmentModel();
+            $statusesAffectingInstallment = ['paid', 'refunded', 'failed'];
+
+            if (in_array($status, $statusesAffectingInstallment) || in_array($payment['status'], $statusesAffectingInstallment)) {
+                $installmentModel->updatePaymentTotal($payment['installment_id']);
+            }
+        }
+
+        return $result;
     }
 
     /**
