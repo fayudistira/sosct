@@ -506,15 +506,27 @@
 
                 <div class="navbar-nav ms-auto align-items-center">
                     <div class="nav-item dropdown me-3">
-                        <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown" id="notificationDropdown">
                             <i class="bi bi-bell fs-5"></i>
-                            <span class="notification-badge">0</span>
+                            <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-end">
-                            <h6 class="dropdown-header">Notifications</h6>
-                            <div class="dropdown-item text-center text-muted">
-                                <small>No new notifications</small>
+                        <div class="dropdown-menu dropdown-menu-end notification-dropdown" style="width: 320px; max-height: 400px; overflow-y: auto;">
+                            <h6 class="dropdown-header d-flex justify-content-between align-items-center">
+                                <span>Notifications</span>
+                                <button class="btn btn-sm btn-link text-decoration-none p-0" id="mark-all-read" style="display: none;">
+                                    <small>Mark all as read</small>
+                                </button>
+                            </h6>
+                            <div id="notification-list">
+                                <div class="dropdown-item text-center text-muted py-3">
+                                    <i class="bi bi-bell-slash fs-3 d-block mb-2"></i>
+                                    <small>No new notifications</small>
+                                </div>
                             </div>
+                            <div class="dropdown-divider" id="notification-footer-divider" style="display: none;"></div>
+                            <a class="dropdown-item text-center text-decoration-none" href="<?= base_url('notifications') ?>" id="notification-footer-link" style="display: none;">
+                                <small>View all notifications</small>
+                            </a>
                         </div>
                     </div>
 
@@ -643,6 +655,171 @@
 
             // Poll every 30 seconds
             setInterval(updateUnreadCount, 30000);
+        });
+    </script>
+    <script>
+        // Notification system
+        document.addEventListener('DOMContentLoaded', () => {
+            const notificationBadge = document.getElementById('notification-badge');
+            const notificationList = document.getElementById('notification-list');
+            const markAllReadBtn = document.getElementById('mark-all-read');
+            const notificationFooterDivider = document.getElementById('notification-footer-divider');
+            const notificationFooterLink = document.getElementById('notification-footer-link');
+            const notificationDropdown = document.getElementById('notificationDropdown');
+
+            // Update notification badge count
+            const updateNotificationCount = () => {
+                fetch('<?= base_url('notifications/api/unread-count') ?>')
+                    .then(res => {
+                        if (res.ok) return res.json();
+                        throw new Error('Network response was not ok');
+                    })
+                    .then(data => {
+                        if (notificationBadge) {
+                            if (data.count > 0) {
+                                notificationBadge.textContent = data.count > 99 ? '99+' : data.count;
+                                notificationBadge.style.display = 'flex';
+                                if (markAllReadBtn) markAllReadBtn.style.display = 'inline';
+                            } else {
+                                notificationBadge.style.display = 'none';
+                                if (markAllReadBtn) markAllReadBtn.style.display = 'none';
+                            }
+                        }
+                    })
+                    .catch(e => console.error('Error fetching notification count:', e));
+            };
+
+            // Load notifications into dropdown
+            const loadNotifications = () => {
+                fetch('<?= base_url('notifications/api/list') ?>')
+                    .then(res => {
+                        if (res.ok) return res.json();
+                        throw new Error('Network response was not ok');
+                    })
+                    .then(data => {
+                        if (notificationList && data.notifications) {
+                            if (data.notifications.length === 0) {
+                                notificationList.innerHTML = `
+                                    <div class="dropdown-item text-center text-muted py-3">
+                                        <i class="bi bi-bell-slash fs-3 d-block mb-2"></i>
+                                        <small>No new notifications</small>
+                                    </div>
+                                `;
+                                if (notificationFooterDivider) notificationFooterDivider.style.display = 'none';
+                                if (notificationFooterLink) notificationFooterLink.style.display = 'none';
+                            } else {
+                                notificationList.innerHTML = data.notifications.map(n => `
+                                    <div class="dropdown-item notification-item py-2 border-bottom" data-id="${n.id}" style="cursor: pointer;">
+                                        <div class="d-flex align-items-start">
+                                            <div class="flex-shrink-0">
+                                                <i class="bi ${n.type === 'new_admission' ? 'bi-person-plus-fill' : 'bi-bell-fill'} fs-5 text-primary"></i>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <div class="fw-semibold small">${escapeHtml(n.title)}</div>
+                                                <div class="text-muted small">${escapeHtml(n.message)}</div>
+                                                <small class="text-muted">${formatTimeAgo(n.created_at)}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('');
+                                if (notificationFooterDivider) notificationFooterDivider.style.display = 'block';
+                                if (notificationFooterLink) notificationFooterLink.style.display = 'block';
+
+                                // Add click handlers for each notification
+                                document.querySelectorAll('.notification-item').forEach(item => {
+                                    item.addEventListener('click', function() {
+                                        const id = this.dataset.id;
+                                        markAsRead(id);
+                                        // Navigate to the related admission if available
+                                        if (this.dataset.link) {
+                                            window.location.href = this.dataset.link;
+                                        }
+                                    });
+                                });
+                            }
+                        }
+                    })
+                    .catch(e => console.error('Error loading notifications:', e));
+            };
+
+            // Mark a single notification as read
+            const markAsRead = (id) => {
+                fetch(`<?= base_url('notifications/api/mark-read/') ?>${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    updateNotificationCount();
+                    loadNotifications();
+                })
+                .catch(e => console.error('Error marking notification as read:', e));
+            };
+
+            // Mark all notifications as read
+            const markAllAsRead = () => {
+                fetch('<?= base_url('notifications/api/mark-all-read') ?>', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    updateNotificationCount();
+                    loadNotifications();
+                })
+                .catch(e => console.error('Error marking all notifications as read:', e));
+            };
+
+            // Helper function to escape HTML
+            const escapeHtml = (text) => {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            };
+
+            // Helper function to format time ago
+            const formatTimeAgo = (dateString) => {
+                // The database stores timestamps in UTC format (YYYY-MM-DD HH:MM:SS)
+                // We need to treat it as UTC by appending 'Z' so JavaScript parses it correctly
+                const date = new Date(dateString + 'Z'); // Append 'Z' to indicate UTC
+                const now = new Date();
+                const diffMs = now - date; // Difference in milliseconds
+                const seconds = Math.floor(diffMs / 1000);
+
+                if (seconds < 60) return 'Just now';
+                if (seconds < 3600) return Math.floor(seconds / 60) + ' minutes ago';
+                if (seconds < 86400) return Math.floor(seconds / 3600) + ' hours ago';
+                if (seconds < 604800) return Math.floor(seconds / 86400) + ' days ago';
+                return date.toLocaleDateString();
+            };
+
+            // Initial load
+            updateNotificationCount();
+
+            // Load notifications when dropdown is opened
+            if (notificationDropdown) {
+                notificationDropdown.addEventListener('click', () => {
+                    loadNotifications();
+                });
+            }
+
+            // Mark all as read button handler
+            if (markAllReadBtn) {
+                markAllReadBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    markAllAsRead();
+                });
+            }
+
+            // Poll every 30 seconds
+            setInterval(updateNotificationCount, 30000);
         });
     </script>
     <?= $this->renderSection('scripts') ?>

@@ -241,6 +241,109 @@
             color: white;
             font-size: 1.5rem;
         }
+
+        /* Admission Popup Toast */
+        .admission-popup {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 9999;
+            max-width: 320px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            border-left: 4px solid var(--dark-red);
+            padding: 16px;
+            display: none;
+            animation: slideInUp 0.4s ease-out;
+        }
+
+        .admission-popup.show {
+            display: block;
+        }
+
+        .admission-popup.hide {
+            animation: slideOutDown 0.3s ease-in forwards;
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutDown {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+        }
+
+        .admission-popup-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .admission-popup-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--dark-red) 0%, var(--medium-red) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 10px;
+            font-size: 1rem;
+        }
+
+        .admission-popup-title {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        .admission-popup-body {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .admission-popup-body strong {
+            color: var(--dark-red);
+        }
+
+        .admission-popup-time {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 6px;
+        }
+
+        .admission-popup-close {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        .admission-popup-close:hover {
+            color: #333;
+        }
     </style>
     
     <?= $this->renderSection('extra_head') ?>
@@ -319,6 +422,120 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <?= $this->renderSection('extra_scripts') ?>
+
+    <!-- Admission Popup Notification -->
+    <div class="admission-popup" id="admissionPopup">
+        <button class="admission-popup-close" onclick="closeAdmissionPopup()">
+            <i class="bi bi-x"></i>
+        </button>
+        <div class="admission-popup-header">
+            <div class="admission-popup-icon">
+                <i class="bi bi-person-check"></i>
+            </div>
+            <div class="admission-popup-title">Pendaftaran Baru!</div>
+        </div>
+        <div class="admission-popup-body" id="admissionPopupBody">
+            <!-- Content will be injected by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Admission Popup Notification System
+        (function() {
+            const popup = document.getElementById('admissionPopup');
+            const popupBody = document.getElementById('admissionPopupBody');
+            let lastShownIndex = -1;
+            let admissionsData = [];
+            let popupInterval;
+
+            // Fetch recent admissions
+            const fetchRecentAdmissions = async () => {
+                try {
+                    const response = await fetch('<?= base_url('frontend/api/recent-admissions') ?>');
+                    const data = await response.json();
+                    
+                    if (data.success && data.admissions && data.admissions.length > 0) {
+                        admissionsData = data.admissions;
+                        showRandomAdmission();
+                    }
+                } catch (error) {
+                    console.error('Error fetching recent admissions:', error);
+                }
+            };
+
+            // Show random admission popup
+            const showRandomAdmission = () => {
+                if (admissionsData.length === 0) return;
+
+                // Pick a random admission (different from last shown)
+                let randomIndex;
+                if (admissionsData.length > 1) {
+                    do {
+                        randomIndex = Math.floor(Math.random() * admissionsData.length);
+                    } while (randomIndex === lastShownIndex);
+                } else {
+                    randomIndex = 0;
+                }
+
+                lastShownIndex = randomIndex;
+                const admission = admissionsData[randomIndex];
+
+                // Update popup content
+                popupBody.innerHTML = `
+                    <strong>${escapeHtml(admission.name)}</strong> baru saja mendaftar untuk program 
+                    <strong>${escapeHtml(admission.program)}</strong>
+                    <div class="admission-popup-time">
+                        <i class="bi bi-clock me-1"></i>${escapeHtml(admission.time_ago)}
+                    </div>
+                `;
+
+                // Show popup
+                popup.classList.remove('hide');
+                popup.classList.add('show');
+
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    hidePopup();
+                }, 5000);
+            };
+
+            // Hide popup with animation
+            const hidePopup = () => {
+                popup.classList.remove('show');
+                popup.classList.add('hide');
+                setTimeout(() => {
+                    popup.classList.remove('hide');
+                }, 300);
+            };
+
+            // Close popup manually
+            window.closeAdmissionPopup = function() {
+                hidePopup();
+            };
+
+            // Escape HTML to prevent XSS
+            const escapeHtml = (text) => {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            };
+
+            // Initial fetch after page load
+            setTimeout(() => {
+                fetchRecentAdmissions();
+            }, 3000); // Wait 3 seconds after page load
+
+            // Poll every 30 seconds
+            setInterval(fetchRecentAdmissions, 30000);
+
+            // Show popup periodically (every 45-60 seconds)
+            setInterval(() => {
+                if (admissionsData.length > 0) {
+                    showRandomAdmission();
+                }
+            }, 45000 + Math.random() * 15000);
+        })();
+    </script>
 </body>
 
 </html>

@@ -26,3 +26,8 @@ $routes->group('', ['namespace' => 'Modules\Frontend\Controllers'], function ($r
     $routes->get('apply/success', 'PageController::applySuccess');
     $routes->get('apply/(:segment)', 'PageController::applyWithProgram/$1'); // Must be last
 });
+
+// Frontend API routes (for popup notifications, etc.)
+$routes->group('frontend/api', ['namespace' => 'Modules\Frontend\Controllers\Api'], function ($routes) {
+    $routes->get('recent-admissions', 'FrontendApiController::recentAdmissions');
+});

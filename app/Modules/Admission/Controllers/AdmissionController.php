@@ -270,7 +270,16 @@ class AdmissionController extends BaseController
                 throw new \Exception('Database transaction failed.');
             }
 
-            // 5. Send Invoice Email to Guest
+            // 5. Create notification for admins about new admission
+            $notificationService = new \App\Services\NotificationService();
+            $notificationService->notifyNewAdmission([
+                'registration_number' => $admissionData['registration_number'],
+                'admission_id' => $admissionModel->getInsertID(),
+                'program_title' => $program['title'],
+                'applicant_name' => $profileData['full_name'],
+            ]);
+
+            // 6. Send Invoice Email to Guest
             if ($regFee > 0) {
                 $emailService = new \App\Services\EmailService();
                 $invoiceDetails = $invoiceModel->where('registration_number', $admissionData['registration_number'])->first();
@@ -413,6 +422,25 @@ class AdmissionController extends BaseController
                 $admissionData['reviewed_by'] = auth()->user()->id ?? null;
             }
 
+            // Check if program is being changed - update contract if so
+            $oldProgramId = $existing['program_id'];
+            $newProgramId = $this->request->getPost('program_id');
+            $contractUpdateResult = null;
+
+            if ($oldProgramId !== $newProgramId) {
+                // Use ContractService to handle contract update
+                $contractService = new \App\Services\ContractService();
+                $contractUpdateResult = $contractService->updateContractForProgramChange(
+                    $existing['registration_number'],
+                    $oldProgramId,
+                    $newProgramId
+                );
+
+                if (!$contractUpdateResult['success']) {
+                    throw new \Exception('Failed to update contract: ' . implode(', ', $contractUpdateResult['messages']));
+                }
+            }
+
             if (!$this->admissionModel->update($id, $admissionData)) {
                 throw new \Exception('Failed to update admission: ' . json_encode($this->admissionModel->errors()));
             }
@@ -424,8 +452,14 @@ class AdmissionController extends BaseController
                 throw new \Exception('Transaction failed');
             }
 
+            // Build success message
+            $successMessage = 'Admission and profile updated successfully.';
+            if ($contractUpdateResult && !empty($contractUpdateResult['messages'])) {
+                $successMessage .= ' Contract: ' . implode('; ', $contractUpdateResult['messages']);
+            }
+
             return redirect()->to('/admission/view/' . $id)
-                ->with('success', 'Admission and profile updated successfully.');
+                ->with('success', $successMessage);
         } catch (\Exception $e) {
             $db->transRollback();
             return redirect()->back()

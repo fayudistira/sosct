@@ -347,6 +347,21 @@ class PageController extends BaseController
                 throw new \Exception('Transaction failed - database error');
             }
 
+            // Create notification for admins about new admission
+            try {
+                $notificationService = new \App\Services\NotificationService();
+                $notificationService->notifyNewAdmission([
+                    'registration_number' => $admissionData['registration_number'],
+                    'admission_id' => $admissionId,
+                    'program_title' => $program['title'],
+                    'applicant_name' => $this->request->getPost('full_name'),
+                ]);
+                log_message('error', '[Frontend Apply] Notification sent to admins');
+            } catch (\Throwable $notifEx) {
+                log_message('error', '[Frontend Apply] Notification failed: ' . $notifEx->getMessage());
+                // Continue even if notification fails
+            }
+
             // Send confirmation email with invoice link using EmailService
             log_message('error', '[Frontend Apply] Preparing to send email to: ' . $this->request->getPost('email'));
 

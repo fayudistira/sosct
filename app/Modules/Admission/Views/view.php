@@ -294,25 +294,25 @@
             <!-- Contract / Payment Info -->
             <div class="dashboard-card mb-3">
                 <div class="card-header">
-                    <i class="bi bi-file-contract me-2"></i>Contract / Payment
+                    <i class="bi bi-file-contract me-2"></i>Riwayat Tagihan
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
-                        <label class="stat-label">Registration Number</label>
+                        <label class="stat-label">No. Registrasi</label>
                         <div class="fw-medium"><?= esc($installment['registration_number']) ?></div>
                     </div>
                     <div class="mb-3">
-                        <label class="stat-label">Total Contract</label>
-                        <div class="fw-medium text-primary">$<?= number_format($installment['total_contract_amount'], 2) ?></div>
+                        <label class="stat-label">Total Biaya</label>
+                        <div class="fw-medium text-primary">Rp<?= number_format($installment['total_contract_amount'], 2) ?></div>
                     </div>
                     <div class="mb-3">
-                        <label class="stat-label">Amount Paid</label>
-                        <div class="fw-medium text-success">$<?= number_format($installment['total_paid'], 2) ?></div>
+                        <label class="stat-label">Total Dibayar</label>
+                        <div class="fw-medium text-success">Rp<?= number_format($installment['total_paid'], 2) ?></div>
                     </div>
                     <div class="mb-3">
-                        <label class="stat-label">Balance Due</label>
+                        <label class="stat-label">Sisa</label>
                         <div class="fw-medium <?= $installment['remaining_balance'] > 0 ? 'text-danger' : 'text-success' ?>">
-                            $<?= number_format($installment['remaining_balance'], 2) ?>
+                            Rp<?= number_format($installment['remaining_balance'], 2) ?>
                         </div>
                     </div>
                     <div class="mb-3">
