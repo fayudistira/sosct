@@ -16,7 +16,7 @@
     
     $og_title = $ogTitle ?? $title;
     $og_description = $ogDescription ?? $description;
-    $og_image = $ogImage ?? 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
+    $og_image = $ogImage ?? 'https://kursusbahasa.org/assets/img/logo-sos.webp';
     $og_url = base_url();
     $og_type = 'website';
     $og_locale = 'id_ID';
