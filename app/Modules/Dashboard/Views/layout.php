@@ -709,7 +709,7 @@
                                 if (notificationFooterLink) notificationFooterLink.style.display = 'none';
                             } else {
                                 notificationList.innerHTML = data.notifications.map(n => `
-                                    <div class="dropdown-item notification-item py-2 border-bottom" data-id="${n.id}" style="cursor: pointer;">
+                                    <div class="dropdown-item notification-item py-2 border-bottom" data-id="${n.id}" data-applicant-name="${n.data?.applicant_name || ''}" style="cursor: pointer;">
                                         <div class="d-flex align-items-start">
                                             <div class="flex-shrink-0">
                                                 <i class="bi ${n.type === 'new_admission' ? 'bi-person-plus-fill' : 'bi-bell-fill'} fs-5 text-primary"></i>
@@ -729,10 +729,11 @@
                                 document.querySelectorAll('.notification-item').forEach(item => {
                                     item.addEventListener('click', function() {
                                         const id = this.dataset.id;
+                                        const applicantName = this.dataset.applicantName;
                                         markAsRead(id);
-                                        // Navigate to the related admission if available
-                                        if (this.dataset.link) {
-                                            window.location.href = this.dataset.link;
+                                        // Navigate to admission search with applicant name
+                                        if (applicantName) {
+                                            window.location.href = '<?= base_url('admission/search') ?>?keyword=' + encodeURIComponent(applicantName);
                                         }
                                     });
                                 });

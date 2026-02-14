@@ -22,7 +22,11 @@
                     <?php else: ?>
                         <div class="list-group list-group-flush">
                             <?php foreach ($notifications as $notification): ?>
-                                <div class="list-group-item notification-item" data-id="<?= $notification['id'] ?>">
+                                <?php $applicantName = $notification['data']['applicant_name'] ?? ''; ?>
+                                <div class="list-group-item notification-item" 
+                                     data-id="<?= $notification['id'] ?>" 
+                                     data-applicant-name="<?= esc($applicantName) ?>"
+                                     style="cursor: pointer;">
                                     <div class="d-flex align-items-start">
                                         <div class="flex-shrink-0">
                                             <div class="feature-icon-sm" style="width: 40px; height: 40px; font-size: 1rem;">
@@ -37,11 +41,10 @@
                                                 </small>
                                             </div>
                                             <p class="mb-1 text-muted"><?= esc($notification['message']) ?></p>
-                                            <?php if (!empty($notification['data']['registration_number'])): ?>
-                                                <a href="<?= base_url('admission/view/' . ($notification['data']['admission_id'] ?? '')) ?>" 
-                                                   class="btn btn-sm btn-outline-primary mt-2">
-                                                    <i class="bi bi-eye me-1"></i>View Admission
-                                                </a>
+                                            <?php if (!empty($applicantName)): ?>
+                                                <span class="btn btn-sm btn-outline-primary mt-2">
+                                                    <i class="bi bi-search me-1"></i>Search Admission
+                                                </span>
                                             <?php endif; ?>
                                         </div>
                                     </div>
@@ -91,6 +94,30 @@
             if (data.success) {
                 location.reload();
             }
+        });
+    });
+    
+    // Add click handlers for each notification
+    document.querySelectorAll('.notification-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const id = this.dataset.id;
+            const applicantName = this.dataset.applicantName;
+            
+            // Mark as read
+            fetch(`<?= base_url('notifications/api/mark-read/') ?>${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                // Navigate to admission search with applicant name
+                if (applicantName) {
+                    window.location.href = '<?= base_url('admission/search') ?>?keyword=' + encodeURIComponent(applicantName);
+                }
+            });
         });
     });
 </script>

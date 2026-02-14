@@ -232,12 +232,12 @@ class AdmissionController extends BaseController
                 // Create items array with 2 entries
                 $items = [
                     [
-                        'description' => 'Registration Fee for ' . $program['title'],
+                        'description' => 'Biaya Pendaftaran Program ' . $program['title'],
                         'amount' => $regFee,
                         'type' => 'registration_fee'
                     ],
                     [
-                        'description' => 'Course Fee for ' . $program['title'],
+                        'description' => 'Biaya Kursus ' . $program['title'],
                         'amount' => $tuitionFee,
                         'type' => 'tuition_fee'
                     ]
