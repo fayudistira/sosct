@@ -196,11 +196,19 @@
     <div class="bg-light rounded-5 p-5 border shadow-sm">
         <div class="row align-items-center g-4 text-center text-lg-start">
             <div class="col-lg-8">
-                <h3 class="fw-bold mb-2" style="color: var(--dark-red);">Can't find what you're looking for?</h3>
-                <p class="text-muted mb-0">Our program advisors are available to help you choose the best track for your career goals. We offer custom corporate packages and group discounts.</p>
+                <h3 class="fw-bold mb-2" style="color: var(--dark-red);">Masih bingung memilih program yang tepat??</h3>
+                <p class="text-muted mb-0">Admin kami siap membantu Anda memilih program yang sesuai dengan kebutuhan Anda.</p>
             </div>
             <div class="col-lg-4 text-lg-end">
-                <a href="<?= base_url('contact') ?>" class="btn btn-outline-dark rounded-pill px-4 fw-bold">CONTACT COUNSELOR</a>
+                <?php
+                // WhatsApp API message for admin contact
+                $whatsappMessage = "Halo Admin SOS,%0A%0ASaya ingin bertanya mengenai program kursus di SOS.%0AMohon bantuannya untuk memilih program yang tepat.%0A%0ATerima kasih.";
+                $whatsappNumber = "6285810310950"; // Ganti dengan nomor WhatsApp admin
+                $whatsappUrl = "https://wa.me/{$whatsappNumber}?text={$whatsappMessage}";
+                ?>
+                <a href="<?= $whatsappUrl ?>" target="_blank" class="btn btn-outline-dark rounded-pill px-4 fw-bold">
+                    <i class="bi bi-whatsapp me-2"></i>Hubungi Admin
+                </a>
             </div>
         </div>
     </div>
