@@ -236,6 +236,109 @@
             margin-right: 0;
         }
 
+        /* Menu Category Styles */
+        .menu-category {
+            margin-bottom: 0.25rem;
+        }
+
+        .menu-category-header {
+            color: rgba(255, 255, 255, 0.7);
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            font-size: 0.8125rem;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        .menu-category-header:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-category-header .category-toggle-icon {
+            font-size: 0.75rem;
+            transition: transform 0.2s ease;
+        }
+
+        .menu-category-header.collapsed .category-toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .menu-category-items {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .menu-category-items.show {
+            max-height: 1000px; /* Large enough to show all items */
+        }
+
+        /* Submenu Items Styles */
+        .submenu-items {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .submenu-items.show {
+            max-height: 500px;
+        }
+
+        /* Submenu Styles */
+        .submenu {
+            padding-left: 0;
+        }
+
+        .submenu .nav-link {
+            padding-left: 2.5rem;
+            font-size: 0.8125rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .submenu .nav-link:hover,
+        .submenu .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .submenu .nav-link i {
+            font-size: 0.875rem;
+            margin-right: 0.5rem;
+        }
+
+        /* Has Submenu Toggle */
+        .has-submenu .submenu-toggle-icon {
+            font-size: 0.75rem;
+            transition: transform 0.2s ease;
+        }
+
+        .has-submenu.collapsed .submenu-toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        /* Compact Sidebar Category Styles */
+        #sidebar.compact .menu-category-header span,
+        #sidebar.compact .menu-category-header .category-toggle-icon {
+            display: none;
+        }
+
+        #sidebar.compact .menu-category-items {
+            display: none;
+        }
+
+        #sidebar.compact .submenu {
+            display: none;
+        }
+
+        #sidebar.compact .has-submenu .submenu-toggle-icon {
+            display: none;
+        }
+
         #sidebar.compact .sidebar-footer .user-info {
             display: none;
         }
@@ -626,6 +729,104 @@
                 mobileOverlay.classList.remove('show');
             });
         }
+    </script>
+    <script>
+        // Menu category accordion behavior and state persistence
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get the last active category from localStorage
+            const lastActiveCategory = localStorage.getItem('menu_active_category');
+            
+            // Initialize categories - only show the last active one
+            document.querySelectorAll('.menu-category').forEach(category => {
+                const categoryKey = category.dataset.category;
+                const collapseEl = category.querySelector('.menu-category-items');
+                const headerEl = category.querySelector('.menu-category-header');
+                
+                if (collapseEl && headerEl) {
+                    if (categoryKey === lastActiveCategory) {
+                        // Show this category
+                        collapseEl.classList.add('show');
+                        headerEl.classList.remove('collapsed');
+                        headerEl.setAttribute('aria-expanded', 'true');
+                    } else {
+                        // Hide all other categories
+                        collapseEl.classList.remove('show');
+                        headerEl.classList.add('collapsed');
+                        headerEl.setAttribute('aria-expanded', 'false');
+                    }
+                }
+            });
+
+            // Restore collapsed state for submenus
+            document.querySelectorAll('.has-submenu').forEach(submenu => {
+                const targetId = submenu.getAttribute('data-bs-target');
+                if (targetId) {
+                    const isCollapsed = localStorage.getItem(`submenu_${targetId}`);
+                    const collapseEl = document.querySelector(targetId);
+                    
+                    if (isCollapsed === 'true' && collapseEl) {
+                        collapseEl.classList.remove('show');
+                        submenu.classList.add('collapsed');
+                        submenu.setAttribute('aria-expanded', 'false');
+                    }
+                }
+            });
+
+            // Accordion behavior - only one category open at a time
+            document.querySelectorAll('.menu-category-header').forEach(header => {
+                header.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    const category = header.closest('.menu-category');
+                    const categoryKey = category.dataset.category;
+                    const collapseEl = category.querySelector('.menu-category-items');
+                    const isCurrentlyOpen = collapseEl.classList.contains('show');
+                    
+                    // Close all categories first
+                    document.querySelectorAll('.menu-category').forEach(cat => {
+                        const catCollapse = cat.querySelector('.menu-category-items');
+                        const catHeader = cat.querySelector('.menu-category-header');
+                        if (catCollapse && catHeader) {
+                            catCollapse.classList.remove('show');
+                            catHeader.classList.add('collapsed');
+                            catHeader.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                    
+                    // If the clicked category was closed, open it
+                    if (!isCurrentlyOpen) {
+                        collapseEl.classList.add('show');
+                        header.classList.remove('collapsed');
+                        header.setAttribute('aria-expanded', 'true');
+                        localStorage.setItem('menu_active_category', categoryKey);
+                    } else {
+                        // If it was open and we closed it, clear the active category
+                        localStorage.removeItem('menu_active_category');
+                    }
+                });
+            });
+
+            // Submenu toggle behavior
+            document.querySelectorAll('.has-submenu').forEach(submenu => {
+                submenu.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    const targetId = submenu.getAttribute('data-target');
+                    const collapseEl = document.querySelector(targetId);
+                    const isCurrentlyOpen = collapseEl.classList.contains('show');
+                    
+                    if (isCurrentlyOpen) {
+                        collapseEl.classList.remove('show');
+                        submenu.classList.add('collapsed');
+                        submenu.setAttribute('aria-expanded', 'false');
+                    } else {
+                        collapseEl.classList.add('show');
+                        submenu.classList.remove('collapsed');
+                        submenu.setAttribute('aria-expanded', 'true');
+                    }
+                });
+            });
+        });
     </script>
     <script>
         // Poll for unread messages

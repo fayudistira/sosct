@@ -11,6 +11,7 @@ return [
         'url' => 'classroom',
         'icon' => 'door-open',
         'permission' => 'classroom.manage',
-        'order' => 15
+        'order' => 3,
+        'category' => 'academic'
     ]
 ];

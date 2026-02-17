@@ -6,6 +6,7 @@ return [
         'icon' => 'people-fill',
         'url' => 'admin/employee',
         'permission' => 'admin.settings',
-        'order' => 50,
+        'order' => 1,
+        'category' => 'administration'
     ],
 ];

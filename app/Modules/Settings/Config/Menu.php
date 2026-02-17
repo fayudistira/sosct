@@ -8,8 +8,9 @@ return [
     [
         'title' => 'Settings',
         'url' => 'settings',
-        'icon' => 'bi-gear',
+        'icon' => 'gear',
         'permission' => 'admin.settings',
-        'order' => 100
+        'order' => 3,
+        'category' => 'administration'
     ]
 ];

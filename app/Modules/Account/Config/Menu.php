@@ -11,6 +11,7 @@ return [
         'url' => 'account',
         'icon' => 'person-circle',
         'permission' => null, // Available to all authenticated users
-        'order' => 100
+        'order' => 999
+        // No category - will appear at bottom as uncategorized
     ]
 ];

@@ -11,6 +11,7 @@ return [
         'url'        => 'dormitory',
         'icon'       => 'building',
         'permission' => 'dormitory.view',
-        'order'      => 20
+        'order'      => 5,
+        'category'   => 'academic'
     ]
 ];

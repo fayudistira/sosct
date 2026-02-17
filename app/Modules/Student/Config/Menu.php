@@ -3,9 +3,10 @@
 return [
     [
         'title' => 'Manajemen Siswa',
-        'icon'  => 'bi bi-mortarboard',
+        'icon'  => 'mortarboard',
         'url'   => 'student',
-        'order' => 4,
-        'permission' => 'student.manage'
+        'order' => 1,
+        'permission' => 'student.manage',
+        'category' => 'academic'
     ]
 ];

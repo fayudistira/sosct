@@ -11,6 +11,7 @@ return [
         'url' => 'admission',
         'icon' => 'file-earmark-text',
         'permission' => 'admission.manage',
-        'order' => 10
+        'order' => 2,
+        'category' => 'academic'
     ]
 ];

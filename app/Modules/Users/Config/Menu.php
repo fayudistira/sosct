@@ -10,6 +10,7 @@ return [
         'url' => 'users',
         'icon' => 'people',
         'permission' => 'admin.settings',
-        'order' => 90
+        'order' => 2,
+        'category' => 'administration'
     ]
 ];

@@ -11,7 +11,8 @@ return [
         'url' => 'contract',
         'icon' => 'file-contract',
         'permission' => ['payment.manage', 'invoice.manage', 'admission.manage'],
-        'order' => 19,
+        'order' => 1,
+        'category' => 'finance',
         'submenu' => [
             [
                 'title' => 'All Contracts',
@@ -25,7 +26,8 @@ return [
         'url' => 'payment',
         'icon' => 'cash-coin',
         'permission' => 'payment.manage',
-        'order' => 20,
+        'order' => 2,
+        'category' => 'finance',
         'submenu' => [
             [
                 'title' => 'All Payments',
@@ -44,7 +46,8 @@ return [
         'url' => 'invoice',
         'icon' => 'receipt',
         'permission' => 'invoice.manage',
-        'order' => 21,
+        'order' => 3,
+        'category' => 'finance',
         'submenu' => [
             [
                 'title' => 'All Invoices',
@@ -68,7 +71,8 @@ return [
         'url' => 'payment/reports/revenue',
         'icon' => 'graph-up',
         'permission' => ['payment.manage', 'invoice.manage'],
-        'order' => 22,
+        'order' => 4,
+        'category' => 'finance',
         'submenu' => [
             [
                 'title' => 'Revenue Report',

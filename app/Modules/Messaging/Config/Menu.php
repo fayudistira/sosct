@@ -1,12 +1,16 @@
 <?php
 
-// This file might be consumed by a Menu manager if one exists.
-// Currently providing it for structural completeness.
+/**
+ * Menu configuration for Messaging module
+ */
+
 return [
-    'messaging' => [
+    [
         'title' => 'Messages',
-        'icon'  => 'bi bi-chat-dots',
+        'icon'  => 'chat-dots',
         'url'   => 'messages',
-        'permission' => 'messaging.view' // Optional, implied
+        'permission' => 'messaging.view',
+        'order' => 5,
+        'category' => 'student_portal'
     ]
 ];

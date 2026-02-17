@@ -6,6 +6,7 @@ return [
         'url' => 'program',
         'icon' => 'mortarboard',
         'permission' => ['program.view', 'program.manage'],
-        'order' => 20
+        'order' => 4,
+        'category' => 'academic'
     ]
 ];
