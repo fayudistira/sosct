@@ -211,6 +211,7 @@ class DormitoryController extends BaseController
     {
         $studentId = $this->request->getPost('student_id');
         $startDate = $this->request->getPost('start_date');
+        $endDate = $this->request->getPost('end_date') ?: null;
         $notes = $this->request->getPost('notes');
 
         $dormitory = $this->dormitoryModel->getWithOccupancy($id);
@@ -224,7 +225,7 @@ class DormitoryController extends BaseController
             return redirect()->back()->with('error', 'No available beds in this dormitory.');
         }
 
-        if ($this->assignmentModel->assignStudent($id, $studentId, $startDate, $notes)) {
+        if ($this->assignmentModel->assignStudent($id, $studentId, $startDate, $notes, $endDate)) {
             // Update dormitory status if full
             $newOccupied = $this->assignmentModel->getOccupiedBedsCount($id);
             if ($newOccupied >= $dormitory['room_capacity']) {

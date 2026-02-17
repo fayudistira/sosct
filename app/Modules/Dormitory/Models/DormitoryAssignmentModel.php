@@ -105,7 +105,7 @@ class DormitoryAssignmentModel extends Model
     /**
      * Assign student to dormitory
      */
-    public function assignStudent(string $dormitoryId, int $studentId, ?string $startDate = null, ?string $notes = null): bool
+    public function assignStudent(string $dormitoryId, int $studentId, ?string $startDate = null, ?string $notes = null, ?string $endDate = null): bool
     {
         // Check if student already has an active assignment
         $existing = $this->where('student_id', $studentId)
@@ -125,6 +125,7 @@ class DormitoryAssignmentModel extends Model
             'dormitory_id' => $dormitoryId,
             'student_id'   => $studentId,
             'start_date'   => $startDate ?? date('Y-m-d'),
+            'end_date'     => $endDate,
             'status'       => 'active',
             'notes'        => $notes,
         ]);

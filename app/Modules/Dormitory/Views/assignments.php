@@ -67,6 +67,11 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="end_date" class="form-label">End Date <small class="text-muted">(Optional)</small></label>
+                            <input type="date" class="form-control" id="end_date" name="end_date">
+                        </div>
+
+                        <div class="mb-3">
                             <label for="notes" class="form-label">Notes</label>
                             <textarea class="form-control" id="notes" name="notes" rows="2"></textarea>
                         </div>
@@ -102,6 +107,7 @@
                                     <th>Name</th>
                                     <th>Student Number</th>
                                     <th>Start Date</th>
+                                    <th>End Date</th>
                                     <th>Contact</th>
                                     <th>Status</th>
                                     <th class="text-center">Actions</th>
@@ -115,6 +121,7 @@
                                         </td>
                                         <td><?= esc($assignment['student_number'] ?? 'N/A') ?></td>
                                         <td><?= $assignment['start_date'] ?? '-' ?></td>
+                                        <td><?= $assignment['end_date'] ?? '<span class="text-muted">-</span>' ?></td>
                                         <td>
                                             <?php if (!empty($assignment['phone'])): ?>
                                                 <a href="tel:<?= esc($assignment['phone']) ?>"><?= esc($assignment['phone']) ?></a>
