@@ -80,16 +80,16 @@
 
                     <div class="col-md-6">
                         <div class="mb-4">
-                            <label class="form-label fw-bold">2. Related Invoice *</label>
+                            <label class="form-label fw-bold">2. Related Invoice</label>
                             <div class="d-flex align-items-center">
-                                <select name="invoice_id" id="invoiceSelect" class="form-select" disabled required>
+                                <select name="invoice_id" id="invoiceSelect" class="form-select" disabled>
                                     <option value="">Select student first...</option>
                                 </select>
                                 <div id="invoiceLoading" class="spinner-border spinner-border-sm text-danger ms-2" role="status" style="display: none;">
                                     <span class="visually-hidden">Loading...</span>
                                 </div>
                             </div>
-                            <div class="form-text">Invoices will be populated automatically after selecting a student.</div>
+                            <div class="form-text">Select an invoice or leave empty for direct payment to contract balance.</div>
                         </div>
                     </div>
                 </div>
@@ -128,6 +128,40 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contract Balance Summary (for direct payments without invoice) -->
+                <div id="installmentSummary" class="card mb-3" style="display: none;">
+                    <div class="card-header" style="background-color: #6B0000; color: white;">
+                        <h5 class="mb-0">Contract Balance <small class="text-light">(Direct Payment)</small></h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-2">
+                                    <span class="info-label">Total Contract:</span> 
+                                    <span id="contractTotal">-</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-2">
+                                    <span class="info-label">Total Paid:</span> 
+                                    <span id="contractPaid">-</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-2">
+                                    <span class="info-label">Remaining Balance:</span> 
+                                    <span id="contractBalance" class="badge bg-warning">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle"></i> This payment will be applied directly to the contract balance without linking to a specific invoice.
+                            </small>
                         </div>
                     </div>
                 </div>
@@ -254,9 +288,11 @@
 
             console.log('Selected student registration number:', regNumber);
 
-            // Reset and disable invoice dropdown
+            // Reset summaries and invoice dropdown
             invoiceSelect.empty().append('<option value="">Loading invoices...</option>').prop('disabled', true);
             $('#amountInput').val('');
+            $('#invoiceSummary').hide();
+            $('#installmentSummary').hide();
 
             if (regNumber) {
                 loadingSpinner.show();
@@ -273,7 +309,7 @@
                         console.log('Response data length:', response.data ? response.data.length : 0);
                         loadingSpinner.hide();
                         invoiceSelect.prop('disabled', false);
-                        invoiceSelect.empty().append('<option value="">-- Choose Invoice --</option>');
+                        invoiceSelect.empty().append('<option value="">-- No Invoice (Direct Payment) --</option>');
 
                         if (response.data && response.data.length > 0) {
                             console.log('Processing ' + response.data.length + ' invoices...');
@@ -295,19 +331,16 @@
                             });
 
                             if (!payableFound) {
-                                console.log('No payable invoices found');
-                                invoiceSelect.append('<option value="" disabled>No unpaid or partially paid invoices found</option>');
+                                console.log('No payable invoices found - allowing direct payment');
                             } else {
                                 console.log('Found ' + payableFound + ' payable invoice(s)');
-                                // If only one payable invoice, select it automatically
-                                if (invoiceSelect.find('option[data-amount]').length === 1) {
-                                    invoiceSelect.find('option[data-amount]').prop('selected', true).trigger('change');
-                                }
                             }
                         } else {
-                            console.log('No invoices in response data');
-                            invoiceSelect.append('<option disabled>No invoices recorded for this student</option>');
+                            console.log('No invoices in response data - allowing direct payment');
                         }
+                        
+                        // Always load installment info for direct payment option
+                        loadInstallmentInfo(regNumber);
                         console.log('=== AJAX SUCCESS END ===');
                     },
                     error: function(xhr, status, error) {
@@ -318,18 +351,58 @@
                         console.log('Response Text:', xhr.responseText);
                         console.log('Status Code:', xhr.status);
                         invoiceSelect.prop('disabled', false);
-                        invoiceSelect.empty().append('<option value="" disabled>Error loading invoices. Please try again.</option>');
-                        alert('Could not fetch invoices. Please check your connection or server logs.');
+                        invoiceSelect.empty().append('<option value="">-- No Invoice (Direct Payment) --</option>');
+                        // Still try to load installment info
+                        loadInstallmentInfo(regNumber);
                         console.log('=== AJAX ERROR END ===');
                     }
                 });
             }
         });
 
+        // Function to load installment info
+        function loadInstallmentInfo(regNumber) {
+            const installmentApiUrl = '<?= base_url('api/installments/student') ?>/' + regNumber;
+            console.log('Fetching installment info from:', installmentApiUrl);
+            
+            $.ajax({
+                url: installmentApiUrl,
+                method: 'GET',
+                success: function(response) {
+                    console.log('Installment response:', response);
+                    if (response.status === 'success' && response.data) {
+                        const installment = response.data;
+                        $('#contractTotal').text('Rp ' + parseFloat(installment.total_contract_amount || 0).toLocaleString('id-ID'));
+                        $('#contractPaid').text('Rp ' + parseFloat(installment.total_paid || 0).toLocaleString('id-ID'));
+                        $('#contractBalance').text('Rp ' + parseFloat(installment.remaining_balance || 0).toLocaleString('id-ID'));
+                        
+                        // Store installment ID for later use
+                        $('#installmentSummary').data('installment-id', installment.id);
+                    } else {
+                        $('#contractTotal').text('No contract found');
+                        $('#contractPaid').text('-');
+                        $('#contractBalance').text('-');
+                        $('#installmentSummary').data('installment-id', null);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Failed to fetch installment info:', error);
+                    $('#contractTotal').text('Error loading');
+                    $('#contractPaid').text('-');
+                    $('#contractBalance').text('-');
+                    $('#installmentSummary').data('installment-id', null);
+                }
+            });
+        }
+
         // When Invoice is selected, show summary
         $('#invoiceSelect').on('change', function() {
             const selectedOption = $(this).find('option:selected');
             const invoiceId = $(this).val();
+
+            // Hide both summaries first
+            $('#invoiceSummary').hide();
+            $('#installmentSummary').hide();
 
             // Fetch invoice details for summary
             if (invoiceId) {
@@ -360,7 +433,8 @@
                     }
                 });
             } else {
-                $('#invoiceSummary').hide();
+                // No invoice selected - show installment summary for direct payment
+                $('#installmentSummary').show();
             }
         });
 

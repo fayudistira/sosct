@@ -4,6 +4,7 @@ namespace Modules\Payment\Controllers\Api;
 
 use CodeIgniter\RESTful\ResourceController;
 use Modules\Payment\Models\InvoiceModel;
+use Modules\Payment\Models\InstallmentModel;
 use Modules\Admission\Models\AdmissionModel;
 
 class InvoiceApiController extends ResourceController
@@ -472,6 +473,46 @@ class InvoiceApiController extends ResourceController
         return $this->respond([
             'status' => 'success',
             'data' => $admissions
+        ]);
+    }
+
+    /**
+     * Get installment info for a student
+     * GET /api/installments/student/{registrationNumber}
+     */
+    public function getInstallmentInfo($registrationNumber = null)
+    {
+        if (!$registrationNumber) {
+            return $this->fail([
+                'status' => 'error',
+                'message' => 'Registration number is required'
+            ], 422);
+        }
+
+        $installmentModel = new InstallmentModel();
+        $installment = $installmentModel->getWithDetails($registrationNumber);
+
+        if (!$installment) {
+            return $this->respond([
+                'status' => 'success',
+                'data' => null,
+                'message' => 'No installment/contract found for this student'
+            ]);
+        }
+
+        return $this->respond([
+            'status' => 'success',
+            'data' => [
+                'id' => $installment['id'],
+                'registration_number' => $installment['registration_number'],
+                'total_contract_amount' => $installment['total_contract_amount'],
+                'total_paid' => $installment['total_paid'],
+                'remaining_balance' => $installment['remaining_balance'],
+                'status' => $installment['status'],
+                'due_date' => $installment['due_date'] ?? null,
+                'full_name' => $installment['full_name'] ?? 'N/A',
+                'program_title' => $installment['program_title'] ?? 'N/A'
+            ]
         ]);
     }
 }

@@ -147,8 +147,10 @@ class PaymentController extends BaseController
     {
         // Get the invoice first to link to installment
         $invoiceId = $this->request->getPost('invoice_id');
+        $registrationNumber = $this->request->getPost('registration_number');
         $installmentId = null;
 
+        // If invoice is selected, get its installment
         if ($invoiceId) {
             $invoice = $this->invoiceModel->find($invoiceId);
             if ($invoice && !empty($invoice['installment_id'])) {
@@ -156,8 +158,23 @@ class PaymentController extends BaseController
             }
         }
 
+        // If no installment from invoice, try to find by registration_number
+        // This allows direct payments without invoice to still affect contract balance
+        if (!$installmentId && $registrationNumber) {
+            $installment = $this->installmentModel->getByRegistrationNumber($registrationNumber);
+            if ($installment) {
+                $installmentId = $installment['id'];
+            }
+        }
+
+        // Build notes with direct payment indicator
+        $notes = $this->request->getPost('notes');
+        if (!$invoiceId) {
+            $notes = '[Direct Payment - No Invoice]' . ($notes ? ' ' . $notes : '');
+        }
+
         $data = [
-            'registration_number' => $this->request->getPost('registration_number'),
+            'registration_number' => $registrationNumber,
             'invoice_id' => $invoiceId ?: null,
             'installment_id' => $installmentId,
             'amount' => $this->request->getPost('amount'),
@@ -165,7 +182,7 @@ class PaymentController extends BaseController
             'document_number' => $this->request->getPost('document_number'),
             'payment_date' => $this->request->getPost('payment_date'),
             'status' => $this->request->getPost('status') ?: 'pending',
-            'notes' => $this->request->getPost('notes')
+            'notes' => $notes
         ];
 
         // Handle receipt file upload
@@ -180,7 +197,7 @@ class PaymentController extends BaseController
         if ($this->paymentModel->insert($data)) {
             $paymentId = $this->paymentModel->insertID();
 
-            // If linked to installment, update its totals
+            // If linked to installment, update its totals (works for both with and without invoice)
             if ($installmentId) {
                 $this->installmentModel->updatePaymentTotal($installmentId);
             }
@@ -217,7 +234,11 @@ class PaymentController extends BaseController
                 }
             }
 
-            return redirect()->to('/payment')->with('success', 'Payment created successfully.');
+            // Success message differs based on whether invoice was linked
+            $successMsg = $invoiceId 
+                ? 'Payment created and linked to invoice successfully.' 
+                : 'Direct payment created successfully. Contract balance has been updated.';
+            return redirect()->to('/payment')->with('success', $successMsg);
         }
 
         return redirect()->back()->withInput()->with('errors', $this->paymentModel->errors());

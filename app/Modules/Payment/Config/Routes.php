@@ -109,6 +109,11 @@ $routes->group('api/invoices', ['namespace' => 'Modules\Payment\Controllers\Api'
     $routes->put('(:segment)/cancel', 'InvoiceApiController::cancel/$1');
 });
 
+// Installment API Routes
+$routes->group('api/installments', ['namespace' => 'Modules\Payment\Controllers\Api', 'filter' => 'session'], function ($routes) {
+    $routes->get('student/(:segment)', 'InvoiceApiController::getInstallmentInfo/$1');
+});
+
 // Student Payment Routes (requires authentication and student role)
 $routes->group('my', ['namespace' => 'Modules\Payment\Controllers', 'filter' => 'session'], function ($routes) {
     // Invoices
