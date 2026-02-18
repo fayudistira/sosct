@@ -14,6 +14,12 @@ $routes->group('classroom', ['namespace' => 'Modules\Classroom\Controllers'], fu
     $routes->post('delete/(:num)', 'ClassroomController::delete/$1');
 });
 
+// Classroom API Routes
+$routes->group('api/classrooms', ['namespace' => 'Modules\Classroom\Controllers\Api', 'filter' => 'session'], function ($routes) {
+    $routes->get('/', 'ClassroomApiController::index');
+    $routes->get('(:segment)', 'ClassroomApiController::show/$1');
+});
+
 // Student Classroom Routes (requires authentication and student role)
 $routes->group('my/class', ['namespace' => 'Modules\Classroom\Controllers', 'filter' => 'session'], function ($routes) {
     $routes->get('/', 'StudentClassroomController::myClass');

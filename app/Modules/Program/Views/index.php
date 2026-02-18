@@ -1,6 +1,30 @@
 <?= $this->extend('Modules\Dashboard\Views\layout') ?>
 
 <?= $this->section('content') ?>
+<style>
+    #programs-table tbody tr {
+        cursor: pointer;
+    }
+
+    #programs-table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .loading-overlay {
+        position: relative;
+        opacity: 0.6;
+    }
+
+    .loading-spinner {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+    }
+</style>
+
 <div class="container-fluid">
     <div class="row mb-3">
         <div class="col-md-6">
@@ -40,26 +64,26 @@
     <!-- Search and Filter -->
     <div class="card mb-3">
         <div class="card-body">
-            <form method="get" action="<?= base_url('program') ?>">
+            <form id="search-form">
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <input type="text" name="search" class="form-control"
+                        <input type="text" name="search" id="search-input" class="form-control"
                             placeholder="Search programs..." value="<?= esc($keyword ?? '') ?>">
                     </div>
                     <div class="col-md-3">
-                        <select name="status" class="form-select">
+                        <select name="status" id="status-filter" class="form-select">
                             <option value="">All Status</option>
                             <option value="active" <?= ($status ?? '') === 'active' ? 'selected' : '' ?>>Active</option>
                             <option value="inactive" <?= ($status ?? '') === 'inactive' ? 'selected' : '' ?>>Inactive</option>
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <input type="text" name="category" class="form-control"
+                        <input type="text" name="category" id="category-filter" class="form-control"
                             placeholder="Category" value="<?= esc($category ?? '') ?>">
                     </div>
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-search"></i> Search
+                        <button type="button" id="clear-filters" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-x-circle"></i> Clear
                         </button>
                     </div>
                 </div>
@@ -68,10 +92,15 @@
     </div>
 
     <!-- Programs Table -->
-    <div class="card">
+    <div class="card position-relative">
+        <div class="loading-spinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover" id="programs-table">
                     <thead>
                         <tr>
                             <th>Title</th>
@@ -86,7 +115,7 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="programs-tbody">
                         <?php if (!empty($programs)): ?>
                             <?php foreach ($programs as $program): ?>
                                 <tr>
@@ -139,11 +168,16 @@
                 </table>
             </div>
 
-            <?php if (isset($pager)): ?>
-                <div class="mt-3">
+            <div id="pagination-container" class="mt-3">
+                <?php if (isset($pager)): ?>
                     <?= $pager->links() ?>
-                </div>
-            <?php endif ?>
+                <?php endif ?>
+            </div>
+            
+            <div id="no-results" class="text-center py-4" style="display: none;">
+                <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
+                <p class="text-muted mt-2">No programs found matching your criteria.</p>
+            </div>
         </div>
     </div>
 </div>
@@ -201,4 +235,181 @@
         </div>
     </div>
 </div>
+
+<script>
+let searchTimeout;
+let currentPage = 1;
+
+// Debounced search function
+function debounceSearch() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(performSearch, 300);
+}
+
+// Perform AJAX search
+function performSearch(page = 1) {
+    currentPage = page;
+    const searchValue = document.getElementById('search-input').value;
+    const statusValue = document.getElementById('status-filter').value;
+    const categoryValue = document.getElementById('category-filter').value;
+
+    // Show loading state
+    const tbody = document.getElementById('programs-tbody');
+    const spinner = document.querySelector('.loading-spinner');
+    const table = document.getElementById('programs-table');
+    
+    table.classList.add('loading-overlay');
+    spinner.style.display = 'block';
+
+    // Build query params
+    const params = new URLSearchParams();
+    if (searchValue) params.append('q', searchValue);
+    if (statusValue) params.append('status', statusValue);
+    if (categoryValue) params.append('category', categoryValue);
+    params.append('page', page);
+    params.append('per_page', 10);
+
+    // Make AJAX request
+    fetch(`<?= base_url('api/programs') ?>?${params.toString()}`, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        table.classList.remove('loading-overlay');
+        spinner.style.display = 'none';
+
+        if (data.status === 'success') {
+            updateTable(data.data);
+            updatePagination(data.pagination);
+        } else {
+            console.error('Error:', data.message);
+        }
+    })
+    .catch(error => {
+        table.classList.remove('loading-overlay');
+        spinner.style.display = 'none';
+        console.error('Error:', error);
+    });
+}
+
+// Update table with new data
+function updateTable(programs) {
+    const tbody = document.getElementById('programs-tbody');
+    const noResults = document.getElementById('no-results');
+    const table = document.getElementById('programs-table');
+
+    if (programs.length === 0) {
+        tbody.innerHTML = '';
+        table.style.display = 'none';
+        noResults.style.display = 'block';
+        return;
+    }
+
+    table.style.display = 'table';
+    noResults.style.display = 'none';
+
+    tbody.innerHTML = programs.map(program => {
+        const statusBadge = program.status === 'active'
+            ? '<span class="badge bg-success">Active</span>'
+            : '<span class="badge bg-secondary">Inactive</span>';
+        
+        const thumbnail = program.thumbnail
+            ? `<img src="<?= base_url('uploads/programs/thumbs/') ?>${escapeHtml(program.thumbnail)}" alt="Thumbnail" style="width: 50px; height: 50px; object-fit: cover;" class="rounded">`
+            : '<span class="text-muted">No image</span>';
+
+        return `
+            <tr>
+                <td><strong>${escapeHtml(program.title)}</strong></td>
+                <td>${escapeHtml(program.category || '-')}</td>
+                <td>${escapeHtml(program.sub_category || '-')}</td>
+                <td>${escapeHtml(program.duration || '-')}</td>
+                <td>Rp ${formatNumber(program.registration_fee || 0)}</td>
+                <td>Rp ${formatNumber(program.tuition_fee || 0)}</td>
+                <td>${formatNumber(program.discount || 0, 2)}%</td>
+                <td>${statusBadge}</td>
+                <td>${thumbnail}</td>
+                <td>
+                    <a href="<?= base_url('program/view/') ?>${program.id}" class="btn btn-sm btn-info" title="View">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="<?= base_url('program/edit/') ?>${program.id}" class="btn btn-sm btn-warning" title="Edit">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a href="<?= base_url('program/delete/') ?>${program.id}" class="btn btn-sm btn-danger" title="Delete"
+                        onclick="return confirm('Are you sure you want to delete this program?')">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Update pagination
+function updatePagination(pagination) {
+    const container = document.getElementById('pagination-container');
+    
+    if (!pagination || pagination.total_pages <= 1) {
+        container.innerHTML = '';
+        return;
+    }
+
+    let html = '<nav><ul class="pagination justify-content-center mb-0">';
+    
+    // Previous button
+    html += `<li class="page-item ${pagination.current_page === 1 ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="performSearch(${pagination.current_page - 1}); return false;">Previous</a>
+    </li>`;
+
+    // Page numbers
+    for (let i = 1; i <= pagination.total_pages; i++) {
+        if (i === 1 || i === pagination.total_pages || (i >= pagination.current_page - 2 && i <= pagination.current_page + 2)) {
+            html += `<li class="page-item ${i === pagination.current_page ? 'active' : ''}">
+                <a class="page-link" href="#" onclick="performSearch(${i}); return false;">${i}</a>
+            </li>`;
+        } else if (i === pagination.current_page - 3 || i === pagination.current_page + 3) {
+            html += '<li class="page-item disabled"><span class="page-link">...</span></li>';
+        }
+    }
+
+    // Next button
+    html += `<li class="page-item ${pagination.current_page === pagination.total_pages ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="performSearch(${pagination.current_page + 1}); return false;">Next</a>
+    </li>`;
+
+    html += '</ul></nav>';
+    container.innerHTML = html;
+}
+
+// Helper functions
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function formatNumber(num, decimals = 0) {
+    return new Intl.NumberFormat('id-ID', { 
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals 
+    }).format(num);
+}
+
+// Event listeners
+document.getElementById('search-input').addEventListener('input', debounceSearch);
+document.getElementById('status-filter').addEventListener('change', () => performSearch(1));
+document.getElementById('category-filter').addEventListener('input', debounceSearch);
+
+// Clear filters
+document.getElementById('clear-filters').addEventListener('click', function() {
+    document.getElementById('search-input').value = '';
+    document.getElementById('status-filter').value = '';
+    document.getElementById('category-filter').value = '';
+    performSearch(1);
+});
+</script>
 <?= $this->endSection() ?>

@@ -19,9 +19,11 @@ class PaymentApiController extends ResourceController
     {
         $paymentModel = new PaymentModel();
         $admissionModel = new AdmissionModel();
+        $invoiceModel = new \Modules\Payment\Models\InvoiceModel();
 
         $page = $this->request->getGet('page') ?? 1;
         $perPage = $this->request->getGet('per_page') ?? 10;
+        $search = $this->request->getGet('q');
 
         // Apply filters if provided
         $filters = [];
@@ -38,8 +40,12 @@ class PaymentApiController extends ResourceController
             $filters['end_date'] = $endDate;
         }
 
-        // Get payments
-        if (!empty($filters)) {
+        // Get payments - search takes priority
+        if ($search) {
+            $payments = $paymentModel->searchPayments($search);
+            $total = count($payments);
+            $payments = array_slice($payments, ($page - 1) * $perPage, $perPage);
+        } elseif (!empty($filters)) {
             $payments = $paymentModel->filterPayments($filters);
             $total = count($payments);
             $payments = array_slice($payments, ($page - 1) * $perPage, $perPage);
@@ -48,10 +54,19 @@ class PaymentApiController extends ResourceController
             $total = $paymentModel->countAllResults(false);
         }
 
-        // Enrich with student details
+        // Enrich with student and invoice details
         foreach ($payments as &$payment) {
             $student = $admissionModel->getByRegistrationNumber($payment['registration_number']);
             $payment['student'] = $student;
+            $payment['student_name'] = $student['full_name'] ?? 'N/A';
+            
+            // Get invoice details if linked
+            if ($payment['invoice_id']) {
+                $invoice = $invoiceModel->find($payment['invoice_id']);
+                $payment['invoice_number'] = $invoice['invoice_number'] ?? 'N/A';
+            } else {
+                $payment['invoice_number'] = 'N/A';
+            }
         }
 
         return $this->respond([

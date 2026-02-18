@@ -38,6 +38,8 @@ $routes->group('invoice', ['namespace' => 'Modules\Payment\Controllers', 'filter
     $routes->get('view/(:segment)', 'InvoiceController::view/$1');
     $routes->get('create', 'InvoiceController::create');
     $routes->get('extend', 'InvoiceController::extend');
+    $routes->get('bulk-extend', 'InvoiceController::bulkExtend');
+    $routes->post('bulk-extend-store', 'InvoiceController::bulkExtendStore');
     $routes->post('store', 'InvoiceController::store');
     $routes->get('edit/(:segment)', 'InvoiceController::edit/$1');
     $routes->post('update/(:segment)', 'InvoiceController::update/$1');
@@ -81,15 +83,9 @@ $routes->group('api/payments', ['namespace' => 'Modules\Payment\Controllers\Api'
 
 // Invoice API Routes
 $routes->group('api/invoices', ['namespace' => 'Modules\Payment\Controllers\Api', 'filter' => 'session'], function ($routes) {
-    // CRUD operations
-    $routes->get('/', 'InvoiceApiController::index');
-    $routes->get('(:segment)', 'InvoiceApiController::show/$1');
-    $routes->post('/', 'InvoiceApiController::create');
-    $routes->put('(:segment)', 'InvoiceApiController::update/$1');
-    $routes->delete('(:segment)', 'InvoiceApiController::delete/$1');
-
-    // Search and filter
+    // Search and filter (MUST be before CRUD routes with wildcards)
     $routes->get('search', 'InvoiceApiController::search');
+    $routes->get('search-admissions', 'InvoiceApiController::searchAdmissions');
     $routes->get('filter/status', 'InvoiceApiController::filterByStatus');
     $routes->get('filter/type', 'InvoiceApiController::filterByType');
 
@@ -98,6 +94,13 @@ $routes->group('api/invoices', ['namespace' => 'Modules\Payment\Controllers\Api'
 
     // Overdue invoices
     $routes->get('overdue', 'InvoiceApiController::getOverdue');
+
+    // CRUD operations (wildcard routes MUST be last)
+    $routes->get('/', 'InvoiceApiController::index');
+    $routes->post('/', 'InvoiceApiController::create');
+    $routes->get('(:segment)', 'InvoiceApiController::show/$1');
+    $routes->put('(:segment)', 'InvoiceApiController::update/$1');
+    $routes->delete('(:segment)', 'InvoiceApiController::delete/$1');
 
     // PDF generation
     $routes->get('(:segment)/pdf', 'InvoiceApiController::generatePdf/$1');

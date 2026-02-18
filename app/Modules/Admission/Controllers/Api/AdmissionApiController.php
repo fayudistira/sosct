@@ -20,18 +20,43 @@ class AdmissionApiController extends ResourceController
     {
         $page = $this->request->getGet('page') ?? 1;
         $perPage = $this->request->getGet('per_page') ?? 10;
+        $search = $this->request->getGet('q');
+        $status = $this->request->getGet('status');
         
-        $admissions = $this->model->paginate($perPage);
-        $pager = $this->model->pager;
+        // Build query
+        $builder = $this->model->select('admissions.*, profiles.full_name, profiles.email, profiles.phone, programs.title as program_title')
+            ->join('profiles', 'profiles.id = admissions.profile_id')
+            ->join('programs', 'programs.id = admissions.program_id', 'left');
+        
+        // Apply search filter
+        if ($search) {
+            $builder->groupStart()
+                ->like('profiles.full_name', $search)
+                ->orLike('profiles.email', $search)
+                ->orLike('admissions.registration_number', $search)
+                ->orLike('profiles.phone', $search)
+                ->groupEnd();
+        }
+        
+        // Apply status filter
+        if ($status) {
+            $builder->where('admissions.status', $status);
+        }
+        
+        // Get total count before pagination
+        $total = $builder->countAllResults(false);
+        
+        // Get paginated results
+        $admissions = $builder->paginate($perPage, 'default', $page);
         
         return $this->respond([
             'status' => 'success',
             'data' => $admissions,
             'pagination' => [
-                'current_page' => $pager->getCurrentPage(),
-                'total_pages' => $pager->getPageCount(),
-                'per_page' => $perPage,
-                'total' => $pager->getTotal()
+                'current_page' => (int) $page,
+                'per_page' => (int) $perPage,
+                'total' => $total,
+                'total_pages' => ceil($total / $perPage)
             ]
         ]);
     }

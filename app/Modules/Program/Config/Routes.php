@@ -19,7 +19,7 @@ $routes->group('program', ['namespace' => 'Modules\Program\Controllers', 'filter
 });
 
 // Program API Routes
-$routes->group('api/programs', ['namespace' => 'Modules\Program\Controllers\Api'], function($routes) {
+$routes->group('api/programs', ['namespace' => 'Modules\Program\Controllers\Api', 'filter' => 'session'], function($routes) {
     // CRUD operations
     $routes->get('/', 'ProgramApiController::index');
     $routes->get('(:segment)', 'ProgramApiController::show/$1');

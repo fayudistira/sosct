@@ -22,6 +22,7 @@ class InvoiceApiController extends ResourceController
 
         $page = $this->request->getGet('page') ?? 1;
         $perPage = $this->request->getGet('per_page') ?? 10;
+        $search = $this->request->getGet('q');
 
         // Apply filters if provided
         $filters = [];
@@ -38,8 +39,12 @@ class InvoiceApiController extends ResourceController
             $filters['end_date'] = $endDate;
         }
 
-        // Get invoices
-        if (!empty($filters)) {
+        // Get invoices - search takes priority
+        if ($search) {
+            $invoices = $invoiceModel->searchInvoices($search);
+            $total = count($invoices);
+            $invoices = array_slice($invoices, ($page - 1) * $perPage, $perPage);
+        } elseif (!empty($filters)) {
             $invoices = $invoiceModel->filterInvoices($filters);
             $total = count($invoices);
             $invoices = array_slice($invoices, ($page - 1) * $perPage, $perPage);
@@ -401,5 +406,72 @@ class InvoiceApiController extends ResourceController
             'status' => 'error',
             'message' => 'Failed to cancel invoice'
         ], 422);
+    }
+
+    /**
+     * Search admissions for bulk invoice extend
+     * GET /api/invoices/search-admissions?q=keyword
+     */
+    public function searchAdmissions()
+    {
+        $keyword = $this->request->getGet('q');
+
+        if (!$keyword || strlen($keyword) < 2) {
+            return $this->fail([
+                'status' => 'error',
+                'message' => 'Search keyword must be at least 2 characters'
+            ], 422);
+        }
+
+        $db = \Config\Database::connect();
+
+        // Search admissions by name or registration number
+        // Include all admissions regardless of status (pending, approved, etc.)
+        $builder = $db->table('admissions');
+        $admissions = $builder->select('
+                admissions.registration_number,
+                admissions.status,
+                profiles.full_name,
+                profiles.email,
+                programs.title as program_title,
+                programs.tuition_fee,
+                programs.registration_fee
+            ')
+            ->join('profiles', 'profiles.id = admissions.profile_id')
+            ->join('programs', 'programs.id = admissions.program_id')
+            ->where('admissions.deleted_at', null)
+            ->groupStart()
+            ->like('profiles.full_name', $keyword)
+            ->orLike('admissions.registration_number', $keyword)
+            ->groupEnd()
+            ->orderBy('profiles.full_name', 'ASC')
+            ->limit(20)
+            ->get()
+            ->getResultArray();
+
+        // Calculate outstanding amount for each admission
+        foreach ($admissions as &$admission) {
+            // Get total paid from payments
+            $totalPaidResult = $db->table('payments')
+                ->selectSum('amount', 'total')
+                ->where('registration_number', $admission['registration_number'])
+                ->where('status', 'paid')
+                ->where('deleted_at', null)
+                ->get()
+                ->getRowArray();
+            
+            $totalPaid = (float) ($totalPaidResult['total'] ?? 0);
+            $totalFee = (float) ($admission['tuition_fee'] ?? 0) + (float) ($admission['registration_fee'] ?? 0);
+            $outstanding = $totalFee - $totalPaid;
+            
+            $admission['total_fee'] = $totalFee;
+            $admission['total_paid'] = $totalPaid;
+            $admission['outstanding'] = max(0, $outstanding);
+        }
+
+        return $this->respond([
+            'status' => 'success',
+            'data' => $admissions
+        ]);
     }
 }

@@ -14,3 +14,9 @@ $routes->group('admin/employee', ['namespace' => 'Modules\Employee\Controllers',
     $routes->post('update/(:num)', 'EmployeeController::update/$1');
     $routes->delete('delete/(:num)', 'EmployeeController::delete/$1');
 });
+
+// Employee API Routes
+$routes->group('api/employees', ['namespace' => 'Modules\Employee\Controllers\Api', 'filter' => 'session'], function($routes) {
+    $routes->get('/', 'EmployeeApiController::index');
+    $routes->get('(:segment)', 'EmployeeApiController::show/$1');
+});

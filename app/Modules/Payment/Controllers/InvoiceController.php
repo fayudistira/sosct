@@ -735,4 +735,133 @@ class InvoiceController extends BaseController
             return redirect()->to('/invoice/view/' . $id)->with('error', 'Failed to re-issue invoice: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Display bulk extend invoice form
+     */
+    public function bulkExtend()
+    {
+        return view('Modules\Payment\Views\invoices\bulk-extend', [
+            'title' => 'Bulk Extend Invoices',
+            'menuItems' => $this->loadModuleMenus(),
+            'user' => auth()->user()
+        ]);
+    }
+
+    /**
+     * Process bulk extend invoices
+     */
+    public function bulkExtendStore()
+    {
+        $lines = $this->request->getPost('lines');
+
+        if (!$lines || !is_array($lines) || empty($lines)) {
+            return redirect()->back()->with('error', 'Tidak ada data yang dikirim.');
+        }
+
+        // Validate and process each line
+        $results = [
+            'success' => [],
+            'failed' => []
+        ];
+
+        $db = \Config\Database::connect();
+
+        foreach ($lines as $index => $line) {
+            $lineNumber = $index + 1;
+
+            // Validate required fields
+            if (empty($line['registration_number'])) {
+                $results['failed'][] = [
+                    'line' => $lineNumber,
+                    'error' => 'Pendaftaran tidak dipilih'
+                ];
+                continue;
+            }
+
+            if (empty($line['invoice_id'])) {
+                $results['failed'][] = [
+                    'line' => $lineNumber,
+                    'error' => 'Faktur tidak dipilih'
+                ];
+                continue;
+            }
+
+            if (empty($line['due_date'])) {
+                $results['failed'][] = [
+                    'line' => $lineNumber,
+                    'error' => 'Tanggal jatuh tempo tidak dipilih'
+                ];
+                continue;
+            }
+
+            // Validate items
+            $validItems = [];
+            $totalAmount = 0;
+
+            if (!empty($line['items']) && is_array($line['items'])) {
+                foreach ($line['items'] as $item) {
+                    if (!empty($item['description']) && !empty($item['amount'])) {
+                        $amount = (float) $item['amount'];
+                        if ($amount > 0) {
+                            $validItems[] = [
+                                'description' => trim($item['description']),
+                                'amount' => $amount
+                            ];
+                            $totalAmount += $amount;
+                        }
+                    }
+                }
+            }
+
+            if (empty($validItems)) {
+                $results['failed'][] = [
+                    'line' => $lineNumber,
+                    'error' => 'Tidak ada item valid'
+                ];
+                continue;
+            }
+
+            // Extend the invoice
+            $newInvoiceId = $this->invoiceModel->extendInvoice(
+                (int) $line['invoice_id'],
+                $validItems,
+                $line['due_date']
+            );
+
+            if ($newInvoiceId) {
+                $newInvoice = $this->invoiceModel->find($newInvoiceId);
+                $results['success'][] = [
+                    'line' => $lineNumber,
+                    'invoice_number' => $newInvoice['invoice_number'],
+                    'amount' => $totalAmount
+                ];
+            } else {
+                $results['failed'][] = [
+                    'line' => $lineNumber,
+                    'error' => 'Gagal memperpanjang faktur'
+                ];
+            }
+        }
+
+        // Prepare flash message
+        $successCount = count($results['success']);
+        $failedCount = count($results['failed']);
+
+        if ($successCount > 0 && $failedCount === 0) {
+            $message = "Berhasil memperpanjang {$successCount} faktur.";
+            return redirect()->to('/invoice')->with('success', $message);
+        } elseif ($successCount > 0 && $failedCount > 0) {
+            $message = "Berhasil memperpanjang {$successCount} faktur. Gagal {$failedCount} faktur.";
+            $errorDetails = array_map(function($f) {
+                return "Baris {$f['line']}: {$f['error']}";
+            }, $results['failed']);
+            return redirect()->to('/invoice')->with('success', $message)->with('errors', $errorDetails);
+        } else {
+            $errorDetails = array_map(function($f) {
+                return "Baris {$f['line']}: {$f['error']}";
+            }, $results['failed']);
+            return redirect()->back()->withInput()->with('errors', $errorDetails);
+        }
+    }
 }

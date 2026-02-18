@@ -21,13 +21,10 @@ $routes->group('admission', ['namespace' => 'Modules\Admission\Controllers', 'fi
     $routes->get('ajax-search', 'AdmissionController::ajaxSearch');
 });
 
-// API Routes (RESTful) - Protected by tokens filter
-$routes->group('api', ['namespace' => 'Modules\Admission\Controllers\Api', 'filter' => 'tokens'], function($routes) {
-    $routes->resource('admissions', [
-        'controller' => 'AdmissionApiController',
-        'only' => ['index', 'show', 'create', 'update', 'delete']
-    ]);
-    
-    $routes->get('admissions/search', 'AdmissionApiController::search');
-    $routes->get('admissions/filter', 'AdmissionApiController::filter');
+// API Routes (RESTful) - Protected by session filter for AJAX calls
+$routes->group('api/admissions', ['namespace' => 'Modules\Admission\Controllers\Api', 'filter' => 'session'], function($routes) {
+    $routes->get('/', 'AdmissionApiController::index');
+    $routes->get('(:segment)', 'AdmissionApiController::show/$1');
+    $routes->get('search', 'AdmissionApiController::search');
+    $routes->get('filter', 'AdmissionApiController::filter');
 });

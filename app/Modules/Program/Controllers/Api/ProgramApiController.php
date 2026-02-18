@@ -20,18 +20,47 @@ class ProgramApiController extends ResourceController
     {
         $page = $this->request->getGet('page') ?? 1;
         $perPage = $this->request->getGet('per_page') ?? 10;
+        $search = $this->request->getGet('q');
+        $status = $this->request->getGet('status');
+        $category = $this->request->getGet('category');
         
-        $programs = $this->model->paginate($perPage);
-        $pager = $this->model->pager;
+        // Build query
+        $builder = $this->model;
+        
+        // Apply search filter
+        if ($search) {
+            $builder = $builder->groupStart()
+                ->like('title', $search)
+                ->orLike('category', $search)
+                ->orLike('sub_category', $search)
+                ->orLike('description', $search)
+                ->groupEnd();
+        }
+        
+        // Apply status filter
+        if ($status) {
+            $builder = $builder->where('status', $status);
+        }
+        
+        // Apply category filter
+        if ($category) {
+            $builder = $builder->like('category', $category);
+        }
+        
+        // Get total count before pagination
+        $total = $builder->countAllResults(false);
+        
+        // Get paginated results
+        $programs = $builder->paginate($perPage, 'default', $page);
         
         return $this->respond([
             'status' => 'success',
             'data' => $programs,
             'pagination' => [
-                'current_page' => $pager->getCurrentPage(),
-                'total_pages' => $pager->getPageCount(),
-                'per_page' => $perPage,
-                'total' => $pager->getTotal()
+                'current_page' => (int) $page,
+                'per_page' => (int) $perPage,
+                'total' => $total,
+                'total_pages' => ceil($total / $perPage)
             ]
         ]);
     }
