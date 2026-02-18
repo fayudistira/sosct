@@ -283,32 +283,54 @@
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.3s ease;
+            padding: 0 0.5rem;
         }
 
         .submenu-items.show {
             max-height: 500px;
         }
 
-        /* Submenu Styles */
+        /* Submenu Styles - Rounded button style */
         .submenu {
             padding-left: 0;
+            margin-left: 0.5rem;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .submenu .nav-item {
+            margin-bottom: 0.25rem;
         }
 
         .submenu .nav-link {
-            padding-left: 2.5rem;
+            padding: 0.5rem 0.75rem;
+            padding-left: 1rem;
             font-size: 0.8125rem;
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
         }
 
-        .submenu .nav-link:hover,
+        .submenu .nav-link:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(3px);
+        }
+
         .submenu .nav-link.active {
             color: white;
-            background-color: rgba(255, 255, 255, 0.08);
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
         .submenu .nav-link i {
             font-size: 0.875rem;
-            margin-right: 0.5rem;
+            margin-right: 0.625rem;
         }
 
         /* Has Submenu Toggle */
@@ -319,6 +341,15 @@
 
         .has-submenu.collapsed .submenu-toggle-icon {
             transform: rotate(-90deg);
+        }
+
+        /* Parent menu with submenu styling */
+        .has-submenu {
+            font-weight: 500;
+        }
+
+        .has-submenu.active {
+            background-color: rgba(255, 255, 255, 0.05);
         }
 
         /* Compact Sidebar Category Styles */

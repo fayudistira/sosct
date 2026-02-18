@@ -1,0 +1,863 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
+    />
+    <title>Bacaan Tahlil & Doa Arwah (mobile accordion) · NU Online</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family:
+          "Segoe UI",
+          Roboto,
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: #f9fafc;
+        color: #1e293b;
+        line-height: 1.6;
+        padding: 16px 12px 32px;
+      }
+      .container {
+        max-width: 640px;
+        margin: 0 auto;
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 24px;
+      }
+      .header h1 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #0f3b3a;
+        letter-spacing: -0.02em;
+      }
+      .header p {
+        font-size: 0.95rem;
+        color: #4b5563;
+        margin-top: 4px;
+      }
+      .accordion-item {
+        background: white;
+        border-radius: 18px;
+        margin-bottom: 16px;
+        box-shadow:
+          0 4px 10px rgba(0, 0, 0, 0.02),
+          0 2px 4px rgba(0, 0, 0, 0.03);
+        border: 1px solid #e9eef2;
+        overflow: hidden;
+        transition: all 0.1s;
+      }
+      .accordion-item summary {
+        list-style: none;
+        padding: 18px 18px 18px 22px;
+        font-weight: 600;
+        font-size: 1.2rem;
+        background: #ffffff;
+        color: #115e59;
+        border-bottom: 1px solid transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: background 0.15s;
+      }
+      .accordion-item summary::-webkit-details-marker {
+        display: none;
+      }
+      .accordion-item summary::after {
+        content: "➕";
+        font-size: 1.2rem;
+        font-weight: 400;
+        color: #2c7a7b;
+        transition: transform 0.2s;
+        margin-left: 10px;
+      }
+      .accordion-item[open] summary {
+        background: #f2f9f8;
+        border-bottom-color: #bcd4d1;
+      }
+      .accordion-item[open] summary::after {
+        content: "➖";
+      }
+      .section-content {
+        padding: 6px 4px 16px 4px;
+        background: #ffffff;
+      }
+      .verse-card {
+        margin: 14px 12px;
+        padding: 16px 14px;
+        background: #fafdff;
+        border-radius: 22px;
+        border: 1px solid #e2edf0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      }
+      .arabic {
+        font-family:
+          "Amiri", "Traditional Arabic", "Scheherazade", "Noto Naskh Arabic",
+          serif;
+        font-size: 2rem;
+        line-height: 1.7;
+        text-align: right;
+        direction: rtl;
+        color: #0b3b3a;
+        font-weight: 500;
+        word-break: break-word;
+        margin-bottom: 16px;
+      }
+      .latin {
+        font-size: 1rem;
+        font-style: italic;
+        color: #0f6e6a;
+        background: #ecf6f5;
+        padding: 12px 14px;
+        border-radius: 20px;
+        margin: 12px 0 10px;
+        border-left: 4px solid #2c9a92;
+        font-weight: 450;
+      }
+      .translation {
+        font-size: 0.98rem;
+        color: #2d3c4b;
+        background: #f3f9ff;
+        padding: 12px 14px;
+        border-radius: 20px;
+        border-left: 4px solid #5b8c9f;
+      }
+      .badge {
+        display: inline-block;
+        background: #dee9ea;
+        color: #1d5b5b;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 30px;
+        margin-bottom: 10px;
+        letter-spacing: 0.3px;
+      }
+      hr {
+        border: none;
+        border-top: 1px dashed #cbd5e1;
+        margin: 6px 0 12px;
+      }
+      /* small screens */
+      @media (max-width: 400px) {
+        .arabic {
+          font-size: 1.7rem;
+        }
+        .accordion-item summary {
+          font-size: 1.1rem;
+          padding: 15px;
+        }
+      }
+    </style>
+    <!-- include basic Arabic font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>📖 Bacaan Tahlil</h1>
+        <p>lengkap dengan doa arwah · arab, latin & terjemah</p>
+      </div>
+
+      <!-- ACCORDION SECTION 1: TAWASSUL (1-4) -->
+      <details class="accordion-item" open>
+        <summary>١–٤ · Tawassul (pengantar)</summary>
+        <div class="section-content">
+          <!-- verse 1 -->
+          <div class="verse-card">
+            <span class="badge">#1</span>
+            <div class="arabic">
+              إِلَى حَضْرَةِ النَّبِيِّ الْمُصْطَفَى سَيِّدِنَا مُحمَّدٍ صَلَّى
+              اللهُ عَلَيْهِ وَسَلَّمَ وَاٰلِهِ وَأَزْوَاجِهِ وَأَوْلَادِهِ
+              وَذُرِّيَّاتِهِ الْفَــاتِحَةُ
+            </div>
+            <div class="latin">
+              Ila ḫadlratin-nabiyyil-musthafâ sayyidinâ Muḫammadin shallallahu
+              ‘alaihi wa sallama wa âlihi wa azwâjihi wa awlâdihi wa
+              dzurriyyâtihi al-fâtiḫah
+            </div>
+            <div class="translation">
+              Kepada yang terhormat Nabi Muhammad ﷺ, segenap keluarga,
+              istri-istrinya, anak-anaknya, dan keturunannya. Bacaan Al-Fatihah
+              ini kami tujukan kepada Allah dan pahalanya untuk mereka semua.
+              Al-Fatihah…
+            </div>
+          </div>
+          <!-- verse 2 -->
+          <div class="verse-card">
+            <span class="badge">#2</span>
+            <div class="arabic">
+              ثُمَّ إِلَى حَضْرَةِ إِخْوَانِهِ مِنَ الْأَنْبِيَاءِ
+              وَالْمُرْسَلِيْنَ وَالْأَوْلِيَاءِ وَالشُّهَدَاءِ وَالصَّالِحِيْنَ
+              وَالصَّحَابَةِ وَالتَّابِعِيْنَ وَالْعُلَمَاءِ الْعَامِلِيْنَ
+              وَالْمُصَنِّفِيْنَ الْمُخْلِصِيْنَ وَجَمِيْعِ الْمَلَائِكَةِ
+              الْمُقَرَّبِيْنَ، خُصُوْصًا إِلَى سَيِّدِنَا الشَّيْخِ عَبْدِ
+              الْقَادِرِ الْجِيْلَانِي وَخُصُوْصًا إِلَى مُؤَسِّسِيْ جَمْعِيَّةِ
+              نَهْضَةِ الْعُلَمَاءِ الْفَــاتِحَةُ
+            </div>
+            <div class="latin">
+              Tsumma ilâ ḫadlrati ikhwânihi minal-anbiya’i wal-mursalîn
+              wal-auliya’i wasy-syuhadâ’i wash-shâlihîn wash-shaḫâbati wat
+              tâbi‘în wal-‘ulamâ’il-‘âmilîn wal-mushannifînal-mukhlishîn wa
+              jamî‘il-malâikatil-muqarrabîn, khusûshan ilâ sayyidinâsy-syaikh
+              ‘abdil qâdir al-jîlânî wa khushûshan ilâ muassisî jam‘iyyah
+              Nahdlatil Ulama, al-fâtiḫah
+            </div>
+            <div class="translation">
+              Lalu kepada segenap saudara beliau dari kalangan para nabi, rasul,
+              wali, syuhada, orang-orang saleh, sahabat, tabi‘in, ulama
+              al-amilin, ulama penulis yang ikhlas, semua malaikat Muqarrabin,
+              terkhusus kepada Syekh Abdul Qadir al-Jilani dan para pendiri
+              Nahdlatul Ulama. Al-Fatihah.
+            </div>
+          </div>
+          <!-- verse 3 -->
+          <div class="verse-card">
+            <span class="badge">#3</span>
+            <div class="arabic">
+              ثُمَّ إِلَى جَمِيْعِ أَهْلِ الْقُبُوْرِ مِنَ الْمُسْلِمِيْنَ
+              وَالْمُسْلِمَاتِ وَالْمُؤْمِنِيْنَ وَالْمُؤْمِنَاتِ مِنْ مَشَارِقِ
+              الْأَرْضِ إِلَى مَغَارِبِهَا بَرِّهَا وَبَحْرِهَا خُصُوْصًا إِلَى
+              اٰبَائِنَا وَأُمَّهَاتِنَا وَأَجْدَادِنَا وَجَدَّاتِنَا
+              وَمَشَايِخِنَا وَمَشَايِخِ مَشَايِخِنَا وَأَسَاتِذَةِ
+              أَسَاتِذَتِنَا وَلِمَنْ أَحْسَنَ إِلَيْنَا وَلِمَنِ اجْتَمَعْنَا
+              هٰهُنَا بِسَبَبِهِ الْفَاتِحَةُ
+            </div>
+            <div class="latin">
+              Tsumma ilâ jamî‘i ahlil-qubûri minal-muslimîna wal-muslimâti
+              wal-mu’minîna wal-mu’minâti min masyâriqil-ardli ilâ maghâribihâ
+              barrihâ wa baḫrihâ khushushan ilâ abâ’inâ wa ummahâtinâ wa
+              ajdâdinâ wa jaddâtina wa masyâkhinâ wa masyâyikhi masyâyikhinâ wa
+              asâtidzati asâtidzatinâ wa liman aḫsana ilainâ wa liman ijtama‘nâ
+              hâhunâ bisababihi, al-fâtiḫah
+            </div>
+            <div class="translation">
+              Kemudian kepada semua ahli kubur Muslimin, Muslimat, Mukminin,
+              Mukminat dari Timur ke Barat, di laut dan di darat, khususnya
+              bapak kami, ibu kami, kakek kami, nenek kami, guru kami, pengajar
+              dari guru kami, mereka yang berbuat baik kepada kami, dan arwah
+              yang menjadi sebab kami berkumpul. Al-Fatihah.
+            </div>
+          </div>
+          <!-- verse 4 -->
+          <div class="verse-card">
+            <span class="badge">#4</span>
+            <div class="arabic">
+              ثُمَّ إِلَى جَمِيْعِ أهْلِ الْقُبُوْرِ مِمَّنْ ذُكِرَتْ
+              أَسْمَاؤُهُ فِيْ هٰذِهِ الرِّسَالَةِ حَضْرَةِ رُوْحِ …<br />وَحَضْرَةِ
+              رُوْحِ …<br />وَحَضْرَةِ رُوْحِ …<br />رَحِمَهُمُ اللهُ
+              وَغَفَرَهُمْ، الْفَاتِحَةُ
+            </div>
+            <div class="latin">
+              Tsumma ilâ jamî‘i ahlil-qubûri mimman dzukirot asmâ’uhu fi
+              hâdzihir risâlati, ḫadlrati rûhi…, wa ḫadlrati rûhi…, wa ḫadlrati
+              rûhi…, roḫimahumullâhu wa ghafarahum, al-fâtiḫah
+            </div>
+            <div class="translation">
+              Kemudian kepada semua ahli kubur, yang namanya disebut dalam
+              risalah ini. Kepada…, dan kepada…, dan kepada…. Semoga Allah
+              merahmati dan mengampuni mereka. Al-Fatihah.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- SECTION 2: AL-IKHLAS + TAHMID (5-6) -->
+      <details class="accordion-item">
+        <summary>٥–٦ · Surah Al-Ikhlas & tahlil</summary>
+        <div class="section-content">
+          <div class="verse-card">
+            <span class="badge">#5 Al-Ikhlas (3x)</span>
+            <div class="arabic">
+              بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ<br />قُلْ هُوَ اللّٰهُ
+              اَحَدٌۚ، اَللّٰهُ الصَّمَدُۚ، لَمْ يَلِدْ وَلَمْ يُوْلَدْۙ، وَلَمْ
+              يَكُنْ لَّهٗ كُفُوًا اَحَـــــدٌ ×٣
+            </div>
+            <div class="latin">
+              Bismillâhir-raḫmânir-raḫîm, Qul huwallâhu aḫad, Allâhush-shamad,
+              lam yalid wa lam yûlad, wa lam yakul lahû kufuwan aḫad 3x
+            </div>
+            <div class="translation">
+              Dengan nama Allah Yang Maha Pengasih, Maha Penyayang. Katakanlah:
+              “Dialah Allah, Yang Maha Esa. Allah tempat meminta. (Allah) tidak
+              beranak dan tidak diperanakkan. Dan tidak ada sesuatu yang setara
+              dengan Dia.” (3 kali)
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#6</span>
+            <div class="arabic">لَا إِلٰهَ إِلَّا اللهُ وَاللهُ أَكْبَرُ</div>
+            <div class="latin">Lâ ilâha illâllâhu wallâhu akbar</div>
+            <div class="translation">
+              Tiada tuhan selain Allah, Allah Maha Besar.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- SECTION 3: AL-FALAQ + TAHMID (7-8) -->
+      <details class="accordion-item">
+        <summary>٧–٨ · Surah Al-Falaq & tahlil</summary>
+        <div class="section-content">
+          <div class="verse-card">
+            <span class="badge">#7 Al-Falaq</span>
+            <div class="arabic">
+              بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ<br />قُلْ اَعُوْذُ بِرَبِّ
+              الْفَلَقِۙ، مِنْ شَرِّ مَـــا خَلَقَۙ، وَمِنْ شَرِّ غَاسِقٍ اِذَا
+              وَقَبَۙ، وَمِنْ شَرِّ النَّفّٰثٰتِ فِى الْعُقَدِۙ، وَمِنْ شَرِّ
+              حَاسِدٍ اِذَا حَسَدَ
+            </div>
+            <div class="latin">
+              Bismillâhir-raḫmânir-raḫîm, Qul a‘udzu bi rabbil-falaq, min syarri
+              mâ khalaq, wa min syarri ghâsiqin idzâ waqab, wa min
+              syarrin-naffâtsâti fîl-‘uqad, wa min syarri ḫâsidin idzâ ḫasad
+            </div>
+            <div class="translation">
+              Dengan nama Allah… Katakanlah: “Aku berlindung kepada Tuhan yang
+              menguasai subuh, dari kejahatan makhluk-Nya, dari kejahatan malam
+              apabila gelap gulita, dari kejahatan wanita penyihir yang meniup
+              buhul, dan dari kejahatan orang dengki.”
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#8</span>
+            <div class="arabic">لَا إِلٰهَ إِلَّا اللهُ وَاللهُ أَكْبَرُ</div>
+            <div class="latin">Lâ ilâha illâllâhu wallâhu akbar</div>
+            <div class="translation">
+              Tiada tuhan selain Allah, Allah Maha Besar.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- SECTION 4: AN-NAS + TAHMID (9-10) -->
+      <details class="accordion-item">
+        <summary>٩–١٠ · Surah An-Nās & tahlil</summary>
+        <div class="section-content">
+          <div class="verse-card">
+            <span class="badge">#9 An-Nās</span>
+            <div class="arabic">
+              بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ<br />قُلْ اَعُوْذُ بِرَبِّ
+              النَّاسِۙ، مَلِكِ النَّـــاسِۙ، اِلٰهِ النَّاسِۙ، مِنْ شَرِّ
+              الْوَسْوَاسِ ەۙ الْخَنَّاسِۖ، الَّذِيْ يُوَسْوِسُ فِيْ صُدُوْرِ
+              النَّاسِۙ، مِنَ الْجِنَّةِ وَالنَّــاسِ
+            </div>
+            <div class="latin">
+              Bismillâhir-raḫmânir-raḫîm, Qul a‘udzû bi rabbin-nâs, malikin-nâs,
+              ilahin-nâs, min syarril-waswâsil khannâs, alladzi yuwaswisu fî
+              shudûrin-nâs, minal-jinnati wan-nâs
+            </div>
+            <div class="translation">
+              Dengan nama Allah… Katakanlah: “Aku berlindung kepada Tuhan
+              manusia, Raja manusia, sembahan manusia, dari kejahatan bisikan
+              setan yang bersembunyi, yang membisikkan ke dalam dada manusia,
+              dari jin dan manusia.”
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#10</span>
+            <div class="arabic">لَا إِلٰهَ إِلَّا اللهُ وَاللهُ أَكْبَرُ</div>
+            <div class="latin">Lâ ilâha illâllâhu wa Allâhu Akbar</div>
+            <div class="translation">
+              Tiada tuhan selain Allah, Allah Maha Besar.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- SECTION 5: AL-FATIHAH (11) -->
+      <details class="accordion-item">
+        <summary>١١ · Surah Al-Fātihah</summary>
+        <div class="section-content">
+          <div class="verse-card">
+            <span class="badge">#11</span>
+            <div class="arabic">
+              بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ، اَلْحَمْدُ لِلّٰهِ رَبِّ
+              الْعٰلَمِيْنَۙ، الرَّحْمٰنِ الرَّحِيْمِۙ، مٰلِكِ يَوْمِ
+              الدِّيْنِۗ، اِيَّاكَ نَعْبُدُ وَاِيَّاكَ نَسْتَعِيْنُۗ، اِهْدِنَا
+              الصِّرَاطَ الْمُسْتَقِيْمَۙ، صِرَاطَ الَّذِيْنَ اَنْعَمْتَ
+              عَلَيْهِمْ ەۙ غَيْرِ الْمَغْضُوْبِ عَلَيْهِمْ وَلَا الضَّاۤلِّيْنَ
+            </div>
+            <div class="latin">
+              Bismillâhir-raḫmânir-raḫîm, al-ḫamdu lillâhi rabbil-‘âlamîn,
+              ar-raḫmânir-raḫîm, mâliki yaumid-dîn, iyyâka na‘budu wa iyyâka
+              nasta‘în, ihdinâsh-shirâthal-mustaqîm, shirâtal ladzîna an‘amta
+              ‘alaihim ghairil-maghdlûbi ‘alaihim wa lâdl-dlâllîn. Âmîn
+            </div>
+            <div class="translation">
+              Dengan nama Allah… Segala puji bagi Allah Tuhan semesta alam, Maha
+              Pengasih, Maha Penyayang, Pemilik hari pembalasan. Hanya kepada-Mu
+              kami menyembah dan memohon pertolongan. Tunjukilah kami jalan yang
+              lurus, jalan orang-orang yang Engkau beri nikmat, bukan jalan
+              mereka yang dimurkai dan bukan pula jalan mereka yang sesat. Âmîn.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- SECTION 6: AYAT PILIHAN (12-14) Al-Baqarah 1-5, 163, 255 -->
+      <details class="accordion-item">
+        <summary>١٢–١٤ · Ayat Kursi & pilihan</summary>
+        <div class="section-content">
+          <div class="verse-card">
+            <span class="badge">#12 Al-Baqarah 1-5</span>
+            <div class="arabic">
+              بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ، الۤــــــمّۤۚ، ذٰلِكَ
+              الْكِتٰبُ لَا رَيْبَۛ فِيْهِۛ هُدًى لِّلْمُتَّقِيْنَۙ، الَّذِيْنَ
+              يُؤْمِنُوْنَ بِالْغَيْبِ وَيُقِيْمُوْنَ الصَّلٰوةَ وَمِمَّا
+              رَزَقْنٰهُمْ يُنْفِقُوْنَۙ، وَالَّذِيْنَ يُؤْمِنُوْنَ بِمَآ
+              اُنْزِلَ اِلَيْكَ وَمَآ اُنْزِلَ مِنْ قَبْلِكَ ۚ وَبِالْاٰخِرَةِ
+              هُمْ يُوْقِنُوْنَۗ، اُولٰۤىِٕكَ عَلٰى هُدًى مِّنْ رَّبِّهِمْۙ
+              وَاُولٰۤىِٕكَ هُمُ الْمُفْلِحُوْنَ
+            </div>
+            <div class="latin">
+              Bismillâhir-rahmânir-rahîm, Alif Lâm Mîm, dzâlikal-kitâbu lâ raiba
+              fîhi, hudal-lilmuttaqîn…
+            </div>
+            <div class="translation">
+              Alif Lām Mīm. Kitab ini tidak ada keraguan padanya; petunjuk bagi
+              mereka yang bertakwa, yang beriman pada yang gaib, mendirikan
+              shalat, dan menafkahkan rezeki… Mereka itulah orang-orang
+              beruntung.
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#13 Al-Baqarah 163</span>
+            <div class="arabic">
+              وَإِلٰهُكُمْ إِلٰهٌ وَّاحِدٌ لَا إِلٰهَ إِلَّا هُوَ الرَّحْمٰنُ
+              الرَّحِيمُ
+            </div>
+            <div class="latin">
+              Wa ilâhukum ilâhuw wâḫidul lâ ilâha illa Huwar-raḫmânur-raḫîm
+            </div>
+            <div class="translation">
+              Dan Tuhan kalian adalah Tuhan Yang Maha Esa; tidak ada tuhan
+              selain Dia, Yang Maha Pengasih, Maha Penyayang.
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#14 Ayat Kursi (2:255)</span>
+            <div class="arabic">
+              اَللّٰهُ لَآ اِلٰهَ اِلَّا هُوَۚ اَلْحَيُّ الْقَيُّوْمُ ەۚ لَا
+              تَأْخُذُهٗ سِنَةٌ وَّلَا نَوْمٌۗ لَهٗ مَا فِى السَّمٰوٰتِ وَمَا
+              فِى الْاَرْضِۗ مَنْ ذَا الَّذِيْ يَشْفَعُ عِنْدَهٗٓ اِلَّا
+              بِاِذْنِهٖۗ يَعْلَمُ مَا بَيْنَ اَيْدِيْهِمْ وَمَا خَلْفَهُمْۚ
+              وَلَا يُحِيْطُوْنَ بِشَيْءٍ مِّنْ عِلْمِهٖٓ اِلَّا بِمَا شَاۤءَۚ
+              وَسِعَ كُرْسِيُّهُ السَّمٰوٰتِ وَالْاَرْضَۚ وَلَا يَـُٔوْدُهٗ
+              حِفْظُهُمَاۚ وَهُوَ الْعَلِيُّ الْعَظِيْمُ
+            </div>
+            <div class="latin">
+              Allahu lâ ilâha illa huwal-ḫayyul-qayyûm, lâ ta’khudzuhû sinatuw
+              wa lâ naûm…
+            </div>
+            <div class="translation">
+              Allah, tidak ada tuhan selain Dia, Yang Mahahidup, terus-menerus
+              mengurus. Tidak mengantuk dan tidak tidur. Milik-Nya apa yang di
+              langit dan di bumi… Kursi-Nya meliputi langit dan bumi. Dia
+              Mahatinggi, Mahaagung.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- SECTION 7: AYAT & DOA (15-25) -->
+      <details class="accordion-item">
+        <summary>١٥–٢٥ · Ayat & doa pilihan</summary>
+        <div class="section-content">
+          <div class="verse-card">
+            <span class="badge">#15 Al-Baqarah 284-286 & doa</span>
+            <div class="arabic">
+              لِلّٰهِ مَا فِى السَّمٰوٰتِ وَمَا فِى الْاَرْضِۗ وَاِنْ تُبْدُوْا
+              مَا فِيْٓ اَنْفُسِكُمْ اَوْ تُخْفُوْهُ يُحَاسِبْكُمْ بِهِ اللّٰهُۗ
+              ... (lengkap)
+            </div>
+            <div class="latin">
+              Lillâhi mâ fis-samawâti wa mâ fil-ardli… (lengkap)
+            </div>
+            <div class="translation">
+              Milik Allah segala di langit dan bumi. Jika kamu nyatakan atau
+              sembunyikan apa dalam hatimu, Allah akan memperhitungkannya. Dia
+              mengampuni dan menyiksa siapa yang dikehendaki… Rasul dan orang
+              beriman beriman kepada Allah, malaikat, kitab, rasul. Mereka
+              berkata: kami dengar dan taat. Ampunan-Mu ya Tuhan… Allah tidak
+              membebani seseorang melampaui kemampuannya… (doa sapu jagat).
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#16</span>
+            <div class="arabic">ارْحَمْنَا، يَا أَرْحَمَ الرَّاحِمِيْنَ ×٧</div>
+            <div class="latin">Irḫamnâ yâ arḫamar-râḫimîn 7x</div>
+            <div class="translation">
+              Kasihani kami, wahai Tuhan Yang Maha Kasih (7x).
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#17</span>
+            <div class="arabic">
+              رَحْمَةُ اللهِ وَبَرَكَاتُهُ عَلَيْكُمْ أَهْلَ الْبَيْتِ إِنَّهُ
+              حَمِيْدٌ مَّجِيْدٌ
+            </div>
+            <div class="latin">
+              Raḫmatul-lâhi wa barakâtuhu ‘alaikum ahlal-baiti innahu ḫamîdun
+              majîd
+            </div>
+            <div class="translation">
+              Rahmat dan berkah Allah semoga tercurah atas kalian wahai ahlul
+              bait. Sungguh Dia Maha Terpuji, Maha Mulia.
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#18</span>
+            <div class="arabic">
+              إِنَّمَا يُريِدُ اللهُ لِيُذْهِبَ عَنْكُمُ الرِّجْسَ أَهْلَ
+              الْبَيْتِ وَيُطَهِّرَكُمْ تَطْهِيْرًا
+            </div>
+            <div class="latin">
+              Innamâ yurîdullâhu liyudzhiba ‘ankumur-rijsa ahlal-baiti wa
+              yuthahhirakum tathhîrâ
+            </div>
+            <div class="translation">
+              Sesungguhnya Allah hendak menghilangkan dosa dari kamu, wahai
+              ahlul bait, dan membersihkan kamu sebersih-bersihnya.
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#19</span>
+            <div class="arabic">
+              إِنَّ اللهَ وَمَلَائِكَتَهُ يُصَلُّونَ عَلَى النَّبِيِّ، يَا
+              أَيُّهَا الَّذِيْنَ أٰمَنُوْا صَلُّوْا عَلَيْهِ وَسَلِّمُوْا
+              تَسْلِيْمًا
+            </div>
+            <div class="latin">
+              Innallâha wa malâ’ikatahu yushallûna ‘alan-nabiyyi yâ
+              ayyuhal-ladzina âmanû shallû ‘alaihi wa sallimû taslîmâ
+            </div>
+            <div class="translation">
+              Sesungguhnya Allah dan malaikat bershalawat untuk Nabi. Wahai
+              orang beriman, bershalawat dan salamlah untuknya.
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#20</span>
+            <div class="arabic">(shalawat nûr al-hudā)</div>
+            <div class="latin">
+              Allâhumma shalli afdlalash-shalâti ‘alâ as‘adi makhlûqâtika
+              nûril-hudâ sayyidinâ Muḫammad…
+            </div>
+            <div class="translation">
+              Ya Allah, limpahkan shalawat terbaik kepada makhluk-Mu yang paling
+              bahagia, cahaya petunjuk, Nabi Muhammad, sebanyak pengetahuan-Mu…
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#21</span>
+            <div class="arabic">(shalawat syamsidh dhuḥā)</div>
+            <div class="latin">
+              Allâhumma shalli afdlalash shalati ‘alâ as‘adi makhlûqôtika
+              syamsidl dluḫâ sayyidinâ Muḫammad…
+            </div>
+            <div class="translation">
+              Ya Allah, limpahkan shalawat terbaik kepada makhluk-Mu yang paling
+              bahagia, matahari dhuha, Nabi Muhammad…
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#22</span>
+            <div class="arabic">(shalawat badrid-dujā)</div>
+            <div class="latin">
+              Allâhumma shalli afdlalash-shalati ‘alâ as‘adi makhlûqôtika
+              badrid-dujâ sayyidinâ Muḫammad…
+            </div>
+            <div class="translation">
+              Ya Allah, limpahkan shalawat terbaik kepada makhluk-Mu yang paling
+              bahagia, purnama di kegelapan, Nabi Muhammad…
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#23</span>
+            <div class="arabic">
+              وَسَلِّمْ وَرَضِيَ اللهُ تَعَالَى عَنْ سَادَاتِنَا أَصْحَابِ
+              رَسُوْلِ اللهِ أَجْمَعِيْنَ
+            </div>
+            <div class="latin">
+              Wa sallim wa radliyallahu ta‘âla ‘an sâdâtinâ ash-ḫabi rasulillah
+              ajma‘în
+            </div>
+            <div class="translation">
+              Semoga Allah meridhai seluruh sahabat Rasulullah.
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#24</span>
+            <div class="arabic">
+              حَسْبُنَا اللهُ وَنِعْمَ الْوَكِيْلُ، نِعْمَ الْمَوْلَى وَنِعْمَ
+              النَّصِيْرُ
+            </div>
+            <div class="latin">
+              Ḫasbunallâhu wa ni‘mal wakîl, ni‘mal maula wa ni‘man nashîr
+            </div>
+            <div class="translation">
+              Cukuplah Allah bagi kami, Dia sebaik-baik pelindung, sebaik-baik
+              penolong.
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#25</span>
+            <div class="arabic">
+              وَلَاحَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ العَلِيِّ الْعَظِيْمِ
+            </div>
+            <div class="latin">
+              Wa lâ ḫaula wa lâ quwwata illâ billâhil ‘aliyyil-‘adhim
+            </div>
+            <div class="translation">
+              Tiada daya dan kekuatan kecuali dengan pertolongan Allah Yang
+              Mahatinggi, Mahaagung.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- SECTION 8: ISTIGHFAR & TAHLL (26-30) -->
+      <details class="accordion-item">
+        <summary>٢٦–٣٠ · Istighfar & tahlil</summary>
+        <div class="section-content">
+          <div class="verse-card">
+            <span class="badge">#26</span>
+            <div class="arabic">أَسْتَغْفِرُ اللهَ الْعَـــظِيْمَ ×٣</div>
+            <div class="latin">Astaghfirullâhal-‘adhîm 3x</div>
+            <div class="translation">
+              Aku memohon ampun kepada Allah Yang Maha Agung (3x).
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#27</span>
+            <div class="arabic">
+              أَفْضَلُ الذِّكْرِ فَاعْلَمْ أَنَّهُ لَا إِلٰهَ إِلَّا اللهُ،
+              حَيٌّ مَوْجُوْدٌ
+            </div>
+            <div class="latin">
+              Afdlaludz dzikri fa‘lam annahu lâ ilâha illallâhu ḫayyun maujûd
+            </div>
+            <div class="translation">
+              Sebaik-baik dzikir – ketahuilah – Lâ ilâha illallâh, Dzat
+              Mahahidup dan Wujud.
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#28</span>
+            <div class="arabic">لَا إِلٰهَ إِلَّا اللهُ، حَيٌّ مَعْبُوْدٌ</div>
+            <div class="latin">Lâ ilâha illâllâhu ḫayyun ma‘bûd</div>
+            <div class="translation">
+              Tiada tuhan selain Allah, Dzat Mahahidup dan disembah.
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#29</span>
+            <div class="arabic">لَا إِلٰهَ إِلَّا اللهُ، حَيٌّ بَاقٍ</div>
+            <div class="latin">Lâ ilâha illâllâhu ḫayyun bâq</div>
+            <div class="translation">
+              Tiada tuhan selain Allah, Dzat Mahahidup dan kekal.
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#30</span>
+            <div class="arabic">لَا إِلٰهَ إِلَّا اللهُ ×١٠٠</div>
+            <div class="latin">Lâ ilâha illâllâh 100x</div>
+            <div class="translation">Tiada tuhan selain Allah (100 kali).</div>
+          </div>
+        </div>
+      </details>
+
+      <!-- SECTION 9: SHALAWAT & TASBIH (31-35) -->
+      <details class="accordion-item">
+        <summary>٣١–٣٥ · Shalawat & tasbih</summary>
+        <div class="section-content">
+          <div class="verse-card">
+            <span class="badge">#31</span>
+            <div class="arabic">
+              اَللّٰهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ اَللّٰهُمَّ صَلِّ
+              عَلَيْهِ وَسَلِّمْ ×٢
+            </div>
+            <div class="latin">
+              Allâhumma shalli ‘alâ sayyidinâ Muḫammad, Allâhumma shalli ‘alaihi
+              wa sallim
+            </div>
+            <div class="translation">
+              Ya Allah, limpahkan shalawat dan salam kepada pemimpin kami
+              Muhammad (2x).
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#32</span>
+            <div class="arabic">
+              سُبْحَــانَ اللهِ عَدَدَ مَـــا خَلَقَ اللهُ ×٧
+            </div>
+            <div class="latin">Subḫânallâhi ‘adada mâ khalaqallâhu</div>
+            <div class="translation">
+              Mahasuci Allah sebanyak makhluk-Nya (7x).
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#33</span>
+            <div class="arabic">
+              سُبحَانَ اللهِ وَبِحَمْدِهِ سُبْحَانَ اللهِ الْعَظِيْمِ ×٣٣
+            </div>
+            <div class="latin">
+              Subḫânallâhi wa biḫamdihi subḫânallâhil ‘adhîm
+            </div>
+            <div class="translation">
+              Mahasuci Allah dengan pujian-Nya, Mahasuci Allah Yang Mahaagung
+              (33x).
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#34</span>
+            <div class="arabic">
+              اَللّٰهُمَّ صَلِّ عَلَى حَبِيْبِكَ سَيِّدِنَا مُحَمَّدٍ وَعَلَى
+              اٰلِهِ وَصَحْبِهِ وَسَلِّمْ ×٢
+            </div>
+            <div class="latin">
+              Allâhumma shalli ‘alâ ḫabîbika sayyidinâ Muḫammad wa âlihi wa
+              shaḫbihi wa sallim 2x
+            </div>
+            <div class="translation">
+              Ya Allah, limpahkan shalawat kepada kekasih-Mu Muhammad, keluarga
+              dan sahabatnya (2x).
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#35</span>
+            <div class="arabic">
+              اَللّٰهُمَّ صَلِّ عَلَى حَبِيْبِكَ سَيِّدِنَا مُحَمَّدٍ وَعَلَى
+              اٰلِهِ وَصَحْبِهِ وَبَارِكْ وَسَلِّمْ أَجْمَعِيْنَ
+            </div>
+            <div class="latin">
+              Allâhumma shalli ‘alâ ḫabîbika sayyidinâ Muḫammad wa ‘alâ âlihi wa
+              shaḫbihi wa bârik wa sallim ajma‘în
+            </div>
+            <div class="translation">
+              Ya Allah, limpahkan shalawat, berkah dan salam kepada kekasih-Mu
+              Muhammad, keluarga dan sahabat semua.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- SECTION 10: DOA-DOA (36-39) -->
+      <details class="accordion-item">
+        <summary>٣٦–٣٩ · Doa arwah & penutup</summary>
+        <div class="section-content">
+          <div class="verse-card">
+            <span class="badge">#36 Doa pembuka</span>
+            <div class="arabic">
+              ﴿الدعاء﴾ أَعُوْذُ بِاللهِ مِنَ الشَّيْطَانِ الرَّجِيْمِ، بِسْمِ
+              اللهِ الرَّحْمٰنِ الرَّحِيْمِ، الْحَمْدُ لِلّٰهِ رَبِّ
+              الْعٰلَمِيْنَ، حَمْدَ الشَّاكِرِيْنَ حَمْدَ النَّاعِمِيْنَ،
+              حَمْدًا يُّوَافِي نِعَمَهُ وَيُكَافِئُ مَزِيْدَهُ، يَا رَبَّنَا
+              لَكَ الْحَمْدُ كَمَا يَنْبَغِيْ لِجَلَالِ وَجْهِكَ وَعَظِيْمِ
+              سُلْطَانِكَ، اللّٰهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ وَّعَلَى
+              اٰلِ سَيِّدِنَا مُحِمَّدٍ
+            </div>
+            <div class="latin">
+              A‘ûdzubillâhi minasy-syaithânir-rajîm, bismillâhir-raḫmânir-raḫîm,
+              al-ḫamdulillâhi rabbil-‘âlamîn…
+            </div>
+            <div class="translation">
+              Aku berlindung kepada Allah dari setan terkutuk. Dengan nama
+              Allah… Segala puji bagi Allah, pujian orang bersyukur, pujian yang
+              sesuai nikmat dan memungkinkan tambahan. Ya Tuhan, hanya bagi-Mu
+              puji, sebagaimana layak kemuliaan-Mu. Ya Allah, sampaikan shalawat
+              kepada Nabi Muhammad dan keluarganya.
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#37 Doa hadiah</span>
+            <div class="arabic">
+              اَللّٰهُمَّ تَقَبَّلْ وَأَوْصِلْ ثَوَابَ مَا قَرَاْنَاهُ مِنَ
+              الْقُرْآنِ الْعَظِيْمِ ... (panjang)
+            </div>
+            <div class="latin">
+              Allâhumma taqabbal wa aushil tsawâba mâ qara’nâhu
+              minal-qur’anil-‘adhîmi…
+            </div>
+            <div class="translation">
+              Ya Allah, terimalah dan sampaikan pahala bacaan Al-Qur’an, tahlil,
+              tasbih, istighfar, shalawat kami kepada Nabi Muhammad, kepada para
+              nabi, wali, syuhada, ulama, khususnya Syekh Abdul Qadir al-Jilani,
+              dan kepada semua ahli kubur, terutama yang menjadi sebab kami
+              berkumpul.
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#38</span>
+            <div class="arabic">
+              اَللّٰهُمَّ اغْفِرْ لَهُمْ وَارْحَمْهُمْ وَعَافِهِمْ وَاعْفُ
+              عَنْهُمْ، اَللّٰهُمَّ أَنْزِلِ الرَّحْمَةَ وَالْمَغْفِرَةَ عَلَى
+              أَهْلِ الْقُبُوْرِ مِنْ أَهْلِ لَا إِلٰهَ إِلَّا اللهُ مُحَمَّدٌ
+              رَّسُوْلُ اللهِ
+            </div>
+            <div class="latin">
+              Allâhummaghfirlahum warḫamhum wa ‘âfihim wa‘fu ‘anhum, allâhumma
+              anzilir-raḫmata wal-maghfirata ‘alâ ahlil-qubûri min ahli lâ ilâha
+              illallâhu muḫammadur-rasûlullāh
+            </div>
+            <div class="translation">
+              Ya Allah, ampuni, kasihi, maafkan mereka. Turunkan rahmat dan
+              ampunan kepada ahli kubur yang mengucapkan Lâ ilâha illallâh
+              Muhammadur rasûlullāh.
+            </div>
+          </div>
+          <div class="verse-card">
+            <span class="badge">#39</span>
+            <div class="arabic">
+              رَبَّنَا أَرِنَا الْحَقَّ حَقًّا وَّارْزُقْنَا اتِّبَاعَهُ،
+              وَأَرِنَا الْبَاطِلَ بَاطِلًا وَّارْزُقْنَا اجْتِنَابَهُ، رَبَّنَا
+              اٰتِنَا فِي الدُّنْيَا حَسَنَةً وَّفِي الْآخِرَةِ حَسَنَةً
+              وَّقِنَا عَذَابَ النَّارِ، سُبْحَانَ رَبِّكَ رَبِّ الْعِزَّةِ
+              عَمَّا يَصِفُوْنَ وَسَلَامٌ عَلَى الْمُرْسَلِيْنَ وَالْحَمْدُ
+              لِلّٰهِ رَبِّ الْعَلَمِيْنَ، اَلْفَاتِحَة
+            </div>
+            <div class="latin">
+              Rabbanâ arinâl-ḫaqqa ḫaqqan warzuqnât-tibâ‘ah, wa arinâl-bâthila
+              bâthilan warzuqnâj tinâbah…
+            </div>
+            <div class="translation">
+              Ya Tuhan, perlihatkan kebenaran sebagai kebenaran dan berilah kami
+              mengikutinya, perlihatkan kebatilan sebagai kebatilan dan jauhkan
+              kami darinya. Ya Tuhan, beri kami kebaikan di dunia dan akhirat,
+              lindungi dari neraka. Mahasuci Tuhanmu, Tuhan Keperkasaan dari apa
+              yang mereka sifatkan. Salam sejahtera bagi para rasul. Segala puji
+              bagi Allah Tuhan semesta alam. Al-Fatihah.
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- small footer -->
+      <div
+        style="
+          text-align: center;
+          margin-top: 30px;
+          color: #8ca9a7;
+          font-size: 0.85rem;
+        "
+      >
+        ☾ diadaptasi dari quran.nu.or.id – tahlil & doa arwah
+      </div>
+    </div>
+  </body>
+</html>

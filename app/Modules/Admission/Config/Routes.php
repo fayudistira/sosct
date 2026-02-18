@@ -8,7 +8,7 @@ $routes = Services::routes();
 $routes->group('admission', ['namespace' => 'Modules\Admission\Controllers', 'filter' => 'permission:admission.manage'], function($routes) {
     $routes->get('/', 'AdmissionController::index');
     $routes->get('view/(:num)', 'AdmissionController::view/$1');
-    $routes->get('download/(:num)/(:any)', 'AdmissionController::downloadDocument/$1/$2');
+    $routes->get('download/(:num)/(.+)', 'AdmissionController::downloadDocument/$1/$2');
     $routes->get('create', 'AdmissionController::create');
     $routes->post('store', 'AdmissionController::store');
     $routes->get('edit/(:num)', 'AdmissionController::edit/$1');

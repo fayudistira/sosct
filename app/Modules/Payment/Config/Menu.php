@@ -6,41 +6,25 @@
  */
 
 return [
+    // Contracts - single item, no submenu
     [
         'title' => 'Contracts',
         'url' => 'contract',
-        'icon' => 'file-contract',
+        'icon' => 'file-earmark-text',
         'permission' => ['payment.manage', 'invoice.manage', 'admission.manage'],
         'order' => 1,
-        'category' => 'finance',
-        'submenu' => [
-            [
-                'title' => 'All Contracts',
-                'url' => 'contract',
-                'icon' => 'list-ul'
-            ]
-        ]
+        'category' => 'finance'
     ],
+    // Payments - single item, no submenu
     [
         'title' => 'Pembayaran',
         'url' => 'payment',
         'icon' => 'cash-coin',
         'permission' => 'payment.manage',
         'order' => 2,
-        'category' => 'finance',
-        'submenu' => [
-            [
-                'title' => 'All Payments',
-                'url' => 'payment',
-                'icon' => 'list-ul'
-            ],
-            // [
-            //     'title' => 'Add Payment',
-            //     'url' => 'payment/create',
-            //     'icon' => 'plus-circle'
-            // ]
-        ]
+        'category' => 'finance'
     ],
+    // Invoices - multiple submenus
     [
         'title' => 'Invoices',
         'url' => 'invoice',
@@ -66,6 +50,7 @@ return [
             ]
         ]
     ],
+    // Reports - multiple submenus
     [
         'title' => 'Reports',
         'url' => 'payment/reports/revenue',

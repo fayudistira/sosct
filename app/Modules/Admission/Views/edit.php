@@ -205,8 +205,8 @@
                                 style="max-height: 100px;">
                         </div>
                     <?php endif ?>
-                    <input type="file" name="photo" class="form-control form-control-sm" accept="image/*">
-                    <small class="text-muted">Leave empty to keep current photo</small>
+                    <input type="file" name="photo" class="form-control form-control-sm" accept="image/jpeg,image/jpg,image/png,image/webp">
+                    <small class="text-muted">Leave empty to keep current photo. Images will be converted to WebP.</small>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Supporting Documents</label>

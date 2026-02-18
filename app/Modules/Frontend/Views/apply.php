@@ -373,8 +373,8 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="photo" class="form-label">Profile Photo <span class="text-danger">*</span></label>
-                        <input type="file" class="form-control" id="photo" name="photo" accept="image/jpeg,image/jpg,image/png" required>
-                        <small class="text-muted">Accepted: JPG, JPEG, PNG. Max: 2MB</small>
+                        <input type="file" class="form-control" id="photo" name="photo" accept="image/jpeg,image/jpg,image/png,image/webp" required>
+                        <small class="text-muted">Accepted: JPG, PNG, WebP. Max: 2MB. Images will be converted to WebP for optimization.</small>
                     </div>
                     <div class="col-md-6">
                         <label for="documents" class="form-label">Supporting Documents</label>

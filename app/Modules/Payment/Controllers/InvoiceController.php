@@ -369,20 +369,51 @@ class InvoiceController extends BaseController
         // Get student details with profile data
         $student = $this->admissionModel->select('
                 admissions.registration_number,
+                admissions.program_id,
                 profiles.full_name,
                 profiles.email,
                 profiles.phone,
                 programs.title as program_title,
-                programs.category
+                programs.category,
+                programs.tuition_fee,
+                programs.registration_fee as program_registration_fee
             ')
             ->join('profiles', 'profiles.id = admissions.profile_id')
             ->join('programs', 'programs.id = admissions.program_id')
             ->where('admissions.registration_number', (string)$invoice['registration_number'])
             ->first();
 
+        // Get installment/contract data for tuition_fee invoices
+        $installment = null;
+        $invoiceHistory = null;
+        $totalPaid = 0;
+
+        if ($invoice['invoice_type'] === 'tuition_fee') {
+            // Get installment data
+            $installmentModel = new \Modules\Payment\Models\InstallmentModel();
+            $installment = $installmentModel->where('registration_number', $invoice['registration_number'])->first();
+
+            // Get total paid from all payments for this student
+            $db = \Config\Database::connect();
+            $totalPaidResult = $db->table('payments')
+                ->selectSum('amount', 'total')
+                ->where('registration_number', $invoice['registration_number'])
+                ->where('status', 'paid')
+                ->where('deleted_at', null)
+                ->get()
+                ->getRowArray();
+            $totalPaid = (float) ($totalPaidResult['total'] ?? 0);
+
+            // Get invoice history (parent and child invoices)
+            $invoiceHistory = $this->invoiceModel->getInvoiceHistory($id);
+        }
+
         return view('Modules\Payment\Views\invoices\print', [
             'invoice' => $invoice,
-            'student' => $student
+            'student' => $student,
+            'installment' => $installment,
+            'invoiceHistory' => $invoiceHistory,
+            'totalPaid' => $totalPaid
         ]);
     }
 
@@ -441,20 +472,51 @@ class InvoiceController extends BaseController
         // Get student details with profile data
         $student = $this->admissionModel->select('
                 admissions.registration_number,
+                admissions.program_id,
                 profiles.full_name,
                 profiles.email,
                 profiles.phone,
                 programs.title as program_title,
-                programs.category
+                programs.category,
+                programs.tuition_fee,
+                programs.registration_fee as program_registration_fee
             ')
             ->join('profiles', 'profiles.id = admissions.profile_id')
             ->join('programs', 'programs.id = admissions.program_id')
             ->where('admissions.registration_number', (string)$invoice['registration_number'])
             ->first();
 
+        // Get installment/contract data for tuition_fee invoices
+        $installment = null;
+        $invoiceHistory = null;
+        $totalPaid = 0;
+
+        if ($invoice['invoice_type'] === 'tuition_fee') {
+            // Get installment data
+            $installmentModel = new \Modules\Payment\Models\InstallmentModel();
+            $installment = $installmentModel->where('registration_number', $invoice['registration_number'])->first();
+
+            // Get total paid from all payments for this student
+            $db = \Config\Database::connect();
+            $totalPaidResult = $db->table('payments')
+                ->selectSum('amount', 'total')
+                ->where('registration_number', $invoice['registration_number'])
+                ->where('status', 'paid')
+                ->where('deleted_at', null)
+                ->get()
+                ->getRowArray();
+            $totalPaid = (float) ($totalPaidResult['total'] ?? 0);
+
+            // Get invoice history (parent and child invoices)
+            $invoiceHistory = $this->invoiceModel->getInvoiceHistory($id);
+        }
+
         return view('Modules\Payment\Views\invoices\print', [
             'invoice' => $invoice,
-            'student' => $student
+            'student' => $student,
+            'installment' => $installment,
+            'invoiceHistory' => $invoiceHistory,
+            'totalPaid' => $totalPaid
         ]);
     }
 
@@ -481,11 +543,14 @@ class InvoiceController extends BaseController
         // Verify the email matches the invoice registration
         $student = $this->admissionModel->select('
                 admissions.registration_number,
+                admissions.program_id,
                 profiles.full_name,
                 profiles.email,
                 profiles.phone,
                 programs.title as program_title,
-                programs.category
+                programs.category,
+                programs.tuition_fee,
+                programs.registration_fee as program_registration_fee
             ')
             ->join('profiles', 'profiles.id = admissions.profile_id')
             ->join('programs', 'programs.id = admissions.program_id')
@@ -497,9 +562,37 @@ class InvoiceController extends BaseController
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Unauthorized access to invoice');
         }
 
+        // Get installment/contract data for tuition_fee invoices
+        $installment = null;
+        $invoiceHistory = null;
+        $totalPaid = 0;
+
+        if ($invoice['invoice_type'] === 'tuition_fee') {
+            // Get installment data
+            $installmentModel = new \Modules\Payment\Models\InstallmentModel();
+            $installment = $installmentModel->where('registration_number', $invoice['registration_number'])->first();
+
+            // Get total paid from all payments for this student
+            $db = \Config\Database::connect();
+            $totalPaidResult = $db->table('payments')
+                ->selectSum('amount', 'total')
+                ->where('registration_number', $invoice['registration_number'])
+                ->where('status', 'paid')
+                ->where('deleted_at', null)
+                ->get()
+                ->getRowArray();
+            $totalPaid = (float) ($totalPaidResult['total'] ?? 0);
+
+            // Get invoice history (parent and child invoices)
+            $invoiceHistory = $this->invoiceModel->getInvoiceHistory($invoice['id']);
+        }
+
         return view('Modules\Payment\Views\invoices\print', [
             'invoice' => $invoice,
-            'student' => $student
+            'student' => $student,
+            'installment' => $installment,
+            'invoiceHistory' => $invoiceHistory,
+            'totalPaid' => $totalPaid
         ]);
     }
 

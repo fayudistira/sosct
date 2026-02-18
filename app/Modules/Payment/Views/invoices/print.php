@@ -167,6 +167,27 @@
             color: #8B0000;
         }
 
+        .amount-box {
+            background: linear-gradient(135deg, #FFE5E5 0%, #fff 100%);
+            border: 2px solid #8B0000;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .amount-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .amount-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #8B0000;
+        }
+
         .invoice-totals {
             margin-left: auto;
             width: 250px;
@@ -473,31 +494,109 @@
             </tbody>
         </table>
 
-        <!-- Payment Recap Table -->
-        <table class="payment-recap-table">
-            <thead>
-                <tr>
-                    <th>Rekap Pembayaran</th>
-                    <th style="width: 150px; text-align: right;">Jumlah</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Total Biaya</td>
-                    <td style="text-align: right;">Rp <?= number_format($invoice['amount'], 0, ',', '.') ?></td>
-                </tr>
-                <?php if (!empty($invoice['total_paid']) && $invoice['total_paid'] > 0): ?>
+        <!-- Contract Detail/History (only for tuition_fee invoices) -->
+        <?php if ($invoice['invoice_type'] === 'tuition_fee' && !empty($installment)): ?>
+            <!-- Invoice Amount Box -->
+            <div class="amount-box">
+                <div class="amount-label">Jumlah Tagihan Invoice Ini</div>
+                <div class="amount-value">Rp <?= number_format($invoice['amount'], 0, ',', '.') ?></div>
+            </div>
+
+            <table class="payment-recap-table">
+                <thead>
                     <tr>
-                        <td>Biaya yang sudah dibayar</td>
-                        <td style="text-align: right; color: green;">- Rp <?= number_format($invoice['total_paid'], 0, ',', '.') ?></td>
+                        <th>Rincian Kontrak</th>
+                        <th style="width: 150px; text-align: right;">Jumlah</th>
                     </tr>
-                <?php endif; ?>
-                <tr class="grand-total">
-                    <td>Sisa Tagihan</td>
-                    <td style="text-align: right;">Rp <?= number_format($invoice['amount'] - ($invoice['total_paid'] ?? 0), 0, ',', '.') ?></td>
-                </tr>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Biaya Program (<?= esc($student['program_title'] ?? 'Kursus') ?>)</td>
+                        <td style="text-align: right;">Rp <?= number_format($student['tuition_fee'] ?? 0, 0, ',', '.') ?></td>
+                    </tr>
+                    <tr>
+                        <td>Biaya Pendaftaran</td>
+                        <td style="text-align: right;">Rp <?= number_format($student['program_registration_fee'] ?? 0, 0, ',', '.') ?></td>
+                    </tr>
+                    <tr style="border-top: 1px solid #ddd;">
+                        <td><strong>Total Kontrak</strong></td>
+                        <td style="text-align: right;"><strong>Rp <?= number_format(($student['tuition_fee'] ?? 0) + ($student['program_registration_fee'] ?? 0), 0, ',', '.') ?></strong></td>
+                    </tr>
+                    <?php if ($totalPaid > 0): ?>
+                        <tr>
+                            <td style="color: green;">Sudah Dibayar</td>
+                            <td style="text-align: right; color: green;">- Rp <?= number_format($totalPaid, 0, ',', '.') ?></td>
+                        </tr>
+                    <?php endif; ?>
+                    <tr class="grand-total">
+                        <td>Sisa Tagihan</td>
+                        <td style="text-align: right;">Rp <?= number_format((($student['tuition_fee'] ?? 0) + ($student['program_registration_fee'] ?? 0)) - $totalPaid, 0, ',', '.') ?></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <?php if (!empty($invoiceHistory) && count($invoiceHistory) > 1): ?>
+                <div style="margin-top: 15px; margin-bottom: 15px;">
+                    <h4 style="margin: 0 0 8px 0; color: #8B0000; font-size: 12px; text-transform: uppercase;">Riwayat Faktur</h4>
+                    <table class="invoice-table" style="font-size: 11px;">
+                        <thead>
+                            <tr>
+                                <th>No. Faktur</th>
+                                <th>Tanggal</th>
+                                <th style="text-align: right;">Jumlah</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($invoiceHistory as $hist): ?>
+                                <tr>
+                                    <td><?= esc($hist['invoice_number']) ?></td>
+                                    <td><?= date('d M Y', strtotime($hist['created_at'])) ?></td>
+                                    <td style="text-align: right;">Rp <?= number_format($hist['amount'], 0, ',', '.') ?></td>
+                                    <td>
+                                        <span class="status-badge status-<?= esc($hist['status']) ?>">
+                                            <?= ucfirst($hist['status']) ?>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        <?php else: ?>
+            <!-- Invoice Amount Box for non-tuition invoices -->
+            <div class="amount-box">
+                <div class="amount-label">Jumlah Tagihan Invoice Ini</div>
+                <div class="amount-value">Rp <?= number_format($invoice['amount'], 0, ',', '.') ?></div>
+            </div>
+
+            <!-- Simple Payment Recap for non-tuition invoices -->
+            <table class="payment-recap-table">
+                <thead>
+                    <tr>
+                        <th>Rekap Pembayaran</th>
+                        <th style="width: 150px; text-align: right;">Jumlah</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Total Biaya</td>
+                        <td style="text-align: right;">Rp <?= number_format($invoice['amount'], 0, ',', '.') ?></td>
+                    </tr>
+                    <?php if (!empty($invoice['total_paid']) && $invoice['total_paid'] > 0): ?>
+                        <tr>
+                            <td>Biaya yang sudah dibayar</td>
+                            <td style="text-align: right; color: green;">- Rp <?= number_format($invoice['total_paid'], 0, ',', '.') ?></td>
+                        </tr>
+                    <?php endif; ?>
+                    <tr class="grand-total">
+                        <td>Sisa Tagihan</td>
+                        <td style="text-align: right;">Rp <?= number_format($invoice['amount'] - ($invoice['total_paid'] ?? 0), 0, ',', '.') ?></td>
+                    </tr>
+                </tbody>
+            </table>
+        <?php endif; ?>
         <p style="margin-top: 10px; font-size: 11px;">
             Konfirmasi Pendaftaran Anda via Whatsap di bawah untuk fast response Admin
         </p>

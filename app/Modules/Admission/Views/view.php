@@ -274,7 +274,7 @@
                                     <i class="bi bi-file-pdf text-danger me-2"></i>
                                     Document <?= $index + 1 ?>
                                 </span>
-                                <a href="<?= base_url('admission/download/' . $admission['admission_id'] . '/' . $doc) ?>"
+                                <a href="<?= base_url('uploads/' . $doc) ?>" target="_blank"
                                     class="btn btn-outline-dark-red btn-sm">
                                     <i class="bi bi-download"></i>
                                 </a>

@@ -139,7 +139,10 @@ class AdmissionController extends BaseController
                 throw new \Exception('Selected program is invalid.');
             }
 
-            // 2. Create Orphaned Profile
+            // 2. Generate registration number first for file naming
+            $registrationNumber = $admissionModel->generateRegistrationNumber();
+
+            // 3. Create Orphaned Profile
             $profileData = [
                 'profile_number' => $profileModel->generateProfileNumber(),
                 'full_name' => $this->request->getPost('full_name'),
@@ -163,19 +166,22 @@ class AdmissionController extends BaseController
                 'mother_name' => $this->request->getPost('mother_name'),
             ];
 
-            // Handle Profile Photo
+            // Handle Profile Photo - use registration number as filename
             $photo = $this->request->getFile('photo');
             if ($photo && $photo->isValid() && !$photo->hasMoved()) {
-                $profileData['photo'] = $profileModel->uploadPhoto($photo);
+                $profileData['photo'] = $profileModel->uploadPhoto($photo, $registrationNumber);
             }
 
-            // Handle Documents
+            // Handle Documents - use registration number with suffix
             $documents = $this->request->getFileMultiple('documents');
             if ($documents) {
                 $docPaths = [];
+                $docIndex = 1;
                 foreach ($documents as $doc) {
                     if ($doc->isValid() && !$doc->hasMoved()) {
-                        $docPaths[] = $profileModel->uploadDocument($doc);
+                        $suffix = '_doc' . $docIndex;
+                        $docPaths[] = $profileModel->uploadDocument($doc, $registrationNumber, $suffix);
+                        $docIndex++;
                     }
                 }
                 if (!empty($docPaths)) {
@@ -188,9 +194,9 @@ class AdmissionController extends BaseController
             }
             $profileId = $profileModel->getInsertID();
 
-            // 3. Create Admission
+            // 4. Create Admission
             $admissionData = [
-                'registration_number' => $admissionModel->generateRegistrationNumber(),
+                'registration_number' => $registrationNumber,
                 'profile_id' => $profileId,
                 'program_id' => $programId,
                 'status' => $this->request->getPost('status') ?? 'pending',
@@ -202,7 +208,7 @@ class AdmissionController extends BaseController
                 throw new \Exception('Failed to create admission: ' . json_encode($admissionModel->errors()));
             }
 
-            // 4. Calculate total fees and create Installment Record
+            // 5. Calculate total fees and create Installment Record
             $regFee = (float)($program['registration_fee'] ?? 0);
             $tuitionFee = (float)($program['tuition_fee'] ?? 0);
             $totalAmount = $regFee + $tuitionFee;
@@ -210,7 +216,7 @@ class AdmissionController extends BaseController
 
             $installmentModel = new InstallmentModel();
             $installmentData = [
-                'registration_number' => $admissionData['registration_number'],
+                'registration_number' => $registrationNumber,
                 'total_contract_amount' => $totalAmount,
                 'total_paid' => 0,
                 'remaining_balance' => $totalAmount,
@@ -388,19 +394,27 @@ class AdmissionController extends BaseController
                 'mother_name' => $this->request->getPost('mother_name'),
             ];
 
-            // Handle photo upload
+            // Handle photo upload - use registration number as filename
             $photo = $this->request->getFile('photo');
             if ($photo && $photo->isValid() && !$photo->hasMoved()) {
-                $profileData['photo'] = $profileModel->uploadPhoto($photo);
+                $profileData['photo'] = $profileModel->uploadPhoto($photo, $existing['registration_number']);
             }
 
-            // Handle documents upload
-            // Note: In update we might append or replace. For simplicity, appending or replacing based on logic?
-            // Existing logic seemed to replace or add. Let's keep it simple: Add new ones.
+            // Handle documents upload - use registration number with suffix
             $documents = $this->request->getFileMultiple('documents');
             if ($documents) {
-                // ... logic for docs
-                // For now, let's keep it simple as before
+                $existingDocs = !empty($existingProfile['documents']) ? json_decode($existingProfile['documents'], true) : [];
+                if (!is_array($existingDocs)) $existingDocs = [];
+                
+                $docIndex = count($existingDocs) + 1;
+                foreach ($documents as $doc) {
+                    if ($doc->isValid() && !$doc->hasMoved()) {
+                        $suffix = '_doc' . $docIndex;
+                        $existingDocs[] = $profileModel->uploadDocument($doc, $existing['registration_number'], $suffix);
+                        $docIndex++;
+                    }
+                }
+                $profileData['documents'] = json_encode($existingDocs);
             }
 
             // Update profile

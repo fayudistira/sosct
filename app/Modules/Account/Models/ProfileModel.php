@@ -121,15 +121,19 @@ class ProfileModel extends Model
     }
 
     /**
-     * Upload photo file
+     * Upload photo file and convert to WebP
+     * 
+     * @param $file The uploaded file
+     * @param string|null $customName Custom name prefix (e.g., registration number)
+     * @return string|false Relative path to uploaded file or false on failure
      */
-    public function uploadPhoto($file)
+    public function uploadPhoto($file, $customName = null)
     {
         if (!$file->isValid()) {
             return false;
         }
 
-        $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+        $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
         if (!in_array($file->getMimeType(), $allowedTypes)) {
             return false;
         }
@@ -144,19 +148,146 @@ class ProfileModel extends Model
             mkdir($uploadPath, 0755, true);
         }
 
-        $newName = $file->getRandomName();
-
-        if ($file->move($uploadPath, $newName)) {
-            return 'profiles/photos/' . $newName;
+        // Generate filename based on custom name or random
+        if ($customName) {
+            // Sanitize the custom name
+            $safeName = preg_replace('/[^a-zA-Z0-9_-]/', '', $customName);
+            $webpName = $safeName . '.webp';
+        } else {
+            $newName = $file->getRandomName();
+            $webpName = pathinfo($newName, PATHINFO_FILENAME) . '.webp';
         }
 
-        return false;
+        // Move file temporarily for conversion
+        $tempFileName = 'temp_' . uniqid();
+        $tempPath = $uploadPath . $tempFileName;
+        if (!$file->move($uploadPath, $tempFileName, true)) {
+            return false;
+        }
+
+        // Convert to WebP
+        $webpPath = $uploadPath . $webpName;
+        if ($this->convertToWebP($tempPath, $webpPath)) {
+            // Delete original file after successful conversion
+            if (file_exists($tempPath)) {
+                unlink($tempPath);
+            }
+            return 'profiles/photos/' . $webpName;
+        }
+
+        // If conversion fails, keep the original file with custom name
+        $extension = $file->getExtension();
+        $finalName = $customName ? $safeName . '.' . $extension : $file->getRandomName();
+        if (file_exists($tempPath)) {
+            rename($tempPath, $uploadPath . $finalName);
+        }
+        return 'profiles/photos/' . $finalName;
+    }
+
+    /**
+     * Convert image to WebP format
+     * 
+     * @param string $sourcePath Path to source image
+     * @param string $destPath Path to save WebP image
+     * @param int $quality WebP quality (0-100)
+     * @return bool
+     */
+    private function convertToWebP($sourcePath, $destPath, $quality = 80)
+    {
+        // Check if GD or Imagick is available
+        if (!extension_loaded('gd') && !extension_loaded('imagick')) {
+            log_message('warning', 'Neither GD nor Imagick extension is available for WebP conversion');
+            return false;
+        }
+
+        try {
+            // Get image info
+            $imageInfo = @getimagesize($sourcePath);
+            if (!$imageInfo) {
+                log_message('error', 'Unable to get image info for: ' . $sourcePath);
+                return false;
+            }
+
+            $mimeType = $imageInfo['mime'];
+            $width = $imageInfo[0];
+            $height = $imageInfo[1];
+
+            // Create image resource based on mime type
+            $image = null;
+            switch ($mimeType) {
+                case 'image/jpeg':
+                case 'image/jpg':
+                    $image = @imagecreatefromjpeg($sourcePath);
+                    break;
+                case 'image/png':
+                    $image = @imagecreatefrompng($sourcePath);
+                    // Handle PNG transparency
+                    if ($image) {
+                        imagepalettetotruecolor($image);
+                        imagealphablending($image, true);
+                        imagesavealpha($image, true);
+                    }
+                    break;
+                case 'image/webp':
+                    // Already WebP, just copy
+                    if ($sourcePath !== $destPath) {
+                        copy($sourcePath, $destPath);
+                    }
+                    return true;
+                default:
+                    log_message('error', 'Unsupported image type: ' . $mimeType);
+                    return false;
+            }
+
+            if (!$image) {
+                log_message('error', 'Failed to create image resource from: ' . $sourcePath);
+                return false;
+            }
+
+            // Resize if too large (max 1200px width for profile photos)
+            $maxWidth = 1200;
+            if ($width > $maxWidth) {
+                $newHeight = (int) ($height * ($maxWidth / $width));
+                $resized = imagecreatetruecolor($maxWidth, $newHeight);
+                
+                // Preserve transparency for PNG
+                if ($mimeType === 'image/png') {
+                    imagealphablending($resized, false);
+                    imagesavealpha($resized, true);
+                    $transparent = imagecolorallocatealpha($resized, 255, 255, 255, 127);
+                    imagefilledrectangle($resized, 0, 0, $maxWidth, $newHeight, $transparent);
+                }
+                
+                imagecopyresampled($resized, $image, 0, 0, 0, 0, $maxWidth, $newHeight, $width, $height);
+                imagedestroy($image);
+                $image = $resized;
+            }
+
+            // Save as WebP
+            $result = imagewebp($image, $destPath, $quality);
+            imagedestroy($image);
+
+            if (!$result) {
+                log_message('error', 'Failed to save WebP image to: ' . $destPath);
+                return false;
+            }
+
+            return true;
+        } catch (\Exception $e) {
+            log_message('error', 'WebP conversion error: ' . $e->getMessage());
+            return false;
+        }
     }
 
     /**
      * Upload document file
+     * 
+     * @param $file The uploaded file
+     * @param string|null $customName Custom name prefix (e.g., registration number)
+     * @param string|null $suffix Optional suffix for multiple documents (e.g., '_id_card', '_transcript')
+     * @return string|false Relative path to uploaded file or false on failure
      */
-    public function uploadDocument($file)
+    public function uploadDocument($file, $customName = null, $suffix = null)
     {
         if (!$file->isValid()) {
             return false;
@@ -168,6 +299,7 @@ class ProfileModel extends Model
             'image/jpg',
             'image/png',
             'image/gif',
+            'image/webp',
             'application/msword',
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         ];
@@ -185,10 +317,56 @@ class ProfileModel extends Model
             mkdir($uploadPath, 0755, true);
         }
 
-        $newName = $file->getRandomName();
+        // For image documents, convert to WebP
+        $mimeType = $file->getMimeType();
+        if (in_array($mimeType, ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'])) {
+            // Generate filename based on custom name or random
+            if ($customName) {
+                $safeName = preg_replace('/[^a-zA-Z0-9_-]/', '', $customName);
+                $docName = $safeName . ($suffix ? $suffix : '');
+                $webpName = $docName . '.webp';
+            } else {
+                $newName = $file->getRandomName();
+                $webpName = pathinfo($newName, PATHINFO_FILENAME) . '.webp';
+            }
+            
+            // Move file temporarily for conversion
+            $tempFileName = 'temp_' . uniqid();
+            $tempPath = $uploadPath . $tempFileName;
+            if (!$file->move($uploadPath, $tempFileName, true)) {
+                return false;
+            }
 
-        if ($file->move($uploadPath, $newName)) {
-            return 'profiles/documents/' . $newName;
+            // Convert to WebP
+            $webpPath = $uploadPath . $webpName;
+            if ($this->convertToWebP($tempPath, $webpPath)) {
+                // Delete original file after successful conversion
+                if (file_exists($tempPath)) {
+                    unlink($tempPath);
+                }
+                return 'profiles/documents/' . $webpName;
+            }
+
+            // If conversion fails, keep the original file with custom name
+            $extension = $file->getExtension();
+            $finalName = $customName ? $docName . '.' . $extension : $file->getRandomName();
+            if (file_exists($tempPath)) {
+                rename($tempPath, $uploadPath . $finalName);
+            }
+            return 'profiles/documents/' . $finalName;
+        }
+
+        // For non-image documents, use custom name or random
+        if ($customName) {
+            $safeName = preg_replace('/[^a-zA-Z0-9_-]/', '', $customName);
+            $extension = $file->getExtension();
+            $finalName = $safeName . ($suffix ? $suffix : '') . '.' . $extension;
+        } else {
+            $finalName = $file->getRandomName();
+        }
+        
+        if ($file->move($uploadPath, $finalName)) {
+            return 'profiles/documents/' . $finalName;
         }
 
         return false;

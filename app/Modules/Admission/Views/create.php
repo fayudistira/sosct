@@ -325,8 +325,8 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Profile Photo <span class="text-danger">*</span></label>
-                    <input type="file" name="photo" class="form-control form-control-sm" accept="image/*" required>
-                    <small class="text-muted">Accepted formats: JPG, PNG, GIF</small>
+                    <input type="file" name="photo" class="form-control form-control-sm" accept="image/jpeg,image/jpg,image/png,image/webp" required>
+                    <small class="text-muted">Accepted formats: JPG, PNG, WebP. Images will be converted to WebP for optimization.</small>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Supporting Documents</label>

@@ -142,8 +142,8 @@ class PageController extends BaseController
             'father_name' => 'required|min_length[3]|max_length[100]',
             'mother_name' => 'required|min_length[3]|max_length[100]',
             'course' => 'permit_empty|min_length[3]', // Optional - for backward compatibility
-            'photo' => 'uploaded[photo]|max_size[photo,2048]|is_image[photo]|mime_in[photo,image/jpg,image/jpeg,image/png]',
-            'documents.*' => 'max_size[documents,5120]|ext_in[documents,pdf,doc,docx,jpg,jpeg,png,gif]',
+            'photo' => 'uploaded[photo]|max_size[photo,2048]|is_image[photo]|mime_in[photo,image/jpg,image/jpeg,image/png,image/webp]',
+            'documents.*' => 'max_size[documents,5120]|ext_in[documents,pdf,doc,docx,jpg,jpeg,png,gif,webp]',
         ];
 
         if (!$this->validate($rules)) {
@@ -160,31 +160,69 @@ class PageController extends BaseController
         $db->transStart();
 
         try {
-            // Handle photo upload
-            $photo = $this->request->getFile('photo');
-            $photoPath = null;
+            // STEP 1: Get program and generate registration number first for file naming
+            $programId = $this->request->getPost('program_id');
+            $program = null;
+            $programModel = new \Modules\Program\Models\ProgramModel();
 
-            if ($photo && $photo->isValid() && !$photo->hasMoved()) {
-                $photoPath = $photo->getRandomName();
-                $photo->move(FCPATH . 'uploads/profiles/photos', $photoPath);
-                $photoPath = 'profiles/photos/' . $photoPath;
-            }
+            if ($programId) {
+                $program = $programModel->find($programId);
+            } else {
+                // Fallback: Look up program by ID from 'course' field (which now contains ID)
+                $courseValue = $this->request->getPost('course');
 
-            // Handle documents upload
-            $documents = $this->request->getFileMultiple('documents');
-            $documentPaths = [];
-
-            if ($documents) {
-                foreach ($documents as $doc) {
-                    if ($doc->isValid() && !$doc->hasMoved()) {
-                        $docPath = $doc->getRandomName();
-                        $doc->move(FCPATH . 'uploads/profiles/documents', $docPath);
-                        $documentPaths[] = 'profiles/documents/' . $docPath;
+                if ($courseValue) {
+                    // Check if it's a UUID (program ID) or a title
+                    if (preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $courseValue)) {
+                        // It's a UUID
+                        $programId = $courseValue;
+                        $program = $programModel->find($programId);
+                    } else {
+                        // It's a title, look it up
+                        $program = $programModel->where('title', $courseValue)->first();
+                        if ($program) {
+                            $programId = $program['id'];
+                        }
                     }
                 }
             }
 
-            // STEP 1: Create Profile
+            if (!$program) {
+                throw new \Exception('Program selection is required');
+            }
+
+            log_message('error', '[Frontend Apply] Selected program: ' . $program['title']);
+
+            // Generate registration number for file naming
+            $registrationNumber = $admissionModel->generateRegistrationNumber();
+
+            // Handle photo upload with WebP conversion - use registration number as filename
+            $photo = $this->request->getFile('photo');
+            $photoPath = null;
+
+            if ($photo && $photo->isValid() && !$photo->hasMoved()) {
+                $photoPath = $profileModel->uploadPhoto($photo, $registrationNumber);
+            }
+
+            // Handle documents upload with WebP conversion for images - use registration number with suffix
+            $documents = $this->request->getFileMultiple('documents');
+            $documentPaths = [];
+
+            if ($documents) {
+                $docIndex = 1;
+                foreach ($documents as $doc) {
+                    if ($doc->isValid() && !$doc->hasMoved()) {
+                        $suffix = '_doc' . $docIndex;
+                        $docPath = $profileModel->uploadDocument($doc, $registrationNumber, $suffix);
+                        if ($docPath) {
+                            $documentPaths[] = $docPath;
+                        }
+                        $docIndex++;
+                    }
+                }
+            }
+
+            // STEP 2: Create Profile
             $profileData = [
                 'profile_number' => $profileModel->generateProfileNumber(),
                 'user_id' => null, // No user account yet
@@ -218,42 +256,9 @@ class PageController extends BaseController
                 throw new \Exception('Failed to create profile: ' . json_encode($profileModel->errors()));
             }
 
-            // STEP 2: Create Admission
-            // Get program_id from form (either directly or by looking up course name)
-            $programId = $this->request->getPost('program_id');
-            $program = null;
-            $programModel = new \Modules\Program\Models\ProgramModel();
-
-            if ($programId) {
-                $program = $programModel->find($programId);
-            } else {
-                // Fallback: Look up program by ID from 'course' field (which now contains ID)
-                $courseValue = $this->request->getPost('course');
-
-                if ($courseValue) {
-                    // Check if it's a UUID (program ID) or a title
-                    if (preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $courseValue)) {
-                        // It's a UUID
-                        $programId = $courseValue;
-                        $program = $programModel->find($programId);
-                    } else {
-                        // It's a title, look it up
-                        $program = $programModel->where('title', $courseValue)->first();
-                        if ($program) {
-                            $programId = $program['id'];
-                        }
-                    }
-                }
-            }
-
-            if (!$program) {
-                throw new \Exception('Program selection is required');
-            }
-
-            log_message('error', '[Frontend Apply] Selected program: ' . $program['title']);
-
+            // STEP 3: Create Admission
             $admissionData = [
-                'registration_number' => $admissionModel->generateRegistrationNumber(),
+                'registration_number' => $registrationNumber,
                 'profile_id' => $profileId,
                 'program_id' => $programId,
                 'status' => 'pending',
@@ -268,7 +273,7 @@ class PageController extends BaseController
                 throw new \Exception('Failed to create admission: ' . json_encode($admissionModel->errors()));
             }
 
-            // STEP 3: Create Installment Record
+            // STEP 4: Create Installment Record
             $installmentModel = new \Modules\Payment\Models\InstallmentModel();
             $dueDate = date('Y-m-d', strtotime('+2 weeks')); // 2 weeks to pay
 

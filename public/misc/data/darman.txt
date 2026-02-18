@@ -1,0 +1,25 @@
+DATA PRIBADI
+Nama Lengkap: Darman
+Nomor KTP: 74060212110220003
+Jenis Kelamin: Laki-laki
+Agama: Islam
+Tempat, Tanggal Lahir: Jatie, 2002-11-12
+Alamat: Biru rt00 rw00, poleang timur, kab. Bombana, Bombana, Sulawesi tenggara
+No. Telp: 082291139896
+Email: darmannoviandha72@gmail.com
+
+KONTAK DARURAT
+Nama: +62 822-5946-2857 (+62 822-5946-2857)
+
+DATA DAPODIK
+Ayah: Ayuanda
+Ibu: Rahma
+PROGRAM KURSUS
+Program: Paket Fullday
+Detail: Paket 5 Bulan
+Mulai Kursus: 2026-02-10
+
+INFORMASI HARGA
+Harga Program: Rp 12.000.000,-
+
+CATATAN: Biaya registrasi Rp 500.000 dibayarkan setelah mengisi formulir ini.
