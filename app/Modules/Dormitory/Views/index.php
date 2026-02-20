@@ -7,6 +7,9 @@
         <p class="text-muted">Manage dormitory rooms and student assignments</p>
     </div>
     <div class="col-md-6 text-end">
+        <button type="button" class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#bulkUploadModal">
+            <i class="bi bi-file-earmark-arrow-up me-1"></i> Bulk Upload
+        </button>
         <a href="<?= base_url('dormitory/search') ?>" class="btn btn-outline-primary me-2">
             <i class="bi bi-search me-1"></i> Search Student
         </a>
@@ -153,6 +156,60 @@
                     <?php endif ?>
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- Bulk Upload Modal -->
+<div class="modal fade" id="bulkUploadModal" tabindex="-1" aria-labelledby="bulkUploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bulkUploadModalLabel">
+                    <i class="bi bi-file-earmark-arrow-up me-2"></i>Bulk Upload Dormitories
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="<?= base_url('dormitory/bulk-upload') ?>" method="post" enctype="multipart/form-data">
+                <?= csrf_field() ?>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Instructions:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Download the Excel template below</li>
+                            <li>Fill in your dormitory data following the format</li>
+                            <li>Upload the completed file</li>
+                            <li>Maximum file size: 5MB</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-3">
+                        <a href="<?= base_url('dormitory/download-template') ?>" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-download me-2"></i>Download Excel Template
+                        </a>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="excel_file" class="form-label">Upload Excel File <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control" id="excel_file" name="excel_file"
+                            accept=".xlsx,.xls" required>
+                        <small class="text-muted">Accepted formats: .xlsx, .xls</small>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>Note:</strong> Make sure all required fields are filled correctly.
+                        Rows with errors will be skipped.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-upload me-2"></i>Upload & Import
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

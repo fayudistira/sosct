@@ -1,37 +1,23 @@
-1. DATA DIRI
-Nama Lengkap: Ilham alhavizh
-Jenis Kelamin: Laki-laki
-Tempat, Tgl Lahir: Bajubang, 25/11/1998
-No. KTP/ID: 1504072511980001
-Agama: Islam
-
-2. KONTAK & ALAMAT
-No. Telepon/WhatsApp: 082211337271
-Email: alhavizhiilhamm@gmail.com
-Alamat: Karang anyar Rt/Rw 010/003 kecamatan Bajubang
-Kabupaten/Kota: Batanghari
-Provinsi: Jambi
-
-3. KONTAK DARURAT
-Nama Kontak: Wahyu alhavizh
-Telepon Kontak: 082269505715
-Hubungan: Saudara
-
-4. DATA DAPODIK
-Nama Ayah: Helvis
-Nama Gadis Ibu Kandung: Hasriwelni Roza
-
-5. KETERANGAN TAMBAHAN
-Tanggal Mulai Kursus: 10/02/2026
-
-6. PROGRAM YANG DIPILIH
-Program Utama: Paket Fullday
-Nama Program: Paket 3 Bulan
-Level: Basic hingga HSK3
-Durasi: 3 bulan
-Harga: Rp 7.999.000
-Biaya Pendaftaran: Rp 500.000
-TOTAL BIAYA: Rp 8.499.000
-
-PERNYATAAN
-Saya setuju dengan syarat & ketentuan yang berlaku di Xihuan Mandarin Indonesia
+{
+  "full_name": "Ilham Alhavizh",
+  "nickname": "Ilham",
+  "gender": "Male",
+  "date_of_birth": "1998-11-25",
+  "place_of_birth": "Bajubang",
+  "religion": "Islam",
+  "citizen_id": "1504072511980001",
+  "phone": "082211337271",
+  "email": "alhavizhiilhamm@gmail.com",
+  "street_address": "Karang Anyar RT.010/RW.003",
+  "district": "Bajubang",
+  "regency": "Batanghari",
+  "province": "Jambi",
+  "postal_code": "36611",
+  "father_name": "Helvis",
+  "mother_name": "Hasriwelni Roza",
+  "course": "Paket 3 Bulan",
+  "emergency_contact_name": "Wahyu Alhavizh",
+  "emergency_contact_phone": "082269505715",
+  "emergency_contact_relation": "Sibling",
+  "notes": "Mulai kursus: 2026-02-10. Program Utama: Paket Fullday (Basic hingga HSK3). Harga Program: Rp 7.999.000. Biaya pendaftaran Rp 500.000. Total Biaya: Rp 8.499.000."
+}

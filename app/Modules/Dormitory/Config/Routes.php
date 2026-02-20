@@ -14,6 +14,10 @@ $routes->group('dormitory', ['namespace' => 'Modules\Dormitory\Controllers', 'fi
     $routes->post('update/(:segment)', 'DormitoryController::update/$1', ['filter' => 'permission:dormitory.manage']);
     $routes->post('delete/(:segment)', 'DormitoryController::delete/$1', ['filter' => 'permission:dormitory.manage']);
     
+    // Bulk upload routes
+    $routes->get('download-template', 'DormitoryController::downloadTemplate');
+    $routes->post('bulk-upload', 'DormitoryController::bulkUpload', ['filter' => 'permission:dormitory.manage']);
+    
     // Assignment routes
     $routes->get('assignments/(:segment)', 'DormitoryController::assignments/$1', ['filter' => 'permission:dormitory.assign']);
     $routes->post('assign/(:segment)', 'DormitoryController::assign/$1', ['filter' => 'permission:dormitory.assign']);

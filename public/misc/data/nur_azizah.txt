@@ -1,44 +1,23 @@
-FORM PENDAFTARAN XIHUAN MANDARIN INDONESIA
-
-1. DATA DIRI
-Nama Lengkap: NUR AZIZAH SOAMOLE
-Jenis Kelamin: Perempuan
-Tempat, Tgl Lahir: WAILOBA , 27/11/2007
-No. KTP/ID: 8205116711070001
-Agama: Islam
-
-2. KONTAK & ALAMAT
-No. Telepon/WhatsApp: 082114856843
-Email: nurazizahsoamole832@gmail.com
-Alamat: DESA NAFLOW
-RT/RW :004/002
-Kel/Desa:NAFLOW
-Kecamatan:MANGOLI TIMUR 
-
-
-Kabupaten/Kota: Kepulauan Sula
-Provinsi: MALUKU UTARA
-
-3. KONTAK DARURAT
-Nama Kontak: Samsudin Soamole
-Telepon Kontak: 081241507717
-Hubungan: Orang Tua
-
-4. DATA DAPODIK
-Nama Ayah: Samsudin Soamole 
-Nama Gadis Ibu Kandung: Savia Gay
-
-5. KETERANGAN TAMBAHAN
-Tanggal Mulai Kursus: 12/02/2026
-
-6. PROGRAM YANG DIPILIH
-Program Utama: Paket Fullday
-Nama Program: Paket 5 Bulan
-Level: Basic hingga HSK4 + Basic Translator
-Durasi: 5 bulan
-Harga: Rp 11.999.000
-Biaya Pendaftaran: Rp 500.000
-TOTAL BIAYA: Rp 12.499.000
-
-PERNYATAAN
-Saya setuju dengan syarat & ketentuan yang berlaku di Xihuan Mandarin Indonesia
+{
+  "full_name": "Nur Azizah Soamole",
+  "nickname": "Nur",
+  "gender": "Female",
+  "date_of_birth": "2007-11-27",
+  "place_of_birth": "Wailoba",
+  "religion": "Islam",
+  "citizen_id": "8205116711070001",
+  "phone": "082114856843",
+  "email": "nurazizahsoamole832@gmail.com",
+  "street_address": "Desa Naflow, RT.004/RW.002",
+  "district": "Mangoli Timur",
+  "regency": "Kepulauan Sula",
+  "province": "Maluku Utara",
+  "postal_code": "97795",
+  "father_name": "Samsudin Soamole",
+  "mother_name": "Savia Gay",
+  "course": "Paket 5 Bulan",
+  "emergency_contact_name": "Samsudin Soamole",
+  "emergency_contact_phone": "081241507717",
+  "emergency_contact_relation": "Parent",
+  "notes": "Mulai kursus: 2026-02-12. Program Utama: Paket Fullday (Basic hingga HSK4 + Basic Translator). Harga Program: Rp 11.999.000. Biaya pendaftaran Rp 500.000. Total Biaya: Rp 12.499.000."
+}

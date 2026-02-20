@@ -346,4 +346,180 @@ class DormitoryController extends BaseController
             'menu'    => ['index' => base_url('dormitory')],
         ]);
     }
+
+    /**
+     * Download Excel template for bulk upload
+     */
+    public function downloadTemplate()
+    {
+        $templatePath = FCPATH . 'templates/dormitory_bulk_upload_template.xlsx';
+
+        if (!file_exists($templatePath)) {
+            return redirect()->back()->with('error', 'Template file not found.');
+        }
+
+        return $this->response->download($templatePath, null)->setFileName('dormitory_bulk_upload_template.xlsx');
+    }
+
+    /**
+     * Handle bulk upload of dormitories via Excel
+     */
+    public function bulkUpload()
+    {
+        // Validate file upload
+        $validationRules = [
+            'excel_file' => [
+                'uploaded[excel_file]',
+                'max_size[excel_file,5120]',
+                'ext_in[excel_file,xlsx,xls]'
+            ]
+        ];
+
+        if (!$this->validate($validationRules)) {
+            return redirect()->back()
+                ->with('error', 'Invalid file. Please upload a valid Excel file (.xlsx or .xls) with maximum size of 5MB.');
+        }
+
+        $file = $this->request->getFile('excel_file');
+
+        if (!$file->isValid()) {
+            return redirect()->back()->with('error', 'File upload failed. Please try again.');
+        }
+
+        try {
+            // Load the Excel file
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getTempName());
+            $worksheet = $spreadsheet->getActiveSheet();
+            $rows = $worksheet->toArray();
+
+            // Remove header row
+            $headers = array_shift($rows);
+
+            // Validate headers
+            $expectedHeaders = [
+                'room_name',
+                'location',
+                'map_url',
+                'room_capacity',
+                'status',
+                'facilities',
+                'note'
+            ];
+
+            $headerCheck = array_map('strtolower', array_map('trim', $headers));
+            $missingHeaders = array_diff($expectedHeaders, $headerCheck);
+
+            if (!empty($missingHeaders)) {
+                return redirect()->back()
+                    ->with('error', 'Invalid template format. Missing columns: ' . implode(', ', $missingHeaders));
+            }
+
+            // Get column indices
+            $columnMap = array_flip($headerCheck);
+
+            // Process rows
+            $successCount = 0;
+            $errors = [];
+            $rowNumber = 2; // Start from 2 (1 is header)
+
+            foreach ($rows as $row) {
+                // Skip empty rows
+                if (empty(array_filter($row))) {
+                    $rowNumber++;
+                    continue;
+                }
+
+                // Extract data using column map
+                $data = [
+                    'room_name'     => trim($row[$columnMap['room_name']] ?? ''),
+                    'location'      => trim($row[$columnMap['location']] ?? ''),
+                    'map_url'       => trim($row[$columnMap['map_url']] ?? ''),
+                    'room_capacity' => !empty($row[$columnMap['room_capacity']]) ? (int) $row[$columnMap['room_capacity']] : 1,
+                    'status'        => !empty($row[$columnMap['status']]) ? strtolower(trim($row[$columnMap['status']])) : 'available',
+                    'facilities'    => $this->parseNewlineSeparated($row[$columnMap['facilities']] ?? ''),
+                    'note'          => trim($row[$columnMap['note']] ?? ''),
+                ];
+
+                // Validate required fields
+                if (empty($data['room_name'])) {
+                    $errors[] = "Row $rowNumber: Room Name is required";
+                    $rowNumber++;
+                    continue;
+                }
+
+                if (empty($data['location'])) {
+                    $errors[] = "Row $rowNumber: Location is required";
+                    $rowNumber++;
+                    continue;
+                }
+
+                // Validate status
+                $validStatuses = ['available', 'full', 'maintenance', 'inactive'];
+                if (!in_array($data['status'], $validStatuses)) {
+                    $errors[] = "Row $rowNumber: Status must be one of: " . implode(', ', $validStatuses);
+                    $rowNumber++;
+                    continue;
+                }
+
+                // Validate room capacity
+                if ($data['room_capacity'] < 1) {
+                    $errors[] = "Row $rowNumber: Room Capacity must be at least 1";
+                    $rowNumber++;
+                    continue;
+                }
+
+                // Validate map_url if provided
+                if (!empty($data['map_url']) && !filter_var($data['map_url'], FILTER_VALIDATE_URL)) {
+                    $errors[] = "Row $rowNumber: Map URL must be a valid URL";
+                    $rowNumber++;
+                    continue;
+                }
+
+                // Try to save
+                if ($this->dormitoryModel->save($data)) {
+                    $successCount++;
+                } else {
+                    $modelErrors = $this->dormitoryModel->errors();
+                    $errors[] = "Row $rowNumber: " . implode(', ', $modelErrors);
+                }
+
+                $rowNumber++;
+            }
+
+            // Prepare response message
+            if ($successCount > 0 && empty($errors)) {
+                return redirect()->to(base_url('dormitory'))
+                    ->with('success', "Successfully imported $successCount dormitor(y/ies).");
+            } elseif ($successCount > 0 && !empty($errors)) {
+                $errorMsg = "Imported $successCount dormitor(y/ies) with some errors:<br>" . implode('<br>', array_slice($errors, 0, 10));
+                if (count($errors) > 10) {
+                    $errorMsg .= '<br>... and ' . (count($errors) - 10) . ' more errors';
+                }
+                return redirect()->to(base_url('dormitory'))->with('warning', $errorMsg);
+            } else {
+                $errorMsg = "Failed to import dormitories. Errors:<br>" . implode('<br>', array_slice($errors, 0, 10));
+                if (count($errors) > 10) {
+                    $errorMsg .= '<br>... and ' . (count($errors) - 10) . ' more errors';
+                }
+                return redirect()->back()->with('error', $errorMsg);
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Error processing file: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Parse newline-separated string into array
+     */
+    private function parseNewlineSeparated($value)
+    {
+        if (empty($value)) {
+            return [];
+        }
+
+        // Handle both newline and pipe separators
+        $items = array_filter(array_map('trim', preg_split('/[\n|]+/', $value)));
+        return $items;
+    }
 }

@@ -1,0 +1,23 @@
+{
+  "full_name": "Kezia Wunte",
+  "nickname": "Kezia",
+  "gender": "Female",
+  "date_of_birth": "2005-11-16",
+  "place_of_birth": "Palu",
+  "religion": "Kristen Protestan",
+  "citizen_id": "7202035611050004",
+  "phone": "082299331656",
+  "email": "keziawnte@gmail.com",
+  "street_address": "KM 4 Jalan Tabatoki, Kawua",
+  "district": "Poso Kota Selatan",
+  "regency": "Poso",
+  "province": "Sulawesi Tengah",
+  "postal_code": "94613",
+  "father_name": "Antonius Wunte",
+  "mother_name": "Yudit Turang",
+  "course": "Paket Gapyear 9 Bulan",
+  "emergency_contact_name": "Yudit Turang",
+  "emergency_contact_phone": "081355968011",
+  "emergency_contact_relation": "Parent",
+  "notes": "Mulai kursus: 2026-02-10. Program Utama: Paket Fullday (Basic hingga HSK5 + Computer + Pro Translator). Harga Program: Rp 19.500.000. Biaya pendaftaran Rp 500.000. Total Biaya: Rp 20.000.000."
+}

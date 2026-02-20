@@ -1,0 +1,23 @@
+{
+  "full_name": "Berbi Zhu Febrianti",
+  "nickname": "Berbi",
+  "gender": "Female",
+  "date_of_birth": "2006-12-08",
+  "place_of_birth": "Tanea",
+  "religion": "Islam",
+  "citizen_id": "7405074107070012",
+  "phone": "081341835050",
+  "email": "asranbianputra@gmail.com",
+  "street_address": "Dusun III Desa Tanea, RT.000/RW.000",
+  "district": "Konda",
+  "regency": "Konawe Selatan",
+  "province": "Sulawesi Tenggara",
+  "postal_code": "93874",
+  "father_name": "Armin",
+  "mother_name": "Erlina",
+  "course": "Paket 3 Bulan",
+  "emergency_contact_name": "Asran Binan Putra",
+  "emergency_contact_phone": "085823709291",
+  "emergency_contact_relation": "Parent",
+  "notes": "Mulai kursus: 2026-02-10. Program Utama: Paket Fullday (Basic hingga HSK3). Harga Program: Rp 7.999.000. Biaya pendaftaran Rp 500.000. Total Biaya: Rp 8.499.000."
+}

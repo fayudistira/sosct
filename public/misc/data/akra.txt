@@ -1,28 +1,23 @@
-DATA PRIBADI
-Nama Lengkap: AKRA ANGRAENI
-Nomor KTP: 7324076701060001
-Jenis Kelamin: Perempuan
-Agama: Islam
-Tempat, Tanggal Lahir: Manangalu, 2006-01-27
-Alamat: jalan saile, kec.burau, kab.luwu timur, LUWU TIMUR, SULAWESI SELATAN
-No. Telp: 082275726965
-Email: akraangraeni27@gmail.com
-
-KONTAK DARURAT
-Nama: SITTI MARDIAH (081229932321)
-
-DATA DAPODIK
-Ayah: tidak punya bapa
-Ibu: SITTI MARDIAH
-PROGRAM KURSUS
-Program: Paket Fullday
-Detail: Paket 7 Bulan
-Mulai Kursus: 2026-01-10
-
-INFORMASI HARGA
-Harga Program: Rp 16.000.000,-
-
-CATATAN: Biaya registrasi Rp 500.000 dibayarkan setelah mengisi formulir ini.
-
-DATA TELAH DISIMPAN KE DATABASE
-Terima kasih.
+{
+  "full_name": "Akra Angraeni",
+  "nickname": "Akra",
+  "gender": "Female",
+  "date_of_birth": "2006-01-27",
+  "place_of_birth": "Manangalu",
+  "religion": "Islam",
+  "citizen_id": "7324076701060001",
+  "phone": "082275726965",
+  "email": "akraangraeni27@gmail.com",
+  "street_address": "Jalan Saile",
+  "district": "Burau",
+  "regency": "Luwu Timur",
+  "province": "Sulawesi Selatan",
+  "postal_code": "92975",
+  "father_name": "Tidak Ada",
+  "mother_name": "Sitti Mardiah",
+  "course": "Paket Fullday (7 Bulan)",
+  "emergency_contact_name": "Sitti Mardiah",
+  "emergency_contact_phone": "081229932321",
+  "emergency_contact_relation": "Mother",
+  "notes": "Mulai kursus: 2026-01-10. Harga Program: Rp 16.000.000. Biaya registrasi Rp 500.000 dibayarkan setelah mengisi formulir."
+}

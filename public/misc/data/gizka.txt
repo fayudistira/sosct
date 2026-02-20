@@ -1,25 +1,23 @@
-DATA PRIBADI
-Nama Lengkap: Gizka Novanza Ramadhan
-Nomor KTP: 3510080111030005
-Jenis Kelamin: Laki-laki
-Agama: Islam
-Tempat, Tanggal Lahir: Banyuwangi, 2003-11-01
-Alamat: Jalan Sumbersari, Rt.2/Rw.2, Sumbersari,Srono, Banyuwangi, Jawa Timur
-No. Telp: 081235556670
-Email: gizkanovanzar@gmail.com
-
-KONTAK DARURAT
-Nama: Sugihartini (085235420682)
-
-DATA DAPODIK
-Ayah: Agus Budiono
-Ibu: Sugihartini
-PROGRAM KURSUS
-Program: Paket Fullday
-Detail: Paket 5 Bulan
-Mulai Kursus: 2026-01-10
-
-INFORMASI HARGA
-Harga Program: Rp 12.000.000,-
-
-CATATAN: Biaya registrasi Rp 500.000 dibayarkan setelah mengisi formulir ini.
+{
+  "full_name": "Gizka Novanza Ramadhan",
+  "nickname": "Gizka",
+  "gender": "Male",
+  "date_of_birth": "2003-11-01",
+  "place_of_birth": "Banyuwangi",
+  "religion": "Islam",
+  "citizen_id": "3510080111030005",
+  "phone": "081235556670",
+  "email": "gizkanovanzar@gmail.com",
+  "street_address": "Jalan Sumbersari, RT.02/RW.02",
+  "district": "Srono",
+  "regency": "Banyuwangi",
+  "province": "Jawa Timur",
+  "postal_code": "68461",
+  "father_name": "Agus Budiono",
+  "mother_name": "Sugihartini",
+  "course": "Paket Fullday (5 Bulan)",
+  "emergency_contact_name": "Sugihartini",
+  "emergency_contact_phone": "085235420682",
+  "emergency_contact_relation": "Mother",
+  "notes": "Mulai kursus: 2026-01-10. Harga Program: Rp 12.000.000. Biaya registrasi Rp 500.000 dibayarkan setelah mengisi formulir."
+}

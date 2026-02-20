@@ -1,0 +1,23 @@
+{
+  "full_name": "Celmia Simbong",
+  "nickname": "Celmia",
+  "gender": "Female",
+  "date_of_birth": "2001-12-19",
+  "place_of_birth": "Rantepao",
+  "religion": "Kristen Protestan",
+  "citizen_id": "7326175912020002",
+  "phone": "082112100947",
+  "email": "celmiasymbong@gmail.com",
+  "street_address": "Toyasa Akung, Bangkelekila'",
+  "district": "Bangkelekila'",
+  "regency": "Toraja Utara",
+  "province": "Sulawesi Selatan",
+  "postal_code": "91853",
+  "father_name": "Yunus Simbong",
+  "mother_name": "Nomi Matius",
+  "course": "Paket Gapyear 9 Bulan",
+  "emergency_contact_name": "Nomi Matius",
+  "emergency_contact_phone": "+60 18-874 1827",
+  "emergency_contact_relation": "Parent",
+  "notes": "Mulai kursus: 2026-02-10. Program Utama: Paket Fullday (Basic hingga HSK5 + Computer + Pro Translator). Harga Program: Rp 19.500.000. Biaya pendaftaran Rp 500.000. Total Biaya: Rp 20.000.000."
+}

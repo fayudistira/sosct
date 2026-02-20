@@ -1,36 +1,23 @@
-FORM PENDAFTARAN XIHUAN MANDARIN INDONESIA
-
-1. DATA DIRI
-Nama Lengkap: Alfa Sampul 
-Jenis Kelamin: Laki-laki
-Tempat, Tgl Lahir: TOMOHON , 17/04/1996
-No. KTP/ID: 7173011704960001
-Agama: Kristen Protestan
-
-2. KONTAK & ALAMAT
-No. Telepon/WhatsApp: 08992174576
-Email: alfasampul25@gmail.com
-Alamat: Boroko Timur 
-Kabupaten/Kota: Bolaangmongondow Utara 
-Provinsi: PROVINSI SULAWESI UTARA
-
-3. KONTAK DARURAT
-Nama Kontak: +60 18-376 5069
-Telepon Kontak: +62 877-1895-4128
-Hubungan: Orang Tua
-
-4. DATA DAPODIK
-Nama Ayah: Donald Richard Sampul 
-Nama Gadis Ibu Kandung: Jeane Bernadette Rengkuan 
-
-5. KETERANGAN TAMBAHAN
-Tanggal Mulai Kursus: 10/02/2026
-
-6. PROGRAM YANG DIPILIH
-Program Utama: Paket Fullday
-Nama Program: Paket Gapyear 9 Bulan
-Level: Basic hingga HSK5 + Computer + Pro Translator
-Durasi: 9 bulan
-Harga: Rp 19.500.000
-Biaya Pendaftaran: Rp 500.000
-TOTAL BIAYA: Rp 20.000.000
+{
+  "full_name": "Alfa Sampul",
+  "nickname": "Alfa",
+  "gender": "Male",
+  "date_of_birth": "1996-04-17",
+  "place_of_birth": "Tomohon",
+  "religion": "Kristen Protestan",
+  "citizen_id": "7173011704960001",
+  "phone": "08992174576",
+  "email": "alfasampul25@gmail.com",
+  "street_address": "Boroko Timur",
+  "district": "Kaidipang",
+  "regency": "Bolaang Mongondow Utara",
+  "province": "Sulawesi Utara",
+  "postal_code": "95765",
+  "father_name": "Donald Richard Sampul",
+  "mother_name": "Jeane Bernadette Rengkuan",
+  "course": "Paket Gapyear 9 Bulan",
+  "emergency_contact_name": "+60 18-376 5069",
+  "emergency_contact_phone": "+62 877-1895-4128",
+  "emergency_contact_relation": "Parent",
+  "notes": "Mulai kursus: 2026-02-10. Program: Paket Fullday (Basic hingga HSK5 + Computer + Pro Translator). Harga Program: Rp 19.500.000. Biaya registrasi Rp 500.000. Total Biaya: Rp 20.000.000."
+}

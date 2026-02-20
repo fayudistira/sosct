@@ -1,0 +1,23 @@
+{
+  "full_name": "Alfani Rosalinda Situmorang",
+  "nickname": "Alfani",
+  "gender": "Female",
+  "date_of_birth": "1999-08-05",
+  "place_of_birth": "Medan",
+  "religion": "Kristen Protestan",
+  "citizen_id": "1218064508990003",
+  "phone": "081375030326",
+  "email": "rosalindatumorang@gmail.com",
+  "street_address": "Dusun II Pematang Terang",
+  "district": "Tanjung Beringin",
+  "regency": "Serdang Bedagai",
+  "province": "Sumatera Utara",
+  "postal_code": "20996",
+  "father_name": "Allen Situmorang",
+  "mother_name": "Surianni Saragih",
+  "course": "Paket 7 Bulan",
+  "emergency_contact_name": "Allen Situmorang",
+  "emergency_contact_phone": "081375434391",
+  "emergency_contact_relation": "Parent",
+  "notes": "Mulai kursus: 2026-02-10. Program Utama: Paket Fullday (Basic hingga HSK5 + Pro Translator). Harga Program: Rp 15.999.000. Biaya pendaftaran Rp 500.000. Total Biaya: Rp 16.499.000."
+}
