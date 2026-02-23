@@ -146,6 +146,148 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
     </div>
 </div>
 
+<!-- Available Programs Section -->
+<div class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3" style="color: var(--dark-red);">Program Mandarin Tersedia</h2>
+            <p class="lead text-muted">Pilih program yang sesuai dengan kebutuhan dan tujuan Anda</p>
+        </div>
+
+        <?php if (!empty($programsBySubCategory)): ?>
+            <!-- Sub-Category Tabs -->
+            <div class="d-flex align-items-center mb-4 pb-2 border-bottom flex-wrap gap-2">
+                <h4 class="fw-bold mb-0 me-4">Kategori Program</h4>
+                <div class="nav nav-pills sub-category-pills d-flex gap-2" role="tablist">
+                    <?php foreach ($subCategories as $subIndex => $subCategory): ?>
+                        <button class="nav-link btn btn-sm rounded-pill btn-sub-cat <?= ($subIndex === 0) ? 'active' : '' ?>"
+                            id="sub-tab-<?= $subIndex ?>"
+                            data-bs-toggle="pill"
+                            data-bs-target="#sub-category-<?= $subIndex ?>"
+                            type="button"
+                            role="tab"
+                            aria-controls="sub-category-<?= $subIndex ?>"
+                            aria-selected="<?= ($subIndex === 0) ? 'true' : 'false' ?>">
+                            <?= esc($subCategory) ?>
+                            <span class="ms-1 opacity-50 small">(<?= count($programsBySubCategory[$subCategory]) ?>)</span>
+                        </button>
+                    <?php endforeach ?>
+                </div>
+            </div>
+
+            <!-- Sub-Tab Content -->
+            <div class="tab-content">
+                <?php foreach ($subCategories as $subIndex => $subCategory): ?>
+                    <div class="tab-pane fade <?= ($subIndex === 0) ? 'show active' : '' ?>"
+                        id="sub-category-<?= $subIndex ?>"
+                        role="tabpanel">
+
+                        <!-- Programs Grid -->
+                        <div class="row g-4">
+                            <?php foreach ($programsBySubCategory[$subCategory] as $program): ?>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card border-0 shadow-sm h-100 hover-lift overflow-hidden program-card-modern">
+                                        <!-- Image Container -->
+                                        <div class="position-relative overflow-hidden" style="height: 200px;">
+                                            <?php if (!empty($program['thumbnail'])): ?>
+                                                <img src="<?= base_url('uploads/programs/thumbs/' . $program['thumbnail']) ?>"
+                                                    alt="<?= esc($program['title']) ?>"
+                                                    class="w-100 h-100 object-fit-cover program-img-zoom">
+                                            <?php else: ?>
+                                                <?php
+                                                $seed = crc32($program['id']);
+                                                $randomId = ($seed % 1000) + 1;
+                                                ?>
+                                                <img src="https://picsum.photos/seed/<?= $randomId ?>/800/600"
+                                                    alt="<?= esc($program['title']) ?>"
+                                                    class="w-100 h-100 object-fit-cover program-img-zoom"
+                                                    loading="lazy">
+                                            <?php endif ?>
+
+                                            <!-- Category Overlay -->
+                                            <div class="position-absolute top-0 end-0 m-3">
+                                                <span class="badge bg-white text-dark shadow-sm py-2 px-3 rounded-pill fw-bold" style="font-size: 0.7rem;">
+                                                    <?= strtoupper(esc((string)($program['sub_category'] ?? 'Standard'))) ?>
+                                                </span>
+                                            </div>
+
+                                            <!-- Price Overlay -->
+                                            <div class="position-absolute bottom-0 start-0 w-100 p-3 bg-gradient-dark text-white">
+                                                <?php
+                                                $tuitionFee = $program['tuition_fee'] ?? 0;
+                                                $registrationFee = $program['registration_fee'] ?? 0;
+                                                $discount = $program['discount'] ?? 0;
+                                                $discountedPrice = $tuitionFee * (1 - $discount / 100);
+                                                ?>
+                                                <div class="d-flex align-items-baseline flex-wrap">
+                                                    <span class="h4 fw-bold mb-0">Rp <?= number_format($discountedPrice, 0, ',', '.') ?></span>
+                                                    <?php if (!empty($discount) && $discount > 0): ?>
+                                                        <span class="ms-2 text-white-50 text-decoration-line-through small">Rp <?= number_format($tuitionFee, 0, ',', '.') ?></span>
+                                                        <span class="ms-auto badge bg-danger rounded-pill">-<?= $discount ?>%</span>
+                                                    <?php endif ?>
+                                                </div>
+                                                <?php if ($registrationFee > 0): ?>
+                                                    <div class="small text-white-50 mt-1">
+                                                        <i class="bi bi-info-circle me-1"></i>
+                                                        + Biaya pendaftaran: Rp <?= number_format($registrationFee, 0, ',', '.') ?>
+                                                    </div>
+                                                <?php endif ?>
+                                            </div>
+                                        </div>
+
+                                        <div class="card-body d-flex flex-column p-4">
+                                            <h5 class="fw-bold mb-2 text-dark"><?= esc($program['title']) ?></h5>
+                                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                                <?php if (!empty($program['mode'])): ?>
+                                                    <span class="badge bg-light text-muted border small">
+                                                        <i class="bi bi-<?= (string)($program['mode'] ?? '') === 'online' ? 'wifi' : 'building' ?> me-1"></i>
+                                                        <?= ucfirst(esc((string)($program['mode'] ?? ''))) ?>
+                                                    </span>
+                                                <?php endif ?>
+                                                <?php if (!empty($program['sub_category'])): ?>
+                                                    <span class="badge bg-light text-muted border small">
+                                                        <i class="bi bi-tag me-1"></i>
+                                                        <?= esc((string)($program['sub_category'] ?? '')) ?>
+                                                    </span>
+                                                <?php endif ?>
+                                            </div>
+                                            <p class="text-muted small flex-grow-1 mb-4">
+                                                <?= esc(strlen($program['description'] ?? '') > 100 ? substr($program['description'], 0, 100) . '...' : ($program['description'] ?? 'Program berkualitas untuk menguasai bahasa Mandarin.')) ?>
+                                            </p>
+
+                                            <div class="d-flex align-items-center gap-3 pt-3 border-top mt-auto">
+                                                <a href="<?= base_url('programs/' . $program['id']) ?>" class="btn btn-outline-dark btn-sm rounded-pill flex-grow-1 fw-bold">
+                                                    DETAILS
+                                                </a>
+                                                <a href="<?= base_url('apply/' . $program['id']) ?>" class="btn btn-dark-red btn-sm rounded-pill flex-grow-1 fw-bold">
+                                                    APPLY NOW
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach ?>
+                        </div>
+                    </div>
+                <?php endforeach ?>
+            </div>
+        <?php else: ?>
+            <div class="text-center py-5">
+                <div class="feature-icon mb-4 mx-auto" style="width: 100px; height: 100px; font-size: 3rem; background: var(--light-red); color: var(--dark-red);">
+                    <i class="bi bi-search"></i>
+                </div>
+                <h3 class="fw-bold">Program Akan Segera Hadir</h3>
+                <p class="text-muted">Program Mandarin sedang dalam persiapan. Silakan hubungi kami untuk informasi lebih lanjut.</p>
+                <a href="https://wa.me/6285810310950?text=Hai,%20saya%20mau%20tanya%20tentang%20program%20Mandarin"
+                    target="_blank"
+                    class="btn btn-dark-red rounded-pill mt-3">
+                    <i class="bi bi-whatsapp me-2"></i>Hubungi Kami
+                </a>
+            </div>
+        <?php endif ?>
+    </div>
+</div>
+
 <!-- Why Learn Mandarin Section -->
 <div class="container py-5">
     <div class="text-center mb-5">
@@ -363,148 +505,6 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-<!-- Available Programs Section -->
-<div class="py-5 bg-light">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold mb-3" style="color: var(--dark-red);">Program Mandarin Tersedia</h2>
-            <p class="lead text-muted">Pilih program yang sesuai dengan kebutuhan dan tujuan Anda</p>
-        </div>
-
-        <?php if (!empty($programsBySubCategory)): ?>
-            <!-- Sub-Category Tabs -->
-            <div class="d-flex align-items-center mb-4 pb-2 border-bottom flex-wrap gap-2">
-                <h4 class="fw-bold mb-0 me-4">Kategori Program</h4>
-                <div class="nav nav-pills sub-category-pills d-flex gap-2" role="tablist">
-                    <?php foreach ($subCategories as $subIndex => $subCategory): ?>
-                        <button class="nav-link btn btn-sm rounded-pill btn-sub-cat <?= ($subIndex === 0) ? 'active' : '' ?>"
-                            id="sub-tab-<?= $subIndex ?>"
-                            data-bs-toggle="pill"
-                            data-bs-target="#sub-category-<?= $subIndex ?>"
-                            type="button"
-                            role="tab"
-                            aria-controls="sub-category-<?= $subIndex ?>"
-                            aria-selected="<?= ($subIndex === 0) ? 'true' : 'false' ?>">
-                            <?= esc($subCategory) ?>
-                            <span class="ms-1 opacity-50 small">(<?= count($programsBySubCategory[$subCategory]) ?>)</span>
-                        </button>
-                    <?php endforeach ?>
-                </div>
-            </div>
-
-            <!-- Sub-Tab Content -->
-            <div class="tab-content">
-                <?php foreach ($subCategories as $subIndex => $subCategory): ?>
-                    <div class="tab-pane fade <?= ($subIndex === 0) ? 'show active' : '' ?>"
-                        id="sub-category-<?= $subIndex ?>"
-                        role="tabpanel">
-
-                        <!-- Programs Grid -->
-                        <div class="row g-4">
-                            <?php foreach ($programsBySubCategory[$subCategory] as $program): ?>
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="card border-0 shadow-sm h-100 hover-lift overflow-hidden program-card-modern">
-                                        <!-- Image Container -->
-                                        <div class="position-relative overflow-hidden" style="height: 200px;">
-                                            <?php if (!empty($program['thumbnail'])): ?>
-                                                <img src="<?= base_url('uploads/programs/thumbs/' . $program['thumbnail']) ?>"
-                                                    alt="<?= esc($program['title']) ?>"
-                                                    class="w-100 h-100 object-fit-cover program-img-zoom">
-                                            <?php else: ?>
-                                                <?php
-                                                $seed = crc32($program['id']);
-                                                $randomId = ($seed % 1000) + 1;
-                                                ?>
-                                                <img src="https://picsum.photos/seed/<?= $randomId ?>/800/600"
-                                                    alt="<?= esc($program['title']) ?>"
-                                                    class="w-100 h-100 object-fit-cover program-img-zoom"
-                                                    loading="lazy">
-                                            <?php endif ?>
-
-                                            <!-- Category Overlay -->
-                                            <div class="position-absolute top-0 end-0 m-3">
-                                                <span class="badge bg-white text-dark shadow-sm py-2 px-3 rounded-pill fw-bold" style="font-size: 0.7rem;">
-                                                    <?= strtoupper(esc((string)($program['sub_category'] ?? 'Standard'))) ?>
-                                                </span>
-                                            </div>
-
-                                            <!-- Price Overlay -->
-                                            <div class="position-absolute bottom-0 start-0 w-100 p-3 bg-gradient-dark text-white">
-                                                <?php
-                                                $tuitionFee = $program['tuition_fee'] ?? 0;
-                                                $registrationFee = $program['registration_fee'] ?? 0;
-                                                $discount = $program['discount'] ?? 0;
-                                                $discountedPrice = $tuitionFee * (1 - $discount / 100);
-                                                ?>
-                                                <div class="d-flex align-items-baseline flex-wrap">
-                                                    <span class="h4 fw-bold mb-0">Rp <?= number_format($discountedPrice, 0, ',', '.') ?></span>
-                                                    <?php if (!empty($discount) && $discount > 0): ?>
-                                                        <span class="ms-2 text-white-50 text-decoration-line-through small">Rp <?= number_format($tuitionFee, 0, ',', '.') ?></span>
-                                                        <span class="ms-auto badge bg-danger rounded-pill">-<?= $discount ?>%</span>
-                                                    <?php endif ?>
-                                                </div>
-                                                <?php if ($registrationFee > 0): ?>
-                                                    <div class="small text-white-50 mt-1">
-                                                        <i class="bi bi-info-circle me-1"></i>
-                                                        + Biaya pendaftaran: Rp <?= number_format($registrationFee, 0, ',', '.') ?>
-                                                    </div>
-                                                <?php endif ?>
-                                            </div>
-                                        </div>
-
-                                        <div class="card-body d-flex flex-column p-4">
-                                            <h5 class="fw-bold mb-2 text-dark"><?= esc($program['title']) ?></h5>
-                                            <div class="d-flex flex-wrap gap-2 mb-2">
-                                                <?php if (!empty($program['mode'])): ?>
-                                                    <span class="badge bg-light text-muted border small">
-                                                        <i class="bi bi-<?= (string)($program['mode'] ?? '') === 'online' ? 'wifi' : 'building' ?> me-1"></i>
-                                                        <?= ucfirst(esc((string)($program['mode'] ?? ''))) ?>
-                                                    </span>
-                                                <?php endif ?>
-                                                <?php if (!empty($program['sub_category'])): ?>
-                                                    <span class="badge bg-light text-muted border small">
-                                                        <i class="bi bi-tag me-1"></i>
-                                                        <?= esc((string)($program['sub_category'] ?? '')) ?>
-                                                    </span>
-                                                <?php endif ?>
-                                            </div>
-                                            <p class="text-muted small flex-grow-1 mb-4">
-                                                <?= esc(strlen($program['description'] ?? '') > 100 ? substr($program['description'], 0, 100) . '...' : ($program['description'] ?? 'Program berkualitas untuk menguasai bahasa Mandarin.')) ?>
-                                            </p>
-
-                                            <div class="d-flex align-items-center gap-3 pt-3 border-top mt-auto">
-                                                <a href="<?= base_url('programs/' . $program['id']) ?>" class="btn btn-outline-dark btn-sm rounded-pill flex-grow-1 fw-bold">
-                                                    DETAILS
-                                                </a>
-                                                <a href="<?= base_url('apply/' . $program['id']) ?>" class="btn btn-dark-red btn-sm rounded-pill flex-grow-1 fw-bold">
-                                                    APPLY NOW
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php endforeach ?>
-                        </div>
-                    </div>
-                <?php endforeach ?>
-            </div>
-        <?php else: ?>
-            <div class="text-center py-5">
-                <div class="feature-icon mb-4 mx-auto" style="width: 100px; height: 100px; font-size: 3rem; background: var(--light-red); color: var(--dark-red);">
-                    <i class="bi bi-search"></i>
-                </div>
-                <h3 class="fw-bold">Program Akan Segera Hadir</h3>
-                <p class="text-muted">Program Mandarin sedang dalam persiapan. Silakan hubungi kami untuk informasi lebih lanjut.</p>
-                <a href="https://wa.me/6285810310950?text=Hai,%20saya%20mau%20tanya%20tentang%20program%20Mandarin"
-                    target="_blank"
-                    class="btn btn-dark-red rounded-pill mt-3">
-                    <i class="bi bi-whatsapp me-2"></i>Hubungi Kami
-                </a>
-            </div>
-        <?php endif ?>
     </div>
 </div>
 

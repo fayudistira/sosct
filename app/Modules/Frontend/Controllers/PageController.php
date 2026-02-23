@@ -531,6 +531,19 @@ class PageController extends BaseController
             $programsBySubCategory[$subCategory][] = $program;
         }
 
+        // Custom sort order: Paket first, then HSK levels, then Privat
+        $sortOrder = ['Paket', 'HSK 1', 'HSK 2', 'HSK 3', 'HSK 4', 'HSK 5', 'HSK 6', 'Privat'];
+        usort($subCategories, function($a, $b) use ($sortOrder) {
+            $indexA = array_search($a, $sortOrder);
+            $indexB = array_search($b, $sortOrder);
+            
+            // If not found in sort order, put at the end
+            if ($indexA === false) $indexA = 999;
+            if ($indexB === false) $indexB = 999;
+            
+            return $indexA - $indexB;
+        });
+
         return view('Modules\Frontend\Views\landings\mandarin', [
             'title' => 'Kursus Bahasa Mandarin - SOS Course and Training',
             'programs' => $programs,
