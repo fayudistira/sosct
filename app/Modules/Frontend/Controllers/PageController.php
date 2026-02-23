@@ -441,50 +441,63 @@ class PageController extends BaseController
         $programModel = new ProgramModel();
         $programs = $programModel->where('status', 'active')->orderBy('created_at', 'DESC')->findAll();
 
-        // Build data structure expected by the view
-        $programsByCategory = [];
-        $categories = [];
+        // Build nested data structure: Language -> Category -> SubCategory -> Programs
+        $programsByLanguage = [];
+        $languages = [];
         $totalPrograms = count($programs);
 
         foreach ($programs as $program) {
+            $language = !empty($program['language']) ? $program['language'] : 'Other';
             $category = !empty($program['category']) ? $program['category'] : 'General';
             $subCategory = !empty($program['sub_category']) ? $program['sub_category'] : 'Standard';
 
-            // Add category to list if not exists
-            if (!in_array($category, $categories)) {
-                $categories[] = $category;
-                $programsByCategory[$category] = [
+            // Add language to list if not exists
+            if (!in_array($language, $languages)) {
+                $languages[] = $language;
+                $programsByLanguage[$language] = [
+                    'total_programs' => 0,
+                    'categories' => []
+                ];
+            }
+
+            // Add category to language if not exists
+            if (!isset($programsByLanguage[$language]['categories'][$category])) {
+                $programsByLanguage[$language]['categories'][$category] = [
                     'total_programs' => 0,
                     'sub_categories' => []
                 ];
             }
 
-            // Add sub-category to list if not exists
-            if (!isset($programsByCategory[$category]['sub_categories'][$subCategory])) {
-                $programsByCategory[$category]['sub_categories'][$subCategory] = [];
+            // Add sub-category to category if not exists
+            if (!isset($programsByLanguage[$language]['categories'][$category]['sub_categories'][$subCategory])) {
+                $programsByLanguage[$language]['categories'][$category]['sub_categories'][$subCategory] = [];
             }
 
             // Add program to sub-category
-            $programsByCategory[$category]['sub_categories'][$subCategory][] = $program;
-            $programsByCategory[$category]['total_programs']++;
+            $programsByLanguage[$language]['categories'][$category]['sub_categories'][$subCategory][] = $program;
+            $programsByLanguage[$language]['categories'][$category]['total_programs']++;
+            $programsByLanguage[$language]['total_programs']++;
         }
 
-        // Sort categories and sub-categories
-        sort($categories);
-        foreach ($categories as $category) {
-            ksort($programsByCategory[$category]['sub_categories']);
+        // Sort languages, categories and sub-categories
+        sort($languages);
+        foreach ($languages as $language) {
+            ksort($programsByLanguage[$language]['categories']);
+            foreach ($programsByLanguage[$language]['categories'] as $category => $data) {
+                ksort($programsByLanguage[$language]['categories'][$category]['sub_categories']);
+            }
         }
 
-        // Default selected category (first one or 'All')
-        $selectedCategory = !empty($categories) ? $categories[0] : 'General';
+        // Default selected language (first one)
+        $selectedLanguage = !empty($languages) ? $languages[0] : 'Other';
 
         return view('Modules\Frontend\Views\Programs\index', [
             'title' => 'Our Programs',
             'programs' => $programs,
             'totalPrograms' => $totalPrograms,
-            'categories' => $categories,
-            'programsByCategory' => $programsByCategory,
-            'selectedCategory' => $selectedCategory
+            'languages' => $languages,
+            'programsByLanguage' => $programsByLanguage,
+            'selectedLanguage' => $selectedLanguage
         ]);
     }
 
