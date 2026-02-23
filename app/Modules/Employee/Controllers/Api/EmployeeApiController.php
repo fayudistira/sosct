@@ -21,6 +21,30 @@ class EmployeeApiController extends ResourceController
         $search = $this->request->getGet('q');
         $status = $this->request->getGet('status');
         $department = $this->request->getGet('department');
+        
+        // Sorting parameters
+        $sort = $this->request->getGet('sort') ?? 'staff_number';
+        $order = $this->request->getGet('order') ?? 'asc';
+        
+        // Validate sort field (whitelist allowed columns)
+        $allowedSortFields = ['staff_number', 'full_name', 'position', 'department', 'status', 'hire_date'];
+        if (!in_array($sort, $allowedSortFields)) {
+            $sort = 'staff_number';
+        }
+        
+        // Validate order direction
+        $order = strtolower($order) === 'desc' ? 'desc' : 'asc';
+        
+        // Map sort fields to actual column names (handle joined tables)
+        $sortMapping = [
+            'staff_number' => 'staff.staff_number',
+            'full_name' => 'profiles.full_name',
+            'position' => 'staff.position',
+            'department' => 'staff.department',
+            'status' => 'staff.status',
+            'hire_date' => 'staff.hire_date'
+        ];
+        $sortColumn = $sortMapping[$sort] ?? 'staff.staff_number';
 
         // Build query
         $builder = $this->model->select('staff.*, profiles.full_name, profiles.email, profiles.phone')
@@ -45,6 +69,9 @@ class EmployeeApiController extends ResourceController
         if ($department) {
             $builder->like('staff.department', $department);
         }
+        
+        // Apply sorting
+        $builder->orderBy($sortColumn, $order);
 
         // Get total count before pagination
         $total = $builder->countAllResults(false);

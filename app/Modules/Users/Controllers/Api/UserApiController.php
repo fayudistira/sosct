@@ -21,6 +21,19 @@ class UserApiController extends ResourceController
         $search = $this->request->getGet('q');
         $status = $this->request->getGet('status');
         $role = $this->request->getGet('role');
+        
+        // Sorting parameters
+        $sort = $this->request->getGet('sort') ?? 'id';
+        $order = $this->request->getGet('order') ?? 'asc';
+        
+        // Validate sort field (whitelist allowed columns)
+        $allowedSortFields = ['id', 'username', 'active', 'last_active'];
+        if (!in_array($sort, $allowedSortFields)) {
+            $sort = 'id';
+        }
+        
+        // Validate order direction
+        $order = strtolower($order) === 'desc' ? 'desc' : 'asc';
 
         // Build query
         $builder = $userModel->builder();
@@ -36,6 +49,9 @@ class UserApiController extends ResourceController
         if ($status !== null && $status !== '') {
             $builder->where('active', $status === 'active' ? 1 : 0);
         }
+        
+        // Apply sorting
+        $builder->orderBy($sort, $order);
 
         // Get total count before pagination
         $total = $builder->countAllResults(false);

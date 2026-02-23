@@ -24,6 +24,19 @@ class ProgramApiController extends ResourceController
         $status = $this->request->getGet('status');
         $category = $this->request->getGet('category');
         
+        // Sorting parameters
+        $sort = $this->request->getGet('sort') ?? 'title';
+        $order = $this->request->getGet('order') ?? 'asc';
+        
+        // Validate sort field (whitelist allowed columns)
+        $allowedSortFields = ['title', 'category', 'sub_category', 'duration', 'registration_fee', 'tuition_fee', 'discount', 'status', 'created_at'];
+        if (!in_array($sort, $allowedSortFields)) {
+            $sort = 'title';
+        }
+        
+        // Validate order direction
+        $order = strtolower($order) === 'desc' ? 'desc' : 'asc';
+        
         // Build query
         $builder = $this->model;
         
@@ -46,6 +59,9 @@ class ProgramApiController extends ResourceController
         if ($category) {
             $builder = $builder->like('category', $category);
         }
+        
+        // Apply sorting
+        $builder = $builder->orderBy($sort, $order);
         
         // Get total count before pagination
         $total = $builder->countAllResults(false);
