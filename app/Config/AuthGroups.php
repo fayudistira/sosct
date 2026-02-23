@@ -103,6 +103,7 @@ class AuthGroups extends ShieldAuthGroups
         'dormitory.manage'    => 'Can manage dormitories (CRUD)',
         'dormitory.view'      => 'Can view dormitories (read-only)',
         'dormitory.assign'    => 'Can assign students to dormitories',
+        'tools.access'        => 'Can access tools module',
     ];
 
     /**
@@ -126,6 +127,7 @@ class AuthGroups extends ShieldAuthGroups
             'classroom.*',
             'dormitory.*',
             'student.manage',
+            'tools.*',
         ],
         'admin' => [
             'admin.access',
@@ -141,6 +143,7 @@ class AuthGroups extends ShieldAuthGroups
             'classroom.manage',
             'dormitory.manage',
             'dormitory.assign',
+            'tools.access',
         ],
         'frontline' => [
             'dashboard.access',
@@ -149,11 +152,13 @@ class AuthGroups extends ShieldAuthGroups
             'classroom.manage',
             'dormitory.manage',
             'dormitory.assign',
+            'tools.access',
         ],
         'finance' => [
             'dashboard.access',
             'payment.manage',
             'invoice.manage',
+            'tools.access',
         ],
         'staff' => [
             'dashboard.access',
@@ -162,16 +167,19 @@ class AuthGroups extends ShieldAuthGroups
             'payment.view',
             'invoice.view',
             'classroom.view',
+            'tools.access',
         ],
         'instructor' => [
             'dashboard.access',
             'admission.view',
             'program.view',
             'classroom.view',
+            'tools.access',
         ],
         'student' => [
             'dashboard.access',
             'student.access',
+            'tools.access',
         ],
     ];
 }
