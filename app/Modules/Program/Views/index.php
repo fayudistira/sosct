@@ -97,22 +97,32 @@
         <div class="card-body">
             <form id="search-form">
                 <div class="row g-3">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <input type="text" name="search" id="search-input" class="form-control"
                             placeholder="Search programs..." value="<?= esc($keyword ?? '') ?>">
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <select name="status" id="status-filter" class="form-select">
                             <option value="">All Status</option>
                             <option value="active" <?= ($status ?? '') === 'active' ? 'selected' : '' ?>>Active</option>
                             <option value="inactive" <?= ($status ?? '') === 'inactive' ? 'selected' : '' ?>>Inactive</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
+                        <select name="language" id="language-filter" class="form-select">
+                            <option value="">All Languages</option>
+                            <option value="Mandarin" <?= ($language ?? '') === 'Mandarin' ? 'selected' : '' ?>>Mandarin</option>
+                            <option value="Japanese" <?= ($language ?? '') === 'Japanese' ? 'selected' : '' ?>>Japanese</option>
+                            <option value="Korean" <?= ($language ?? '') === 'Korean' ? 'selected' : '' ?>>Korean</option>
+                            <option value="German" <?= ($language ?? '') === 'German' ? 'selected' : '' ?>>German</option>
+                            <option value="English" <?= ($language ?? '') === 'English' ? 'selected' : '' ?>>English</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
                         <input type="text" name="category" id="category-filter" class="form-control"
                             placeholder="Category" value="<?= esc($category ?? '') ?>">
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <button type="button" id="clear-filters" class="btn btn-outline-secondary w-100">
                             <i class="bi bi-x-circle"></i> Clear
                         </button>
@@ -136,12 +146,12 @@
                         <tr>
                             <th class="text-center" style="width: 50px;">No.</th>
                             <th class="sortable" data-sort="title">Title <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="language">Language <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="language_level">Level <span class="sort-icon"></span></th>
                             <th class="sortable" data-sort="category">Category <span class="sort-icon"></span></th>
                             <th class="sortable" data-sort="sub_category">Sub Category <span class="sort-icon"></span></th>
                             <th class="sortable" data-sort="duration">Duration <span class="sort-icon"></span></th>
-                            <th class="sortable" data-sort="registration_fee">Registration Fee <span class="sort-icon"></span></th>
                             <th class="sortable" data-sort="tuition_fee">Tuition Fee <span class="sort-icon"></span></th>
-                            <th class="sortable" data-sort="discount">Discount <span class="sort-icon"></span></th>
                             <th class="sortable" data-sort="status">Status <span class="sort-icon"></span></th>
                             <th>Thumbnail</th>
                             <th>Actions</th>
@@ -156,12 +166,18 @@
                                 <tr>
                                     <td class="text-center text-muted"><?= $startIndex + $index ?></td>
                                     <td><strong><?= esc($program['title']) ?></strong></td>
+                                    <td>
+                                        <?php if (!empty($program['language'])): ?>
+                                            <span class="badge bg-info"><?= esc($program['language']) ?></span>
+                                        <?php else: ?>
+                                            <span class="text-muted">-</span>
+                                        <?php endif ?>
+                                    </td>
+                                    <td><?= esc($program['language_level'] ?? '-') ?></td>
                                     <td><?= esc($program['category'] ?? '-') ?></td>
                                     <td><?= esc($program['sub_category'] ?? '-') ?></td>
                                     <td><?= esc($program['duration'] ?? '-') ?></td>
-                                    <td>Rp <?= number_format($program['registration_fee'], 0, ',', '.') ?></td>
                                     <td>Rp <?= number_format($program['tuition_fee'], 0, ',', '.') ?></td>
-                                    <td><?= number_format($program['discount'], 2) ?>%</td>
                                     <td>
                                         <?php if ($program['status'] === 'active'): ?>
                                             <span class="badge bg-success">Active</span>
@@ -289,6 +305,7 @@ function performSearch(page = 1) {
     currentPage = page;
     const searchValue = document.getElementById('search-input').value;
     const statusValue = document.getElementById('status-filter').value;
+    const languageValue = document.getElementById('language-filter').value;
     const categoryValue = document.getElementById('category-filter').value;
 
     // Show loading state
@@ -303,6 +320,7 @@ function performSearch(page = 1) {
     const params = new URLSearchParams();
     if (searchValue) params.append('q', searchValue);
     if (statusValue) params.append('status', statusValue);
+    if (languageValue) params.append('language', languageValue);
     if (categoryValue) params.append('category', categoryValue);
     params.append('page', page);
     params.append('per_page', 10);
@@ -359,6 +377,10 @@ function updateTable(programs) {
             ? '<span class="badge bg-success">Active</span>'
             : '<span class="badge bg-secondary">Inactive</span>';
         
+        const languageBadge = program.language
+            ? `<span class="badge bg-info">${escapeHtml(program.language)}</span>`
+            : '<span class="text-muted">-</span>';
+        
         const thumbnail = program.thumbnail
             ? `<img src="<?= base_url('uploads/programs/thumbs/') ?>${escapeHtml(program.thumbnail)}" alt="Thumbnail" style="width: 50px; height: 50px; object-fit: cover;" class="rounded">`
             : '<span class="text-muted">No image</span>';
@@ -367,12 +389,12 @@ function updateTable(programs) {
             <tr>
                 <td class="text-center text-muted">${startIndex + index}</td>
                 <td><strong>${escapeHtml(program.title)}</strong></td>
+                <td>${languageBadge}</td>
+                <td>${escapeHtml(program.language_level || '-')}</td>
                 <td>${escapeHtml(program.category || '-')}</td>
                 <td>${escapeHtml(program.sub_category || '-')}</td>
                 <td>${escapeHtml(program.duration || '-')}</td>
-                <td>Rp ${formatNumber(program.registration_fee || 0)}</td>
                 <td>Rp ${formatNumber(program.tuition_fee || 0)}</td>
-                <td>${formatNumber(program.discount || 0, 2)}%</td>
                 <td>${statusBadge}</td>
                 <td>${thumbnail}</td>
                 <td>

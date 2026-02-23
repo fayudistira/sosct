@@ -23,6 +23,8 @@ class ProgramModel extends Model
         'registration_fee',
         'tuition_fee',
         'discount',
+        'language',
+        'language_level',
         'category',
         'sub_category',
         'duration',
@@ -172,6 +174,32 @@ class ProgramModel extends Model
     }
 
     /**
+     * Filter by language
+     */
+    public function filterByLanguage(string $language)
+    {
+        return $this->where('language', $language)->findAll();
+    }
+
+    /**
+     * Filter by language level
+     */
+    public function filterByLanguageLevel(string $level)
+    {
+        return $this->where('language_level', $level)->findAll();
+    }
+
+    /**
+     * Get active programs by language
+     */
+    public function getActiveByLanguage(string $language)
+    {
+        return $this->where('status', 'active')
+            ->where('language', $language)
+            ->findAll();
+    }
+
+    /**
      * Get active programs only
      */
     public function getActivePrograms()
@@ -195,5 +223,62 @@ class ProgramModel extends Model
             ->getResultArray();
 
         return $results;
+    }
+
+    /**
+     * Get programs grouped by language
+     */
+    public function getProgramsByLanguage(): array
+    {
+        $db = \Config\Database::connect();
+        $builder = $db->table($this->table);
+
+        $results = $builder->select('language, COUNT(*) as total')
+            ->where('deleted_at', null)
+            ->where('language IS NOT NULL')
+            ->groupBy('language')
+            ->orderBy('language', 'ASC')
+            ->get()
+            ->getResultArray();
+
+        return $results;
+    }
+
+    /**
+     * Get available languages list
+     */
+    public function getAvailableLanguages(): array
+    {
+        $db = \Config\Database::connect();
+        $builder = $db->table($this->table);
+
+        $results = $builder->select('language')
+            ->where('deleted_at', null)
+            ->where('language IS NOT NULL')
+            ->groupBy('language')
+            ->orderBy('language', 'ASC')
+            ->get()
+            ->getResultArray();
+
+        return array_column($results, 'language');
+    }
+
+    /**
+     * Get available language levels list
+     */
+    public function getAvailableLanguageLevels(): array
+    {
+        $db = \Config\Database::connect();
+        $builder = $db->table($this->table);
+
+        $results = $builder->select('language_level')
+            ->where('deleted_at', null)
+            ->where('language_level IS NOT NULL')
+            ->groupBy('language_level')
+            ->orderBy('language_level', 'ASC')
+            ->get()
+            ->getResultArray();
+
+        return array_column($results, 'language_level');
     }
 }

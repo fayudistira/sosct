@@ -226,6 +226,17 @@
                                             <h5 class="fw-bold mb-2 text-dark"><?= esc($program['title']) ?></h5>
                                             <!-- Program Meta Tags -->
                                             <div class="d-flex flex-wrap gap-2 mb-2">
+                                                <?php if (!empty($program['language'])): ?>
+                                                    <span class="badge bg-info text-white small">
+                                                        <i class="bi bi-translate me-1"></i>
+                                                        <?= esc($program['language']) ?>
+                                                    </span>
+                                                <?php endif ?>
+                                                <?php if (!empty($program['language_level'])): ?>
+                                                    <span class="badge bg-secondary small">
+                                                        <?= esc($program['language_level']) ?>
+                                                    </span>
+                                                <?php endif ?>
                                                 <?php if (!empty($program['mode'])): ?>
                                                     <span class="badge bg-light text-muted border small">
                                                         <i class="bi bi-<?= (string)($program['mode'] ?? '') === 'online' ? 'wifi' : 'building' ?> me-1"></i>

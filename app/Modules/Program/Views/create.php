@@ -154,6 +154,32 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
+                        <label class="form-label">Language</label>
+                        <select name="language" class="form-select">
+                            <option value="">-- Select Language --</option>
+                            <option value="Mandarin" <?= old('language') === 'Mandarin' ? 'selected' : '' ?>>Mandarin</option>
+                            <option value="Japanese" <?= old('language') === 'Japanese' ? 'selected' : '' ?>>Japanese</option>
+                            <option value="Korean" <?= old('language') === 'Korean' ? 'selected' : '' ?>>Korean</option>
+                            <option value="German" <?= old('language') === 'German' ? 'selected' : '' ?>>German</option>
+                            <option value="English" <?= old('language') === 'English' ? 'selected' : '' ?>>English</option>
+                            <option value="Other" <?= old('language') === 'Other' ? 'selected' : '' ?>>Other</option>
+                        </select>
+                        <small class="text-muted">Primary language taught in this program</small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Language Level</label>
+                        <select name="language_level" class="form-select">
+                            <option value="">-- Select Level --</option>
+                            <option value="Beginner" <?= old('language_level') === 'Beginner' ? 'selected' : '' ?>>Beginner</option>
+                            <option value="Intermediate" <?= old('language_level') === 'Intermediate' ? 'selected' : '' ?>>Intermediate</option>
+                            <option value="Advanced" <?= old('language_level') === 'Advanced' ? 'selected' : '' ?>>Advanced</option>
+                            <option value="All Levels" <?= old('language_level') === 'All Levels' ? 'selected' : '' ?>>All Levels</option>
+                        </select>
+                        <small class="text-muted">Proficiency level for this program</small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
                         <label class="form-label">Category</label>
                         <input type="text" name="category" class="form-control"
                             value="<?= old('category') ?>">

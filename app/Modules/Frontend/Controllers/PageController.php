@@ -513,7 +513,7 @@ class PageController extends BaseController
     {
         $programModel = new ProgramModel();
         $programs = $programModel->where('status', 'active')
-            ->where('category', 'Mandarin')
+            ->where('language', 'Mandarin')
             ->orderBy('created_at', 'DESC')
             ->findAll();
 
@@ -559,7 +559,7 @@ class PageController extends BaseController
     {
         $programModel = new ProgramModel();
         $programs = $programModel->where('status', 'active')
-            ->where('category', 'Japanese')
+            ->where('language', 'Japanese')
             ->orderBy('created_at', 'DESC')
             ->findAll();
 
@@ -592,7 +592,7 @@ class PageController extends BaseController
     {
         $programModel = new ProgramModel();
         $programs = $programModel->where('status', 'active')
-            ->where('category', 'Korean')
+            ->where('language', 'Korean')
             ->orderBy('created_at', 'DESC')
             ->findAll();
 
@@ -625,7 +625,7 @@ class PageController extends BaseController
     {
         $programModel = new ProgramModel();
         $programs = $programModel->where('status', 'active')
-            ->where('category', 'German')
+            ->where('language', 'German')
             ->orderBy('created_at', 'DESC')
             ->findAll();
 
@@ -658,7 +658,7 @@ class PageController extends BaseController
     {
         $programModel = new ProgramModel();
         $programs = $programModel->where('status', 'active')
-            ->where('category', 'English')
+            ->where('language', 'English')
             ->orderBy('created_at', 'DESC')
             ->findAll();
 

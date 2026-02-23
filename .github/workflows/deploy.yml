@@ -1,0 +1,218 @@
+# Continuous Deployment Pipeline for FEECS
+# Deploys to production on release tags, staging on develop branch
+
+name: CD
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Deployment environment"
+        required: true
+        default: "staging"
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  # ============================================
+  # Deploy to Staging
+  # ============================================
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    environment:
+      name: staging
+      url: ${{ vars.STAGING_URL }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          coverage: none
+          tools: composer:v2
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-dev --optimize-autoloader --no-scripts
+
+      - name: Deploy to staging server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          port: ${{ secrets.STAGING_PORT || 22 }}
+          script: |
+            cd ${{ secrets.STAGING_PATH }}
+
+            # Pull latest changes
+            git fetch origin
+            git reset --hard origin/develop
+
+            # Install/update dependencies
+            composer install --prefer-dist --no-dev --optimize-autoloader --no-scripts
+
+            # Run migrations
+            php spark migrate --all
+
+            # Clear cache
+            php spark cache:clear
+
+            # Set permissions
+            chmod -R 755 writable
+            chown -R www-data:www-data writable
+
+            echo "Staging deployment completed at $(date)"
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          echo "Staging deployment ${{ job.status }}"
+
+  # ============================================
+  # Deploy to Production
+  # ============================================
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+    environment:
+      name: production
+      url: ${{ vars.PRODUCTION_URL }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          coverage: none
+          tools: composer:v2
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-dev --optimize-autoloader --no-scripts
+
+      - name: Create deployment package
+        run: |
+          mkdir -p deploy
+          tar -czvf deploy/release.tar.gz \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='node_modules' \
+            --exclude='tests' \
+            --exclude='*.md' \
+            --exclude='*.log' \
+            --exclude='.env' \
+            --exclude='deploy' \
+            .
+
+      - name: Deploy to production server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_USER }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          port: ${{ secrets.PRODUCTION_PORT || 22 }}
+          script: |
+            # Create backup
+            BACKUP_DIR="${{ secrets.PRODUCTION_PATH }}_backups/$(date +%Y%m%d_%H%M%S)"
+            mkdir -p $BACKUP_DIR
+            cp -r ${{ secrets.PRODUCTION_PATH }}/* $BACKUP_DIR/ 2>/dev/null || true
+
+            cd ${{ secrets.PRODUCTION_PATH }}
+
+            # Pull latest changes
+            git fetch origin
+            git reset --hard ${{ github.sha }}
+
+            # Install/update dependencies
+            composer install --prefer-dist --no-dev --optimize-autoloader --no-scripts
+
+            # Run migrations (with backup)
+            php spark migrate --all
+
+            # Clear cache
+            php spark cache:clear
+
+            # Set permissions
+            chmod -R 755 writable
+            chown -R www-data:www-data writable
+
+            # Update version file
+            echo "${{ github.ref_name }}" > VERSION
+            echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> VERSION
+
+            echo "Production deployment completed at $(date)"
+            echo "Version: ${{ github.ref_name }}"
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: deploy/release.tar.gz
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          echo "Production deployment ${{ job.status }}"
+          echo "Version: ${{ github.ref_name }}"
+
+  # ============================================
+  # Rollback (Manual Trigger)
+  # ============================================
+  rollback:
+    name: Rollback Deployment
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    environment:
+      name: ${{ github.event.inputs.environment }}
+
+    steps:
+      - name: Rollback to previous version
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ github.event.inputs.environment == 'production' && secrets.PRODUCTION_HOST || secrets.STAGING_HOST }}
+          username: ${{ github.event.inputs.environment == 'production' && secrets.PRODUCTION_USER || secrets.STAGING_USER }}
+          key: ${{ github.event.inputs.environment == 'production' && secrets.PRODUCTION_SSH_KEY || secrets.STAGING_SSH_KEY }}
+          script: |
+            DEPLOY_PATH="${{ github.event.inputs.environment == 'production' && secrets.PRODUCTION_PATH || secrets.STAGING_PATH }}"
+            BACKUP_DIR="${DEPLOY_PATH}_backups"
+
+            # List available backups
+            echo "Available backups:"
+            ls -lt $BACKUP_DIR | head -5
+
+            # Get latest backup
+            LATEST_BACKUP=$(ls -td $BACKUP_DIR/* | head -1)
+
+            if [ -d "$LATEST_BACKUP" ]; then
+              echo "Rolling back to: $LATEST_BACKUP"
+              
+              # Restore from backup
+              rm -rf $DEPLOY_PATH/*
+              cp -r $LATEST_BACKUP/* $DEPLOY_PATH/
+              
+              # Set permissions
+              cd $DEPLOY_PATH
+              chmod -R 755 writable
+              chown -R www-data:www-data writable
+              
+              echo "Rollback completed successfully"
+            else
+              echo "No backup found for rollback"
+              exit 1
+            fi

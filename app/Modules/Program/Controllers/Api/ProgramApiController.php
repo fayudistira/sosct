@@ -23,13 +23,15 @@ class ProgramApiController extends ResourceController
         $search = $this->request->getGet('q');
         $status = $this->request->getGet('status');
         $category = $this->request->getGet('category');
+        $language = $this->request->getGet('language');
+        $languageLevel = $this->request->getGet('language_level');
         
         // Sorting parameters
         $sort = $this->request->getGet('sort') ?? 'title';
         $order = $this->request->getGet('order') ?? 'asc';
         
         // Validate sort field (whitelist allowed columns)
-        $allowedSortFields = ['title', 'category', 'sub_category', 'duration', 'registration_fee', 'tuition_fee', 'discount', 'status', 'created_at'];
+        $allowedSortFields = ['title', 'category', 'sub_category', 'language', 'language_level', 'duration', 'registration_fee', 'tuition_fee', 'discount', 'status', 'created_at'];
         if (!in_array($sort, $allowedSortFields)) {
             $sort = 'title';
         }
@@ -46,6 +48,7 @@ class ProgramApiController extends ResourceController
                 ->like('title', $search)
                 ->orLike('category', $search)
                 ->orLike('sub_category', $search)
+                ->orLike('language', $search)
                 ->orLike('description', $search)
                 ->groupEnd();
         }
@@ -58,6 +61,16 @@ class ProgramApiController extends ResourceController
         // Apply category filter
         if ($category) {
             $builder = $builder->like('category', $category);
+        }
+        
+        // Apply language filter
+        if ($language) {
+            $builder = $builder->where('language', $language);
+        }
+        
+        // Apply language level filter
+        if ($languageLevel) {
+            $builder = $builder->where('language_level', $languageLevel);
         }
         
         // Apply sorting
@@ -281,6 +294,100 @@ class ProgramApiController extends ResourceController
     public function categories()
     {
         $results = $this->model->getProgramsByCategory();
+        
+        return $this->respond([
+            'status' => 'success',
+            'data' => $results
+        ]);
+    }
+    
+    /**
+     * GET /api/programs/filter/language?language={language}
+     * Filter programs by language
+     * 
+     * @return \CodeIgniter\HTTP\ResponseInterface
+     */
+    public function filterByLanguage()
+    {
+        $language = $this->request->getGet('language');
+        
+        if (!$language) {
+            return $this->fail('Language parameter is required');
+        }
+        
+        $results = $this->model->filterByLanguage($language);
+        
+        return $this->respond([
+            'status' => 'success',
+            'data' => $results,
+            'count' => count($results)
+        ]);
+    }
+    
+    /**
+     * GET /api/programs/filter/language-level?level={level}
+     * Filter programs by language level
+     * 
+     * @return \CodeIgniter\HTTP\ResponseInterface
+     */
+    public function filterByLanguageLevel()
+    {
+        $level = $this->request->getGet('level');
+        
+        if (!$level) {
+            return $this->fail('Level parameter is required');
+        }
+        
+        $results = $this->model->filterByLanguageLevel($level);
+        
+        return $this->respond([
+            'status' => 'success',
+            'data' => $results,
+            'count' => count($results)
+        ]);
+    }
+    
+    /**
+     * GET /api/programs/languages
+     * Get available languages
+     * 
+     * @return \CodeIgniter\HTTP\ResponseInterface
+     */
+    public function languages()
+    {
+        $results = $this->model->getAvailableLanguages();
+        
+        return $this->respond([
+            'status' => 'success',
+            'data' => $results
+        ]);
+    }
+    
+    /**
+     * GET /api/programs/language-levels
+     * Get available language levels
+     * 
+     * @return \CodeIgniter\HTTP\ResponseInterface
+     */
+    public function languageLevels()
+    {
+        $results = $this->model->getAvailableLanguageLevels();
+        
+        return $this->respond([
+            'status' => 'success',
+            'data' => $results
+        ]);
+    }
+    
+    /**
+     * GET /api/programs/by-language
+     * Get programs grouped by language
+     * 
+     * @return \CodeIgniter\HTTP\ResponseInterface
+     */
+    public function byLanguage()
+    {
+        $results = $this->model->getProgramsByLanguage();
         
         return $this->respond([
             'status' => 'success',

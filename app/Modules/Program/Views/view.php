@@ -57,10 +57,24 @@
 
             <div class="row">
                 <div class="col-md-6">
-                    <h6>Category Information</h6>
+                    <h6>Language & Category Information</h6>
                     <table class="table table-sm">
                         <tr>
-                            <th width="40%">Category:</th>
+                            <th width="40%">Language:</th>
+                            <td>
+                                <?php if (!empty($program['language'])): ?>
+                                    <span class="badge bg-info"><?= esc($program['language']) ?></span>
+                                <?php else: ?>
+                                    <span class="text-muted">-</span>
+                                <?php endif ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Language Level:</th>
+                            <td><?= esc($program['language_level'] ?? '-') ?></td>
+                        </tr>
+                        <tr>
+                            <th>Category:</th>
                             <td><?= esc($program['category'] ?? '-') ?></td>
                         </tr>
                         <tr>

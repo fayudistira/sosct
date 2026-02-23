@@ -151,6 +151,24 @@
 
                                                 <div class="card-body d-flex flex-column p-4">
                                                     <h5 class="fw-bold mb-2 text-dark"><?= esc($program['title']) ?></h5>
+                                                    <div class="d-flex flex-wrap gap-2 mb-2">
+                                                        <?php if (!empty($program['language'])): ?>
+                                                            <span class="badge bg-info text-white">
+                                                                <i class="bi bi-translate me-1"></i><?= esc($program['language']) ?>
+                                                            </span>
+                                                        <?php endif ?>
+                                                        <?php if (!empty($program['language_level'])): ?>
+                                                            <span class="badge bg-secondary">
+                                                                <?= esc($program['language_level']) ?>
+                                                            </span>
+                                                        <?php endif ?>
+                                                        <?php if (!empty($program['mode'])): ?>
+                                                            <span class="badge bg-light text-muted border">
+                                                                <i class="bi bi-<?= $program['mode'] === 'online' ? 'wifi' : 'building' ?> me-1"></i>
+                                                                <?= ucfirst($program['mode']) ?>
+                                                            </span>
+                                                        <?php endif ?>
+                                                    </div>
                                                     <p class="text-muted small flex-grow-1 mb-4">
                                                         <?= esc(strlen($program['description'] ?? '') > 120 ? substr($program['description'], 0, 120) . '...' : ($program['description'] ?? 'Unlock your potential with our immersive educational experience.')) ?>
                                                     </p>

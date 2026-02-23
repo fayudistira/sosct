@@ -136,13 +136,25 @@ if (!empty($program['discount']) && $program['discount'] > 0) {
 
                 <!-- Meta Badges -->
                 <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <?php if (!empty($program['language'])): ?>
+                        <span class="badge bg-info px-2 py-1" style="font-size: 0.75rem;">
+                            <i class="bi bi-translate me-1"></i><?= esc($program['language']) ?>
+                        </span>
+                    <?php endif ?>
+
+                    <?php if (!empty($program['language_level'])): ?>
+                        <span class="badge bg-secondary px-2 py-1" style="font-size: 0.75rem;">
+                            <i class="bi bi-bar-chart-fill me-1"></i><?= esc($program['language_level']) ?>
+                        </span>
+                    <?php endif ?>
+
                     <?php if (!empty($program['mode'])): ?>
                         <?php if ($program['mode'] === 'online'): ?>
-                            <span class="badge bg-info px-2 py-1" style="font-size: 0.75rem;">
+                            <span class="badge bg-primary px-2 py-1" style="font-size: 0.75rem;">
                                 <i class="bi bi-laptop me-1"></i>Online
                             </span>
                         <?php else: ?>
-                            <span class="badge bg-primary px-2 py-1" style="font-size: 0.75rem;">
+                            <span class="badge bg-success px-2 py-1" style="font-size: 0.75rem;">
                                 <i class="bi bi-building me-1"></i>Tatap Muka
                             </span>
                         <?php endif ?>
