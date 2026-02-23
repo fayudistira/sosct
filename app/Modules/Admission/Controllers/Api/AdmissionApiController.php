@@ -22,6 +22,25 @@ class AdmissionApiController extends ResourceController
         $perPage = $this->request->getGet('per_page') ?? 10;
         $search = $this->request->getGet('q');
         $status = $this->request->getGet('status');
+        $sort = $this->request->getGet('sort') ?? 'application_date';
+        $order = $this->request->getGet('order') ?? 'desc';
+        
+        // Validate sort order
+        $order = strtolower($order) === 'asc' ? 'ASC' : 'DESC';
+        
+        // Allowed sort fields
+        $allowedSortFields = [
+            'registration_number' => 'admissions.registration_number',
+            'full_name' => 'profiles.full_name',
+            'email' => 'profiles.email',
+            'phone' => 'profiles.phone',
+            'program_title' => 'programs.title',
+            'status' => 'admissions.status',
+            'application_date' => 'admissions.application_date'
+        ];
+        
+        // Validate sort field
+        $sortField = $allowedSortFields[$sort] ?? 'admissions.application_date';
         
         // Build query
         $builder = $this->model->select('admissions.*, profiles.full_name, profiles.email, profiles.phone, programs.title as program_title')
@@ -42,6 +61,9 @@ class AdmissionApiController extends ResourceController
         if ($status) {
             $builder->where('admissions.status', $status);
         }
+        
+        // Apply sorting
+        $builder->orderBy($sortField, $order);
         
         // Get total count before pagination
         $total = $builder->countAllResults(false);

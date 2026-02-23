@@ -23,6 +23,37 @@
         transform: translate(-50%, -50%);
         z-index: 10;
     }
+
+    .sortable {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .sortable:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .sortable .sort-icon {
+        margin-left: 5px;
+        opacity: 0.3;
+    }
+
+    .sortable.asc .sort-icon,
+    .sortable.desc .sort-icon {
+        opacity: 1;
+    }
+
+    .sortable.asc .sort-icon::before {
+        content: '\25B2';
+    }
+
+    .sortable.desc .sort-icon::before {
+        content: '\25BC';
+    }
+
+    .sortable:not(.asc):not(.desc) .sort-icon::before {
+        content: '\25B2';
+    }
 </style>
 
 <!-- Page Header -->
@@ -71,20 +102,25 @@
             <table class="table table-hover compact-table mb-0" id="admissions-table">
                 <thead>
                     <tr>
-                        <th>No. Registrasi</th>
-                        <th>Nama Lengkap</th>
-                        <th>Email</th>
-                        <th>Telp.</th>
-                        <th>Program</th>
-                        <th>Status</th>
-                        <th>Tgl. Daftar</th>
+                        <th class="text-center" style="width: 50px;">No.</th>
+                        <th class="sortable" data-sort="registration_number">No. Registrasi <span class="sort-icon"></span></th>
+                        <th class="sortable" data-sort="full_name">Nama Lengkap <span class="sort-icon"></span></th>
+                        <th class="sortable" data-sort="email">Email <span class="sort-icon"></span></th>
+                        <th class="sortable" data-sort="phone">Telp. <span class="sort-icon"></span></th>
+                        <th class="sortable" data-sort="program_title">Program <span class="sort-icon"></span></th>
+                        <th class="sortable" data-sort="status">Status <span class="sort-icon"></span></th>
+                        <th class="sortable" data-sort="application_date">Tgl. Daftar <span class="sort-icon"></span></th>
                         <th class="text-end">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="admissions-tbody">
                     <?php if (!empty($admissions)): ?>
-                        <?php foreach ($admissions as $admission): ?>
+                        <?php 
+                        $startIndex = (($currentPage ?? 1) - 1) * 10 + 1;
+                        foreach ($admissions as $index => $admission): 
+                        ?>
                             <tr>
+                                <td class="text-center text-muted"><?= $startIndex + $index ?></td>
                                 <td class="fw-medium"><?= esc($admission['registration_number']) ?></td>
                                 <td><?= esc($admission['full_name']) ?></td>
                                 <td><?= esc($admission['email']) ?></td>
@@ -117,7 +153,7 @@
                         <?php endforeach ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="8" class="text-center text-muted">No admissions found</td>
+                            <td colspan="9" class="text-center text-muted">No admissions found</td>
                         </tr>
                     <?php endif ?>
                 </tbody>
@@ -149,6 +185,9 @@
 <script>
 let searchTimeout;
 let currentPage = 1;
+let currentSort = 'application_date';
+let currentOrder = 'desc';
+let totalRecords = 0;
 
 // Debounced search function
 function debounceSearch() {
@@ -176,6 +215,8 @@ function performSearch(page = 1) {
     if (statusValue) params.append('status', statusValue);
     params.append('page', page);
     params.append('per_page', 10);
+    params.append('sort', currentSort);
+    params.append('order', currentOrder);
 
     // Make AJAX request
     fetch(`<?= base_url('api/admissions') ?>?${params.toString()}`, {
@@ -190,8 +231,10 @@ function performSearch(page = 1) {
         spinner.style.display = 'none';
 
         if (data.status === 'success') {
+            totalRecords = data.pagination?.total || 0;
             updateTable(data.data);
             updatePagination(data.pagination);
+            updateRecordCount(data.pagination);
         } else {
             console.error('Error:', data.message);
         }
@@ -219,11 +262,14 @@ function updateTable(admissions) {
     table.style.display = 'table';
     noResults.style.display = 'none';
 
-    tbody.innerHTML = admissions.map(admission => {
+    const startIndex = (currentPage - 1) * 10 + 1;
+
+    tbody.innerHTML = admissions.map((admission, index) => {
         const badgeClass = getStatusBadgeClass(admission.status);
         
         return `
             <tr>
+                <td class="text-center text-muted">${startIndex + index}</td>
                 <td class="fw-medium">${escapeHtml(admission.registration_number)}</td>
                 <td>${escapeHtml(admission.full_name)}</td>
                 <td>${escapeHtml(admission.email)}</td>
@@ -247,6 +293,27 @@ function updateTable(admissions) {
             </tr>
         `;
     }).join('');
+}
+
+// Update record count display
+function updateRecordCount(pagination) {
+    let countDiv = document.getElementById('record-count');
+    if (!countDiv) {
+        countDiv = document.createElement('div');
+        countDiv.id = 'record-count';
+        countDiv.className = 'text-muted small mb-2';
+        const tableContainer = document.querySelector('.dashboard-card');
+        tableContainer.insertBefore(countDiv, tableContainer.querySelector('.card-body'));
+    }
+
+    if (pagination && pagination.total > 0) {
+        const start = (pagination.current_page - 1) * pagination.per_page + 1;
+        const end = Math.min(pagination.current_page * pagination.per_page, pagination.total);
+        countDiv.innerHTML = `<i class="bi bi-list-ul me-1"></i>Menampilkan ${start}-${end} dari ${pagination.total} data`;
+        countDiv.style.display = 'block';
+    } else {
+        countDiv.style.display = 'none';
+    }
 }
 
 // Get status badge class
@@ -314,6 +381,28 @@ function formatDate(dateStr) {
     return `${months[date.getMonth()]} ${String(date.getDate()).padStart(2, '0')}, ${date.getFullYear()}`;
 }
 
+// Sort functionality
+function handleSort(sortField) {
+    if (currentSort === sortField) {
+        currentOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+        currentSort = sortField;
+        currentOrder = 'asc';
+    }
+
+    // Update sort indicators
+    document.querySelectorAll('.sortable').forEach(th => {
+        th.classList.remove('asc', 'desc');
+    });
+
+    const clickedHeader = document.querySelector(`.sortable[data-sort="${sortField}"]`);
+    if (clickedHeader) {
+        clickedHeader.classList.add(currentOrder);
+    }
+
+    performSearch(1);
+}
+
 // Event listeners
 document.getElementById('search-input').addEventListener('input', debounceSearch);
 document.getElementById('status-filter').addEventListener('change', () => performSearch(1));
@@ -323,6 +412,14 @@ document.getElementById('clear-filters').addEventListener('click', function() {
     document.getElementById('search-input').value = '';
     document.getElementById('status-filter').value = '';
     performSearch(1);
+});
+
+// Sort headers click handlers
+document.querySelectorAll('.sortable').forEach(th => {
+    th.addEventListener('click', function() {
+        const sortField = this.getAttribute('data-sort');
+        handleSort(sortField);
+    });
 });
 
 // Delete confirmation
