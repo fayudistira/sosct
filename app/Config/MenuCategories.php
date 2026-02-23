@@ -42,11 +42,5 @@ return [
         'icon' => 'gear',
         'order' => 30,
         'permission' => 'admin.settings'
-    ],
-    'tools' => [
-        'title' => 'Tools',
-        'icon' => 'tools',
-        'order' => 40,
-        'permission' => 'tools.access'
     ]
 ];
