@@ -29,6 +29,37 @@
         height: 32px;
         object-fit: cover;
     }
+
+    .sortable {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .sortable:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .sortable .sort-icon {
+        margin-left: 5px;
+        opacity: 0.3;
+    }
+
+    .sortable.asc .sort-icon,
+    .sortable.desc .sort-icon {
+        opacity: 1;
+    }
+
+    .sortable.asc .sort-icon::before {
+        content: '\25B2';
+    }
+
+    .sortable.desc .sort-icon::before {
+        content: '\25BC';
+    }
+
+    .sortable:not(.asc):not(.desc) .sort-icon::before {
+        content: '\25B2';
+    }
 </style>
 
 <div class="row mb-4">
@@ -84,23 +115,28 @@
             <table class="table compact-table mb-0" id="employees-table">
                 <thead>
                     <tr>
-                        <th>Staff ID</th>
-                        <th>Name</th>
-                        <th>Position</th>
-                        <th>Department</th>
-                        <th>Status</th>
-                        <th>Join Date</th>
+                        <th class="text-center" style="width: 50px;">No.</th>
+                        <th class="sortable" data-sort="staff_number">Staff ID <span class="sort-icon"></span></th>
+                        <th class="sortable" data-sort="full_name">Name <span class="sort-icon"></span></th>
+                        <th class="sortable" data-sort="position">Position <span class="sort-icon"></span></th>
+                        <th class="sortable" data-sort="department">Department <span class="sort-icon"></span></th>
+                        <th class="sortable" data-sort="status">Status <span class="sort-icon"></span></th>
+                        <th class="sortable" data-sort="hire_date">Join Date <span class="sort-icon"></span></th>
                         <th class="text-end">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="employees-tbody">
                     <?php if (empty($employees)): ?>
                         <tr>
-                            <td colspan="7" class="text-center py-4 text-muted">No employees found.</td>
+                            <td colspan="8" class="text-center py-4 text-muted">No employees found.</td>
                         </tr>
                     <?php else: ?>
-                        <?php foreach ($employees as $emp): ?>
+                        <?php 
+                        $startIndex = (($currentPage ?? 1) - 1) * 10 + 1;
+                        foreach ($employees as $index => $emp): 
+                        ?>
                             <tr>
+                                <td class="text-center text-muted"><?= $startIndex + $index ?></td>
                                 <td class="fw-bold"><?= esc($emp['staff_number']) ?></td>
                                 <td>
                                     <div class="d-flex align-items-center">
@@ -154,6 +190,8 @@
 <script>
 let searchTimeout;
 let currentPage = 1;
+let currentSort = 'staff_number';
+let currentOrder = 'asc';
 
 // Debounced search function
 function debounceSearch() {
@@ -183,6 +221,8 @@ function performSearch(page = 1) {
     if (departmentValue) params.append('department', departmentValue);
     params.append('page', page);
     params.append('per_page', 10);
+    params.append('sort', currentSort);
+    params.append('order', currentOrder);
 
     // Make AJAX request
     fetch(`<?= base_url('api/employees') ?>?${params.toString()}`, {
@@ -199,6 +239,7 @@ function performSearch(page = 1) {
         if (data.status === 'success') {
             updateTable(data.data);
             updatePagination(data.pagination);
+            updateRecordCount(data.pagination);
         } else {
             console.error('Error:', data.message);
         }
@@ -226,7 +267,9 @@ function updateTable(employees) {
     table.style.display = 'table';
     noResults.style.display = 'none';
 
-    tbody.innerHTML = employees.map(emp => {
+    const startIndex = (currentPage - 1) * 10 + 1;
+
+    tbody.innerHTML = employees.map((emp, index) => {
         const statusBadge = getStatusBadge(emp.status);
         const photoUrl = emp.photo 
             ? `<?= base_url('uploads/') ?>${escapeHtml(emp.photo)}`
@@ -234,6 +277,7 @@ function updateTable(employees) {
         
         return `
             <tr>
+                <td class="text-center text-muted">${startIndex + index}</td>
                 <td class="fw-bold">${escapeHtml(emp.staff_number)}</td>
                 <td>
                     <div class="d-flex align-items-center">
@@ -259,6 +303,29 @@ function updateTable(employees) {
             </tr>
         `;
     }).join('');
+}
+
+// Update record count display
+function updateRecordCount(pagination) {
+    let countDiv = document.getElementById('record-count');
+    if (!countDiv) {
+        countDiv = document.createElement('div');
+        countDiv.id = 'record-count';
+        countDiv.className = 'text-muted small mb-2';
+        const tableContainer = document.querySelector('.dashboard-card');
+        if (tableContainer) {
+            tableContainer.insertBefore(countDiv, tableContainer.querySelector('.card-body'));
+        }
+    }
+
+    if (pagination && pagination.total > 0) {
+        const start = (pagination.current_page - 1) * pagination.per_page + 1;
+        const end = Math.min(pagination.current_page * pagination.per_page, pagination.total);
+        countDiv.innerHTML = `<i class="bi bi-list-ul me-1"></i>Menampilkan ${start}-${end} dari ${pagination.total} data`;
+        countDiv.style.display = 'block';
+    } else {
+        countDiv.style.display = 'none';
+    }
 }
 
 // Get status badge HTML
@@ -323,6 +390,28 @@ function formatDate(dateStr) {
     return `${String(date.getDate()).padStart(2, '0')} ${months[date.getMonth()]} ${date.getFullYear()}`;
 }
 
+// Sort functionality
+function handleSort(sortField) {
+    if (currentSort === sortField) {
+        currentOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+        currentSort = sortField;
+        currentOrder = 'asc';
+    }
+
+    // Update sort indicators
+    document.querySelectorAll('.sortable').forEach(th => {
+        th.classList.remove('asc', 'desc');
+    });
+
+    const clickedHeader = document.querySelector(`.sortable[data-sort="${sortField}"]`);
+    if (clickedHeader) {
+        clickedHeader.classList.add(currentOrder);
+    }
+
+    performSearch(1);
+}
+
 // Event listeners
 document.getElementById('search-input').addEventListener('input', debounceSearch);
 document.getElementById('status-filter').addEventListener('change', () => performSearch(1));
@@ -334,6 +423,14 @@ document.getElementById('clear-filters').addEventListener('click', function() {
     document.getElementById('status-filter').value = '';
     document.getElementById('department-filter').value = '';
     performSearch(1);
+});
+
+// Sort headers click handlers
+document.querySelectorAll('.sortable').forEach(th => {
+    th.addEventListener('click', function() {
+        const sortField = this.getAttribute('data-sort');
+        handleSort(sortField);
+    });
 });
 </script>
 <?= $this->endSection() ?>

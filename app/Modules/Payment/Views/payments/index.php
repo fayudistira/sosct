@@ -58,6 +58,37 @@
         transform: translate(-50%, -50%);
         z-index: 10;
     }
+
+    .sortable {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .sortable:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .sortable .sort-icon {
+        margin-left: 5px;
+        opacity: 0.3;
+    }
+
+    .sortable.asc .sort-icon,
+    .sortable.desc .sort-icon {
+        opacity: 1;
+    }
+
+    .sortable.asc .sort-icon::before {
+        content: '\25B2';
+    }
+
+    .sortable.desc .sort-icon::before {
+        content: '\25BC';
+    }
+
+    .sortable:not(.asc):not(.desc) .sort-icon::before {
+        content: '\25B2';
+    }
 </style>
 
 <div class="container-fluid">
@@ -135,18 +166,23 @@
                 <table class="table table-striped table-hover" id="payments-table">
                     <thead>
                         <tr>
-                            <th>Tgl.</th>
-                            <th>No.Invoice</th>
-                            <th>Nama Siswa</th>
-                            <th>Jumlah</th>
-                            <th>Metode</th>
-                            <th>Status</th>
+                            <th class="text-center" style="width: 50px;">No.</th>
+                            <th class="sortable" data-sort="payment_date">Tgl. <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="invoice_number">No.Invoice <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="student_name">Nama Siswa <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="amount">Jumlah <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="payment_method">Metode <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="status">Status <span class="sort-icon"></span></th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="payments-tbody">
-                        <?php foreach ($payments as $payment): ?>
+                        <?php 
+                        $startIndex = (($currentPage ?? 1) - 1) * 10 + 1;
+                        foreach ($payments as $index => $payment): 
+                        ?>
                             <tr>
+                                <td class="text-center text-muted"><?= $startIndex + $index ?></td>
                                 <td><?= date('M d, Y', strtotime($payment['payment_date'])) ?></td>
                                 <td>
                                     <?php if (!empty($payment['invoice_id']) && !empty($payment['invoice_number'])): ?>
@@ -206,6 +242,8 @@
 <script>
 let searchTimeout;
 let currentPage = 1;
+let currentSort = 'payment_date';
+let currentOrder = 'desc';
 
 // Debounced search function
 function debounceSearch() {
@@ -239,6 +277,8 @@ function performSearch(page = 1) {
     if (endDate) params.append('end_date', endDate);
     params.append('page', page);
     params.append('per_page', 10);
+    params.append('sort', currentSort);
+    params.append('order', currentOrder);
 
     // Make AJAX request
     fetch(`<?= base_url('api/payments') ?>?${params.toString()}`, {
@@ -255,6 +295,7 @@ function performSearch(page = 1) {
         if (data.status === 'success') {
             updateTable(data.data);
             updatePagination(data.pagination);
+            updateRecordCount(data.pagination);
         } else {
             console.error('Error:', data.message);
         }
@@ -282,7 +323,9 @@ function updateTable(payments) {
     table.style.display = 'table';
     noResults.style.display = 'none';
 
-    tbody.innerHTML = payments.map(payment => {
+    const startIndex = (currentPage - 1) * 10 + 1;
+
+    tbody.innerHTML = payments.map((payment, index) => {
         const invoiceLink = payment.invoice_id && payment.invoice_number
             ? `<a href="<?= base_url('invoice/view/') ?>${payment.invoice_id}">#${escapeHtml(payment.invoice_number)}</a>`
             : '<span>N/A</span>';
@@ -293,6 +336,7 @@ function updateTable(payments) {
 
         return `
             <tr>
+                <td class="text-center text-muted">${startIndex + index}</td>
                 <td>${formatDate(payment.payment_date)}</td>
                 <td>${invoiceLink}</td>
                 <td>${escapeHtml(payment.student_name || payment.student?.full_name || 'N/A')}</td>
@@ -320,6 +364,29 @@ function updateTable(payments) {
             </tr>
         `;
     }).join('');
+}
+
+// Update record count display
+function updateRecordCount(pagination) {
+    let countDiv = document.getElementById('record-count');
+    if (!countDiv) {
+        countDiv = document.createElement('div');
+        countDiv.id = 'record-count';
+        countDiv.className = 'text-muted small mb-2';
+        const tableContainer = document.querySelector('.card-body.position-relative');
+        if (tableContainer) {
+            tableContainer.insertBefore(countDiv, tableContainer.querySelector('.table-responsive'));
+        }
+    }
+
+    if (pagination && pagination.total > 0) {
+        const start = (pagination.current_page - 1) * pagination.per_page + 1;
+        const end = Math.min(pagination.current_page * pagination.per_page, pagination.total);
+        countDiv.innerHTML = `<i class="bi bi-list-ul me-1"></i>Menampilkan ${start}-${end} dari ${pagination.total} data`;
+        countDiv.style.display = 'block';
+    } else {
+        countDiv.style.display = 'none';
+    }
 }
 
 // Update pagination
@@ -385,6 +452,28 @@ function formatNumber(num) {
     return new Intl.NumberFormat('id-ID').format(num);
 }
 
+// Sort functionality
+function handleSort(sortField) {
+    if (currentSort === sortField) {
+        currentOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+        currentSort = sortField;
+        currentOrder = 'asc';
+    }
+
+    // Update sort indicators
+    document.querySelectorAll('.sortable').forEach(th => {
+        th.classList.remove('asc', 'desc');
+    });
+
+    const clickedHeader = document.querySelector(`.sortable[data-sort="${sortField}"]`);
+    if (clickedHeader) {
+        clickedHeader.classList.add(currentOrder);
+    }
+
+    performSearch(1);
+}
+
 // Event listeners
 document.getElementById('search-input').addEventListener('input', debounceSearch);
 document.getElementById('status-filter').addEventListener('change', () => performSearch(1));
@@ -400,6 +489,14 @@ document.getElementById('clear-filters').addEventListener('click', function() {
     document.getElementById('start-date').value = '';
     document.getElementById('end-date').value = '';
     performSearch(1);
+});
+
+// Sort headers click handlers
+document.querySelectorAll('.sortable').forEach(th => {
+    th.addEventListener('click', function() {
+        const sortField = this.getAttribute('data-sort');
+        handleSort(sortField);
+    });
 });
 </script>
 <?= $this->endSection() ?>

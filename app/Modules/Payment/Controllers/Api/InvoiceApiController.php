@@ -24,6 +24,24 @@ class InvoiceApiController extends ResourceController
         $page = $this->request->getGet('page') ?? 1;
         $perPage = $this->request->getGet('per_page') ?? 10;
         $search = $this->request->getGet('q');
+        $sort = $this->request->getGet('sort') ?? 'due_date';
+        $order = $this->request->getGet('order') ?? 'desc';
+
+        // Validate sort order
+        $order = strtolower($order) === 'asc' ? 'ASC' : 'DESC';
+
+        // Allowed sort fields
+        $allowedSortFields = [
+            'invoice_number' => 'invoice_number',
+            'student_name' => 'registration_number',
+            'invoice_type' => 'invoice_type',
+            'amount' => 'amount',
+            'due_date' => 'due_date',
+            'status' => 'status'
+        ];
+
+        // Validate sort field
+        $sortField = $allowedSortFields[$sort] ?? 'due_date';
 
         // Apply filters if provided
         $filters = [];
@@ -44,12 +62,27 @@ class InvoiceApiController extends ResourceController
         if ($search) {
             $invoices = $invoiceModel->searchInvoices($search);
             $total = count($invoices);
+            // Apply sorting to search results
+            usort($invoices, function($a, $b) use ($sortField, $order) {
+                $aVal = $a[$sortField] ?? '';
+                $bVal = $b[$sortField] ?? '';
+                $result = strcmp($aVal, $bVal);
+                return $order === 'ASC' ? $result : -$result;
+            });
             $invoices = array_slice($invoices, ($page - 1) * $perPage, $perPage);
         } elseif (!empty($filters)) {
             $invoices = $invoiceModel->filterInvoices($filters);
             $total = count($invoices);
+            // Apply sorting to filter results
+            usort($invoices, function($a, $b) use ($sortField, $order) {
+                $aVal = $a[$sortField] ?? '';
+                $bVal = $b[$sortField] ?? '';
+                $result = strcmp($aVal, $bVal);
+                return $order === 'ASC' ? $result : -$result;
+            });
             $invoices = array_slice($invoices, ($page - 1) * $perPage, $perPage);
         } else {
+            $invoiceModel->orderBy($sortField, $order);
             $invoices = $invoiceModel->paginate($perPage, 'default', $page);
             $total = $invoiceModel->countAllResults(false);
         }

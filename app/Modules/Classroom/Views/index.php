@@ -23,6 +23,37 @@
         transform: translate(-50%, -50%);
         z-index: 10;
     }
+
+    .sortable {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .sortable:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .sortable .sort-icon {
+        margin-left: 5px;
+        opacity: 0.3;
+    }
+
+    .sortable.asc .sort-icon,
+    .sortable.desc .sort-icon {
+        opacity: 1;
+    }
+
+    .sortable.asc .sort-icon::before {
+        content: '\25B2';
+    }
+
+    .sortable.desc .sort-icon::before {
+        content: '\25BC';
+    }
+
+    .sortable:not(.asc):not(.desc) .sort-icon::before {
+        content: '\25B2';
+    }
 </style>
 
 <div class="row mb-4">
@@ -63,21 +94,24 @@
             <table class="table table-hover compact-table mb-0" id="classrooms-table">
                 <thead>
                     <tr>
-                        <th style="width: 50px;">#</th>
-                        <th>Nama Kelas</th>
-                        <th>Angkatan / Tingkat</th>
-                        <th>Program</th>
+                        <th class="text-center" style="width: 50px;">No.</th>
+                        <th class="sortable" data-sort="title">Nama Kelas <span class="sort-icon"></span></th>
+                        <th class="sortable" data-sort="batch">Angkatan / Tingkat <span class="sort-icon"></span></th>
+                        <th class="sortable" data-sort="program">Program <span class="sort-icon"></span></th>
                         <th>Jadwal</th>
-                        <th>Status</th>
-                        <th>Periode</th>
+                        <th class="sortable" data-sort="status">Status <span class="sort-icon"></span></th>
+                        <th class="sortable" data-sort="start_date">Periode <span class="sort-icon"></span></th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="classrooms-tbody">
                     <?php if (!empty($classrooms)): ?>
-                        <?php foreach ($classrooms as $index => $class): ?>
+                        <?php 
+                        $startIndex = (($currentPage ?? 1) - 1) * 10 + 1;
+                        foreach ($classrooms as $index => $class): 
+                        ?>
                             <tr>
-                                <td><?= $index + 1 ?></td>
+                                <td class="text-center text-muted"><?= $startIndex + $index ?></td>
                                 <td>
                                     <div class="fw-bold"><?= esc($class['title']) ?></div>
                                 </td>
@@ -146,6 +180,8 @@
 <script>
 let searchTimeout;
 let currentPage = 1;
+let currentSort = 'start_date';
+let currentOrder = 'desc';
 
 // Debounced search function
 function debounceSearch() {
@@ -173,6 +209,8 @@ function performSearch(page = 1) {
     if (statusValue) params.append('status', statusValue);
     params.append('page', page);
     params.append('per_page', 10);
+    params.append('sort', currentSort);
+    params.append('order', currentOrder);
 
     // Make AJAX request
     fetch(`<?= base_url('api/classrooms') ?>?${params.toString()}`, {
@@ -189,6 +227,7 @@ function performSearch(page = 1) {
         if (data.status === 'success') {
             updateTable(data.data);
             updatePagination(data.pagination);
+            updateRecordCount(data.pagination);
         } else {
             console.error('Error:', data.message);
         }
@@ -216,6 +255,8 @@ function updateTable(classrooms) {
     table.style.display = 'table';
     noResults.style.display = 'none';
 
+    const startIndex = (currentPage - 1) * 10 + 1;
+
     tbody.innerHTML = classrooms.map((classroom, index) => {
         const schedule = classroom.schedule ? JSON.parse(classroom.schedule) : [];
         const scheduleCount = schedule ? Object.keys(schedule).length : 0;
@@ -223,7 +264,7 @@ function updateTable(classrooms) {
         
         return `
             <tr>
-                <td>${(currentPage - 1) * 10 + index + 1}</td>
+                <td class="text-center text-muted">${startIndex + index}</td>
                 <td>
                     <div class="fw-bold">${escapeHtml(classroom.title)}</div>
                 </td>
@@ -253,6 +294,27 @@ function updateTable(classrooms) {
             </tr>
         `;
     }).join('');
+}
+
+// Update record count display
+function updateRecordCount(pagination) {
+    let countDiv = document.getElementById('record-count');
+    if (!countDiv) {
+        countDiv = document.createElement('div');
+        countDiv.id = 'record-count';
+        countDiv.className = 'text-muted small mb-2';
+        const tableContainer = document.querySelector('.dashboard-card');
+        tableContainer.insertBefore(countDiv, tableContainer.querySelector('.card-body'));
+    }
+
+    if (pagination && pagination.total > 0) {
+        const start = (pagination.current_page - 1) * pagination.per_page + 1;
+        const end = Math.min(pagination.current_page * pagination.per_page, pagination.total);
+        countDiv.innerHTML = `<i class="bi bi-list-ul me-1"></i>Menampilkan ${start}-${end} dari ${pagination.total} data`;
+        countDiv.style.display = 'block';
+    } else {
+        countDiv.style.display = 'none';
+    }
 }
 
 // Get status badge HTML
@@ -316,6 +378,28 @@ function formatDate(dateStr) {
     return `${String(date.getDate()).padStart(2, '0')} ${months[date.getMonth()]} ${date.getFullYear()}`;
 }
 
+// Sort functionality
+function handleSort(sortField) {
+    if (currentSort === sortField) {
+        currentOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+        currentSort = sortField;
+        currentOrder = 'asc';
+    }
+
+    // Update sort indicators
+    document.querySelectorAll('.sortable').forEach(th => {
+        th.classList.remove('asc', 'desc');
+    });
+
+    const clickedHeader = document.querySelector(`.sortable[data-sort="${sortField}"]`);
+    if (clickedHeader) {
+        clickedHeader.classList.add(currentOrder);
+    }
+
+    performSearch(1);
+}
+
 // Event listeners
 document.getElementById('search-input').addEventListener('input', debounceSearch);
 document.getElementById('status-filter').addEventListener('change', () => performSearch(1));
@@ -325,6 +409,14 @@ document.getElementById('clear-filters').addEventListener('click', function() {
     document.getElementById('search-input').value = '';
     document.getElementById('status-filter').value = '';
     performSearch(1);
+});
+
+// Sort headers click handlers
+document.querySelectorAll('.sortable').forEach(th => {
+    th.addEventListener('click', function() {
+        const sortField = this.getAttribute('data-sort');
+        handleSort(sortField);
+    });
 });
 </script>
 <?= $this->endSection() ?>

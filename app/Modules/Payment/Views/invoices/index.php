@@ -42,6 +42,37 @@
         transform: translate(-50%, -50%);
         z-index: 10;
     }
+
+    .sortable {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .sortable:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .sortable .sort-icon {
+        margin-left: 5px;
+        opacity: 0.3;
+    }
+
+    .sortable.asc .sort-icon,
+    .sortable.desc .sort-icon {
+        opacity: 1;
+    }
+
+    .sortable.asc .sort-icon::before {
+        content: '\25B2';
+    }
+
+    .sortable.desc .sort-icon::before {
+        content: '\25BC';
+    }
+
+    .sortable:not(.asc):not(.desc) .sort-icon::before {
+        content: '\25B2';
+    }
 </style>
 
 <div class="container-fluid">
@@ -127,19 +158,24 @@
                 <table class="table table-hover" id="invoices-table">
                     <thead>
                         <tr>
-                            <th>No. Faktur</th>
-                            <th>Siswa</th>
-                            <th>Jenis</th>
-                            <th>Jumlah</th>
-                            <th>Tanggal Jatuh Tempo</th>
-                            <th>Status</th>
+                            <th class="text-center" style="width: 50px;">No.</th>
+                            <th class="sortable" data-sort="invoice_number">No. Faktur <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="student_name">Siswa <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="invoice_type">Jenis <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="amount">Jumlah <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="due_date">Tanggal Jatuh Tempo <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="status">Status <span class="sort-icon"></span></th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="invoices-tbody">
                         <?php if (!empty($invoices)): ?>
-                            <?php foreach ($invoices as $invoice): ?>
+                            <?php 
+                            $startIndex = (($currentPage ?? 1) - 1) * 10 + 1;
+                            foreach ($invoices as $index => $invoice): 
+                            ?>
                                 <tr>
+                                    <td class="text-center text-muted"><?= $startIndex + $index ?></td>
                                     <td><?= esc($invoice['invoice_number']) ?></td>
                                     <td>
                                         <?= esc($invoice['student']['full_name'] ?? 'N/A') ?><br>
@@ -182,7 +218,7 @@
                             <?php endforeach ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="7" class="text-center">Tidak ada faktur ditemukan</td>
+                                <td colspan="8" class="text-center">Tidak ada faktur ditemukan</td>
                             </tr>
                         <?php endif ?>
                     </tbody>
@@ -206,6 +242,8 @@
 <script>
 let searchTimeout;
 let currentPage = 1;
+let currentSort = 'due_date';
+let currentOrder = 'desc';
 
 // Debounced search function
 function debounceSearch() {
@@ -239,6 +277,8 @@ function performSearch(page = 1) {
     if (endDate) params.append('end_date', endDate);
     params.append('page', page);
     params.append('per_page', 10);
+    params.append('sort', currentSort);
+    params.append('order', currentOrder);
 
     // Make AJAX request
     fetch(`<?= base_url('api/invoices') ?>?${params.toString()}`, {
@@ -255,6 +295,7 @@ function performSearch(page = 1) {
         if (data.status === 'success') {
             updateTable(data.data);
             updatePagination(data.pagination);
+            updateRecordCount(data.pagination);
         } else {
             console.error('Error:', data.message);
         }
@@ -282,7 +323,9 @@ function updateTable(invoices) {
     table.style.display = 'table';
     noResults.style.display = 'none';
 
-    tbody.innerHTML = invoices.map(invoice => {
+    const startIndex = (currentPage - 1) * 10 + 1;
+
+    tbody.innerHTML = invoices.map((invoice, index) => {
         const statusBadge = getStatusBadge(invoice.status);
         const cancelBtn = (invoice.status === 'unpaid' || invoice.status === 'expired')
             ? `<a href="<?= base_url('invoice/cancel/') ?>${invoice.id}" class="btn btn-sm btn-secondary" title="Batalkan Faktur" onclick="return confirm('Apakah Anda yakin ingin membatalkan faktur ini? Tindakan ini tidak dapat dibatalkan.')"><i class="bi bi-x-circle"></i></a>`
@@ -290,6 +333,7 @@ function updateTable(invoices) {
 
         return `
             <tr>
+                <td class="text-center text-muted">${startIndex + index}</td>
                 <td>${escapeHtml(invoice.invoice_number)}</td>
                 <td>
                     ${escapeHtml(invoice.student?.full_name || 'N/A')}<br>
@@ -307,6 +351,29 @@ function updateTable(invoices) {
             </tr>
         `;
     }).join('');
+}
+
+// Update record count display
+function updateRecordCount(pagination) {
+    let countDiv = document.getElementById('record-count');
+    if (!countDiv) {
+        countDiv = document.createElement('div');
+        countDiv.id = 'record-count';
+        countDiv.className = 'text-muted small mb-2';
+        const tableContainer = document.querySelector('.card-body.position-relative');
+        if (tableContainer) {
+            tableContainer.insertBefore(countDiv, tableContainer.querySelector('.table-responsive'));
+        }
+    }
+
+    if (pagination && pagination.total > 0) {
+        const start = (pagination.current_page - 1) * pagination.per_page + 1;
+        const end = Math.min(pagination.current_page * pagination.per_page, pagination.total);
+        countDiv.innerHTML = `<i class="bi bi-list-ul me-1"></i>Menampilkan ${start}-${end} dari ${pagination.total} data`;
+        countDiv.style.display = 'block';
+    } else {
+        countDiv.style.display = 'none';
+    }
 }
 
 // Get status badge HTML
@@ -383,6 +450,28 @@ function formatNumber(num) {
     return new Intl.NumberFormat('id-ID').format(num);
 }
 
+// Sort functionality
+function handleSort(sortField) {
+    if (currentSort === sortField) {
+        currentOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+        currentSort = sortField;
+        currentOrder = 'asc';
+    }
+
+    // Update sort indicators
+    document.querySelectorAll('.sortable').forEach(th => {
+        th.classList.remove('asc', 'desc');
+    });
+
+    const clickedHeader = document.querySelector(`.sortable[data-sort="${sortField}"]`);
+    if (clickedHeader) {
+        clickedHeader.classList.add(currentOrder);
+    }
+
+    performSearch(1);
+}
+
 // Event listeners
 document.getElementById('search-input').addEventListener('input', debounceSearch);
 document.getElementById('status-filter').addEventListener('change', () => performSearch(1));
@@ -398,6 +487,14 @@ document.getElementById('clear-filters').addEventListener('click', function() {
     document.getElementById('start-date').value = '';
     document.getElementById('end-date').value = '';
     performSearch(1);
+});
+
+// Sort headers click handlers
+document.querySelectorAll('.sortable').forEach(th => {
+    th.addEventListener('click', function() {
+        const sortField = this.getAttribute('data-sort');
+        handleSort(sortField);
+    });
 });
 </script>
 <?= $this->endSection() ?>

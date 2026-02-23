@@ -24,6 +24,24 @@ class PaymentApiController extends ResourceController
         $page = $this->request->getGet('page') ?? 1;
         $perPage = $this->request->getGet('per_page') ?? 10;
         $search = $this->request->getGet('q');
+        $sort = $this->request->getGet('sort') ?? 'payment_date';
+        $order = $this->request->getGet('order') ?? 'desc';
+
+        // Validate sort order
+        $order = strtolower($order) === 'asc' ? 'ASC' : 'DESC';
+
+        // Allowed sort fields
+        $allowedSortFields = [
+            'payment_date' => 'payment_date',
+            'invoice_number' => 'invoice_id',
+            'student_name' => 'registration_number',
+            'amount' => 'amount',
+            'payment_method' => 'payment_method',
+            'status' => 'status'
+        ];
+
+        // Validate sort field
+        $sortField = $allowedSortFields[$sort] ?? 'payment_date';
 
         // Apply filters if provided
         $filters = [];
@@ -44,12 +62,27 @@ class PaymentApiController extends ResourceController
         if ($search) {
             $payments = $paymentModel->searchPayments($search);
             $total = count($payments);
+            // Apply sorting to search results
+            usort($payments, function($a, $b) use ($sortField, $order) {
+                $aVal = $a[$sortField] ?? '';
+                $bVal = $b[$sortField] ?? '';
+                $result = strcmp($aVal, $bVal);
+                return $order === 'ASC' ? $result : -$result;
+            });
             $payments = array_slice($payments, ($page - 1) * $perPage, $perPage);
         } elseif (!empty($filters)) {
             $payments = $paymentModel->filterPayments($filters);
             $total = count($payments);
+            // Apply sorting to filter results
+            usort($payments, function($a, $b) use ($sortField, $order) {
+                $aVal = $a[$sortField] ?? '';
+                $bVal = $b[$sortField] ?? '';
+                $result = strcmp($aVal, $bVal);
+                return $order === 'ASC' ? $result : -$result;
+            });
             $payments = array_slice($payments, ($page - 1) * $perPage, $perPage);
         } else {
+            $paymentModel->orderBy($sortField, $order);
             $payments = $paymentModel->paginate($perPage, 'default', $page);
             $total = $paymentModel->countAllResults(false);
         }

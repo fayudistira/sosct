@@ -23,6 +23,37 @@
         transform: translate(-50%, -50%);
         z-index: 10;
     }
+
+    .sortable {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .sortable:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .sortable .sort-icon {
+        margin-left: 5px;
+        opacity: 0.3;
+    }
+
+    .sortable.asc .sort-icon,
+    .sortable.desc .sort-icon {
+        opacity: 1;
+    }
+
+    .sortable.asc .sort-icon::before {
+        content: '\25B2';
+    }
+
+    .sortable.desc .sort-icon::before {
+        content: '\25BC';
+    }
+
+    .sortable:not(.asc):not(.desc) .sort-icon::before {
+        content: '\25B2';
+    }
 </style>
 
 <div class="container-fluid">
@@ -103,22 +134,27 @@
                 <table class="table table-hover" id="programs-table">
                     <thead>
                         <tr>
-                            <th>Title</th>
-                            <th>Category</th>
-                            <th>Sub Category</th>
-                            <th>Duration</th>
-                            <th>Registration Fee</th>
-                            <th>Tuition Fee</th>
-                            <th>Discount</th>
-                            <th>Status</th>
+                            <th class="text-center" style="width: 50px;">No.</th>
+                            <th class="sortable" data-sort="title">Title <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="category">Category <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="sub_category">Sub Category <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="duration">Duration <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="registration_fee">Registration Fee <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="tuition_fee">Tuition Fee <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="discount">Discount <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="status">Status <span class="sort-icon"></span></th>
                             <th>Thumbnail</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="programs-tbody">
                         <?php if (!empty($programs)): ?>
-                            <?php foreach ($programs as $program): ?>
+                            <?php 
+                            $startIndex = (($currentPage ?? 1) - 1) * 10 + 1;
+                            foreach ($programs as $index => $program): 
+                            ?>
                                 <tr>
+                                    <td class="text-center text-muted"><?= $startIndex + $index ?></td>
                                     <td><strong><?= esc($program['title']) ?></strong></td>
                                     <td><?= esc($program['category'] ?? '-') ?></td>
                                     <td><?= esc($program['sub_category'] ?? '-') ?></td>
@@ -161,7 +197,7 @@
                             <?php endforeach ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="10" class="text-center">No programs found.</td>
+                                <td colspan="11" class="text-center">No programs found.</td>
                             </tr>
                         <?php endif ?>
                     </tbody>
@@ -239,6 +275,8 @@
 <script>
 let searchTimeout;
 let currentPage = 1;
+let currentSort = 'title';
+let currentOrder = 'asc';
 
 // Debounced search function
 function debounceSearch() {
@@ -268,6 +306,8 @@ function performSearch(page = 1) {
     if (categoryValue) params.append('category', categoryValue);
     params.append('page', page);
     params.append('per_page', 10);
+    params.append('sort', currentSort);
+    params.append('order', currentOrder);
 
     // Make AJAX request
     fetch(`<?= base_url('api/programs') ?>?${params.toString()}`, {
@@ -284,6 +324,7 @@ function performSearch(page = 1) {
         if (data.status === 'success') {
             updateTable(data.data);
             updatePagination(data.pagination);
+            updateRecordCount(data.pagination);
         } else {
             console.error('Error:', data.message);
         }
@@ -311,7 +352,9 @@ function updateTable(programs) {
     table.style.display = 'table';
     noResults.style.display = 'none';
 
-    tbody.innerHTML = programs.map(program => {
+    const startIndex = (currentPage - 1) * 10 + 1;
+
+    tbody.innerHTML = programs.map((program, index) => {
         const statusBadge = program.status === 'active'
             ? '<span class="badge bg-success">Active</span>'
             : '<span class="badge bg-secondary">Inactive</span>';
@@ -322,6 +365,7 @@ function updateTable(programs) {
 
         return `
             <tr>
+                <td class="text-center text-muted">${startIndex + index}</td>
                 <td><strong>${escapeHtml(program.title)}</strong></td>
                 <td>${escapeHtml(program.category || '-')}</td>
                 <td>${escapeHtml(program.sub_category || '-')}</td>
@@ -346,6 +390,29 @@ function updateTable(programs) {
             </tr>
         `;
     }).join('');
+}
+
+// Update record count display
+function updateRecordCount(pagination) {
+    let countDiv = document.getElementById('record-count');
+    if (!countDiv) {
+        countDiv = document.createElement('div');
+        countDiv.id = 'record-count';
+        countDiv.className = 'text-muted small mb-2';
+        const tableContainer = document.querySelector('.card-body');
+        if (tableContainer) {
+            tableContainer.insertBefore(countDiv, tableContainer.querySelector('.table-responsive'));
+        }
+    }
+
+    if (pagination && pagination.total > 0) {
+        const start = (pagination.current_page - 1) * pagination.per_page + 1;
+        const end = Math.min(pagination.current_page * pagination.per_page, pagination.total);
+        countDiv.innerHTML = `<i class="bi bi-list-ul me-1"></i>Menampilkan ${start}-${end} dari ${pagination.total} data`;
+        countDiv.style.display = 'block';
+    } else {
+        countDiv.style.display = 'none';
+    }
 }
 
 // Update pagination
@@ -399,6 +466,28 @@ function formatNumber(num, decimals = 0) {
     }).format(num);
 }
 
+// Sort functionality
+function handleSort(sortField) {
+    if (currentSort === sortField) {
+        currentOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+        currentSort = sortField;
+        currentOrder = 'asc';
+    }
+
+    // Update sort indicators
+    document.querySelectorAll('.sortable').forEach(th => {
+        th.classList.remove('asc', 'desc');
+    });
+
+    const clickedHeader = document.querySelector(`.sortable[data-sort="${sortField}"]`);
+    if (clickedHeader) {
+        clickedHeader.classList.add(currentOrder);
+    }
+
+    performSearch(1);
+}
+
 // Event listeners
 document.getElementById('search-input').addEventListener('input', debounceSearch);
 document.getElementById('status-filter').addEventListener('change', () => performSearch(1));
@@ -410,6 +499,14 @@ document.getElementById('clear-filters').addEventListener('click', function() {
     document.getElementById('status-filter').value = '';
     document.getElementById('category-filter').value = '';
     performSearch(1);
+});
+
+// Sort headers click handlers
+document.querySelectorAll('.sortable').forEach(th => {
+    th.addEventListener('click', function() {
+        const sortField = this.getAttribute('data-sort');
+        handleSort(sortField);
+    });
 });
 </script>
 <?= $this->endSection() ?>

@@ -20,6 +20,23 @@ class ClassroomApiController extends ResourceController
         $perPage = $this->request->getGet('per_page') ?? 10;
         $search = $this->request->getGet('q');
         $status = $this->request->getGet('status');
+        $sort = $this->request->getGet('sort') ?? 'start_date';
+        $order = $this->request->getGet('order') ?? 'desc';
+
+        // Validate sort order
+        $order = strtolower($order) === 'asc' ? 'ASC' : 'DESC';
+
+        // Allowed sort fields
+        $allowedSortFields = [
+            'title' => 'title',
+            'batch' => 'batch',
+            'program' => 'program',
+            'status' => 'status',
+            'start_date' => 'start_date'
+        ];
+
+        // Validate sort field
+        $sortField = $allowedSortFields[$sort] ?? 'start_date';
 
         // Build query
         $builder = $this->model;
@@ -37,6 +54,9 @@ class ClassroomApiController extends ResourceController
         if ($status) {
             $builder = $builder->where('status', $status);
         }
+
+        // Apply sorting
+        $builder = $builder->orderBy($sortField, $order);
 
         // Get total count before pagination
         $total = $builder->countAllResults(false);
