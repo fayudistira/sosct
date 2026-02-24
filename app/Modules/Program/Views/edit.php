@@ -86,9 +86,24 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Category</label>
-                        <input type="text" name="category" class="form-control"
-                            value="<?= old('category', $program['category']) ?>">
+                        <label class="form-label">Category <span class="text-danger">*</span></label>
+                        <div class="btn-group w-100" role="group" aria-label="Category selection">
+                            <input type="radio" class="btn-check" name="category" id="category-regular" value="Regular" <?= old('category', $program['category']) === 'Regular' ? 'checked' : '' ?>>
+                            <label class="btn btn-outline-primary" for="category-regular">
+                                <i class="bi bi-people-fill me-1"></i>Regular
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="category" id="category-private" value="Privat" <?= old('category', $program['category']) === 'Privat' ? 'checked' : '' ?>>
+                            <label class="btn btn-outline-primary" for="category-private">
+                                <i class="bi bi-person-fill me-1"></i>Privat
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="category" id="category-paket" value="Paket" <?= old('category', $program['category']) === 'Paket' ? 'checked' : '' ?>>
+                            <label class="btn btn-outline-primary" for="category-paket">
+                                <i class="bi bi-box-fill me-1"></i>Paket
+                            </label>
+                        </div>
+                        <small class="text-muted">Select program category type</small>
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -114,14 +129,18 @@
 
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Delivery Mode <span class="text-danger">*</span></label>
-                        <select name="mode" class="form-select" required>
-                            <option value="offline" <?= old('mode', $program['mode'] ?? 'offline') === 'offline' ? 'selected' : '' ?>>
-                                Offline (In-Person)
-                            </option>
-                            <option value="online" <?= old('mode', $program['mode'] ?? 'offline') === 'online' ? 'selected' : '' ?>>
-                                Online (Remote)
-                            </option>
-                        </select>
+                        <div class="btn-group w-100" role="group" aria-label="Mode selection">
+                            <input type="radio" class="btn-check" name="mode" id="mode-offline" value="offline" <?= old('mode', $program['mode'] ?? 'offline') === 'offline' ? 'checked' : '' ?>>
+                            <label class="btn btn-outline-success" for="mode-offline">
+                                <i class="bi bi-building me-1"></i>Offline (In-Person)
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="mode" id="mode-online" value="online" <?= old('mode', $program['mode'] ?? 'offline') === 'online' ? 'checked' : '' ?>>
+                            <label class="btn btn-outline-info" for="mode-online">
+                                <i class="bi bi-wifi me-1"></i>Online (Remote)
+                            </label>
+                        </div>
+                        <small class="text-muted">Select delivery method</small>
                     </div>
                 </div>
             </div>
