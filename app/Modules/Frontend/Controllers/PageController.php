@@ -490,7 +490,16 @@ class PageController extends BaseController
         }
 
         // Sort languages, modes, categories and sub-categories
-        sort($languages);
+        // Custom order for languages: Mandarin, Japanese, Korean, German, English, Other
+        $languageOrder = ['Mandarin', 'Japanese', 'Korean', 'German', 'English', 'Other'];
+        usort($languages, function($a, $b) use ($languageOrder) {
+            $indexA = array_search($a, $languageOrder);
+            $indexB = array_search($b, $languageOrder);
+            if ($indexA === false) $indexA = 999;
+            if ($indexB === false) $indexB = 999;
+            return $indexA - $indexB;
+        });
+        
         foreach ($languages as $language) {
             ksort($programsByLanguage[$language]['modes']);
             foreach ($programsByLanguage[$language]['modes'] as $mode => $modeData) {

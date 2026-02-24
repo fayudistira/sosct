@@ -6,7 +6,7 @@
     <div class="position-absolute top-0 start-0 w-100 h-100" style="background: radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 40%); pointer-events: none;"></div>
     <div class="container position-relative py-4 text-center">
         <div class="badge bg-white text-danger mb-3 p-2 px-3 rounded-pill shadow-sm animate-fade-in fw-bold">
-            <i class="bi bi-stars me-1"></i> DISCOVER YOUR PATH
+            <i class="bi bi-stars me-1"></i> Temukan Kursus Terbaikmu
         </div>
         <h1 class="display-3 fw-bold text-white mb-3 animate-slide-up">Intensive <span class="text-white-50">Programs</span></h1>
         <p class="lead text-white-50 mx-auto animate-slide-up-delay-1" style="max-width: 700px;">
