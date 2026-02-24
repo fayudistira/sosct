@@ -133,176 +133,311 @@
     </div>
 </div>
 
+<!-- Mode Navigation Bar - Sticky -->
+<?php if (!empty($modes)): ?>
+    <div class="sticky-top" id="explore" style="top: 0; z-index: 1020;">
+        <nav class="py-2 px-2 d-flex flex-wrap gap-2 justify-content-center" style="background: linear-gradient(135deg, var(--dark-red) 0%, #600000 100%);" role="tablist">
+            <?php foreach ($modes as $modeIndex => $mode): ?>
+                <button class="btn-lang-header <?= ($modeIndex === 0) ? 'active' : '' ?>"
+                    id="mode-tab-<?= $modeIndex ?>"
+                    data-bs-toggle="tab"
+                    data-bs-target="#mode-<?= $modeIndex ?>"
+                    type="button"
+                    role="tab"
+                    aria-controls="mode-<?= $modeIndex ?>"
+                    aria-selected="<?= ($modeIndex === 0) ? 'true' : 'false' ?>">
+                    <i class="bi bi-<?= ($mode === 'online') ? 'wifi' : 'building' ?> me-2"></i>
+                    <?= ucfirst($mode) ?>
+                    <span class="badge-lang"><?= $programsByMode[$mode]['total_programs'] ?></span>
+                </button>
+            <?php endforeach ?>
+        </nav>
+    </div>
+<?php endif ?>
+
 <!-- Available Programs Section -->
-<div class="py-5 bg-light">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold mb-3" style="color: var(--dark-red);">Program Inggris Tersedia</h2>
-            <p class="lead text-muted">Pilih program yang sesuai dengan kebutuhan dan tujuan Anda</p>
-        </div>
-
-        <?php if (!empty($programsBySubCategory)): ?>
-            <!-- Sub-Category Tabs -->
-            <div class="d-flex align-items-center mb-4 pb-2 border-bottom">
-                <h4 class="fw-bold mb-0 me-4">Kategori Program</h4>
-                <div class="nav nav-pills sub-category-pills d-flex gap-2" role="tablist">
-                    <?php foreach ($subCategories as $subIndex => $subCategory): ?>
-                        <button class="nav-link btn btn-sm rounded-pill btn-sub-cat <?= ($subIndex === 0) ? 'active' : '' ?>"
-                            id="sub-tab-<?= $subIndex ?>"
-                            data-bs-toggle="pill"
-                            data-bs-target="#sub-category-<?= $subIndex ?>"
-                            type="button"
-                            role="tab"
-                            aria-controls="sub-category-<?= $subIndex ?>"
-                            aria-selected="<?= ($subIndex === 0) ? 'true' : 'false' ?>">
-                            <?= esc($subCategory) ?>
-                            <span class="ms-1 opacity-50 small">(<?= count($programsBySubCategory[$subCategory]) ?>)</span>
-                        </button>
-                    <?php endforeach ?>
-                </div>
+<div class="container py-3">
+    <?php if (empty($programsByMode)): ?>
+        <div class="text-center py-5">
+            <div class="feature-icon mb-4 mx-auto" style="width: 100px; height: 100px; font-size: 3rem; background: var(--light-red); color: var(--dark-red);">
+                <i class="bi bi-search"></i>
             </div>
+            <h3 class="fw-bold">No Programs Available</h3>
+            <p class="text-muted">Belum ada program Inggris yang tersedia saat ini. Silakan hubungi kami untuk informasi lebih lanjut.</p>
+            <a href="https://wa.me/6285810310950?text=Hai,%20saya%20mau%20tanya%20tentang%20program%20Inggris"
+                target="_blank"
+                class="btn btn-dark-red rounded-pill mt-3">
+                <i class="bi bi-whatsapp me-2"></i>Hubungi Kami
+            </a>
+        </div>
+    <?php else: ?>
+        <!-- Tab Content for Modes -->
+        <div class="tab-content" id="modeTabContent">
+            <?php foreach ($modes as $modeIndex => $mode): ?>
+                <div class="tab-pane fade <?= ($modeIndex === 0) ? 'show active' : '' ?>"
+                    id="mode-<?= $modeIndex ?>"
+                    role="tabpanel"
+                    aria-labelledby="mode-tab-<?= $modeIndex ?>">
 
-            <!-- Sub-Tab Content -->
-            <div class="tab-content">
-                <?php foreach ($subCategories as $subIndex => $subCategory): ?>
-                    <div class="tab-pane fade <?= ($subIndex === 0) ? 'show active' : '' ?>"
-                        id="sub-category-<?= $subIndex ?>"
-                        role="tabpanel">
+                    <?php 
+                    $categories = array_keys($programsByMode[$mode]['categories']);
+                    if (!empty($categories)): 
+                    ?>
+                        <!-- Category Navigation - Pill Style -->
+                        <div class="text-center mb-3 pt-3">
+                            <div class="d-inline-flex flex-wrap gap-2 justify-content-center" role="tablist">
+                                <?php foreach ($categories as $catIndex => $category): ?>
+                                    <button class="pill-tab-btn <?= ($catIndex === 0) ? 'active' : '' ?>"
+                                        id="cat-tab-<?= $modeIndex ?>-<?= $catIndex ?>"
+                                        data-bs-toggle="tab"
+                                        data-bs-target="#category-<?= $modeIndex ?>-<?= $catIndex ?>"
+                                        type="button"
+                                        role="tab"
+                                        aria-controls="category-<?= $modeIndex ?>-<?= $catIndex ?>"
+                                        aria-selected="<?= ($catIndex === 0) ? 'true' : 'false' ?>">
+                                        <?= esc($category) ?>
+                                        <span class="badge-pill"><?= $programsByMode[$mode]['categories'][$category]['total_programs'] ?></span>
+                                    </button>
+                                <?php endforeach ?>
+                            </div>
+                        </div>
 
-                        <!-- Programs Grid -->
-                        <div class="row g-4">
-                            <?php foreach ($programsBySubCategory[$subCategory] as $program): ?>
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="card border-0 shadow-sm h-100 hover-lift overflow-hidden program-card-modern">
-                                        <!-- Image Container -->
-                                        <div class="position-relative overflow-hidden" style="height: 200px;">
-                                            <?php if (!empty($program['thumbnail'])): ?>
-                                                <img src="<?= base_url('uploads/programs/thumbs/' . $program['thumbnail']) ?>"
-                                                    alt="<?= esc($program['title']) ?>"
-                                                    class="w-100 h-100 object-fit-cover program-img-zoom">
-                                            <?php else: ?>
-                                                <?php
+                        <!-- Category Tab Content -->
+                        <div class="tab-content">
+                            <?php foreach ($categories as $catIndex => $category): ?>
+                                <div class="tab-pane fade <?= ($catIndex === 0) ? 'show active' : '' ?>"
+                                    id="category-<?= $modeIndex ?>-<?= $catIndex ?>"
+                                    role="tabpanel"
+                                    aria-labelledby="cat-tab-<?= $modeIndex ?>-<?= $catIndex ?>">
+
+                                    <?php 
+                                    $subCategories = array_keys($programsByMode[$mode]['categories'][$category]['sub_categories']);
+                                    $hasMultipleSubCats = count($subCategories) > 1;
+                                    ?>
+                                    
+                                    <?php if ($hasMultipleSubCats): ?>
+                                        <!-- Sub-Category Navigation - Small Pills -->
+                                        <div class="text-center mb-3">
+                                            <div class="d-inline-flex flex-wrap gap-2 justify-content-center" role="tablist">
+                                                <?php foreach ($subCategories as $subIndex => $subCategory): ?>
+                                                    <button class="pill-tab-btn pill-tab-btn-sm <?= ($subIndex === 0) ? 'active' : '' ?>"
+                                                        id="sub-tab-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
+                                                        data-bs-toggle="tab"
+                                                        data-bs-target="#sub-category-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
+                                                        type="button"
+                                                        role="tab"
+                                                        aria-controls="sub-category-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
+                                                        aria-selected="<?= ($subIndex === 0) ? 'true' : 'false' ?>">
+                                                        <?= esc($subCategory) ?>
+                                                        <span class="badge-pill"><?= count($programsByMode[$mode]['categories'][$category]['sub_categories'][$subCategory]) ?></span>
+                                                    </button>
+                                                <?php endforeach ?>
+                                            </div>
+                                        </div>
+
+                                        <!-- Sub-Category Tab Content -->
+                                        <div class="tab-content">
+                                            <?php foreach ($subCategories as $subIndex => $subCategory): ?>
+                                                <div class="tab-pane fade <?= ($subIndex === 0) ? 'show active' : '' ?>"
+                                                    id="sub-category-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
+                                                    role="tabpanel"
+                                                    aria-labelledby="sub-tab-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>">
+                                                    <!-- Programs Grid -->
+                                                    <div class="row g-4">
+                                                        <?php 
+                                                        $progs = $programsByMode[$mode]['categories'][$category]['sub_categories'][$subCategory];
+                                                        foreach ($progs as $program): 
+                                                            $seed = crc32($program['id']);
+                                                            $randomId = ($seed % 1000) + 1;
+                                                            $finalPrice = $program['tuition_fee'] * (1 - ($program['discount'] ?? 0) / 100);
+                                                            $shareUrl = urlencode(base_url('programs/' . $program['id']));
+                                                            $shareText = "Program: " . $program['title'] . "%0A%0A";
+                                                            $shareText .= "Registrasi: Rp " . number_format($program['registration_fee'], 0, ',', '.') . "%0A";
+                                                            $shareText .= "Biaya Kursus: Rp " . number_format($finalPrice, 0, ',', '.') . "%0A";
+                                                            if (!empty($program['discount']) && $program['discount'] > 0) {
+                                                                $shareText .= "Diskon: " . $program['discount'] . "%25";
+                                                            }
+                                                            $whatsappShareUrl = 'https://wa.me/?text=' . $shareText . '%0A%0A' . $shareUrl;
+                                                        ?>
+                                                        <div class="col-md-6 col-lg-4">
+                                                            <div class="card border-0 shadow-sm h-100 hover-lift overflow-hidden program-card-modern">
+                                                                <div class="position-relative overflow-hidden" style="height: 200px;">
+                                                                    <?php if (!empty($program['thumbnail'])): ?>
+                                                                        <img src="<?= base_url('uploads/programs/thumbs/' . $program['thumbnail']) ?>" 
+                                                                            alt="<?= esc($program['title']) ?>" 
+                                                                            class="w-100 h-100 object-fit-cover program-img-zoom">
+                                                                    <?php else: ?>
+                                                                        <img src="https://picsum.photos/seed/<?= $randomId ?>/800/600" 
+                                                                            alt="<?= esc($program['title']) ?>" 
+                                                                            class="w-100 h-100 object-fit-cover program-img-zoom" 
+                                                                            loading="lazy">
+                                                                    <?php endif ?>
+                                                                    <div class="position-absolute top-0 end-0 m-3 d-flex gap-2">
+                                                                        <?php if (auth()->loggedIn() && auth()->user()->inGroup('superadmin')): ?>
+                                                                            <a href="<?= base_url('program/edit/' . $program['id']) ?>" 
+                                                                                class="badge bg-warning text-dark shadow-sm py-2 px-3 rounded-pill fw-bold text-decoration-none" 
+                                                                                style="font-size: 0.7rem;"
+                                                                                title="Edit Program">
+                                                                                <i class="bi bi-pencil-square me-1"></i>Edit
+                                                                            </a>
+                                                                            <select class="badge bg-info text-white border-0 py-2 px-2 rounded-pill fw-bold sort-order-select" 
+                                                                                data-program-id="<?= $program['id'] ?>"
+                                                                                style="font-size: 0.7rem; cursor: pointer;"
+                                                                                title="Change Sort Order">
+                                                                                <?php for ($i = 1; $i <= 20; $i++): ?>
+                                                                                    <option value="<?= $i ?>" <?= ($program['sort_order'] ?? 1) == $i ? 'selected' : '' ?>>
+                                                                                        #<?= $i ?>
+                                                                                    </option>
+                                                                                <?php endfor; ?>
+                                                                            </select>
+                                                                        <?php endif ?>
+                                                                        <span class="badge bg-white text-dark shadow-sm py-2 px-3 rounded-pill fw-bold" style="font-size: 0.7rem;">
+                                                                            <?= strtoupper(esc($program['sub_category'] ?? 'Standard')) ?>
+                                                                        </span>
+                                                                    </div>
+                                                                    <div class="position-absolute bottom-0 start-0 w-100 p-3 bg-gradient-dark text-white">
+                                                                        <div class="d-flex align-items-baseline">
+                                                                            <span class="h4 fw-bold mb-0">Rp <?= number_format($finalPrice, 0, ',', '.') ?></span>
+                                                                            <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
+                                                                                <span class="ms-2 text-white-50 text-decoration-line-through small">Rp <?= number_format($program['tuition_fee'], 0, ',', '.') ?></span>
+                                                                                <span class="ms-auto badge bg-danger rounded-pill">-<?= $program['discount'] ?>%</span>
+                                                                            <?php endif ?>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card-body d-flex flex-column p-4">
+                                                                    <h5 class="fw-bold mb-2 text-dark"><?= esc($program['title']) ?></h5>
+                                                                    <div class="d-flex flex-wrap gap-2 mb-2">
+                                                                        <?php if (!empty($program['language'])): ?>
+                                                                            <span class="badge bg-info text-white"><i class="bi bi-translate me-1"></i><?= esc($program['language']) ?></span>
+                                                                        <?php endif ?>
+                                                                        <?php if (!empty($program['language_level'])): ?>
+                                                                            <span class="badge bg-secondary"><?= esc($program['language_level']) ?></span>
+                                                                        <?php endif ?>
+                                                                        <?php if (!empty($program['mode'])): ?>
+                                                                            <span class="badge bg-light text-muted border"><i class="bi bi-<?= ($program['mode'] === 'online' ? 'wifi' : 'building') ?> me-1"></i><?= ucfirst($program['mode']) ?></span>
+                                                                        <?php endif ?>
+                                                                    </div>
+                                                                    <p class="text-muted small flex-grow-1 mb-4">
+                                                                        <?= esc(strlen($program['description'] ?? '') > 120 ? substr($program['description'], 0, 120) . '...' : ($program['description'] ?? 'Unlock your potential with our immersive educational experience.')) ?>
+                                                                    </p>
+                                                                    <div class="d-flex align-items-center gap-2 pt-3 border-top mt-auto">
+                                                                        <a href="<?= $whatsappShareUrl ?>" target="_blank" class="btn btn-outline-success btn-sm rounded" title="Share ke WhatsApp">
+                                                                            <i class="bi bi-share"></i>
+                                                                        </a>
+                                                                        <a href="<?= base_url('programs/' . $program['id']) ?>" class="btn btn-outline-dark btn-sm rounded flex-grow-1 fw-bold">DETAILS</a>
+                                                                        <a href="<?= base_url('apply/' . $program['id']) ?>" class="btn btn-dark-red btn-sm rounded flex-grow-1 fw-bold">APPLY NOW</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <?php endforeach ?>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach ?>
+                                        </div>
+                                    <?php else: ?>
+                                        <!-- Single sub-category, show directly -->
+                                        <div class="row g-4">
+                                            <?php 
+                                            $subCatKey = $subCategories[0] ?? 'Standard';
+                                            $progs = $programsByMode[$mode]['categories'][$category]['sub_categories'][$subCatKey];
+                                            foreach ($progs as $program): 
                                                 $seed = crc32($program['id']);
                                                 $randomId = ($seed % 1000) + 1;
-                                                ?>
-                                                <img src="https://picsum.photos/seed/<?= $randomId ?>/800/600"
-                                                    alt="<?= esc($program['title']) ?>"
-                                                    class="w-100 h-100 object-fit-cover program-img-zoom"
-                                                    loading="lazy">
-                                            <?php endif ?>
-
-                                            <!-- Category Overlay -->
-                                            <div class="position-absolute top-0 end-0 m-3 d-flex gap-2">
-                                                <?php if (auth()->loggedIn() && auth()->user()->inGroup('superadmin')): ?>
-                                                    <a href="<?= base_url('program/edit/' . $program['id']) ?>" 
-                                                        class="badge bg-warning text-dark shadow-sm py-2 px-3 rounded-pill fw-bold text-decoration-none" 
-                                                        style="font-size: 0.7rem;"
-                                                        title="Edit Program">
-                                                        <i class="bi bi-pencil-square me-1"></i>Edit
-                                                    </a>
-                                                    <select class="badge bg-info text-white border-0 py-2 px-2 rounded-pill fw-bold sort-order-select" 
-                                                        data-program-id="<?= $program['id'] ?>"
-                                                        style="font-size: 0.7rem; cursor: pointer;"
-                                                        title="Change Sort Order">
-                                                        <?php for ($i = 1; $i <= 20; $i++): ?>
-                                                            <option value="<?= $i ?>" <?= ($program['sort_order'] ?? 1) == $i ? 'selected' : '' ?>>
-                                                                #<?= $i ?>
-                                                            </option>
-                                                        <?php endfor; ?>
-                                                    </select>
-                                                <?php endif ?>
-                                                <span class="badge bg-white text-dark shadow-sm py-2 px-3 rounded-pill fw-bold" style="font-size: 0.7rem;">
-                                                    <?= strtoupper(esc((string)($program['sub_category'] ?? 'Standard'))) ?>
-                                                </span>
-                                            </div>
-
-                                            <!-- Price Overlay -->
-                                            <div class="position-absolute bottom-0 start-0 w-100 p-3 bg-gradient-dark text-white">
-                                                <?php
-                                                $tuitionFee = $program['tuition_fee'] ?? 0;
-                                                $registrationFee = $program['registration_fee'] ?? 0;
-                                                $discount = $program['discount'] ?? 0;
-                                                $discountedPrice = $tuitionFee * (1 - $discount / 100);
-                                                ?>
-                                                <div class="d-flex align-items-baseline">
-                                                    <span class="h4 fw-bold mb-0">Rp <?= number_format($discountedPrice, 0, ',', '.') ?></span>
-                                                    <?php if (!empty($discount) && $discount > 0): ?>
-                                                        <span class="ms-2 text-white-50 text-decoration-line-through small">Rp <?= number_format($tuitionFee, 0, ',', '.') ?></span>
-                                                        <span class="ms-auto badge bg-danger rounded-pill">-<?= $discount ?>%</span>
-                                                    <?php endif ?>
-                                                </div>
-                                                <?php if ($registrationFee > 0): ?>
-                                                    <div class="small text-white-50 mt-1">
-                                                        <i class="bi bi-info-circle me-1"></i>
-                                                        + Biaya pendaftaran: Rp <?= number_format($registrationFee, 0, ',', '.') ?>
+                                                $finalPrice = $program['tuition_fee'] * (1 - ($program['discount'] ?? 0) / 100);
+                                                $shareUrl = urlencode(base_url('programs/' . $program['id']));
+                                                $shareText = "Program: " . $program['title'] . "%0A%0A";
+                                                $shareText .= "Registrasi: Rp " . number_format($program['registration_fee'], 0, ',', '.') . "%0A";
+                                                $shareText .= "Biaya Kursus: Rp " . number_format($finalPrice, 0, ',', '.') . "%0A";
+                                                if (!empty($program['discount']) && $program['discount'] > 0) {
+                                                    $shareText .= "Diskon: " . $program['discount'] . "%25";
+                                                }
+                                                $whatsappShareUrl = 'https://wa.me/?text=' . $shareText . '%0A%0A' . $shareUrl;
+                                            ?>
+                                            <div class="col-md-6 col-lg-4">
+                                                <div class="card border-0 shadow-sm h-100 hover-lift overflow-hidden program-card-modern">
+                                                    <div class="position-relative overflow-hidden" style="height: 200px;">
+                                                        <?php if (!empty($program['thumbnail'])): ?>
+                                                            <img src="<?= base_url('uploads/programs/thumbs/' . $program['thumbnail']) ?>" 
+                                                                alt="<?= esc($program['title']) ?>" 
+                                                                class="w-100 h-100 object-fit-cover program-img-zoom">
+                                                        <?php else: ?>
+                                                            <img src="https://picsum.photos/seed/<?= $randomId ?>/800/600" 
+                                                                alt="<?= esc($program['title']) ?>" 
+                                                                class="w-100 h-100 object-fit-cover program-img-zoom" 
+                                                                loading="lazy">
+                                                        <?php endif ?>
+                                                        <div class="position-absolute top-0 end-0 m-3 d-flex gap-2">
+                                                            <?php if (auth()->loggedIn() && auth()->user()->inGroup('superadmin')): ?>
+                                                                <a href="<?= base_url('program/edit/' . $program['id']) ?>" 
+                                                                    class="badge bg-warning text-dark shadow-sm py-2 px-3 rounded-pill fw-bold text-decoration-none" 
+                                                                    style="font-size: 0.7rem;"
+                                                                    title="Edit Program">
+                                                                    <i class="bi bi-pencil-square me-1"></i>Edit
+                                                                </a>
+                                                                <select class="badge bg-info text-white border-0 py-2 px-2 rounded-pill fw-bold sort-order-select" 
+                                                                    data-program-id="<?= $program['id'] ?>"
+                                                                    style="font-size: 0.7rem; cursor: pointer;"
+                                                                    title="Change Sort Order">
+                                                                    <?php for ($i = 1; $i <= 20; $i++): ?>
+                                                                        <option value="<?= $i ?>" <?= ($program['sort_order'] ?? 1) == $i ? 'selected' : '' ?>>
+                                                                            #<?= $i ?>
+                                                                        </option>
+                                                                    <?php endfor; ?>
+                                                                </select>
+                                                            <?php endif ?>
+                                                            <span class="badge bg-white text-dark shadow-sm py-2 px-3 rounded-pill fw-bold" style="font-size: 0.7rem;">
+                                                                <?= strtoupper(esc($program['sub_category'] ?? 'Standard')) ?>
+                                                            </span>
+                                                        </div>
+                                                        <div class="position-absolute bottom-0 start-0 w-100 p-3 bg-gradient-dark text-white">
+                                                            <div class="d-flex align-items-baseline">
+                                                                <span class="h4 fw-bold mb-0">Rp <?= number_format($finalPrice, 0, ',', '.') ?></span>
+                                                                <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
+                                                                    <span class="ms-2 text-white-50 text-decoration-line-through small">Rp <?= number_format($program['tuition_fee'], 0, ',', '.') ?></span>
+                                                                    <span class="ms-auto badge bg-danger rounded-pill">-<?= $program['discount'] ?>%</span>
+                                                                <?php endif ?>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                <?php endif ?>
+                                                    <div class="card-body d-flex flex-column p-4">
+                                                        <h5 class="fw-bold mb-2 text-dark"><?= esc($program['title']) ?></h5>
+                                                        <div class="d-flex flex-wrap gap-2 mb-2">
+                                                            <?php if (!empty($program['language'])): ?>
+                                                                <span class="badge bg-info text-white"><i class="bi bi-translate me-1"></i><?= esc($program['language']) ?></span>
+                                                            <?php endif ?>
+                                                            <?php if (!empty($program['language_level'])): ?>
+                                                                <span class="badge bg-secondary"><?= esc($program['language_level']) ?></span>
+                                                            <?php endif ?>
+                                                            <?php if (!empty($program['mode'])): ?>
+                                                                <span class="badge bg-light text-muted border"><i class="bi bi-<?= ($program['mode'] === 'online' ? 'wifi' : 'building') ?> me-1"></i><?= ucfirst($program['mode']) ?></span>
+                                                            <?php endif ?>
+                                                        </div>
+                                                        <p class="text-muted small flex-grow-1 mb-4">
+                                                            <?= esc(strlen($program['description'] ?? '') > 120 ? substr($program['description'], 0, 120) . '...' : ($program['description'] ?? 'Unlock your potential with our immersive educational experience.')) ?>
+                                                        </p>
+                                                        <div class="d-flex align-items-center gap-2 pt-3 border-top mt-auto">
+                                                            <a href="<?= $whatsappShareUrl ?>" target="_blank" class="btn btn-outline-success btn-sm rounded" title="Share ke WhatsApp">
+                                                                <i class="bi bi-share"></i>
+                                                            </a>
+                                                            <a href="<?= base_url('programs/' . $program['id']) ?>" class="btn btn-outline-dark btn-sm rounded flex-grow-1 fw-bold">DETAILS</a>
+                                                            <a href="<?= base_url('apply/' . $program['id']) ?>" class="btn btn-dark-red btn-sm rounded flex-grow-1 fw-bold">APPLY NOW</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
+                                            <?php endforeach ?>
                                         </div>
-
-                                        <div class="card-body d-flex flex-column p-4">
-                                            <h5 class="fw-bold mb-2 text-dark"><?= esc($program['title']) ?></h5>
-                                            <!-- Program Meta Tags -->
-                                            <div class="d-flex flex-wrap gap-2 mb-2">
-                                                <?php if (!empty($program['language'])): ?>
-                                                    <span class="badge bg-info text-white small">
-                                                        <i class="bi bi-translate me-1"></i>
-                                                        <?= esc($program['language']) ?>
-                                                    </span>
-                                                <?php endif ?>
-                                                <?php if (!empty($program['language_level'])): ?>
-                                                    <span class="badge bg-secondary small">
-                                                        <?= esc($program['language_level']) ?>
-                                                    </span>
-                                                <?php endif ?>
-                                                <?php if (!empty($program['mode'])): ?>
-                                                    <span class="badge bg-light text-muted border small">
-                                                        <i class="bi bi-<?= (string)($program['mode'] ?? '') === 'online' ? 'wifi' : 'building' ?> me-1"></i>
-                                                        <?= ucfirst(esc((string)($program['mode'] ?? ''))) ?>
-                                                    </span>
-                                                <?php endif ?>
-                                                <?php if (!empty($program['sub_category'])): ?>
-                                                    <span class="badge bg-light text-muted border small">
-                                                        <i class="bi bi-tag me-1"></i>
-                                                        <?= esc((string)($program['sub_category'] ?? '')) ?>
-                                                    </span>
-                                                <?php endif ?>
-                                            </div>
-                                            <p class="text-muted small flex-grow-1 mb-4">
-                                                <?= esc(strlen($program['description'] ?? '') > 120 ? substr($program['description'], 0, 120) . '...' : ($program['description'] ?? 'Unlock your potential with our immersive educational experience.')) ?>
-                                            </p>
-
-                                            <div class="d-flex align-items-center gap-3 pt-3 border-top mt-auto">
-                                                <a href="<?= base_url('programs/' . $program['id']) ?>" class="btn btn-outline-dark btn-sm rounded-pill flex-grow-1 fw-bold">
-                                                    DETAILS
-                                                </a>
-                                                <a href="<?= base_url('apply/' . $program['id']) ?>" class="btn btn-dark-red btn-sm rounded-pill flex-grow-1 fw-bold">
-                                                    APPLY NOW
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <?php endif ?>
                                 </div>
                             <?php endforeach ?>
                         </div>
-                    </div>
-                <?php endforeach ?>
-            </div>
-        <?php else: ?>
-            <div class="text-center py-5">
-                <div class="feature-icon mb-4 mx-auto" style="width: 100px; height: 100px; font-size: 3rem; background: var(--light-red); color: var(--dark-red);">
-                    <i class="bi bi-search"></i>
+                    <?php endif ?>
                 </div>
-                <h3 class="fw-bold">No Programs Available</h3>
-                <p class="text-muted">Belum ada program Inggris yang tersedia saat ini. Silakan hubungi kami untuk informasi lebih lanjut.</p>
-                <a href="https://wa.me/6285810310950?text=Hai,%20saya%20mau%20tanya%20tentang%20program%20Inggris"
-                    target="_blank"
-                    class="btn btn-dark-red rounded-pill mt-3">
-                    <i class="bi bi-whatsapp me-2"></i>Hubungi Kami
-                </a>
-            </div>
-        <?php endif ?>
-    </div>
+            <?php endforeach ?>
+        </div>
+    <?php endif ?>
 </div>
 
 <!-- Program Levels Section -->
@@ -461,6 +596,117 @@
 </div>
 
 <style>
+    /* Custom Scrollbar for mobile navigation */
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    /* Language Header Tabs - Deep Red Background */
+    .btn-lang-header {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        border: none;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .btn-lang-header:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    .btn-lang-header.active {
+        background: white;
+        color: var(--dark-red);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-lang-header .badge-lang {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0.5rem;
+        padding: 0.15rem 0.5rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.2);
+        color: inherit;
+    }
+
+    .btn-lang-header.active .badge-lang {
+        background: var(--light-red);
+        color: var(--dark-red);
+    }
+
+    /* Pill Tab Buttons - Rounded Style */
+    .pill-tab-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #666;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        white-space: nowrap;
+    }
+
+    .pill-tab-btn:hover {
+        border-color: #d1d5db;
+        background: #f9fafb;
+    }
+
+    .pill-tab-btn.active {
+        background: var(--dark-red);
+        color: white;
+        border-color: var(--dark-red);
+        box-shadow: 0 2px 8px rgba(139, 0, 0, 0.25);
+    }
+
+    .pill-tab-btn .badge-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0.4rem;
+        padding: 0.1rem 0.45rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+
+    .pill-tab-btn.active .badge-pill {
+        background: rgba(255, 255, 255, 0.25);
+        color: white;
+    }
+
+    /* Small variant for sub-categories */
+    .pill-tab-btn-sm {
+        padding: 0.35rem 0.85rem;
+        font-size: 0.8rem;
+    }
+
+    .pill-tab-btn-sm .badge-pill {
+        font-size: 0.65rem;
+        padding: 0.1rem 0.35rem;
+    }
+
     .hover-lift {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
@@ -474,40 +720,18 @@
         background: linear-gradient(135deg, var(--dark-red) 0%, var(--medium-red) 100%);
     }
 
-    /* Sub-cat Pills */
-    .btn-sub-cat {
-        font-weight: 600;
-        font-size: 0.75rem;
-        padding: 0.4rem 1.2rem;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        border-width: 2px;
-        color: #6c757d;
-        border: 2px solid #6c757d !important;
-        background: transparent;
-    }
-
-    .btn-sub-cat.active {
-        background-color: #212529 !important;
-        color: white !important;
-        border-color: #212529 !important;
-    }
-
-    .btn-sub-cat:hover:not(.active) {
-        background-color: #f8f9fa;
-        color: #212529;
-        border-color: #212529 !important;
-    }
-
     /* Modern Card */
     .program-card-modern {
         transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         border: 1px solid #f0f0f0 !important;
+        border-radius: 16px !important;
+        overflow: hidden;
     }
 
     .program-card-modern:hover {
         transform: translateY(-8px);
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+        border-color: #ddd !important;
     }
 
     .program-img-zoom {
@@ -515,11 +739,11 @@
     }
 
     .program-card-modern:hover .program-img-zoom {
-        transform: scale(1.1);
+        transform: scale(1.05);
     }
 
     .bg-gradient-dark {
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 50%, transparent 100%);
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
     }
 
     /* Tab Content Animation */
@@ -536,6 +760,24 @@
         to {
             opacity: 1;
             transform: translateY(0);
+        }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .btn-lang-header {
+            padding: 0.6rem 1rem;
+            font-size: 0.85rem;
+        }
+        
+        .pill-tab-btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+        
+        .pill-tab-btn-sm {
+            padding: 0.3rem 0.7rem;
+            font-size: 0.75rem;
         }
     }
 </style>

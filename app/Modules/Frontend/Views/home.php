@@ -119,7 +119,7 @@
 </div>
 
 <!-- Language Categories Section -->
-<div class="container py-5 mt-n5 position-relative" style="z-index: 5;">
+<div class="container py-5 pt-5 mt-5 position-relative" style="z-index: 5;">
     <div class="text-center mb-5">
         <h2 class="display-5 fw-bold mb-3" style="color: var(--dark-red);">Pilih Bahasa yang Ingin Anda Kuasai</h2>
         <p class="lead text-muted">Kami menawarkan kursus lima bahasa asing dengan pengajar berpengalaman dan metode pembelajaran terbaik</p>
@@ -128,7 +128,7 @@
     <div class="row g-4 justify-content-center">
         <!-- Mandarin -->
         <div class="col-md-6 col-lg-4">
-            <a href="<?= base_url('programs?category=Mandarin') ?>" class="text-decoration-none">
+            <a href="<?= base_url('mandarin') ?>" class="text-decoration-none">
                 <div class="card-language border-0 shadow-lg p-4 hover-lift overflow-hidden position-relative" style="background: linear-gradient(135deg, #dc143c 0%, #b91226 100%);">
                     <div class="position-absolute top-0 end-0 opacity-10" style="font-size: 8rem; margin-top: -2rem; margin-right: -2rem;">
                         🇨🇳
@@ -156,7 +156,7 @@
 
         <!-- Japanese -->
         <div class="col-md-6 col-lg-4">
-            <a href="<?= base_url('programs?category=Jepang') ?>" class="text-decoration-none">
+            <a href="<?= base_url('japanese') ?>" class="text-decoration-none">
                 <div class="card-language border-0 shadow-lg p-4 hover-lift overflow-hidden position-relative" style="background: linear-gradient(135deg, #e63946 0%, #d62828 100%);">
                     <div class="position-absolute top-0 end-0 opacity-10" style="font-size: 8rem; margin-top: -2rem; margin-right: -2rem;">
                         🇯🇵
@@ -184,7 +184,7 @@
 
         <!-- Korean -->
         <div class="col-md-6 col-lg-4">
-            <a href="<?= base_url('programs?category=Korea') ?>" class="text-decoration-none">
+            <a href="<?= base_url('korean') ?>" class="text-decoration-none">
                 <div class="card-language border-0 shadow-lg p-4 hover-lift overflow-hidden position-relative" style="background: linear-gradient(135deg, #f77f00 0%, #d62828 100%);">
                     <div class="position-absolute top-0 end-0 opacity-10" style="font-size: 8rem; margin-top: -2rem; margin-right: -2rem;">
                         🇰🇷
@@ -211,7 +211,7 @@
 
         <!-- German -->
         <div class="col-md-6 col-lg-4">
-            <a href="<?= base_url('programs?category=Jerman') ?>" class="text-decoration-none">
+            <a href="<?= base_url('german') ?>" class="text-decoration-none">
                 <div class="card-language border-0 shadow-lg p-4 hover-lift overflow-hidden position-relative" style="background: linear-gradient(135deg, #2a9d8f 0%, #264653 100%);">
                     <div class="position-absolute top-0 end-0 opacity-10" style="font-size: 8rem; margin-top: -2rem; margin-right: -2rem;">
                         🇩🇪
@@ -238,7 +238,7 @@
 
         <!-- English -->
         <div class="col-md-6 col-lg-4">
-            <a href="<?= base_url('programs?category=Inggris') ?>" class="text-decoration-none">
+            <a href="<?= base_url('english') ?>" class="text-decoration-none">
                 <div class="card-language border-0 shadow-lg p-4 hover-lift overflow-hidden position-relative" style="background: linear-gradient(135deg, #457b9d 0%, #1d3557 100%);">
                     <div class="position-absolute top-0 end-0 opacity-10" style="font-size: 8rem; margin-top: -2rem; margin-right: -2rem;">
                         🇬🇧
