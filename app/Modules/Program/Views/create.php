@@ -295,6 +295,18 @@
                         <input type="number" name="discount" class="form-control"
                             value="<?= old('discount', 0) ?>" step="0.01" min="0" max="100">
                     </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Sort Order</label>
+                        <select name="sort_order" class="form-select">
+                            <?php for ($i = 1; $i <= 20; $i++): ?>
+                                <option value="<?= $i ?>" <?= old('sort_order', 1) == $i ? 'selected' : '' ?>>
+                                    Position <?= $i ?>
+                                </option>
+                            <?php endfor; ?>
+                        </select>
+                        <small class="text-muted">Lower numbers appear first. Programs with same order are sorted by creation date.</small>
+                    </div>
                 </div>
             </div>
         </div>

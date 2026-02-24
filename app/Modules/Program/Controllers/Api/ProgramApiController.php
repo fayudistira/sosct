@@ -394,4 +394,48 @@ class ProgramApiController extends ResourceController
             'data' => $results
         ]);
     }
+    
+    /**
+     * PUT /api/programs/{id}/sort-order
+     * Update program sort order (for superadmin ajax)
+     * 
+     * @param string|null $id Program ID
+     * @return \CodeIgniter\HTTP\ResponseInterface
+     */
+    public function updateSortOrder($id = null)
+    {
+        // Check if user is superadmin
+        $user = auth()->user();
+        if (!$user || !$user->inGroup('superadmin')) {
+            return $this->failForbidden('Only superadmin can update sort order');
+        }
+        
+        $program = $this->model->find($id);
+        
+        if (!$program) {
+            return $this->failNotFound('Program not found');
+        }
+        
+        $data = $this->request->getJSON(true);
+        
+        if (!isset($data['sort_order'])) {
+            return $this->fail('sort_order field is required');
+        }
+        
+        $sortOrder = (int) $data['sort_order'];
+        
+        if ($sortOrder < 1 || $sortOrder > 20) {
+            return $this->fail('sort_order must be between 1 and 20');
+        }
+        
+        if (!$this->model->update($id, ['sort_order' => $sortOrder])) {
+            return $this->failValidationErrors($this->model->errors());
+        }
+        
+        return $this->respond([
+            'status' => 'success',
+            'message' => 'Sort order updated successfully',
+            'data' => ['sort_order' => $sortOrder]
+        ]);
+    }
 }

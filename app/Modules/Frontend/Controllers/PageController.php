@@ -439,7 +439,7 @@ class PageController extends BaseController
     public function programs(): string
     {
         $programModel = new ProgramModel();
-        $programs = $programModel->where('status', 'active')->orderBy('created_at', 'DESC')->findAll();
+        $programs = $programModel->where('status', 'active')->orderBy('sort_order', 'ASC')->orderBy('created_at', 'DESC')->findAll();
 
         // Build nested data structure: Language -> Mode -> Category -> SubCategory -> Programs
         $programsByLanguage = [];
@@ -549,6 +549,7 @@ class PageController extends BaseController
         $programModel = new ProgramModel();
         $programs = $programModel->where('status', 'active')
             ->where('language', 'Mandarin')
+            ->orderBy('sort_order', 'ASC')
             ->orderBy('created_at', 'DESC')
             ->findAll();
 
@@ -595,6 +596,7 @@ class PageController extends BaseController
         $programModel = new ProgramModel();
         $programs = $programModel->where('status', 'active')
             ->where('language', 'Japanese')
+            ->orderBy('sort_order', 'ASC')
             ->orderBy('created_at', 'DESC')
             ->findAll();
 
@@ -628,6 +630,7 @@ class PageController extends BaseController
         $programModel = new ProgramModel();
         $programs = $programModel->where('status', 'active')
             ->where('language', 'Korean')
+            ->orderBy('sort_order', 'ASC')
             ->orderBy('created_at', 'DESC')
             ->findAll();
 
@@ -661,6 +664,7 @@ class PageController extends BaseController
         $programModel = new ProgramModel();
         $programs = $programModel->where('status', 'active')
             ->where('language', 'German')
+            ->orderBy('sort_order', 'ASC')
             ->orderBy('created_at', 'DESC')
             ->findAll();
 
@@ -694,6 +698,7 @@ class PageController extends BaseController
         $programModel = new ProgramModel();
         $programs = $programModel->where('status', 'active')
             ->where('language', 'English')
+            ->orderBy('sort_order', 'ASC')
             ->orderBy('created_at', 'DESC')
             ->findAll();
 

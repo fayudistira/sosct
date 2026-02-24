@@ -30,7 +30,8 @@ class ProgramModel extends Model
         'duration',
         'status',
         'mode',
-        'curriculum'
+        'curriculum',
+        'sort_order'
     ];
 
     protected $useTimestamps = true;

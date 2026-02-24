@@ -200,6 +200,16 @@
                                                         title="Edit Program">
                                                         <i class="bi bi-pencil-square me-1"></i>Edit
                                                     </a>
+                                                    <select class="badge bg-info text-white border-0 py-2 px-2 rounded-pill fw-bold sort-order-select" 
+                                                        data-program-id="<?= $program['id'] ?>"
+                                                        style="font-size: 0.7rem; cursor: pointer;"
+                                                        title="Change Sort Order">
+                                                        <?php for ($i = 1; $i <= 20; $i++): ?>
+                                                            <option value="<?= $i ?>" <?= ($program['sort_order'] ?? 1) == $i ? 'selected' : '' ?>>
+                                                                #<?= $i ?>
+                                                            </option>
+                                                        <?php endfor; ?>
+                                                    </select>
                                                 <?php endif ?>
                                                 <span class="badge bg-white text-dark shadow-sm py-2 px-3 rounded-pill fw-bold" style="font-size: 0.7rem;">
                                                     <?= strtoupper(esc((string)($program['sub_category'] ?? 'Standard'))) ?>
@@ -529,4 +539,52 @@
         }
     }
 </style>
+
+<script>
+    // Handle sort order change via AJAX for superadmin
+    document.querySelectorAll('.sort-order-select').forEach(select => {
+        select.addEventListener('change', function() {
+            const programId = this.dataset.programId;
+            const sortOrder = this.value;
+            const originalValue = this.dataset.originalValue || this.value;
+            
+            this.disabled = true;
+            this.style.opacity = '0.6';
+            
+            fetch(`/api/programs/${programId}/sort-order`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ sort_order: parseInt(sortOrder) })
+            })
+            .then(response => response.json())
+            .then(data => {
+                this.disabled = false;
+                this.style.opacity = '1';
+                
+                if (data.status === 'success') {
+                    this.classList.remove('bg-info');
+                    this.classList.add('bg-success');
+                    setTimeout(() => {
+                        this.classList.remove('bg-success');
+                        this.classList.add('bg-info');
+                    }, 1500);
+                    this.dataset.originalValue = sortOrder;
+                } else {
+                    alert(data.messages?.error || 'Failed to update sort order');
+                    this.value = originalValue;
+                }
+            })
+            .catch(error => {
+                this.disabled = false;
+                this.style.opacity = '1';
+                this.value = originalValue;
+                alert('An error occurred. Please try again.');
+            });
+        });
+        select.dataset.originalValue = select.value;
+    });
+</script>
 <?= $this->endSection() ?>

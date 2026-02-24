@@ -27,6 +27,9 @@ $routes->group('api/programs', ['namespace' => 'Modules\Program\Controllers\Api'
     $routes->put('(:segment)', 'ProgramApiController::update/$1');
     $routes->delete('(:segment)', 'ProgramApiController::delete/$1');
     
+    // Sort order update (superadmin only)
+    $routes->put('(:segment)/sort-order', 'ProgramApiController::updateSortOrder/$1');
+    
     // Search and filter
     $routes->get('search', 'ProgramApiController::search');
     $routes->get('filter', 'ProgramApiController::filterByStatus');
