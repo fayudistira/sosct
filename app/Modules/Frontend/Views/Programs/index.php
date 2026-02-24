@@ -27,14 +27,16 @@
 <!-- Language Navigation Bar - Deep Red Header Style -->
 <div class="sticky-top" id="explore" style="top: 0; z-index: 1020;">
     <?php if (!empty($languages)): ?>
-        <nav class="py-2 px-2 d-flex flex-wrap gap-2 justify-content-center" style="background: linear-gradient(135deg, var(--dark-red) 0%, #600000 100%);">
+        <nav class="py-2 px-2 d-flex flex-wrap gap-2 justify-content-center" style="background: linear-gradient(135deg, var(--dark-red) 0%, #600000 100%);" role="tablist">
             <?php foreach ($languages as $langIndex => $language): ?>
                 <button class="btn-lang-header <?= ($language === $selectedLanguage) ? 'active' : '' ?>"
                     id="lang-tab-<?= $langIndex ?>"
-                    data-bs-toggle="pill"
+                    data-bs-toggle="tab"
                     data-bs-target="#language-<?= $langIndex ?>"
                     type="button"
-                    role="tab">
+                    role="tab"
+                    aria-controls="language-<?= $langIndex ?>"
+                    aria-selected="<?= ($language === $selectedLanguage) ? 'true' : 'false' ?>">
                     <i class="bi bi-translate me-2"></i>
                     <?= esc($language) ?>
                     <span class="badge-lang"><?= $programsByLanguage[$language]['total_programs'] ?></span>
@@ -69,7 +71,8 @@
             <?php foreach ($languages as $langIndex => $language): ?>
                 <div class="tab-pane fade <?= ($language === $selectedLanguage) ? 'show active' : '' ?>"
                     id="language-<?= $langIndex ?>"
-                    role="tabpanel">
+                    role="tabpanel"
+                    aria-labelledby="lang-tab-<?= $langIndex ?>">
 
                     <?php 
                     $modes = array_keys($programsByLanguage[$language]['modes']);
@@ -81,10 +84,12 @@
                                 <?php foreach ($modes as $modeIndex => $mode): ?>
                                     <button class="sub-tab-btn position-relative <?= ($modeIndex === 0) ? 'active' : '' ?>"
                                         id="mode-tab-<?= $langIndex ?>-<?= $modeIndex ?>"
-                                        data-bs-toggle="pill"
+                                        data-bs-toggle="tab"
                                         data-bs-target="#mode-<?= $langIndex ?>-<?= $modeIndex ?>"
                                         type="button"
-                                        role="tab">
+                                        role="tab"
+                                        aria-controls="mode-<?= $langIndex ?>-<?= $modeIndex ?>"
+                                        aria-selected="<?= ($modeIndex === 0) ? 'true' : 'false' ?>">
                                         <i class="bi bi-<?= ($mode === 'online') ? 'wifi' : 'building' ?> me-1"></i>
                                         <?= ucfirst($mode) ?>
                                         <span class="ms-1 text-muted small">(<?= $programsByLanguage[$language]['modes'][$mode]['total_programs'] ?>)</span>
@@ -101,7 +106,8 @@
                             <?php foreach ($modes as $modeIndex => $mode): ?>
                                 <div class="tab-pane fade <?= ($modeIndex === 0) ? 'show active' : '' ?>"
                                     id="mode-<?= $langIndex ?>-<?= $modeIndex ?>"
-                                    role="tabpanel">
+                                    role="tabpanel"
+                                    aria-labelledby="mode-tab-<?= $langIndex ?>-<?= $modeIndex ?>">
 
                                     <?php 
                                     $categories = array_keys($programsByLanguage[$language]['modes'][$mode]['categories']);
@@ -113,10 +119,12 @@
                                                 <?php foreach ($categories as $catIndex => $category): ?>
                                                     <button class="pill-tab-btn <?= ($catIndex === 0) ? 'active' : '' ?>"
                                                         id="cat-tab-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>"
-                                                        data-bs-toggle="pill"
+                                                        data-bs-toggle="tab"
                                                         data-bs-target="#category-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>"
                                                         type="button"
-                                                        role="tab">
+                                                        role="tab"
+                                                        aria-controls="category-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>"
+                                                        aria-selected="<?= ($catIndex === 0) ? 'true' : 'false' ?>">
                                                         <?= esc($category) ?>
                                                         <span class="badge-pill"><?= $programsByLanguage[$language]['modes'][$mode]['categories'][$category]['total_programs'] ?></span>
                                                     </button>
@@ -129,7 +137,8 @@
                                             <?php foreach ($categories as $catIndex => $category): ?>
                                                 <div class="tab-pane fade <?= ($catIndex === 0) ? 'show active' : '' ?>"
                                                     id="category-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>"
-                                                    role="tabpanel">
+                                                    role="tabpanel"
+                                                    aria-labelledby="cat-tab-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>">
 
                                                     <?php 
                                                     $subCategories = array_keys($programsByLanguage[$language]['modes'][$mode]['categories'][$category]['sub_categories']);
@@ -143,10 +152,12 @@
                                                                 <?php foreach ($subCategories as $subIndex => $subCategory): ?>
                                                                     <button class="pill-tab-btn pill-tab-btn-sm <?= ($subIndex === 0) ? 'active' : '' ?>"
                                                                         id="sub-tab-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
-                                                                        data-bs-toggle="pill"
+                                                                        data-bs-toggle="tab"
                                                                         data-bs-target="#sub-category-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
                                                                         type="button"
-                                                                        role="tab">
+                                                                        role="tab"
+                                                                        aria-controls="sub-category-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
+                                                                        aria-selected="<?= ($subIndex === 0) ? 'true' : 'false' ?>">
                                                                         <?= esc($subCategory) ?>
                                                                         <span class="badge-pill"><?= count($programsByLanguage[$language]['modes'][$mode]['categories'][$category]['sub_categories'][$subCategory]) ?></span>
                                                                     </button>
@@ -159,7 +170,8 @@
                                                             <?php foreach ($subCategories as $subIndex => $subCategory): ?>
                                                                 <div class="tab-pane fade <?= ($subIndex === 0) ? 'show active' : '' ?>"
                                                                     id="sub-category-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
-                                                                    role="tabpanel">
+                                                                    role="tabpanel"
+                                                                    aria-labelledby="sub-tab-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>">
                                                                     <!-- Programs Grid -->
                                                                     <div class="row g-4">
                                                                         <?php 
@@ -190,15 +202,15 @@
                                                                                             class="w-100 h-100 object-fit-cover program-img-zoom" 
                                                                                             loading="lazy">
                                                                                     <?php endif ?>
-                                                                                    <div class="position-absolute top-0 end-0 m-3 d-flex gap-2">
-                                                                                        <?php if (auth()->loggedIn() && auth()->user()->inGroup('superadmin')): ?>
-                                                                                            <a href="<?= base_url('admin/programs/' . $program['id'] . '/edit') ?>" 
-                                                                                                class="badge bg-warning text-dark shadow-sm py-2 px-3 rounded-pill fw-bold text-decoration-none" 
-                                                                                                style="font-size: 0.7rem;"
-                                                                                                title="Edit Program">
-                                                                                                <i class="bi bi-pencil-square me-1"></i>Edit
-                                                                                            </a>
-                                                                                        <?php endif ?>
+                    <div class="position-absolute top-0 end-0 m-3 d-flex gap-2">
+                        <?php if (auth()->loggedIn() && auth()->user()->inGroup('superadmin')): ?>
+                            <a href="<?= base_url('program/edit/' . $program['id']) ?>" 
+                                class="badge bg-warning text-dark shadow-sm py-2 px-3 rounded-pill fw-bold text-decoration-none" 
+                                style="font-size: 0.7rem;"
+                                title="Edit Program">
+                                <i class="bi bi-pencil-square me-1"></i>Edit
+                            </a>
+                        <?php endif ?>
                                                                                         <span class="badge bg-white text-dark shadow-sm py-2 px-3 rounded-pill fw-bold" style="font-size: 0.7rem;">
                                                                                             <?= strtoupper(esc($program['sub_category'] ?? 'Standard')) ?>
                                                                                         </span>
@@ -276,15 +288,15 @@
                                                                                 class="w-100 h-100 object-fit-cover program-img-zoom" 
                                                                                 loading="lazy">
                                                                                     <?php endif ?>
-                                                                                    <div class="position-absolute top-0 end-0 m-3 d-flex gap-2">
-                                                                                        <?php if (auth()->loggedIn() && auth()->user()->inGroup('superadmin')): ?>
-                                                                                            <a href="<?= base_url('admin/programs/' . $program['id'] . '/edit') ?>" 
-                                                                                                class="badge bg-warning text-dark shadow-sm py-2 px-3 rounded-pill fw-bold text-decoration-none" 
-                                                                                                style="font-size: 0.7rem;"
-                                                                                                title="Edit Program">
-                                                                                                <i class="bi bi-pencil-square me-1"></i>Edit
-                                                                                            </a>
-                                                                                        <?php endif ?>
+                    <div class="position-absolute top-0 end-0 m-3 d-flex gap-2">
+                        <?php if (auth()->loggedIn() && auth()->user()->inGroup('superadmin')): ?>
+                            <a href="<?= base_url('program/edit/' . $program['id']) ?>" 
+                                class="badge bg-warning text-dark shadow-sm py-2 px-3 rounded-pill fw-bold text-decoration-none" 
+                                style="font-size: 0.7rem;"
+                                title="Edit Program">
+                                <i class="bi bi-pencil-square me-1"></i>Edit
+                            </a>
+                        <?php endif ?>
                                                                                         <span class="badge bg-white text-dark shadow-sm py-2 px-3 rounded-pill fw-bold" style="font-size: 0.7rem;">
                                                                                             <?= strtoupper(esc($program['sub_category'] ?? 'Standard')) ?>
                                                                                         </span>

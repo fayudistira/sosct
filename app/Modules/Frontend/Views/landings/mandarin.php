@@ -207,7 +207,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                             <!-- Category Overlay -->
                                             <div class="position-absolute top-0 end-0 m-3 d-flex gap-2">
                                                 <?php if (auth()->loggedIn() && auth()->user()->inGroup('superadmin')): ?>
-                                                    <a href="<?= base_url('admin/programs/' . $program['id'] . '/edit') ?>" 
+                                                    <a href="<?= base_url('program/edit/' . $program['id']) ?>" 
                                                         class="badge bg-warning text-dark shadow-sm py-2 px-3 rounded-pill fw-bold text-decoration-none" 
                                                         style="font-size: 0.7rem;"
                                                         title="Edit Program">
