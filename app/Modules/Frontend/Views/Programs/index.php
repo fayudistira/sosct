@@ -82,9 +82,8 @@
                     if (!empty($modes)): 
                     ?>
                         <!-- Mode Navigation for this Language -->
-                        <div class="text-center mb-4 pb-3 border-bottom">
-                            <h4 class="fw-bold mb-3"><?= esc($language) ?></h4>
-                            <div class="nav nav-pills justify-content-center mode-pills d-inline-flex gap-2" role="tablist">
+                        <div class="text-center mb-3">
+                            <div class="nav nav-pills justify-content-center mode-pills d-inline-flex gap-1" role="tablist">
                                 <?php foreach ($modes as $modeIndex => $mode): ?>
                                     <button class="nav-link btn btn-sm btn-mode <?= ($modeIndex === 0) ? 'active' : '' ?>"
                                         id="mode-tab-<?= $langIndex ?>-<?= $modeIndex ?>"
@@ -112,8 +111,8 @@
                                     if (!empty($categories)): 
                                     ?>
                                         <!-- Category Navigation -->
-                                        <div class="text-center mb-3">
-                                            <div class="nav nav-pills justify-content-center category-pills d-inline-flex gap-2" role="tablist">
+                                        <div class="text-center mb-2">
+                                            <div class="nav nav-pills justify-content-center category-pills d-inline-flex gap-1" role="tablist">
                                                 <?php foreach ($categories as $catIndex => $category): ?>
                                                     <button class="nav-link btn btn-sm btn-cat <?= ($catIndex === 0) ? 'active' : '' ?>"
                                                         id="cat-tab-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>"
@@ -142,8 +141,8 @@
                                                     
                                                     <?php if ($hasMultipleSubCats): ?>
                                                         <!-- Sub-Category Navigation -->
-                                                        <div class="text-center mb-3">
-                                                            <div class="nav nav-pills justify-content-center sub-category-pills d-inline-flex gap-2" role="tablist">
+                                                        <div class="text-center mb-2">
+                                                            <div class="nav nav-pills justify-content-center sub-category-pills d-inline-flex gap-1" role="tablist">
                                                                 <?php foreach ($subCategories as $subIndex => $subCategory): ?>
                                                                     <button class="nav-link btn btn-sm btn-sub-cat <?= ($subIndex === 0) ? 'active' : '' ?>"
                                                                         id="sub-tab-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
@@ -389,14 +388,14 @@
     /* Mode Pills - Centered rounded buttons */
     .mode-pills {
         background: #f8f9fa;
-        padding: 8px;
-        border-radius: 12px;
+        padding: 4px;
+        border-radius: 10px;
     }
 
     .btn-mode {
         font-weight: 600;
-        font-size: 0.9rem;
-        padding: 0.6rem 1.3rem;
+        font-size: 0.85rem;
+        padding: 0.4rem 1rem;
         letter-spacing: 0.3px;
         color: #495057;
         border: 2px solid transparent !important;
@@ -421,15 +420,15 @@
     /* Category Pills - Centered rounded buttons */
     .category-pills {
         background: #fff;
-        padding: 6px;
-        border-radius: 10px;
+        padding: 4px;
+        border-radius: 8px;
         border: 1px solid #e9ecef;
     }
 
     .btn-cat {
         font-weight: 600;
-        font-size: 0.85rem;
-        padding: 0.5rem 1.2rem;
+        font-size: 0.8rem;
+        padding: 0.35rem 0.9rem;
         letter-spacing: 0.3px;
         color: #495057;
         border: 2px solid transparent !important;
@@ -454,14 +453,14 @@
     /* Sub-cat Pills - Centered rounded buttons */
     .sub-category-pills {
         background: #f8f9fa;
-        padding: 5px;
-        border-radius: 8px;
+        padding: 3px;
+        border-radius: 6px;
     }
 
     .btn-sub-cat {
         font-weight: 600;
-        font-size: 0.8rem;
-        padding: 0.4rem 1rem;
+        font-size: 0.75rem;
+        padding: 0.3rem 0.8rem;
         letter-spacing: 0.3px;
         text-transform: uppercase;
         color: #6c757d;
