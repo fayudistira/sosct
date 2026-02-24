@@ -553,38 +553,72 @@ class PageController extends BaseController
             ->orderBy('created_at', 'DESC')
             ->findAll();
 
-        // Organize programs by subcategory
-        $programsBySubCategory = [];
-        $subCategories = [];
+        // Organize programs hierarchically: Mode → Category → SubCategory
+        $programsByMode = [];
+        $modes = [];
+        
         foreach ($programs as $program) {
+            $mode = !empty($program['mode']) ? $program['mode'] : 'offline';
+            $category = !empty($program['category']) ? $program['category'] : 'Regular';
             $subCategory = !empty($program['sub_category']) ? $program['sub_category'] : 'Standard';
-            if (!in_array($subCategory, $subCategories)) {
-                $subCategories[] = $subCategory;
-            }
-            if (!isset($programsBySubCategory[$subCategory])) {
-                $programsBySubCategory[$subCategory] = [];
-            }
-            $programsBySubCategory[$subCategory][] = $program;
-        }
-
-        // Custom sort order: Paket first, then HSK levels, then Privat
-        $sortOrder = ['Paket', 'HSK 1', 'HSK 2', 'HSK 3', 'HSK 4', 'HSK 5', 'HSK 6', 'Privat'];
-        usort($subCategories, function($a, $b) use ($sortOrder) {
-            $indexA = array_search($a, $sortOrder);
-            $indexB = array_search($b, $sortOrder);
             
-            // If not found in sort order, put at the end
+            // Track modes
+            if (!in_array($mode, $modes)) {
+                $modes[] = $mode;
+            }
+            
+            // Initialize mode structure
+            if (!isset($programsByMode[$mode])) {
+                $programsByMode[$mode] = [
+                    'total_programs' => 0,
+                    'categories' => []
+                ];
+            }
+            
+            // Initialize category structure
+            if (!isset($programsByMode[$mode]['categories'][$category])) {
+                $programsByMode[$mode]['categories'][$category] = [
+                    'total_programs' => 0,
+                    'sub_categories' => []
+                ];
+            }
+            
+            // Initialize sub-category
+            if (!isset($programsByMode[$mode]['categories'][$category]['sub_categories'][$subCategory])) {
+                $programsByMode[$mode]['categories'][$category]['sub_categories'][$subCategory] = [];
+            }
+            
+            // Add program
+            $programsByMode[$mode]['categories'][$category]['sub_categories'][$subCategory][] = $program;
+            $programsByMode[$mode]['categories'][$category]['total_programs']++;
+            $programsByMode[$mode]['total_programs']++;
+        }
+        
+        // Sort modes (offline first, then online)
+        $modeOrder = ['offline', 'online'];
+        usort($modes, function($a, $b) use ($modeOrder) {
+            $indexA = array_search($a, $modeOrder);
+            $indexB = array_search($b, $modeOrder);
             if ($indexA === false) $indexA = 999;
             if ($indexB === false) $indexB = 999;
-            
             return $indexA - $indexB;
         });
+        
+        // Sort categories and sub-categories
+        foreach ($modes as $mode) {
+            if (isset($programsByMode[$mode]['categories'])) {
+                ksort($programsByMode[$mode]['categories']);
+                foreach ($programsByMode[$mode]['categories'] as $category => $catData) {
+                    ksort($programsByMode[$mode]['categories'][$category]['sub_categories']);
+                }
+            }
+        }
 
         return view('Modules\Frontend\Views\landings\mandarin', [
             'title' => 'Kursus Bahasa Mandarin - SOS Course and Training',
             'programs' => $programs,
-            'programsBySubCategory' => $programsBySubCategory,
-            'subCategories' => $subCategories
+            'programsByMode' => $programsByMode,
+            'modes' => $modes
         ]);
     }
 
@@ -600,25 +634,65 @@ class PageController extends BaseController
             ->orderBy('created_at', 'DESC')
             ->findAll();
 
-        // Organize programs by subcategory
-        $programsBySubCategory = [];
-        $subCategories = [];
+        // Organize programs hierarchically: Mode → Category → SubCategory
+        $programsByMode = [];
+        $modes = [];
+        
         foreach ($programs as $program) {
+            $mode = !empty($program['mode']) ? $program['mode'] : 'offline';
+            $category = !empty($program['category']) ? $program['category'] : 'Regular';
             $subCategory = !empty($program['sub_category']) ? $program['sub_category'] : 'Standard';
-            if (!in_array($subCategory, $subCategories)) {
-                $subCategories[] = $subCategory;
+            
+            if (!in_array($mode, $modes)) {
+                $modes[] = $mode;
             }
-            if (!isset($programsBySubCategory[$subCategory])) {
-                $programsBySubCategory[$subCategory] = [];
+            
+            if (!isset($programsByMode[$mode])) {
+                $programsByMode[$mode] = [
+                    'total_programs' => 0,
+                    'categories' => []
+                ];
             }
-            $programsBySubCategory[$subCategory][] = $program;
+            
+            if (!isset($programsByMode[$mode]['categories'][$category])) {
+                $programsByMode[$mode]['categories'][$category] = [
+                    'total_programs' => 0,
+                    'sub_categories' => []
+                ];
+            }
+            
+            if (!isset($programsByMode[$mode]['categories'][$category]['sub_categories'][$subCategory])) {
+                $programsByMode[$mode]['categories'][$category]['sub_categories'][$subCategory] = [];
+            }
+            
+            $programsByMode[$mode]['categories'][$category]['sub_categories'][$subCategory][] = $program;
+            $programsByMode[$mode]['categories'][$category]['total_programs']++;
+            $programsByMode[$mode]['total_programs']++;
+        }
+        
+        $modeOrder = ['offline', 'online'];
+        usort($modes, function($a, $b) use ($modeOrder) {
+            $indexA = array_search($a, $modeOrder);
+            $indexB = array_search($b, $modeOrder);
+            if ($indexA === false) $indexA = 999;
+            if ($indexB === false) $indexB = 999;
+            return $indexA - $indexB;
+        });
+        
+        foreach ($modes as $mode) {
+            if (isset($programsByMode[$mode]['categories'])) {
+                ksort($programsByMode[$mode]['categories']);
+                foreach ($programsByMode[$mode]['categories'] as $category => $catData) {
+                    ksort($programsByMode[$mode]['categories'][$category]['sub_categories']);
+                }
+            }
         }
 
         return view('Modules\Frontend\Views\landings\japanese', [
             'title' => 'Kursus Bahasa Jepang - SOS Course and Training',
             'programs' => $programs,
-            'programsBySubCategory' => $programsBySubCategory,
-            'subCategories' => $subCategories
+            'programsByMode' => $programsByMode,
+            'modes' => $modes
         ]);
     }
 
@@ -634,25 +708,65 @@ class PageController extends BaseController
             ->orderBy('created_at', 'DESC')
             ->findAll();
 
-        // Organize programs by subcategory
-        $programsBySubCategory = [];
-        $subCategories = [];
+        // Organize programs hierarchically: Mode → Category → SubCategory
+        $programsByMode = [];
+        $modes = [];
+        
         foreach ($programs as $program) {
+            $mode = !empty($program['mode']) ? $program['mode'] : 'offline';
+            $category = !empty($program['category']) ? $program['category'] : 'Regular';
             $subCategory = !empty($program['sub_category']) ? $program['sub_category'] : 'Standard';
-            if (!in_array($subCategory, $subCategories)) {
-                $subCategories[] = $subCategory;
+            
+            if (!in_array($mode, $modes)) {
+                $modes[] = $mode;
             }
-            if (!isset($programsBySubCategory[$subCategory])) {
-                $programsBySubCategory[$subCategory] = [];
+            
+            if (!isset($programsByMode[$mode])) {
+                $programsByMode[$mode] = [
+                    'total_programs' => 0,
+                    'categories' => []
+                ];
             }
-            $programsBySubCategory[$subCategory][] = $program;
+            
+            if (!isset($programsByMode[$mode]['categories'][$category])) {
+                $programsByMode[$mode]['categories'][$category] = [
+                    'total_programs' => 0,
+                    'sub_categories' => []
+                ];
+            }
+            
+            if (!isset($programsByMode[$mode]['categories'][$category]['sub_categories'][$subCategory])) {
+                $programsByMode[$mode]['categories'][$category]['sub_categories'][$subCategory] = [];
+            }
+            
+            $programsByMode[$mode]['categories'][$category]['sub_categories'][$subCategory][] = $program;
+            $programsByMode[$mode]['categories'][$category]['total_programs']++;
+            $programsByMode[$mode]['total_programs']++;
+        }
+        
+        $modeOrder = ['offline', 'online'];
+        usort($modes, function($a, $b) use ($modeOrder) {
+            $indexA = array_search($a, $modeOrder);
+            $indexB = array_search($b, $modeOrder);
+            if ($indexA === false) $indexA = 999;
+            if ($indexB === false) $indexB = 999;
+            return $indexA - $indexB;
+        });
+        
+        foreach ($modes as $mode) {
+            if (isset($programsByMode[$mode]['categories'])) {
+                ksort($programsByMode[$mode]['categories']);
+                foreach ($programsByMode[$mode]['categories'] as $category => $catData) {
+                    ksort($programsByMode[$mode]['categories'][$category]['sub_categories']);
+                }
+            }
         }
 
         return view('Modules\Frontend\Views\landings\korean', [
             'title' => 'Kursus Bahasa Korea - SOS Course and Training',
             'programs' => $programs,
-            'programsBySubCategory' => $programsBySubCategory,
-            'subCategories' => $subCategories
+            'programsByMode' => $programsByMode,
+            'modes' => $modes
         ]);
     }
 
@@ -668,25 +782,65 @@ class PageController extends BaseController
             ->orderBy('created_at', 'DESC')
             ->findAll();
 
-        // Organize programs by subcategory
-        $programsBySubCategory = [];
-        $subCategories = [];
+        // Organize programs hierarchically: Mode → Category → SubCategory
+        $programsByMode = [];
+        $modes = [];
+        
         foreach ($programs as $program) {
+            $mode = !empty($program['mode']) ? $program['mode'] : 'offline';
+            $category = !empty($program['category']) ? $program['category'] : 'Regular';
             $subCategory = !empty($program['sub_category']) ? $program['sub_category'] : 'Standard';
-            if (!in_array($subCategory, $subCategories)) {
-                $subCategories[] = $subCategory;
+            
+            if (!in_array($mode, $modes)) {
+                $modes[] = $mode;
             }
-            if (!isset($programsBySubCategory[$subCategory])) {
-                $programsBySubCategory[$subCategory] = [];
+            
+            if (!isset($programsByMode[$mode])) {
+                $programsByMode[$mode] = [
+                    'total_programs' => 0,
+                    'categories' => []
+                ];
             }
-            $programsBySubCategory[$subCategory][] = $program;
+            
+            if (!isset($programsByMode[$mode]['categories'][$category])) {
+                $programsByMode[$mode]['categories'][$category] = [
+                    'total_programs' => 0,
+                    'sub_categories' => []
+                ];
+            }
+            
+            if (!isset($programsByMode[$mode]['categories'][$category]['sub_categories'][$subCategory])) {
+                $programsByMode[$mode]['categories'][$category]['sub_categories'][$subCategory] = [];
+            }
+            
+            $programsByMode[$mode]['categories'][$category]['sub_categories'][$subCategory][] = $program;
+            $programsByMode[$mode]['categories'][$category]['total_programs']++;
+            $programsByMode[$mode]['total_programs']++;
+        }
+        
+        $modeOrder = ['offline', 'online'];
+        usort($modes, function($a, $b) use ($modeOrder) {
+            $indexA = array_search($a, $modeOrder);
+            $indexB = array_search($b, $modeOrder);
+            if ($indexA === false) $indexA = 999;
+            if ($indexB === false) $indexB = 999;
+            return $indexA - $indexB;
+        });
+        
+        foreach ($modes as $mode) {
+            if (isset($programsByMode[$mode]['categories'])) {
+                ksort($programsByMode[$mode]['categories']);
+                foreach ($programsByMode[$mode]['categories'] as $category => $catData) {
+                    ksort($programsByMode[$mode]['categories'][$category]['sub_categories']);
+                }
+            }
         }
 
         return view('Modules\Frontend\Views\landings\german', [
             'title' => 'Kursus Bahasa Jerman - SOS Course and Training',
             'programs' => $programs,
-            'programsBySubCategory' => $programsBySubCategory,
-            'subCategories' => $subCategories
+            'programsByMode' => $programsByMode,
+            'modes' => $modes
         ]);
     }
 
@@ -702,25 +856,65 @@ class PageController extends BaseController
             ->orderBy('created_at', 'DESC')
             ->findAll();
 
-        // Organize programs by subcategory
-        $programsBySubCategory = [];
-        $subCategories = [];
+        // Organize programs hierarchically: Mode → Category → SubCategory
+        $programsByMode = [];
+        $modes = [];
+        
         foreach ($programs as $program) {
+            $mode = !empty($program['mode']) ? $program['mode'] : 'offline';
+            $category = !empty($program['category']) ? $program['category'] : 'Regular';
             $subCategory = !empty($program['sub_category']) ? $program['sub_category'] : 'Standard';
-            if (!in_array($subCategory, $subCategories)) {
-                $subCategories[] = $subCategory;
+            
+            if (!in_array($mode, $modes)) {
+                $modes[] = $mode;
             }
-            if (!isset($programsBySubCategory[$subCategory])) {
-                $programsBySubCategory[$subCategory] = [];
+            
+            if (!isset($programsByMode[$mode])) {
+                $programsByMode[$mode] = [
+                    'total_programs' => 0,
+                    'categories' => []
+                ];
             }
-            $programsBySubCategory[$subCategory][] = $program;
+            
+            if (!isset($programsByMode[$mode]['categories'][$category])) {
+                $programsByMode[$mode]['categories'][$category] = [
+                    'total_programs' => 0,
+                    'sub_categories' => []
+                ];
+            }
+            
+            if (!isset($programsByMode[$mode]['categories'][$category]['sub_categories'][$subCategory])) {
+                $programsByMode[$mode]['categories'][$category]['sub_categories'][$subCategory] = [];
+            }
+            
+            $programsByMode[$mode]['categories'][$category]['sub_categories'][$subCategory][] = $program;
+            $programsByMode[$mode]['categories'][$category]['total_programs']++;
+            $programsByMode[$mode]['total_programs']++;
+        }
+        
+        $modeOrder = ['offline', 'online'];
+        usort($modes, function($a, $b) use ($modeOrder) {
+            $indexA = array_search($a, $modeOrder);
+            $indexB = array_search($b, $modeOrder);
+            if ($indexA === false) $indexA = 999;
+            if ($indexB === false) $indexB = 999;
+            return $indexA - $indexB;
+        });
+        
+        foreach ($modes as $mode) {
+            if (isset($programsByMode[$mode]['categories'])) {
+                ksort($programsByMode[$mode]['categories']);
+                foreach ($programsByMode[$mode]['categories'] as $category => $catData) {
+                    ksort($programsByMode[$mode]['categories'][$category]['sub_categories']);
+                }
+            }
         }
 
         return view('Modules\Frontend\Views\landings\english', [
             'title' => 'Kursus Bahasa Inggris - SOS Course and Training',
             'programs' => $programs,
-            'programsBySubCategory' => $programsBySubCategory,
-            'subCategories' => $subCategories
+            'programsByMode' => $programsByMode,
+            'modes' => $modes
         ]);
     }
 }

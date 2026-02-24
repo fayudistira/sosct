@@ -101,7 +101,7 @@ if (!empty($program['discount']) && $program['discount'] > 0) {
                         <?php
                         // Prepare WhatsApp share message
                         $shareUrl = urlencode(base_url('programs/' . $program['id']));
-                        $shareText = "Check out this program:%0A" . urlencode($program['title']) . "%0A%0A";
+                        $shareText = urlencode($program['title']) . "%0A%0A";
                         $shareText .= "Registration Fee: Rp " . number_format($program['registration_fee'], 0, ',', '.') . "%0A";
                         $shareText .= "Tuition Fee: Rp " . number_format($program['tuition_fee'], 0, ',', '.') . "%0A";
                         if ($program['discount'] > 0) {
