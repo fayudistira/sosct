@@ -132,7 +132,17 @@ if (!empty($program['discount']) && $program['discount'] > 0) {
         <div class="col-lg-8">
             <!-- Program Title -->
             <div class="mb-3">
-                <h2 class="fw-bold mb-2" style="color: #2c3e50; font-size: 1.75rem;"><?= esc($program['title']) ?></h2>
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <h2 class="fw-bold mb-0" style="color: #2c3e50; font-size: 1.75rem;"><?= esc($program['title']) ?></h2>
+                    <?php if (auth()->loggedIn() && auth()->user()->inGroup('superadmin')): ?>
+                        <a href="<?= base_url('admin/programs/' . $program['id'] . '/edit') ?>" 
+                            class="badge bg-warning text-dark shadow-sm py-2 px-3 rounded-pill fw-bold text-decoration-none" 
+                            style="font-size: 0.75rem;"
+                            title="Edit Program">
+                            <i class="bi bi-pencil-square me-1"></i>Edit Program
+                        </a>
+                    <?php endif ?>
+                </div>
 
                 <!-- Meta Badges -->
                 <div class="d-flex flex-wrap gap-2 align-items-center">

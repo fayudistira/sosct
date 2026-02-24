@@ -190,7 +190,15 @@
                                                                                             class="w-100 h-100 object-fit-cover program-img-zoom" 
                                                                                             loading="lazy">
                                                                                     <?php endif ?>
-                                                                                    <div class="position-absolute top-0 end-0 m-3">
+                                                                                    <div class="position-absolute top-0 end-0 m-3 d-flex gap-2">
+                                                                                        <?php if (auth()->loggedIn() && auth()->user()->inGroup('superadmin')): ?>
+                                                                                            <a href="<?= base_url('admin/programs/' . $program['id'] . '/edit') ?>" 
+                                                                                                class="badge bg-warning text-dark shadow-sm py-2 px-3 rounded-pill fw-bold text-decoration-none" 
+                                                                                                style="font-size: 0.7rem;"
+                                                                                                title="Edit Program">
+                                                                                                <i class="bi bi-pencil-square me-1"></i>Edit
+                                                                                            </a>
+                                                                                        <?php endif ?>
                                                                                         <span class="badge bg-white text-dark shadow-sm py-2 px-3 rounded-pill fw-bold" style="font-size: 0.7rem;">
                                                                                             <?= strtoupper(esc($program['sub_category'] ?? 'Standard')) ?>
                                                                                         </span>
@@ -267,12 +275,20 @@
                                                                                 alt="<?= esc($program['title']) ?>" 
                                                                                 class="w-100 h-100 object-fit-cover program-img-zoom" 
                                                                                 loading="lazy">
-                                                                        <?php endif ?>
-                                                                        <div class="position-absolute top-0 end-0 m-3">
-                                                                            <span class="badge bg-white text-dark shadow-sm py-2 px-3 rounded-pill fw-bold" style="font-size: 0.7rem;">
-                                                                                <?= strtoupper(esc($program['sub_category'] ?? 'Standard')) ?>
-                                                                            </span>
-                                                                        </div>
+                                                                                    <?php endif ?>
+                                                                                    <div class="position-absolute top-0 end-0 m-3 d-flex gap-2">
+                                                                                        <?php if (auth()->loggedIn() && auth()->user()->inGroup('superadmin')): ?>
+                                                                                            <a href="<?= base_url('admin/programs/' . $program['id'] . '/edit') ?>" 
+                                                                                                class="badge bg-warning text-dark shadow-sm py-2 px-3 rounded-pill fw-bold text-decoration-none" 
+                                                                                                style="font-size: 0.7rem;"
+                                                                                                title="Edit Program">
+                                                                                                <i class="bi bi-pencil-square me-1"></i>Edit
+                                                                                            </a>
+                                                                                        <?php endif ?>
+                                                                                        <span class="badge bg-white text-dark shadow-sm py-2 px-3 rounded-pill fw-bold" style="font-size: 0.7rem;">
+                                                                                            <?= strtoupper(esc($program['sub_category'] ?? 'Standard')) ?>
+                                                                                        </span>
+                                                                                    </div>
                                                                         <div class="position-absolute bottom-0 start-0 w-100 p-3 bg-gradient-dark text-white">
                                                                             <div class="d-flex align-items-baseline">
                                                                                 <span class="h4 fw-bold mb-0">Rp <?= number_format($finalPrice, 0, ',', '.') ?></span>
