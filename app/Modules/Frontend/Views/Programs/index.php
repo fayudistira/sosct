@@ -25,13 +25,13 @@
 </div>
 
 <!-- Language Navigation Bar -->
-<div class="bg-white sticky-top shadow-sm border-bottom py-2" id="explore" style="top: 0; z-index: 1020;">
+<div class="bg-white sticky-top shadow-sm border-bottom py-3" id="explore" style="top: 0; z-index: 1020;">
     <div class="container">
         <?php if (!empty($languages)): ?>
-            <ul class="nav nav-pills nav-fill language-pill-nav gap-2" role="tablist">
+            <ul class="nav nav-pills justify-content-center language-pill-nav gap-2" role="tablist">
                 <?php foreach ($languages as $langIndex => $language): ?>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link rounded-pill border <?= ($language === $selectedLanguage) ? 'active' : '' ?>"
+                        <button class="nav-link btn-lang <?= ($language === $selectedLanguage) ? 'active' : '' ?>"
                             id="lang-tab-<?= $langIndex ?>"
                             data-bs-toggle="pill"
                             data-bs-target="#language-<?= $langIndex ?>"
@@ -40,7 +40,7 @@
                             <span class="d-flex align-items-center justify-content-center">
                                 <i class="bi bi-translate me-2 small"></i>
                                 <?= esc($language) ?>
-                                <span class="ms-2 opacity-50 small">(<?= $programsByLanguage[$language]['total_programs'] ?>)</span>
+                                <span class="ms-2 badge bg-white bg-opacity-25 rounded-pill px-2"><?= $programsByLanguage[$language]['total_programs'] ?></span>
                             </span>
                         </button>
                     </li>
@@ -82,11 +82,11 @@
                     if (!empty($modes)): 
                     ?>
                         <!-- Mode Navigation for this Language -->
-                        <div class="d-flex align-items-center mb-4 pb-2 border-bottom flex-wrap gap-2">
-                            <h4 class="fw-bold mb-0 me-3"><?= esc($language) ?></h4>
-                            <div class="nav nav-pills mode-pills d-flex gap-2" role="tablist">
+                        <div class="text-center mb-4 pb-3 border-bottom">
+                            <h4 class="fw-bold mb-3"><?= esc($language) ?></h4>
+                            <div class="nav nav-pills justify-content-center mode-pills d-inline-flex gap-2" role="tablist">
                                 <?php foreach ($modes as $modeIndex => $mode): ?>
-                                    <button class="nav-link btn btn-sm rounded-pill btn-mode <?= ($modeIndex === 0) ? 'active' : '' ?>"
+                                    <button class="nav-link btn btn-sm btn-mode <?= ($modeIndex === 0) ? 'active' : '' ?>"
                                         id="mode-tab-<?= $langIndex ?>-<?= $modeIndex ?>"
                                         data-bs-toggle="pill"
                                         data-bs-target="#mode-<?= $langIndex ?>-<?= $modeIndex ?>"
@@ -94,7 +94,7 @@
                                         role="tab">
                                         <i class="bi bi-<?= ($mode === 'online') ? 'wifi' : 'building' ?> me-1"></i>
                                         <?= ucfirst($mode) ?>
-                                        <span class="ms-1 opacity-50 small">(<?= $programsByLanguage[$language]['modes'][$mode]['total_programs'] ?>)</span>
+                                        <span class="ms-1 badge bg-white bg-opacity-25 rounded-pill px-2"><?= $programsByLanguage[$language]['modes'][$mode]['total_programs'] ?></span>
                                     </button>
                                 <?php endforeach ?>
                             </div>
@@ -112,18 +112,17 @@
                                     if (!empty($categories)): 
                                     ?>
                                         <!-- Category Navigation -->
-                                        <div class="d-flex align-items-center mb-3 pb-2 flex-wrap gap-2">
-                                            <span class="text-muted small fw-semibold me-2">Category:</span>
-                                            <div class="nav nav-pills category-pills d-flex gap-2" role="tablist">
+                                        <div class="text-center mb-3">
+                                            <div class="nav nav-pills justify-content-center category-pills d-inline-flex gap-2" role="tablist">
                                                 <?php foreach ($categories as $catIndex => $category): ?>
-                                                    <button class="nav-link btn btn-sm rounded-pill btn-cat <?= ($catIndex === 0) ? 'active' : '' ?>"
+                                                    <button class="nav-link btn btn-sm btn-cat <?= ($catIndex === 0) ? 'active' : '' ?>"
                                                         id="cat-tab-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>"
                                                         data-bs-toggle="pill"
                                                         data-bs-target="#category-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>"
                                                         type="button"
                                                         role="tab">
                                                         <?= esc($category) ?>
-                                                        <span class="ms-1 opacity-50 small">(<?= $programsByLanguage[$language]['modes'][$mode]['categories'][$category]['total_programs'] ?>)</span>
+                                                        <span class="badge bg-white text-dark ms-1"><?= $programsByLanguage[$language]['modes'][$mode]['categories'][$category]['total_programs'] ?></span>
                                                     </button>
                                                 <?php endforeach ?>
                                             </div>
@@ -143,18 +142,17 @@
                                                     
                                                     <?php if ($hasMultipleSubCats): ?>
                                                         <!-- Sub-Category Navigation -->
-                                                        <div class="d-flex align-items-center mb-3 pb-2 flex-wrap gap-2">
-                                                            <span class="text-muted small fw-semibold me-2">Type:</span>
-                                                            <div class="nav nav-pills sub-category-pills d-flex gap-2" role="tablist">
+                                                        <div class="text-center mb-3">
+                                                            <div class="nav nav-pills justify-content-center sub-category-pills d-inline-flex gap-2" role="tablist">
                                                                 <?php foreach ($subCategories as $subIndex => $subCategory): ?>
-                                                                    <button class="nav-link btn btn-sm rounded-pill btn-sub-cat <?= ($subIndex === 0) ? 'active' : '' ?>"
+                                                                    <button class="nav-link btn btn-sm btn-sub-cat <?= ($subIndex === 0) ? 'active' : '' ?>"
                                                                         id="sub-tab-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
                                                                         data-bs-toggle="pill"
                                                                         data-bs-target="#sub-category-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
                                                                         type="button"
                                                                         role="tab">
                                                                         <?= esc($subCategory) ?>
-                                                                        <span class="ms-1 opacity-50 small">(<?= count($programsByLanguage[$language]['modes'][$mode]['categories'][$category]['sub_categories'][$subCategory]) ?>)</span>
+                                                                        <span class="badge bg-white text-dark ms-1"><?= count($programsByLanguage[$language]['modes'][$mode]['categories'][$category]['sub_categories'][$subCategory]) ?></span>
                                                                     </button>
                                                                 <?php endforeach ?>
                                                             </div>
@@ -355,97 +353,136 @@
 </div>
 
 <style>
-    /* Language Nav Styling */
-    .language-pill-nav .nav-link {
+    /* Language Nav Styling - Centered with rounded buttons */
+    .language-pill-nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .btn-lang {
         color: #666;
         background: white;
-        border-color: #eee !important;
+        border: 2px solid #e0e0e0 !important;
         font-weight: 600;
         transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-        padding: 0.8rem 1.5rem;
+        padding: 0.7rem 1.4rem;
+        border-radius: 8px !important;
+        font-size: 0.95rem;
     }
 
-    .language-pill-nav .nav-link.active {
-        background: var(--dark-red) !important;
+    .btn-lang.active {
+        background: linear-gradient(135deg, var(--dark-red) 0%, #8b0000 100%) !important;
         color: white !important;
         border-color: var(--dark-red) !important;
-        box-shadow: 0 4px 15px rgba(139, 0, 0, 0.2);
-        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(139, 0, 0, 0.35);
+        transform: translateY(-3px);
     }
 
-    .language-pill-nav .nav-link:hover:not(.active) {
+    .btn-lang:hover:not(.active) {
         background: #f8f9fa;
-        border-color: #ddd !important;
-        transform: translateY(-1px);
+        border-color: #ccc !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-    /* Mode Pills */
+    /* Mode Pills - Centered rounded buttons */
+    .mode-pills {
+        background: #f8f9fa;
+        padding: 8px;
+        border-radius: 12px;
+    }
+
     .btn-mode {
         font-weight: 600;
-        font-size: 0.85rem;
-        padding: 0.5rem 1.2rem;
-        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+        padding: 0.6rem 1.3rem;
+        letter-spacing: 0.3px;
         color: #495057;
-        border: 2px solid #dee2e6 !important;
+        border: 2px solid transparent !important;
         background: white;
+        border-radius: 8px !important;
+        transition: all 0.3s ease;
     }
 
     .btn-mode.active {
-        background-color: #212529 !important;
+        background: linear-gradient(135deg, #212529 0%, #343a40 100%) !important;
         color: white !important;
         border-color: #212529 !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transform: scale(1.02);
     }
 
     .btn-mode:hover:not(.active) {
-        background-color: #f8f9fa;
-        border-color: #adb5bd !important;
+        background-color: #e9ecef;
+        transform: translateY(-1px);
     }
 
-    /* Category Pills */
+    /* Category Pills - Centered rounded buttons */
+    .category-pills {
+        background: #fff;
+        padding: 6px;
+        border-radius: 10px;
+        border: 1px solid #e9ecef;
+    }
+
     .btn-cat {
         font-weight: 600;
-        font-size: 0.8rem;
+        font-size: 0.85rem;
         padding: 0.5rem 1.2rem;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.3px;
         color: #495057;
-        border: 2px solid #dee2e6 !important;
-        background: white;
+        border: 2px solid transparent !important;
+        background: #f8f9fa;
+        border-radius: 8px !important;
+        transition: all 0.3s ease;
     }
 
     .btn-cat.active {
-        background-color: var(--dark-red) !important;
+        background: linear-gradient(135deg, var(--dark-red) 0%, #8b0000 100%) !important;
         color: white !important;
         border-color: var(--dark-red) !important;
+        box-shadow: 0 4px 15px rgba(139, 0, 0, 0.25);
+        transform: scale(1.02);
     }
 
     .btn-cat:hover:not(.active) {
-        background-color: #f8f9fa;
-        border-color: #adb5bd !important;
+        background-color: #e9ecef;
+        transform: translateY(-1px);
     }
 
-    /* Sub-cat Pills */
+    /* Sub-cat Pills - Centered rounded buttons */
+    .sub-category-pills {
+        background: #f8f9fa;
+        padding: 5px;
+        border-radius: 8px;
+    }
+
     .btn-sub-cat {
         font-weight: 600;
-        font-size: 0.75rem;
+        font-size: 0.8rem;
         padding: 0.4rem 1rem;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.3px;
         text-transform: uppercase;
-        border-width: 2px;
         color: #6c757d;
-        border: 2px solid #6c757d !important;
-        background: transparent;
+        border: 2px solid transparent !important;
+        background: white;
+        border-radius: 6px !important;
+        transition: all 0.3s ease;
     }
 
     .btn-sub-cat.active {
-        background-color: #212529 !important;
+        background: linear-gradient(135deg, #212529 0%, #343a40 100%) !important;
         color: white !important;
         border-color: #212529 !important;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+        transform: scale(1.02);
     }
 
     .btn-sub-cat:hover:not(.active) {
-        background-color: #f8f9fa;
+        background-color: #e9ecef;
         color: #212529;
-        border-color: #212529 !important;
+        transform: translateY(-1px);
     }
 
     /* Modern Card */
