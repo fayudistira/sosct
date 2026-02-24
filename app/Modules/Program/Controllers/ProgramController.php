@@ -307,12 +307,16 @@ class ProgramController extends BaseController
             $expectedHeaders = [
                 'title',
                 'description',
+                'language',
+                'language_level',
                 'category',
                 'sub_category',
                 'registration_fee',
                 'tuition_fee',
                 'discount',
                 'status',
+                'mode',
+                'duration',
                 'features',
                 'facilities',
                 'extra_facilities'
@@ -342,15 +346,19 @@ class ProgramController extends BaseController
                 $data = [
                     'title' => trim($row[0] ?? ''),
                     'description' => trim($row[1] ?? ''),
-                    'category' => trim($row[2] ?? ''),
-                    'sub_category' => trim($row[3] ?? ''),
-                    'registration_fee' => !empty($row[4]) ? floatval($row[4]) : 0,
-                    'tuition_fee' => !empty($row[5]) ? floatval($row[5]) : 0,
-                    'discount' => !empty($row[6]) ? floatval($row[6]) : 0,
-                    'status' => !empty($row[7]) ? strtolower(trim($row[7])) : 'active',
-                    'features' => $this->parsePipeSeparated($row[8] ?? ''),
-                    'facilities' => $this->parsePipeSeparated($row[9] ?? ''),
-                    'extra_facilities' => $this->parsePipeSeparated($row[10] ?? ''),
+                    'language' => trim($row[2] ?? ''),
+                    'language_level' => trim($row[3] ?? ''),
+                    'category' => trim($row[4] ?? ''),
+                    'sub_category' => trim($row[5] ?? ''),
+                    'registration_fee' => !empty($row[6]) ? floatval($row[6]) : 0,
+                    'tuition_fee' => !empty($row[7]) ? floatval($row[7]) : 0,
+                    'discount' => !empty($row[8]) ? floatval($row[8]) : 0,
+                    'status' => !empty($row[9]) ? strtolower(trim($row[9])) : 'active',
+                    'mode' => !empty($row[10]) ? strtolower(trim($row[10])) : 'offline',
+                    'duration' => trim($row[11] ?? ''),
+                    'features' => $this->parsePipeSeparated($row[12] ?? ''),
+                    'facilities' => $this->parsePipeSeparated($row[13] ?? ''),
+                    'extra_facilities' => $this->parsePipeSeparated($row[14] ?? ''),
                 ];
 
                 // Validate required fields
@@ -363,6 +371,29 @@ class ProgramController extends BaseController
                 // Validate status
                 if (!in_array($data['status'], ['active', 'inactive'])) {
                     $errors[] = "Row $rowNumber: Status must be 'active' or 'inactive'";
+                    $rowNumber++;
+                    continue;
+                }
+
+                // Validate mode
+                if (!empty($data['mode']) && !in_array($data['mode'], ['online', 'offline'])) {
+                    $errors[] = "Row $rowNumber: Mode must be 'online' or 'offline'";
+                    $rowNumber++;
+                    continue;
+                }
+
+                // Validate language (optional but must be valid if provided)
+                $validLanguages = ['Mandarin', 'Japanese', 'Korean', 'German', 'English', 'Other'];
+                if (!empty($data['language']) && !in_array($data['language'], $validLanguages)) {
+                    $errors[] = "Row $rowNumber: Language must be one of: " . implode(', ', $validLanguages);
+                    $rowNumber++;
+                    continue;
+                }
+
+                // Validate language_level (optional but must be valid if provided)
+                $validLevels = ['Beginner', 'Intermediate', 'Advanced', 'All Levels'];
+                if (!empty($data['language_level']) && !in_array($data['language_level'], $validLevels)) {
+                    $errors[] = "Row $rowNumber: Language Level must be one of: " . implode(', ', $validLevels);
                     $rowNumber++;
                     continue;
                 }

@@ -148,6 +148,7 @@
                             <th class="sortable" data-sort="title">Title <span class="sort-icon"></span></th>
                             <th class="sortable" data-sort="language">Language <span class="sort-icon"></span></th>
                             <th class="sortable" data-sort="language_level">Level <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="mode">Mode <span class="sort-icon"></span></th>
                             <th class="sortable" data-sort="category">Category <span class="sort-icon"></span></th>
                             <th class="sortable" data-sort="sub_category">Sub Category <span class="sort-icon"></span></th>
                             <th class="sortable" data-sort="duration">Duration <span class="sort-icon"></span></th>
@@ -174,6 +175,16 @@
                                         <?php endif ?>
                                     </td>
                                     <td><?= esc($program['language_level'] ?? '-') ?></td>
+                                    <td>
+                                        <?php if (!empty($program['mode'])): ?>
+                                            <span class="badge <?= $program['mode'] === 'online' ? 'bg-primary' : 'bg-secondary' ?>">
+                                                <i class="bi bi-<?= $program['mode'] === 'online' ? 'wifi' : 'building' ?> me-1"></i>
+                                                <?= ucfirst($program['mode']) ?>
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="text-muted">-</span>
+                                        <?php endif ?>
+                                    </td>
                                     <td><?= esc($program['category'] ?? '-') ?></td>
                                     <td><?= esc($program['sub_category'] ?? '-') ?></td>
                                     <td><?= esc($program['duration'] ?? '-') ?></td>
@@ -213,7 +224,7 @@
                             <?php endforeach ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="11" class="text-center">No programs found.</td>
+                                <td colspan="12" class="text-center">No programs found.</td>
                             </tr>
                         <?php endif ?>
                     </tbody>
@@ -381,6 +392,10 @@ function updateTable(programs) {
             ? `<span class="badge bg-info">${escapeHtml(program.language)}</span>`
             : '<span class="text-muted">-</span>';
         
+        const modeBadge = program.mode
+            ? `<span class="badge ${program.mode === 'online' ? 'bg-primary' : 'bg-secondary'}"><i class="bi bi-${program.mode === 'online' ? 'wifi' : 'building'} me-1"></i>${escapeHtml(program.mode.charAt(0).toUpperCase() + program.mode.slice(1))}</span>`
+            : '<span class="text-muted">-</span>';
+        
         const thumbnail = program.thumbnail
             ? `<img src="<?= base_url('uploads/programs/thumbs/') ?>${escapeHtml(program.thumbnail)}" alt="Thumbnail" style="width: 50px; height: 50px; object-fit: cover;" class="rounded">`
             : '<span class="text-muted">No image</span>';
@@ -391,6 +406,7 @@ function updateTable(programs) {
                 <td><strong>${escapeHtml(program.title)}</strong></td>
                 <td>${languageBadge}</td>
                 <td>${escapeHtml(program.language_level || '-')}</td>
+                <td>${modeBadge}</td>
                 <td>${escapeHtml(program.category || '-')}</td>
                 <td>${escapeHtml(program.sub_category || '-')}</td>
                 <td>${escapeHtml(program.duration || '-')}</td>

@@ -441,13 +441,14 @@ class PageController extends BaseController
         $programModel = new ProgramModel();
         $programs = $programModel->where('status', 'active')->orderBy('created_at', 'DESC')->findAll();
 
-        // Build nested data structure: Language -> Category -> SubCategory -> Programs
+        // Build nested data structure: Language -> Mode -> Category -> SubCategory -> Programs
         $programsByLanguage = [];
         $languages = [];
         $totalPrograms = count($programs);
 
         foreach ($programs as $program) {
             $language = !empty($program['language']) ? $program['language'] : 'Other';
+            $mode = !empty($program['mode']) ? $program['mode'] : 'offline';
             $category = !empty($program['category']) ? $program['category'] : 'General';
             $subCategory = !empty($program['sub_category']) ? $program['sub_category'] : 'Standard';
 
@@ -456,35 +457,47 @@ class PageController extends BaseController
                 $languages[] = $language;
                 $programsByLanguage[$language] = [
                     'total_programs' => 0,
+                    'modes' => []
+                ];
+            }
+
+            // Add mode to language if not exists
+            if (!isset($programsByLanguage[$language]['modes'][$mode])) {
+                $programsByLanguage[$language]['modes'][$mode] = [
+                    'total_programs' => 0,
                     'categories' => []
                 ];
             }
 
-            // Add category to language if not exists
-            if (!isset($programsByLanguage[$language]['categories'][$category])) {
-                $programsByLanguage[$language]['categories'][$category] = [
+            // Add category to mode if not exists
+            if (!isset($programsByLanguage[$language]['modes'][$mode]['categories'][$category])) {
+                $programsByLanguage[$language]['modes'][$mode]['categories'][$category] = [
                     'total_programs' => 0,
                     'sub_categories' => []
                 ];
             }
 
             // Add sub-category to category if not exists
-            if (!isset($programsByLanguage[$language]['categories'][$category]['sub_categories'][$subCategory])) {
-                $programsByLanguage[$language]['categories'][$category]['sub_categories'][$subCategory] = [];
+            if (!isset($programsByLanguage[$language]['modes'][$mode]['categories'][$category]['sub_categories'][$subCategory])) {
+                $programsByLanguage[$language]['modes'][$mode]['categories'][$category]['sub_categories'][$subCategory] = [];
             }
 
             // Add program to sub-category
-            $programsByLanguage[$language]['categories'][$category]['sub_categories'][$subCategory][] = $program;
-            $programsByLanguage[$language]['categories'][$category]['total_programs']++;
+            $programsByLanguage[$language]['modes'][$mode]['categories'][$category]['sub_categories'][$subCategory][] = $program;
+            $programsByLanguage[$language]['modes'][$mode]['categories'][$category]['total_programs']++;
+            $programsByLanguage[$language]['modes'][$mode]['total_programs']++;
             $programsByLanguage[$language]['total_programs']++;
         }
 
-        // Sort languages, categories and sub-categories
+        // Sort languages, modes, categories and sub-categories
         sort($languages);
         foreach ($languages as $language) {
-            ksort($programsByLanguage[$language]['categories']);
-            foreach ($programsByLanguage[$language]['categories'] as $category => $data) {
-                ksort($programsByLanguage[$language]['categories'][$category]['sub_categories']);
+            ksort($programsByLanguage[$language]['modes']);
+            foreach ($programsByLanguage[$language]['modes'] as $mode => $modeData) {
+                ksort($programsByLanguage[$language]['modes'][$mode]['categories']);
+                foreach ($programsByLanguage[$language]['modes'][$mode]['categories'] as $category => $catData) {
+                    ksort($programsByLanguage[$language]['modes'][$mode]['categories'][$category]['sub_categories']);
+                }
             }
         }
 

@@ -78,210 +78,247 @@
                     role="tabpanel">
 
                     <?php 
-                    $categories = array_keys($programsByLanguage[$language]['categories']);
-                    if (!empty($categories)): 
+                    $modes = array_keys($programsByLanguage[$language]['modes']);
+                    if (!empty($modes)): 
                     ?>
-                        <!-- Category Navigation for this Language -->
+                        <!-- Mode Navigation for this Language -->
                         <div class="d-flex align-items-center mb-4 pb-2 border-bottom flex-wrap gap-2">
                             <h4 class="fw-bold mb-0 me-3"><?= esc($language) ?></h4>
-                            <div class="nav nav-pills category-pills d-flex gap-2" role="tablist">
-                                <?php foreach ($categories as $catIndex => $category): ?>
-                                    <button class="nav-link btn btn-sm rounded-pill btn-cat <?= ($catIndex === 0) ? 'active' : '' ?>"
-                                        id="cat-tab-<?= $langIndex ?>-<?= $catIndex ?>"
+                            <div class="nav nav-pills mode-pills d-flex gap-2" role="tablist">
+                                <?php foreach ($modes as $modeIndex => $mode): ?>
+                                    <button class="nav-link btn btn-sm rounded-pill btn-mode <?= ($modeIndex === 0) ? 'active' : '' ?>"
+                                        id="mode-tab-<?= $langIndex ?>-<?= $modeIndex ?>"
                                         data-bs-toggle="pill"
-                                        data-bs-target="#category-<?= $langIndex ?>-<?= $catIndex ?>"
+                                        data-bs-target="#mode-<?= $langIndex ?>-<?= $modeIndex ?>"
                                         type="button"
                                         role="tab">
-                                        <?= esc($category) ?>
-                                        <span class="ms-1 opacity-50 small">(<?= $programsByLanguage[$language]['categories'][$category]['total_programs'] ?>)</span>
+                                        <i class="bi bi-<?= ($mode === 'online') ? 'wifi' : 'building' ?> me-1"></i>
+                                        <?= ucfirst($mode) ?>
+                                        <span class="ms-1 opacity-50 small">(<?= $programsByLanguage[$language]['modes'][$mode]['total_programs'] ?>)</span>
                                     </button>
                                 <?php endforeach ?>
                             </div>
                         </div>
 
-                        <!-- Category Tab Content -->
+                        <!-- Mode Tab Content -->
                         <div class="tab-content">
-                            <?php foreach ($categories as $catIndex => $category): ?>
-                                <div class="tab-pane fade <?= ($catIndex === 0) ? 'show active' : '' ?>"
-                                    id="category-<?= $langIndex ?>-<?= $catIndex ?>"
+                            <?php foreach ($modes as $modeIndex => $mode): ?>
+                                <div class="tab-pane fade <?= ($modeIndex === 0) ? 'show active' : '' ?>"
+                                    id="mode-<?= $langIndex ?>-<?= $modeIndex ?>"
                                     role="tabpanel">
 
                                     <?php 
-                                    $subCategories = array_keys($programsByLanguage[$language]['categories'][$category]['sub_categories']);
-                                    $hasMultipleSubCats = count($subCategories) > 1;
+                                    $categories = array_keys($programsByLanguage[$language]['modes'][$mode]['categories']);
+                                    if (!empty($categories)): 
                                     ?>
-                                    
-                                    <?php if ($hasMultipleSubCats): ?>
-                                        <!-- Sub-Category Navigation -->
+                                        <!-- Category Navigation -->
                                         <div class="d-flex align-items-center mb-3 pb-2 flex-wrap gap-2">
-                                            <span class="text-muted small fw-semibold me-2">Type:</span>
-                                            <div class="nav nav-pills sub-category-pills d-flex gap-2" role="tablist">
-                                                <?php foreach ($subCategories as $subIndex => $subCategory): ?>
-                                                    <button class="nav-link btn btn-sm rounded-pill btn-sub-cat <?= ($subIndex === 0) ? 'active' : '' ?>"
-                                                        id="sub-tab-<?= $langIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
+                                            <span class="text-muted small fw-semibold me-2">Category:</span>
+                                            <div class="nav nav-pills category-pills d-flex gap-2" role="tablist">
+                                                <?php foreach ($categories as $catIndex => $category): ?>
+                                                    <button class="nav-link btn btn-sm rounded-pill btn-cat <?= ($catIndex === 0) ? 'active' : '' ?>"
+                                                        id="cat-tab-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>"
                                                         data-bs-toggle="pill"
-                                                        data-bs-target="#sub-category-<?= $langIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
+                                                        data-bs-target="#category-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>"
                                                         type="button"
                                                         role="tab">
-                                                        <?= esc($subCategory) ?>
-                                                        <span class="ms-1 opacity-50 small">(<?= count($programsByLanguage[$language]['categories'][$category]['sub_categories'][$subCategory]) ?>)</span>
+                                                        <?= esc($category) ?>
+                                                        <span class="ms-1 opacity-50 small">(<?= $programsByLanguage[$language]['modes'][$mode]['categories'][$category]['total_programs'] ?>)</span>
                                                     </button>
                                                 <?php endforeach ?>
                                             </div>
                                         </div>
 
-                                        <!-- Sub-Category Tab Content -->
+                                        <!-- Category Tab Content -->
                                         <div class="tab-content">
-                                            <?php foreach ($subCategories as $subIndex => $subCategory): ?>
-                                                <div class="tab-pane fade <?= ($subIndex === 0) ? 'show active' : '' ?>"
-                                                    id="sub-category-<?= $langIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
+                                            <?php foreach ($categories as $catIndex => $category): ?>
+                                                <div class="tab-pane fade <?= ($catIndex === 0) ? 'show active' : '' ?>"
+                                                    id="category-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>"
                                                     role="tabpanel">
-                                                    <!-- Programs Grid -->
-                                                    <div class="row g-4">
-                                                        <?php foreach ($programsByLanguage[$language]['categories'][$category]['sub_categories'][$subCategory] as $program): 
-                                                            $seed = crc32($program['id']);
-                                                            $randomId = ($seed % 1000) + 1;
-                                                            $finalPrice = $program['tuition_fee'] * (1 - ($program['discount'] ?? 0) / 100);
-                                                            $shareUrl = urlencode(base_url('programs/' . $program['id']));
-                                                            $shareText = "Program: " . $program['title'] . "%0A%0A";
-                                                            $shareText .= "Registrasi: Rp " . number_format($program['registration_fee'], 0, ',', '.') . "%0A";
-                                                            $shareText .= "Biaya Kursus: Rp " . number_format($finalPrice, 0, ',', '.') . "%0A";
-                                                            if (!empty($program['discount']) && $program['discount'] > 0) {
-                                                                $shareText .= "Diskon: " . $program['discount'] . "%25";
-                                                            }
-                                                            $whatsappShareUrl = 'https://wa.me/?text=' . $shareText . '%0A%0A' . $shareUrl;
-                                                        ?>
-                                                        <div class="col-md-6 col-lg-4">
-                                                            <div class="card border-0 shadow-sm h-100 hover-lift overflow-hidden program-card-modern">
-                                                                <div class="position-relative overflow-hidden" style="height: 200px;">
-                                                                    <?php if (!empty($program['thumbnail'])): ?>
-                                                                        <img src="<?= base_url('uploads/programs/thumbs/' . $program['thumbnail']) ?>" 
-                                                                            alt="<?= esc($program['title']) ?>" 
-                                                                            class="w-100 h-100 object-fit-cover program-img-zoom">
-                                                                    <?php else: ?>
-                                                                        <img src="https://picsum.photos/seed/<?= $randomId ?>/800/600" 
-                                                                            alt="<?= esc($program['title']) ?>" 
-                                                                            class="w-100 h-100 object-fit-cover program-img-zoom" 
-                                                                            loading="lazy">
-                                                                    <?php endif ?>
-                                                                    <div class="position-absolute top-0 end-0 m-3">
-                                                                        <span class="badge bg-white text-dark shadow-sm py-2 px-3 rounded-pill fw-bold" style="font-size: 0.7rem;">
-                                                                            <?= strtoupper(esc($program['sub_category'] ?? 'Standard')) ?>
-                                                                        </span>
+
+                                                    <?php 
+                                                    $subCategories = array_keys($programsByLanguage[$language]['modes'][$mode]['categories'][$category]['sub_categories']);
+                                                    $hasMultipleSubCats = count($subCategories) > 1;
+                                                    ?>
+                                                    
+                                                    <?php if ($hasMultipleSubCats): ?>
+                                                        <!-- Sub-Category Navigation -->
+                                                        <div class="d-flex align-items-center mb-3 pb-2 flex-wrap gap-2">
+                                                            <span class="text-muted small fw-semibold me-2">Type:</span>
+                                                            <div class="nav nav-pills sub-category-pills d-flex gap-2" role="tablist">
+                                                                <?php foreach ($subCategories as $subIndex => $subCategory): ?>
+                                                                    <button class="nav-link btn btn-sm rounded-pill btn-sub-cat <?= ($subIndex === 0) ? 'active' : '' ?>"
+                                                                        id="sub-tab-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
+                                                                        data-bs-toggle="pill"
+                                                                        data-bs-target="#sub-category-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
+                                                                        type="button"
+                                                                        role="tab">
+                                                                        <?= esc($subCategory) ?>
+                                                                        <span class="ms-1 opacity-50 small">(<?= count($programsByLanguage[$language]['modes'][$mode]['categories'][$category]['sub_categories'][$subCategory]) ?>)</span>
+                                                                    </button>
+                                                                <?php endforeach ?>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Sub-Category Tab Content -->
+                                                        <div class="tab-content">
+                                                            <?php foreach ($subCategories as $subIndex => $subCategory): ?>
+                                                                <div class="tab-pane fade <?= ($subIndex === 0) ? 'show active' : '' ?>"
+                                                                    id="sub-category-<?= $langIndex ?>-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
+                                                                    role="tabpanel">
+                                                                    <!-- Programs Grid -->
+                                                                    <div class="row g-4">
+                                                                        <?php 
+                                                                        $progs = $programsByLanguage[$language]['modes'][$mode]['categories'][$category]['sub_categories'][$subCategory];
+                                                                        foreach ($progs as $program): 
+                                                                            $seed = crc32($program['id']);
+                                                                            $randomId = ($seed % 1000) + 1;
+                                                                            $finalPrice = $program['tuition_fee'] * (1 - ($program['discount'] ?? 0) / 100);
+                                                                            $shareUrl = urlencode(base_url('programs/' . $program['id']));
+                                                                            $shareText = "Program: " . $program['title'] . "%0A%0A";
+                                                                            $shareText .= "Registrasi: Rp " . number_format($program['registration_fee'], 0, ',', '.') . "%0A";
+                                                                            $shareText .= "Biaya Kursus: Rp " . number_format($finalPrice, 0, ',', '.') . "%0A";
+                                                                            if (!empty($program['discount']) && $program['discount'] > 0) {
+                                                                                $shareText .= "Diskon: " . $program['discount'] . "%25";
+                                                                            }
+                                                                            $whatsappShareUrl = 'https://wa.me/?text=' . $shareText . '%0A%0A' . $shareUrl;
+                                                                        ?>
+                                                                        <div class="col-md-6 col-lg-4">
+                                                                            <div class="card border-0 shadow-sm h-100 hover-lift overflow-hidden program-card-modern">
+                                                                                <div class="position-relative overflow-hidden" style="height: 200px;">
+                                                                                    <?php if (!empty($program['thumbnail'])): ?>
+                                                                                        <img src="<?= base_url('uploads/programs/thumbs/' . $program['thumbnail']) ?>" 
+                                                                                            alt="<?= esc($program['title']) ?>" 
+                                                                                            class="w-100 h-100 object-fit-cover program-img-zoom">
+                                                                                    <?php else: ?>
+                                                                                        <img src="https://picsum.photos/seed/<?= $randomId ?>/800/600" 
+                                                                                            alt="<?= esc($program['title']) ?>" 
+                                                                                            class="w-100 h-100 object-fit-cover program-img-zoom" 
+                                                                                            loading="lazy">
+                                                                                    <?php endif ?>
+                                                                                    <div class="position-absolute top-0 end-0 m-3">
+                                                                                        <span class="badge bg-white text-dark shadow-sm py-2 px-3 rounded-pill fw-bold" style="font-size: 0.7rem;">
+                                                                                            <?= strtoupper(esc($program['sub_category'] ?? 'Standard')) ?>
+                                                                                        </span>
+                                                                                    </div>
+                                                                                    <div class="position-absolute bottom-0 start-0 w-100 p-3 bg-gradient-dark text-white">
+                                                                                        <div class="d-flex align-items-baseline">
+                                                                                            <span class="h4 fw-bold mb-0">Rp <?= number_format($finalPrice, 0, ',', '.') ?></span>
+                                                                                            <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
+                                                                                                <span class="ms-2 text-white-50 text-decoration-line-through small">Rp <?= number_format($program['tuition_fee'], 0, ',', '.') ?></span>
+                                                                                                <span class="ms-auto badge bg-danger rounded-pill">-<?= $program['discount'] ?>%</span>
+                                                                                            <?php endif ?>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="card-body d-flex flex-column p-4">
+                                                                                    <h5 class="fw-bold mb-2 text-dark"><?= esc($program['title']) ?></h5>
+                                                                                    <div class="d-flex flex-wrap gap-2 mb-2">
+                                                                                        <?php if (!empty($program['language'])): ?>
+                                                                                            <span class="badge bg-info text-white"><i class="bi bi-translate me-1"></i><?= esc($program['language']) ?></span>
+                                                                                        <?php endif ?>
+                                                                                        <?php if (!empty($program['language_level'])): ?>
+                                                                                            <span class="badge bg-secondary"><?= esc($program['language_level']) ?></span>
+                                                                                        <?php endif ?>
+                                                                                        <?php if (!empty($program['mode'])): ?>
+                                                                                            <span class="badge bg-light text-muted border"><i class="bi bi-<?= ($program['mode'] === 'online' ? 'wifi' : 'building') ?> me-1"></i><?= ucfirst($program['mode']) ?></span>
+                                                                                        <?php endif ?>
+                                                                                    </div>
+                                                                                    <p class="text-muted small flex-grow-1 mb-4">
+                                                                                        <?= esc(strlen($program['description'] ?? '') > 120 ? substr($program['description'], 0, 120) . '...' : ($program['description'] ?? 'Unlock your potential with our immersive educational experience.')) ?>
+                                                                                    </p>
+                                                                                    <div class="d-flex align-items-center gap-2 pt-3 border-top mt-auto">
+                                                                                        <a href="<?= $whatsappShareUrl ?>" target="_blank" class="btn btn-outline-success btn-sm rounded" title="Share ke WhatsApp">
+                                                                                            <i class="bi bi-share"></i>
+                                                                                        </a>
+                                                                                        <a href="<?= base_url('programs/' . $program['id']) ?>" class="btn btn-outline-dark btn-sm rounded flex-grow-1 fw-bold">DETAILS</a>
+                                                                                        <a href="<?= base_url('apply/' . $program['id']) ?>" class="btn btn-dark-red btn-sm rounded flex-grow-1 fw-bold">APPLY NOW</a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <?php endforeach ?>
                                                                     </div>
-                                                                    <div class="position-absolute bottom-0 start-0 w-100 p-3 bg-gradient-dark text-white">
-                                                                        <div class="d-flex align-items-baseline">
-                                                                            <span class="h4 fw-bold mb-0">Rp <?= number_format($finalPrice, 0, ',', '.') ?></span>
-                                                                            <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
-                                                                                <span class="ms-2 text-white-50 text-decoration-line-through small">Rp <?= number_format($program['tuition_fee'], 0, ',', '.') ?></span>
-                                                                                <span class="ms-auto badge bg-danger rounded-pill">-<?= $program['discount'] ?>%</span>
+                                                                </div>
+                                                            <?php endforeach ?>
+                                                        </div>
+                                                    <?php else: ?>
+                                                        <!-- Single sub-category, show directly -->
+                                                        <div class="row g-4">
+                                                            <?php 
+                                                            $subCatKey = $subCategories[0] ?? 'Standard';
+                                                            $progs = $programsByLanguage[$language]['modes'][$mode]['categories'][$category]['sub_categories'][$subCatKey];
+                                                            foreach ($progs as $program): 
+                                                                $seed = crc32($program['id']);
+                                                                $randomId = ($seed % 1000) + 1;
+                                                                $finalPrice = $program['tuition_fee'] * (1 - ($program['discount'] ?? 0) / 100);
+                                                                $shareUrl = urlencode(base_url('programs/' . $program['id']));
+                                                                $shareText = "Program: " . $program['title'] . "%0A%0A";
+                                                                $shareText .= "Registrasi: Rp " . number_format($program['registration_fee'], 0, ',', '.') . "%0A";
+                                                                $shareText .= "Biaya Kursus: Rp " . number_format($finalPrice, 0, ',', '.') . "%0A";
+                                                                if (!empty($program['discount']) && $program['discount'] > 0) {
+                                                                    $shareText .= "Diskon: " . $program['discount'] . "%25";
+                                                                }
+                                                                $whatsappShareUrl = 'https://wa.me/?text=' . $shareText . '%0A%0A' . $shareUrl;
+                                                            ?>
+                                                            <div class="col-md-6 col-lg-4">
+                                                                <div class="card border-0 shadow-sm h-100 hover-lift overflow-hidden program-card-modern">
+                                                                    <div class="position-relative overflow-hidden" style="height: 200px;">
+                                                                        <?php if (!empty($program['thumbnail'])): ?>
+                                                                            <img src="<?= base_url('uploads/programs/thumbs/' . $program['thumbnail']) ?>" 
+                                                                                alt="<?= esc($program['title']) ?>" 
+                                                                                class="w-100 h-100 object-fit-cover program-img-zoom">
+                                                                        <?php else: ?>
+                                                                            <img src="https://picsum.photos/seed/<?= $randomId ?>/800/600" 
+                                                                                alt="<?= esc($program['title']) ?>" 
+                                                                                class="w-100 h-100 object-fit-cover program-img-zoom" 
+                                                                                loading="lazy">
+                                                                        <?php endif ?>
+                                                                        <div class="position-absolute top-0 end-0 m-3">
+                                                                            <span class="badge bg-white text-dark shadow-sm py-2 px-3 rounded-pill fw-bold" style="font-size: 0.7rem;">
+                                                                                <?= strtoupper(esc($program['sub_category'] ?? 'Standard')) ?>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="position-absolute bottom-0 start-0 w-100 p-3 bg-gradient-dark text-white">
+                                                                            <div class="d-flex align-items-baseline">
+                                                                                <span class="h4 fw-bold mb-0">Rp <?= number_format($finalPrice, 0, ',', '.') ?></span>
+                                                                                <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
+                                                                                    <span class="ms-2 text-white-50 text-decoration-line-through small">Rp <?= number_format($program['tuition_fee'], 0, ',', '.') ?></span>
+                                                                                    <span class="ms-auto badge bg-danger rounded-pill">-<?= $program['discount'] ?>%</span>
+                                                                                <?php endif ?>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="card-body d-flex flex-column p-4">
+                                                                        <h5 class="fw-bold mb-2 text-dark"><?= esc($program['title']) ?></h5>
+                                                                        <div class="d-flex flex-wrap gap-2 mb-2">
+                                                                            <?php if (!empty($program['language'])): ?>
+                                                                                <span class="badge bg-info text-white"><i class="bi bi-translate me-1"></i><?= esc($program['language']) ?></span>
                                                                             <?php endif ?>
+                                                                            <?php if (!empty($program['language_level'])): ?>
+                                                                                <span class="badge bg-secondary"><?= esc($program['language_level']) ?></span>
+                                                                            <?php endif ?>
+                                                                            <?php if (!empty($program['mode'])): ?>
+                                                                                <span class="badge bg-light text-muted border"><i class="bi bi-<?= ($program['mode'] === 'online' ? 'wifi' : 'building') ?> me-1"></i><?= ucfirst($program['mode']) ?></span>
+                                                                            <?php endif ?>
+                                                                        </div>
+                                                                        <p class="text-muted small flex-grow-1 mb-4">
+                                                                            <?= esc(strlen($program['description'] ?? '') > 120 ? substr($program['description'], 0, 120) . '...' : ($program['description'] ?? 'Unlock your potential with our immersive educational experience.')) ?>
+                                                                        </p>
+                                                                        <div class="d-flex align-items-center gap-2 pt-3 border-top mt-auto">
+                                                                            <a href="<?= $whatsappShareUrl ?>" target="_blank" class="btn btn-outline-success btn-sm rounded" title="Share ke WhatsApp">
+                                                                                <i class="bi bi-share"></i>
+                                                                            </a>
+                                                                            <a href="<?= base_url('programs/' . $program['id']) ?>" class="btn btn-outline-dark btn-sm rounded flex-grow-1 fw-bold">DETAILS</a>
+                                                                            <a href="<?= base_url('apply/' . $program['id']) ?>" class="btn btn-dark-red btn-sm rounded flex-grow-1 fw-bold">APPLY NOW</a>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="card-body d-flex flex-column p-4">
-                                                                    <h5 class="fw-bold mb-2 text-dark"><?= esc($program['title']) ?></h5>
-                                                                    <div class="d-flex flex-wrap gap-2 mb-2">
-                                                                        <?php if (!empty($program['language'])): ?>
-                                                                            <span class="badge bg-info text-white"><i class="bi bi-translate me-1"></i><?= esc($program['language']) ?></span>
-                                                                        <?php endif ?>
-                                                                        <?php if (!empty($program['language_level'])): ?>
-                                                                            <span class="badge bg-secondary"><?= esc($program['language_level']) ?></span>
-                                                                        <?php endif ?>
-                                                                        <?php if (!empty($program['mode'])): ?>
-                                                                            <span class="badge bg-light text-muted border"><i class="bi bi-<?= ($program['mode'] === 'online' ? 'wifi' : 'building') ?> me-1"></i><?= ucfirst($program['mode']) ?></span>
-                                                                        <?php endif ?>
-                                                                    </div>
-                                                                    <p class="text-muted small flex-grow-1 mb-4">
-                                                                        <?= esc(strlen($program['description'] ?? '') > 120 ? substr($program['description'], 0, 120) . '...' : ($program['description'] ?? 'Unlock your potential with our immersive educational experience.')) ?>
-                                                                    </p>
-                                                                    <div class="d-flex align-items-center gap-2 pt-3 border-top mt-auto">
-                                                                        <a href="<?= $whatsappShareUrl ?>" target="_blank" class="btn btn-outline-success btn-sm rounded" title="Share ke WhatsApp">
-                                                                            <i class="bi bi-share"></i>
-                                                                        </a>
-                                                                        <a href="<?= base_url('programs/' . $program['id']) ?>" class="btn btn-outline-dark btn-sm rounded flex-grow-1 fw-bold">DETAILS</a>
-                                                                        <a href="<?= base_url('apply/' . $program['id']) ?>" class="btn btn-dark-red btn-sm rounded flex-grow-1 fw-bold">APPLY NOW</a>
-                                                                    </div>
-                                                                </div>
                                                             </div>
+                                                            <?php endforeach ?>
                                                         </div>
-                                                        <?php endforeach ?>
-                                                    </div>
+                                                    <?php endif ?>
                                                 </div>
-                                            <?php endforeach ?>
-                                        </div>
-                                    <?php else: ?>
-                                        <!-- Single sub-category, show directly -->
-                                        <div class="row g-4">
-                                            <?php 
-                                            $subCatKey = $subCategories[0] ?? 'Standard';
-                                            foreach ($programsByLanguage[$language]['categories'][$category]['sub_categories'][$subCatKey] as $program): 
-                                                $seed = crc32($program['id']);
-                                                $randomId = ($seed % 1000) + 1;
-                                                $finalPrice = $program['tuition_fee'] * (1 - ($program['discount'] ?? 0) / 100);
-                                                $shareUrl = urlencode(base_url('programs/' . $program['id']));
-                                                $shareText = "Program: " . $program['title'] . "%0A%0A";
-                                                $shareText .= "Registrasi: Rp " . number_format($program['registration_fee'], 0, ',', '.') . "%0A";
-                                                $shareText .= "Biaya Kursus: Rp " . number_format($finalPrice, 0, ',', '.') . "%0A";
-                                                if (!empty($program['discount']) && $program['discount'] > 0) {
-                                                    $shareText .= "Diskon: " . $program['discount'] . "%25";
-                                                }
-                                                $whatsappShareUrl = 'https://wa.me/?text=' . $shareText . '%0A%0A' . $shareUrl;
-                                            ?>
-                                            <div class="col-md-6 col-lg-4">
-                                                <div class="card border-0 shadow-sm h-100 hover-lift overflow-hidden program-card-modern">
-                                                    <div class="position-relative overflow-hidden" style="height: 200px;">
-                                                        <?php if (!empty($program['thumbnail'])): ?>
-                                                            <img src="<?= base_url('uploads/programs/thumbs/' . $program['thumbnail']) ?>" 
-                                                                alt="<?= esc($program['title']) ?>" 
-                                                                class="w-100 h-100 object-fit-cover program-img-zoom">
-                                                        <?php else: ?>
-                                                            <img src="https://picsum.photos/seed/<?= $randomId ?>/800/600" 
-                                                                alt="<?= esc($program['title']) ?>" 
-                                                                class="w-100 h-100 object-fit-cover program-img-zoom" 
-                                                                loading="lazy">
-                                                        <?php endif ?>
-                                                        <div class="position-absolute top-0 end-0 m-3">
-                                                            <span class="badge bg-white text-dark shadow-sm py-2 px-3 rounded-pill fw-bold" style="font-size: 0.7rem;">
-                                                                <?= strtoupper(esc($program['sub_category'] ?? 'Standard')) ?>
-                                                            </span>
-                                                        </div>
-                                                        <div class="position-absolute bottom-0 start-0 w-100 p-3 bg-gradient-dark text-white">
-                                                            <div class="d-flex align-items-baseline">
-                                                                <span class="h4 fw-bold mb-0">Rp <?= number_format($finalPrice, 0, ',', '.') ?></span>
-                                                                <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
-                                                                    <span class="ms-2 text-white-50 text-decoration-line-through small">Rp <?= number_format($program['tuition_fee'], 0, ',', '.') ?></span>
-                                                                    <span class="ms-auto badge bg-danger rounded-pill">-<?= $program['discount'] ?>%</span>
-                                                                <?php endif ?>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="card-body d-flex flex-column p-4">
-                                                        <h5 class="fw-bold mb-2 text-dark"><?= esc($program['title']) ?></h5>
-                                                        <div class="d-flex flex-wrap gap-2 mb-2">
-                                                            <?php if (!empty($program['language'])): ?>
-                                                                <span class="badge bg-info text-white"><i class="bi bi-translate me-1"></i><?= esc($program['language']) ?></span>
-                                                            <?php endif ?>
-                                                            <?php if (!empty($program['language_level'])): ?>
-                                                                <span class="badge bg-secondary"><?= esc($program['language_level']) ?></span>
-                                                            <?php endif ?>
-                                                            <?php if (!empty($program['mode'])): ?>
-                                                                <span class="badge bg-light text-muted border"><i class="bi bi-<?= ($program['mode'] === 'online' ? 'wifi' : 'building') ?> me-1"></i><?= ucfirst($program['mode']) ?></span>
-                                                            <?php endif ?>
-                                                        </div>
-                                                        <p class="text-muted small flex-grow-1 mb-4">
-                                                            <?= esc(strlen($program['description'] ?? '') > 120 ? substr($program['description'], 0, 120) . '...' : ($program['description'] ?? 'Unlock your potential with our immersive educational experience.')) ?>
-                                                        </p>
-                                                        <div class="d-flex align-items-center gap-2 pt-3 border-top mt-auto">
-                                                            <a href="<?= $whatsappShareUrl ?>" target="_blank" class="btn btn-outline-success btn-sm rounded" title="Share ke WhatsApp">
-                                                                <i class="bi bi-share"></i>
-                                                            </a>
-                                                            <a href="<?= base_url('programs/' . $program['id']) ?>" class="btn btn-outline-dark btn-sm rounded flex-grow-1 fw-bold">DETAILS</a>
-                                                            <a href="<?= base_url('apply/' . $program['id']) ?>" class="btn btn-dark-red btn-sm rounded flex-grow-1 fw-bold">APPLY NOW</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
                                             <?php endforeach ?>
                                         </div>
                                     <?php endif ?>
@@ -340,6 +377,28 @@
         background: #f8f9fa;
         border-color: #ddd !important;
         transform: translateY(-1px);
+    }
+
+    /* Mode Pills */
+    .btn-mode {
+        font-weight: 600;
+        font-size: 0.85rem;
+        padding: 0.5rem 1.2rem;
+        letter-spacing: 0.5px;
+        color: #495057;
+        border: 2px solid #dee2e6 !important;
+        background: white;
+    }
+
+    .btn-mode.active {
+        background-color: #212529 !important;
+        color: white !important;
+        border-color: #212529 !important;
+    }
+
+    .btn-mode:hover:not(.active) {
+        background-color: #f8f9fa;
+        border-color: #adb5bd !important;
     }
 
     /* Category Pills */
