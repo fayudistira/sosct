@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desain Tabs Bertingkat - Deep Red</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Custom Scrollbar untuk navigasi mobile */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Accent Colors */
+        .bg-deep-red { background-color: #4a0404; }
+        .text-deep-red { color: #4a0404; }
+        .border-deep-red { border-color: #4a0404; }
+        .hover-deep-red:hover { background-color: #5d0606; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
+        
+        <!-- Tab Utama (Header) -->
+        <nav class="bg-deep-red p-2 flex flex-wrap gap-2" id="main-tabs">
+            <button onclick="switchMainTab('dashboard')" data-tab="dashboard" class="main-tab-btn flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 font-medium text-sm bg-white text-deep-red shadow-lg">
+                <i class="fas fa-th-large"></i> Dashboard
+            </button>
+            <button onclick="switchMainTab('profile')" data-tab="profile" class="main-tab-btn flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 font-medium text-sm text-red-100 hover-deep-red hover:text-white">
+                <i class="fas fa-user"></i> Profil Pengguna
+            </button>
+            <button onclick="switchMainTab('settings')" data-tab="settings" class="main-tab-btn flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 font-medium text-sm text-red-100 hover-deep-red hover:text-white">
+                <i class="fas fa-cog"></i> Pengaturan
+            </button>
+        </nav>
+
+        <!-- Container untuk Sub Tabs (Akan berubah berdasarkan tab utama) -->
+        <div id="sub-tabs-container" class="bg-white border-b border-gray-200 px-4 flex gap-6 overflow-x-auto scrollbar-hide">
+            <!-- Isi sub-tabs di-render oleh JS -->
+        </div>
+
+        <!-- Area Konten -->
+        <div class="p-8 min-h-[300px]" id="tab-panel">
+            <h2 id="content-title" class="text-2xl font-bold text-gray-800 mb-4">Pilih Tab</h2>
+            <p id="content-body" class="text-gray-600 leading-relaxed">
+                Silakan pilih kategori di atas untuk melihat detail konten.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Data Struktur Tabs
+        const tabData = {
+            dashboard: {
+                title: "Dashboard",
+                subs: [
+                    { id: 'overview', label: 'Ringkasan', icon: 'fa-home', text: 'Selamat datang kembali! Ini adalah ringkasan performa sistem Anda hari ini.' },
+                    { id: 'stats', label: 'Statistik', icon: 'fa-chart-bar', text: 'Analisis data statistik menunjukkan pertumbuhan sebesar 15% pada kuartal ini.' },
+                    { id: 'reports', label: 'Laporan', icon: 'fa-file-alt', text: 'Daftar laporan bulanan tersedia untuk diunduh dalam format PDF atau Excel.' }
+                ]
+            },
+            profile: {
+                title: "Profil Pengguna",
+                subs: [
+                    { id: 'account', label: 'Informasi Akun', icon: 'fa-id-card', text: 'Kelola data pribadi Anda, termasuk nama, email, dan foto profil.' },
+                    { id: 'security', label: 'Keamanan', icon: 'fa-shield-alt', text: 'Tingkatkan keamanan akun Anda dengan otentikasi dua faktor (2FA).' }
+                ]
+            },
+            settings: {
+                title: "Pengaturan",
+                subs: [
+                    { id: 'general', label: 'Umum', icon: 'fa-sliders-h', text: 'Konfigurasi preferensi aplikasi dan bahasa sistem.' },
+                    { id: 'notifications', label: 'Notifikasi', icon: 'fa-bell', text: 'Atur bagaimana dan kapan Anda ingin menerima pemberitahuan dari kami.' },
+                    { id: 'theme', label: 'Tampilan', icon: 'fa-palette', text: 'Ubah tema warna atau aktifkan mode gelap untuk kenyamanan mata Anda.' }
+                ]
+            }
+        };
+
+        let currentMain = 'dashboard';
+        let currentSub = 'overview';
+
+        function renderSubTabs() {
+            const container = document.getElementById('sub-tabs-container');
+            const subs = tabData[currentMain].subs;
+            
+            container.innerHTML = subs.map(sub => `
+                <button onclick="switchSubTab('${sub.id}')" data-sub="${sub.id}" class="sub-tab-btn relative flex items-center gap-2 py-4 px-2 text-sm font-semibold transition-colors duration-200 whitespace-nowrap ${currentSub === sub.id ? 'text-deep-red' : 'text-gray-400 hover:text-gray-600'}">
+                    <i class="fas ${sub.icon}"></i> ${sub.label}
+                    ${currentSub === sub.id ? '<div class="absolute bottom-0 left-0 right-0 h-1 bg-deep-red rounded-t-full"></div>' : ''}
+                </button>
+            `).join('');
+
+            updateContent();
+        }
+
+        function updateContent() {
+            const activeSubData = tabData[currentMain].subs.find(s => s.id === currentSub);
+            const panel = document.getElementById('tab-panel');
+            
+            // Re-trigger animation
+            panel.classList.remove('active');
+            void panel.offsetWidth; // Trigger reflow
+            panel.classList.add('active');
+
+            document.getElementById('content-title').innerText = activeSubData.label;
+            document.getElementById('content-body').innerText = activeSubData.text;
+        }
+
+        function switchMainTab(tabId) {
+            currentMain = tabId;
+            currentSub = tabData[tabId].subs[0].id; // Reset ke sub-tab pertama
+
+            // Update UI Button Utama
+            document.querySelectorAll('.main-tab-btn').forEach(btn => {
+                if (btn.getAttribute('data-tab') === tabId) {
+                    btn.className = "main-tab-btn flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 font-medium text-sm bg-white text-deep-red shadow-lg";
+                } else {
+                    btn.className = "main-tab-btn flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 font-medium text-sm text-red-100 hover-deep-red hover:text-white";
+                }
+            });
+
+            renderSubTabs();
+        }
+
+        function switchSubTab(subId) {
+            currentSub = subId;
+            renderSubTabs(); // Re-render untuk update bar indikator
+        }
+
+        // Inisialisasi awal
+        window.onload = renderSubTabs;
+    </script>
+</body>
+</html>
