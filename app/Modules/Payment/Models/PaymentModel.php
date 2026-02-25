@@ -81,11 +81,24 @@ class PaymentModel extends Model
         }
 
         // Auto-link installment based on registration_number if not provided
+        // But skip if this is for a miscellaneous_fee invoice
         if (!isset($data['installment_id']) && isset($data['registration_number'])) {
-            $installmentModel = new InstallmentModel();
-            $installment = $installmentModel->getByRegistrationNumber($data['registration_number']);
-            if ($installment) {
-                $data['installment_id'] = $installment['id'];
+            // Check if this payment is for a miscellaneous_fee invoice
+            $skipInstallmentLink = false;
+            if (!empty($data['invoice_id'])) {
+                $invoiceModel = new InvoiceModel();
+                $invoice = $invoiceModel->find($data['invoice_id']);
+                if ($invoice && $invoice['invoice_type'] === 'miscellaneous_fee') {
+                    $skipInstallmentLink = true;
+                }
+            }
+
+            if (!$skipInstallmentLink) {
+                $installmentModel = new InstallmentModel();
+                $installment = $installmentModel->getByRegistrationNumber($data['registration_number']);
+                if ($installment) {
+                    $data['installment_id'] = $installment['id'];
+                }
             }
         }
 

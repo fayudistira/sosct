@@ -155,9 +155,38 @@ class PaymentApiController extends ResourceController
         $paymentModel = new PaymentModel();
         $data = $this->request->getJSON(true);
 
+        // Handle installment linking - don't link miscellaneous_fee invoices to contract
+        $installmentId = null;
+        if (isset($data['invoice_id']) && $data['invoice_id']) {
+            $invoiceModel = new \Modules\Payment\Models\InvoiceModel();
+            $invoice = $invoiceModel->find($data['invoice_id']);
+            // Only link to installment if invoice is NOT a miscellaneous_fee
+            if ($invoice && !empty($invoice['installment_id']) && $invoice['invoice_type'] !== 'miscellaneous_fee') {
+                $installmentId = $invoice['installment_id'];
+            }
+        }
+
+        // If no installment from invoice, try to find by registration_number (for direct payments)
+        if (!$installmentId && isset($data['registration_number'])) {
+            $installmentModel = new \Modules\Payment\Models\InstallmentModel();
+            $installment = $installmentModel->getByRegistrationNumber($data['registration_number']);
+            if ($installment) {
+                $installmentId = $installment['id'];
+            }
+        }
+
+        // Set the installment_id (will be null for miscellaneous_fee invoices)
+        $data['installment_id'] = $installmentId;
+
         if ($paymentModel->insert($data)) {
             $id = $paymentModel->getInsertID();
             $payment = $paymentModel->find($id);
+
+            // Update installment totals if linked
+            if ($installmentId && isset($data['status']) && $data['status'] === 'paid') {
+                $installmentModel = new \Modules\Payment\Models\InstallmentModel();
+                $installmentModel->updatePaymentTotal($installmentId);
+            }
 
             // Auto-approve admission if payment is paid
             if (isset($data['status']) && $data['status'] === 'paid' && isset($data['registration_number'])) {

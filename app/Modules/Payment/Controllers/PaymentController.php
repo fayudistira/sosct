@@ -153,13 +153,16 @@ class PaymentController extends BaseController
         // If invoice is selected, get its installment
         if ($invoiceId) {
             $invoice = $this->invoiceModel->find($invoiceId);
-            if ($invoice && !empty($invoice['installment_id'])) {
+            // Only link to installment if invoice is NOT a miscellaneous_fee
+            // Miscellaneous fees should not affect contract balance
+            if ($invoice && !empty($invoice['installment_id']) && $invoice['invoice_type'] !== 'miscellaneous_fee') {
                 $installmentId = $invoice['installment_id'];
             }
         }
 
         // If no installment from invoice, try to find by registration_number
         // This allows direct payments without invoice to still affect contract balance
+        // Note: Direct payments without invoice are assumed to be for contract/tuition
         if (!$installmentId && $registrationNumber) {
             $installment = $this->installmentModel->getByRegistrationNumber($registrationNumber);
             if ($installment) {
