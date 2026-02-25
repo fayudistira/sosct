@@ -671,8 +671,8 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                         <tr>
                                                             <th class="ps-4" style="width: 30%;">Program</th>
                                                             <th style="width: 25%;">Deskripsi</th>
-                                                            <th style="width: 15%;" class="text-end">Harga</th>
-                                                            <th style="width: 15%;" class="text-center">Aksi</th>
+                                                            <th style="width: 15%;" class="text-end">Biaya</th>
+                                                            <th style="width: 15%;" class="text-center"></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
