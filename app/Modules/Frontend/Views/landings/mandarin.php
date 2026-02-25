@@ -221,6 +221,71 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
         color: white;
     }
 
+    /* Mobile Responsive Table - Card Layout */
+    @media (max-width: 767.98px) {
+        .table-responsive {
+            overflow-x: visible;
+        }
+        .table-responsive thead {
+            display: none;
+        }
+        .table-responsive tbody tr {
+            display: block;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border: 1px solid #f0f0f0;
+        }
+        .table-responsive tbody td {
+            display: block;
+            padding: 0.5rem 0;
+            border: none;
+            text-align: left !important;
+        }
+        .table-responsive tbody td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: #6b7280;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        .table-responsive tbody td:first-child::before {
+            display: none;
+        }
+        .table-responsive tbody td:first-child {
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 0.5rem;
+        }
+        .table-responsive tbody td:last-child {
+            padding-top: 0.75rem;
+            border-top: 1px solid #f0f0f0;
+            margin-top: 0.5rem;
+        }
+        .table-responsive .d-flex.gap-2.justify-content-center {
+            justify-content: flex-start !important;
+        }
+        .table-responsive .d-flex.align-items-start.gap-3 {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 0.75rem !important;
+        }
+        .table-responsive .flex-shrink-0 {
+            width: 100% !important;
+        }
+        .table-responsive .flex-shrink-0 img,
+        .table-responsive .flex-shrink-0 div {
+            width: 100% !important;
+            height: 120px !important;
+            object-fit: cover;
+        }
+    }
+
     .hover-lift {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
@@ -509,7 +574,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                         $finalPrice = $program['tuition_fee'] * (1 - ($program['discount'] ?? 0) / 100);
                                                                     ?>
                                                                         <tr>
-                                                                            <td class="ps-4">
+                                                                            <td class="ps-4" data-label="Program">
                                                                                 <div class="d-flex align-items-start gap-3">
                                                                                     <div class="flex-shrink-0">
                                                                                         <?php if (!empty($program['thumbnail'])): ?>
@@ -545,12 +610,12 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                                     </div>
                                                                                 </div>
                                                                             </td>
-                                                                            <td>
+                                                                            <td data-label="Deskripsi">
                                                                                 <p class="mb-0 text-muted small">
                                                                                     <?= esc(strlen($program['description'] ?? '') > 100 ? substr($program['description'], 0, 100) . '...' : ($program['description'] ?? '-')) ?>
                                                                                 </p>
                                                                             </td>
-                                                                            <td class="text-end">
+                                                                            <td class="text-end" data-label="Harga">
                                                                                 <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
                                                                                     <div class="d-flex align-items-center justify-content-end gap-2">
                                                                                         <span class="badge bg-danger rounded-pill">-<?= $program['discount'] ?>%</span>
@@ -560,9 +625,9 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                                 <?php else: ?>
                                                                                     <div class="fw-bold text-dark">Rp <?= number_format($finalPrice, 0, ',', '.') ?></div>
                                                                                 <?php endif ?>
-                                                                                <div class="text-muted small">Reg: Rp <?= number_format($program['registration_fee'] ?? 0, 0, ',', '.') ?></div>
+                                                                                <div class="text-muted small">Registrasi: Rp <?= number_format($program['registration_fee'] ?? 0, 0, ',', '.') ?></div>
                                                                             </td>
-                                                                            <td class="text-center">
+                                                                            <td class="text-center" data-label="Aksi">
                                                                                 <div class="d-flex gap-2 justify-content-center">
                                                                                     <a href="<?= base_url('programs/' . $program['id']) ?>" 
                                                                                         class="btn btn-outline-secondary btn-sm rounded px-3" 
@@ -615,7 +680,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                             $finalPrice = $program['tuition_fee'] * (1 - ($program['discount'] ?? 0) / 100);
                                                         ?>
                                                             <tr>
-                                                                <td class="ps-4">
+                                                                <td class="ps-4" data-label="Program">
                                                                     <div class="d-flex align-items-start gap-3">
                                                                         <div class="flex-shrink-0">
                                                                             <?php if (!empty($program['thumbnail'])): ?>
@@ -651,12 +716,12 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                         </div>
                                                                     </div>
                                                                 </td>
-                                                                <td>
+                                                                <td data-label="Deskripsi">
                                                                     <p class="mb-0 text-muted small">
                                                                         <?= esc(strlen($program['description'] ?? '') > 100 ? substr($program['description'], 0, 100) . '...' : ($program['description'] ?? '-')) ?>
                                                                     </p>
                                                                 </td>
-                                                                <td class="text-end">
+                                                                <td class="text-end" data-label="Harga">
                                                                     <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
                                                                         <div class="d-flex align-items-center justify-content-end gap-2">
                                                                             <span class="badge bg-danger rounded-pill">-<?= $program['discount'] ?>%</span>
@@ -668,7 +733,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                     <?php endif ?>
                                                                     <div class="text-muted small">Reg: Rp <?= number_format($program['registration_fee'] ?? 0, 0, ',', '.') ?></div>
                                                                 </td>
-                                                                <td class="text-center">
+                                                                <td class="text-center" data-label="Aksi">
                                                                     <div class="d-flex gap-2 justify-content-center">
                                                                         <a href="<?= base_url('programs/' . $program['id']) ?>" 
                                                                             class="btn btn-outline-secondary btn-sm rounded px-3" 
