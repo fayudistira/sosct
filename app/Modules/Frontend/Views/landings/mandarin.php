@@ -253,18 +253,18 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                 <div class="d-flex align-items-center gap-3 mb-4">
                     <img src="https://flagcdn.com/w80/cn.png" alt="China Flag" class="rounded shadow-sm" width="60" height="40">
                     <div class="badge bg-white text-danger p-2 px-3 rounded-pill shadow-sm fw-bold">
-                        Camp Mandarin Area Pertama di Indonesia
+                        Xihuan Mandarin Indonesia
                     </div>
                 </div>
                 <h1 class="display-3 fw-bold mb-3 text-white">
-                    Kursus Mandarin Pare Terbaik
+                    Kursus Mandarin Terbaik di Pare
                 </h1>
-                <h2 class="h3 text-white-50 mb-4">Xihuan Mandarin Pare</h2>
+                <!-- <h2 class="h3 text-white-50 mb-4">Xihuan Mandarin Pare</h2> -->
                 <p class="lead mb-4 text-white-90" style="font-size: 1.15rem;">
                     Spesialis Pemula dengan Camp Mandarin Area Pertama di Indonesia. Program HSK 1-6, HSKK, dan Translator.
                 </p>
                 <div class="d-flex flex-wrap gap-3">
-                    <a href="https://wa.me/6285810310950?text=Hai,%20saya%20tertarik%20dengan%20kursus%20Bahasa%20Mandarin"
+                    <a href="https://wa.me/6282240781299?text=Hai,%20saya%20tertarik%20dengan%20kursus%20Bahasa%20Mandarin"
                         target="_blank"
                         class="btn btn-warning btn-lg px-4 shadow fw-bold">
                         <i class="bi bi-whatsapp me-2"></i>Konsultasi Gratis
@@ -310,7 +310,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
             </div>
             <h3 class="fw-bold">Program Akan Segera Hadir</h3>
             <p class="text-muted">Program Mandarin sedang dalam persiapan. Silakan hubungi kami untuk informasi lebih lanjut.</p>
-            <a href="https://wa.me/6285810310950?text=Hai,%20saya%20mau%20tanya%20tentang%20program%20Mandarin"
+            <a href="https://wa.me/6282240781299?text=Hai,%20saya%20mau%20tanya%20tentang%20program%20Mandarin"
                 target="_blank"
                 class="btn btn-dark-red rounded-pill mt-3">
                 <i class="bi bi-whatsapp me-2"></i>Hubungi Kami
@@ -590,7 +590,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
 <div class="container py-5">
     <div class="text-center mb-5">
         <h2 class="display-5 fw-bold mb-3" style="color: var(--dark-red);">Mengapa Belajar Bahasa Mandarin?</h2>
-        <p class="lead text-muted">China telah menjadi negara adidaya, sudah semestinya kita mempelajari bahasa dan budaya dari negara maju</p>
+        <p class="lead text-muted">China kini menguasai ekonomi global dan menjadi salah satu negara dengan pertumbuhan tercepat di dunia.</p>
     </div>
 
     <div class="row g-4">
@@ -598,10 +598,10 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
             <div class="card border-0 shadow-sm h-100 hover-lift">
                 <div class="card-body text-center p-4">
                     <div class="feature-icon-red mb-3">
-                        <i class="bi bi-globe-asia-australia"></i>
+                        <i class="bi bi-globe"></i>
                     </div>
                     <h5 class="fw-bold mb-3">Bahasa Internasional</h5>
-                    <p class="text-muted small mb-0">Bahasa Mandarin adalah bahasa Internasional yang sering digunakan dalam dunia bisnis.</p>
+                    <p class="text-muted small mb-0">Bahasa dengan lebih dari 1,1 miliar penutur asli di seluruh dunia.</p>
                 </div>
             </div>
         </div>
@@ -613,19 +613,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                         <i class="bi bi-briefcase-fill"></i>
                     </div>
                     <h5 class="fw-bold mb-3">Peluang Karir</h5>
-                    <p class="text-muted small mb-0">Banyak kesempatan emas untuk mendapatkan promosi jabatan dan transaksi internasional.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6 col-lg-3">
-            <div class="card border-0 shadow-sm h-100 hover-lift">
-                <div class="card-body text-center p-4">
-                    <div class="feature-icon-red mb-3">
-                        <i class="bi bi-currency-yen"></i>
-                    </div>
-                    <h5 class="fw-bold mb-3">Nilai Tinggi</h5>
-                    <p class="text-muted small mb-0">Menguasai Mandarin akan meningkatkan kualitas nilai dan dihargai di dunia kerja.</p>
+                    <p class="text-muted small mb-0">Banyak peluang bisnis, studi maupun karir yang terbuka luas untuk penutur Mandarin.</p>
                 </div>
             </div>
         </div>
@@ -641,6 +629,18 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                 </div>
             </div>
         </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100 hover-lift">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon-red mb-3">
+                        <i class="bi bi-translate"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3">Translator</h5>
+                    <p class="text-muted small mb-0">Peluang menjadi translator profesional dengan penghasilan menjanjikan.</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -648,7 +648,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
 <div class="py-5" style="background: linear-gradient(180deg, #fef9f5 0%, #fff 100%);">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold mb-3" style="color: var(--dark-red);">8 Alasan Mengapa Harus Xihuan Mandarin Pare?</h2>
+            <h2 class="display-5 fw-bold mb-3" style="color: var(--dark-red);">Mengapa Harus Xihuan Mandarin?</h2>
         </div>
 
         <div class="row g-4">
@@ -659,8 +659,8 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-star-fill"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Spesialis Pemula</h5>
-                        <p class="text-muted small mb-0">Kursusan Mandarin terfokus pada pengembangan skill bahasa mandarin untuk pemula hingga mampu menjadi Translator Mandarin.</p>
+                        <h5 class="fw-bold mb-2">Ramah Pemula</h5>
+                        <p class="text-muted small mb-0">Di sini siswa akan diajarkan dari dasar, sehingga tidak perlu khawatir jika belum pernah belajar bahasa Mandarin.</p>
                     </div>
                 </div>
             </div>
@@ -672,8 +672,8 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-person-badge"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Pengajar Pro & Kekinian</h5>
-                        <p class="text-muted small mb-0">Pengajar adalah pengajar muda namun Profesional dan berpengalaman, juga semua sudah TERSERTIFIKASI.</p>
+                        <h5 class="fw-bold mb-2">Instruktur Muda & Profesional</h5>
+                        <p class="text-muted small mb-0">Walaupun masih relatif muda dan Instruktur berpengalaman mengajar bahasa Mandarin dengan jam terbang tinggi.</p>
                     </div>
                 </div>
             </div>
@@ -683,10 +683,10 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                 <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
                     <div class="card-body p-4">
                         <div class="reason-icon">
-                            <i class="bi bi-camp"></i>
+                            <i class="bi bi-house"></i>
                         </div>
                         <h5 class="fw-bold mb-2">Camp Mandarin Area</h5>
-                        <p class="text-muted small mb-0">Di Camp terdapat mandarin area yang artinya siswa hampir setiap hari harus berbahasa mandarin.</p>
+                        <p class="text-muted small mb-0">Di camp siswa diwajibkan berbahasa Mandarin sehingga lebih cepat terbiasa dengan bahasa Mandarin.</p>
                     </div>
                 </div>
             </div>
@@ -698,8 +698,8 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-book"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Kelas Intensive</h5>
-                        <p class="text-muted small mb-0">Kelas reguler maksimal 15 Siswa/kelas. Kelas HSK maksimal 10 Orang. INTENSIVE DAN KONDUSIF.</p>
+                        <h5 class="fw-bold mb-2">Kelas Intensif</h5>
+                        <p class="text-muted small mb-0">Program kami cukup padat sampai 5x pertemuan/hari sehingga progres lebih cepat.</p>
                     </div>
                 </div>
             </div>
@@ -711,8 +711,8 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-journal-check"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Kelas HSK - HSKK</h5>
-                        <p class="text-muted small mb-0">Program lengkap dari Basic hingga HSK level 1-6, HSKK Basic dan Intermediate, serta kelas Translator.</p>
+                        <h5 class="fw-bold mb-2">HSK-HSKK dan TOCFL</h5>
+                        <p class="text-muted small mb-0">Program kami lengkap mulai dari HSK-HSKK sampai TOCFL dan sesuai dengan standar kurikulum masing-masing.</p>
                     </div>
                 </div>
             </div>
@@ -722,10 +722,10 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                 <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
                     <div class="card-body p-4">
                         <div class="reason-icon">
-                            <i class="bi bi-network"></i>
+                            <i class="bi bi-diagram-3"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Super Networking</h5>
-                        <p class="text-muted small mb-0">Bekerja sama dengan 27+ Perusahaan untuk persaingan tenaga kerja sebagai Translator Mandarin.</p>
+                        <h5 class="fw-bold mb-2">Relasi kuat</h5>
+                        <p class="text-muted small mb-0">Kami bekerjasama dengan berbagai Perusahaan yang merekrut tenaga kerja baik sebagai Translator Mandarin maupun Staff.</p>
                     </div>
                 </div>
             </div>
@@ -737,24 +737,13 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-arrow-repeat"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Mengulang Kelas Gratis</h5>
-                        <p class="text-muted small mb-0">Murid diperbolehkan mengulang kelas gratis jika nilai ujian tidak memenuhi standar.</p>
+                        <h5 class="fw-bold mb-2">Garansi Seumur Hidup</h5>
+                        <p class="text-muted small mb-0">Siswa dapat mengulang kelas yang ingin diikuti kembali tanpa biaya tambahan dan berlaku seumur hidup.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Reason 8 -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
-                    <div class="card-body p-4">
-                        <div class="reason-icon">
-                            <i class="bi bi-heart-pulse"></i>
-                        </div>
-                        <h5 class="fw-bold mb-2">Fasilitas Kesehatan</h5>
-                        <p class="text-muted small mb-0">Bekerja sama dengan RS untuk konsultasi kesehatan dan pengantaran ke klinik.</p>
-                    </div>
-                </div>
-            </div>
+            
         </div>
     </div>
 </div>
@@ -763,42 +752,45 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
 <div class="container py-5">
     <div class="row align-items-center g-5">
         <div class="col-lg-6">
-            <h2 class="display-5 fw-bold mb-4" style="color: var(--dark-red);">Tentang Xihuan Mandarin Pare</h2>
+            <h2 class="display-5 fw-bold mb-4" style="color: var(--dark-red);">Tentang Xihuan Mandarin</h2>
             <p class="text-muted mb-4">
-                Xihuan Mandarin Pare adalah kursus bahasa Mandarin Spesialis Pemula dengan <strong>Camp Mandarin Area Pertama di Indonesia</strong> yang terletak di Pare – Kediri Jawa Timur.
+                Xihuan Mandarin Indonesia adalah lembaga kursus bahasa Mandarin Spesialis Pemula dengan <strong>Camp Mandarin Area Pertama di Indonesia</strong> yang terletak di Pare – Kediri Jawa Timur.
             </p>
             <p class="text-muted mb-4">
-                Xihuan Mandarin Pare juga mempunyai Program HSK dari Level 1 – 6, cocok untuk kamu yang mau mencoba apply beasiswa atau bekerja di Perusahaan Internasional.
+                Xihuan Mandarin Indonesia adalahBerada di bawah manajemen SOS Course & Training yang telah berdiri sejak tahun 2013 sehingga memiliki kredibilitas tinggi karena resmi terdaftar di Dinas Pendidikan.
             </p>
             <p class="text-muted mb-4">
-                Salah satu indikator kesuksesan kami adalah jika murid mampu kuliah di luar negeri atau karirnya cemerlang di masa depan.
+                Kami memiliki program yang cukup lengkap mencakup HSK-HSKK hingga TOCFL dengan kurikulum terstandar sesuai penyelenggara ujian masing-masing.
+            </p>
+            <p class="text-muted mb-4">
+                Salah satu indikator kesuksesan kami adalah jika alumni kami berhasil dalam studi dan karirnya.
             </p>
             <div class="d-flex align-items-center gap-3 flex-wrap">
                 <div class="bg-danger text-white rounded-4 px-4 py-3 text-center">
-                    <div class="h4 fw-bold mb-0">27+</div>
-                    <small>Partner Perusahaan</small>
+                    <div class="h4 fw-bold mb-0">HSK</div>
+                    <small>HSK 1-6</small>
                 </div>
                 <div class="bg-danger text-white rounded-4 px-4 py-3 text-center">
-                    <div class="h4 fw-bold mb-0">HSK 1-6</div>
-                    <small>Program Tersedia</small>
+                    <div class="h4 fw-bold mb-0">HSKK</div>
+                    <small>Beginner-Advance</small>
                 </div>
                 <div class="bg-danger text-white rounded-4 px-4 py-3 text-center">
-                    <div class="h4 fw-bold mb-0">Gratis</div>
-                    <small>Mengulang Kelas</small>
+                    <div class="h4 fw-bold mb-0">TOCFL</div>
+                    <small>Beginner-Advance</small>
                 </div>
             </div>
         </div>
         <div class="col-lg-6">
             <div class="bg-gradient-danger rounded-5 p-5 text-white shadow-lg">
-                <h3 class="fw-bold mb-4">Mulai Tiap Periode</h3>
-                <div class="display-4 fw-bold mb-3">10 & 25</div>
+                <h3 class="fw-bold mb-4">Program Dimulai</h3>
+                <div class="display-4 fw-bold mb-3">Tanggal 10</div>
                 <p class="mb-0 opacity-75">Tiap bulannya</p>
                 <hr class="my-4 opacity-25">
                 <div class="d-flex align-items-center gap-3">
-                    <i class="bi bi-calendar-check fs-1 opacity-50"></i>
+                    <i class="bi bi-award fs-1 opacity-50"></i>
                     <div>
-                        <div class="fw-bold">Tanggal 10 & 25</div>
-                        <small class="opacity-75">Setiap bulan</small>
+                        <div class="fw-bold">Garansi Seumur Hidup</div>
+                        <small class="opacity-75">Berlaku S&K</small>
                     </div>
                 </div>
             </div>
@@ -809,11 +801,11 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
 <!-- Call to Action Section -->
 <div class="py-5 bg-gradient-danger text-white">
     <div class="container text-center py-5">
-        <h2 class="display-5 fw-bold mb-3">Siap Menguasai Bahasa Mandarin?</h2>
-        <p class="lead mb-4 opacity-75">Daftar sekarang dan mulai perjalanan bahasa Mandarin Anda bersama Xihuan Mandarin Pare!<br>Mulai tiap tanggal 10 & 25 setiap bulan.</p>
+        <h2 class="display-5 fw-bold mb-3">Jangan Tunda Kesuksesan Anda Sendiri!</h2>
+        <p class="lead mb-4 opacity-75">Lowongan kerja dan beasiswa Mandarin semakin banyak dan semakin kompetitif. Jangan sampai tertinggal. Belajar Mandarin hari ini, sukses menanti besok! </p>
 
         <div class="d-flex justify-content-center gap-3 flex-wrap">
-            <a href="https://wa.me/6285810310950?text=Hai,%20saya%20tertarik%20dengan%20kursus%20Bahasa%20Mandarin"
+            <a href="https://wa.me/6282240781299?text=Hai,%20saya%20tertarik%20dengan%20kursus%20Bahasa%20Mandarin"
                 target="_blank"
                 class="btn btn-warning btn-lg px-5 shadow fw-bold">
                 <i class="bi bi-whatsapp me-2"></i>Konsultasi Gratis via WhatsApp
