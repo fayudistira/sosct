@@ -828,10 +828,10 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
 
         <!-- Mode Navigation for Table -->
         <?php if (count($modes) > 1): ?>
-        <div class="row g-2 mb-4" role="tablist">
-            <?php foreach ($modes as $modeIndex => $mode): ?>
-                <div class="col">
-                    <button class="btn w-100 py-3 rounded-3 fw-bold <?= ($modeIndex === 0) ? 'btn-danger' : 'btn-outline-danger' ?>"
+        <div class="text-center mb-4">
+            <div class="d-inline-flex flex-wrap gap-2 justify-content-center" role="tablist">
+                <?php foreach ($modes as $modeIndex => $mode): ?>
+                    <button class="pill-tab-btn <?= ($modeIndex === 0) ? 'active' : '' ?>"
                         id="table-mode-tab-<?= $modeIndex ?>"
                         data-bs-toggle="tab"
                         data-bs-target="#table-mode-<?= $modeIndex ?>"
@@ -839,12 +839,12 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                         role="tab"
                         aria-controls="table-mode-<?= $modeIndex ?>"
                         aria-selected="<?= ($modeIndex === 0) ? 'true' : 'false' ?>">
-                        <i class="bi bi-<?= ($mode === 'online') ? 'wifi' : 'building' ?> me-2"></i>
+                        <i class="bi bi-<?= ($mode === 'online') ? 'wifi' : 'building' ?> me-1"></i>
                         <?= ucfirst($mode) ?>
-                        <span class="badge <?= ($modeIndex === 0) ? 'bg-white text-danger' : 'bg-danger' ?> rounded-pill ms-2"><?= $programsByMode[$mode]['total_programs'] ?></span>
+                        <span class="badge-pill"><?= $programsByMode[$mode]['total_programs'] ?></span>
                     </button>
-                </div>
-            <?php endforeach ?>
+                <?php endforeach ?>
+            </div>
         </div>
         <?php endif ?>
 
@@ -861,10 +861,10 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                     if (count($categories) > 1): 
                     ?>
                         <!-- Category Navigation for Table -->
-                        <div class="row g-2 mb-4" role="tablist">
-                            <?php foreach ($categories as $catIndex => $category): ?>
-                                <div class="col-auto">
-                                    <button class="btn <?= ($catIndex === 0) ? 'btn-danger' : 'btn-outline-danger' ?> rounded-3 px-4 py-2 fw-bold"
+                        <div class="text-center mb-4">
+                            <div class="d-inline-flex flex-wrap gap-2 justify-content-center" role="tablist">
+                                <?php foreach ($categories as $catIndex => $category): ?>
+                                    <button class="pill-tab-btn pill-tab-btn-sm <?= ($catIndex === 0) ? 'active' : '' ?>"
                                         id="table-cat-tab-<?= $modeIndex ?>-<?= $catIndex ?>"
                                         data-bs-toggle="tab"
                                         data-bs-target="#table-cat-<?= $modeIndex ?>-<?= $catIndex ?>"
@@ -873,10 +873,10 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                         aria-controls="table-cat-<?= $modeIndex ?>-<?= $catIndex ?>"
                                         aria-selected="<?= ($catIndex === 0) ? 'true' : 'false' ?>">
                                         <?= esc($category) ?>
-                                        <span class="badge <?= ($catIndex === 0) ? 'bg-white text-danger' : 'bg-danger' ?> rounded-pill ms-1"><?= $programsByMode[$mode]['categories'][$category]['total_programs'] ?></span>
+                                        <span class="badge-pill"><?= $programsByMode[$mode]['categories'][$category]['total_programs'] ?></span>
                                     </button>
-                                </div>
-                            <?php endforeach ?>
+                                <?php endforeach ?>
+                            </div>
                         </div>
                     <?php endif ?>
 
@@ -897,10 +897,10 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                             
                                 <?php if ($hasMultipleSubCats): ?>
                                     <!-- Sub-Category Navigation for Table -->
-                                    <div class="row g-2 mb-3" role="tablist">
-                                        <?php foreach ($subCatKeys as $subIndex => $subCategory): ?>
-                                            <div class="col-auto">
-                                                <button class="btn <?= ($subIndex === 0) ? 'btn-danger' : 'btn-outline-danger' ?> rounded-3 px-3 py-2"
+                                    <div class="text-center mb-3">
+                                        <div class="d-inline-flex flex-wrap gap-2 justify-content-center" role="tablist">
+                                            <?php foreach ($subCatKeys as $subIndex => $subCategory): ?>
+                                                <button class="pill-tab-btn pill-tab-btn-sm <?= ($subIndex === 0) ? 'active' : '' ?>"
                                                     id="table-sub-tab-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
                                                     data-bs-toggle="tab"
                                                     data-bs-target="#table-sub-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
@@ -909,10 +909,10 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                     aria-controls="table-sub-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
                                                     aria-selected="<?= ($subIndex === 0) ? 'true' : 'false' ?>">
                                                     <?= esc($subCategory) ?>
-                                                    <span class="badge <?= ($subIndex === 0) ? 'bg-white text-danger' : 'bg-danger' ?> rounded-pill ms-1"><?= count($subCategories[$subCategory]) ?></span>
+                                                    <span class="badge-pill"><?= count($subCategories[$subCategory]) ?></span>
                                                 </button>
-                                            </div>
-                                        <?php endforeach ?>
+                                            <?php endforeach ?>
+                                        </div>
                                     </div>
 
                                     <!-- Sub-Category Tab Content for Table -->
@@ -932,8 +932,8 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                             <table class="table table-hover align-middle mb-0">
                                                                 <thead class="table-light">
                                                                     <tr>
-                                                                        <th class="ps-4" style="width: 35%;">Program</th>
-                                                                        <th style="width: 20%;">Meta</th>
+                                                                        <th class="ps-4" style="width: 30%;">Program</th>
+                                                                        <th style="width: 25%;">Deskripsi</th>
                                                                         <th style="width: 15%;" class="text-end">Harga</th>
                                                                         <th style="width: 15%;" class="text-center">Aksi</th>
                                                                     </tr>
@@ -944,7 +944,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                     ?>
                                                                         <tr>
                                                                             <td class="ps-4">
-                                                                                <div class="d-flex align-items-center gap-3">
+                                                                                <div class="d-flex align-items-start gap-3">
                                                                                     <div class="flex-shrink-0">
                                                                                         <?php if (!empty($program['thumbnail'])): ?>
                                                                                             <img src="<?= base_url('uploads/programs/thumbs/' . $program['thumbnail']) ?>" 
@@ -959,30 +959,30 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                                     </div>
                                                                                     <div>
                                                                                         <h6 class="mb-1 fw-bold text-dark"><?= esc($program['title']) ?></h6>
-                                                                                        <p class="mb-0 text-muted small text-truncate" style="max-width: 250px;">
-                                                                                            <?= esc(strlen($program['description'] ?? '') > 60 ? substr($program['description'], 0, 60) . '...' : ($program['description'] ?? '-')) ?>
-                                                                                        </p>
+                                                                                        <div class="d-flex flex-wrap gap-1">
+                                                                                            <?php if (!empty($program['language'])): ?>
+                                                                                                <span class="badge bg-info bg-opacity-10 text-info" style="font-size: 0.65rem;">
+                                                                                                    <i class="bi bi-translate me-1"></i><?= esc($program['language']) ?>
+                                                                                                </span>
+                                                                                            <?php endif ?>
+                                                                                            <?php if (!empty($program['language_level'])): ?>
+                                                                                                <span class="badge bg-secondary bg-opacity-10 text-secondary" style="font-size: 0.65rem;">
+                                                                                                    <?= esc($program['language_level']) ?>
+                                                                                                </span>
+                                                                                            <?php endif ?>
+                                                                                            <?php if (!empty($program['duration'])): ?>
+                                                                                                <span class="badge bg-light text-dark border" style="font-size: 0.65rem;">
+                                                                                                    <i class="bi bi-clock me-1"></i><?= esc($program['duration']) ?>
+                                                                                                </span>
+                                                                                            <?php endif ?>
+                                                                                        </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </td>
                                                                             <td>
-                                                                                <div class="d-flex flex-wrap gap-1">
-                                                                                    <?php if (!empty($program['language'])): ?>
-                                                                                        <span class="badge bg-info bg-opacity-10 text-info">
-                                                                                            <i class="bi bi-translate me-1"></i><?= esc($program['language']) ?>
-                                                                                        </span>
-                                                                                    <?php endif ?>
-                                                                                    <?php if (!empty($program['language_level'])): ?>
-                                                                                        <span class="badge bg-secondary bg-opacity-10 text-secondary">
-                                                                                            <?= esc($program['language_level']) ?>
-                                                                                        </span>
-                                                                                    <?php endif ?>
-                                                                                    <?php if (!empty($program['duration'])): ?>
-                                                                                        <span class="badge bg-light text-dark border">
-                                                                                            <i class="bi bi-clock me-1"></i><?= esc($program['duration']) ?>
-                                                                                        </span>
-                                                                                    <?php endif ?>
-                                                                                </div>
+                                                                                <p class="mb-0 text-muted small">
+                                                                                    <?= esc(strlen($program['description'] ?? '') > 100 ? substr($program['description'], 0, 100) . '...' : ($program['description'] ?? '-')) ?>
+                                                                                </p>
                                                                             </td>
                                                                             <td class="text-end">
                                                                                 <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
@@ -1037,8 +1037,8 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                 <table class="table table-hover align-middle mb-0">
                                                     <thead class="table-light">
                                                         <tr>
-                                                            <th class="ps-4" style="width: 35%;">Program</th>
-                                                            <th style="width: 20%;">Meta</th>
+                                                            <th class="ps-4" style="width: 30%;">Program</th>
+                                                            <th style="width: 25%;">Deskripsi</th>
                                                             <th style="width: 15%;" class="text-end">Harga</th>
                                                             <th style="width: 15%;" class="text-center">Aksi</th>
                                                         </tr>
@@ -1049,7 +1049,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                         ?>
                                                             <tr>
                                                                 <td class="ps-4">
-                                                                    <div class="d-flex align-items-center gap-3">
+                                                                    <div class="d-flex align-items-start gap-3">
                                                                         <div class="flex-shrink-0">
                                                                             <?php if (!empty($program['thumbnail'])): ?>
                                                                                 <img src="<?= base_url('uploads/programs/thumbs/' . $program['thumbnail']) ?>" 
@@ -1064,30 +1064,30 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                         </div>
                                                                         <div>
                                                                             <h6 class="mb-1 fw-bold text-dark"><?= esc($program['title']) ?></h6>
-                                                                            <p class="mb-0 text-muted small text-truncate" style="max-width: 250px;">
-                                                                                <?= esc(strlen($program['description'] ?? '') > 60 ? substr($program['description'], 0, 60) . '...' : ($program['description'] ?? '-')) ?>
-                                                                            </p>
+                                                                            <div class="d-flex flex-wrap gap-1">
+                                                                                <?php if (!empty($program['language'])): ?>
+                                                                                    <span class="badge bg-info bg-opacity-10 text-info" style="font-size: 0.65rem;">
+                                                                                        <i class="bi bi-translate me-1"></i><?= esc($program['language']) ?>
+                                                                                    </span>
+                                                                                <?php endif ?>
+                                                                                <?php if (!empty($program['language_level'])): ?>
+                                                                                    <span class="badge bg-secondary bg-opacity-10 text-secondary" style="font-size: 0.65rem;">
+                                                                                        <?= esc($program['language_level']) ?>
+                                                                                    </span>
+                                                                                <?php endif ?>
+                                                                                <?php if (!empty($program['duration'])): ?>
+                                                                                    <span class="badge bg-light text-dark border" style="font-size: 0.65rem;">
+                                                                                        <i class="bi bi-clock me-1"></i><?= esc($program['duration']) ?>
+                                                                                    </span>
+                                                                                <?php endif ?>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </td>
                                                                 <td>
-                                                                    <div class="d-flex flex-wrap gap-1">
-                                                                        <?php if (!empty($program['language'])): ?>
-                                                                            <span class="badge bg-info bg-opacity-10 text-info">
-                                                                                <i class="bi bi-translate me-1"></i><?= esc($program['language']) ?>
-                                                                            </span>
-                                                                        <?php endif ?>
-                                                                        <?php if (!empty($program['language_level'])): ?>
-                                                                            <span class="badge bg-secondary bg-opacity-10 text-secondary">
-                                                                                <?= esc($program['language_level']) ?>
-                                                                            </span>
-                                                                        <?php endif ?>
-                                                                        <?php if (!empty($program['duration'])): ?>
-                                                                            <span class="badge bg-light text-dark border">
-                                                                                <i class="bi bi-clock me-1"></i><?= esc($program['duration']) ?>
-                                                                            </span>
-                                                                        <?php endif ?>
-                                                                    </div>
+                                                                    <p class="mb-0 text-muted small">
+                                                                        <?= esc(strlen($program['description'] ?? '') > 100 ? substr($program['description'], 0, 100) . '...' : ($program['description'] ?? '-')) ?>
+                                                                    </p>
                                                                 </td>
                                                                 <td class="text-end">
                                                                     <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
