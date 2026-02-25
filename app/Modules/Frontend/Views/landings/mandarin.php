@@ -128,6 +128,99 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
         padding: 0.1rem 0.35rem;
     }
 
+    /* Table Section Tabs - Rounded Corner Full Width */
+    .table-tab-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #666;
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        width: 100%;
+    }
+
+    .table-tab-btn:hover {
+        border-color: var(--dark-red);
+        background: #fef9f5;
+    }
+
+    .table-tab-btn.active {
+        background: var(--dark-red);
+        color: white;
+        border-color: var(--dark-red);
+        box-shadow: 0 4px 12px rgba(139, 0, 0, 0.25);
+    }
+
+    .table-tab-btn .badge-table {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0.5rem;
+        padding: 0.2rem 0.6rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+
+    .table-tab-btn.active .badge-table {
+        background: rgba(255, 255, 255, 0.25);
+        color: white;
+    }
+
+    /* Table Section Category Tabs - Rounded Corner */
+    .table-cat-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 1.25rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #666;
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+    }
+
+    .table-cat-btn:hover {
+        border-color: var(--dark-red);
+        background: #fef9f5;
+    }
+
+    .table-cat-btn.active {
+        background: var(--dark-red);
+        color: white;
+        border-color: var(--dark-red);
+        box-shadow: 0 2px 8px rgba(139, 0, 0, 0.2);
+    }
+
+    .table-cat-btn .badge-table {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0.4rem;
+        padding: 0.15rem 0.5rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+
+    .table-cat-btn.active .badge-table {
+        background: rgba(255, 255, 255, 0.25);
+        color: white;
+    }
+
     .hover-lift {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
@@ -828,10 +921,10 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
 
         <!-- Mode Navigation for Table -->
         <?php if (count($modes) > 1): ?>
-        <div class="text-center mb-4">
-            <div class="d-inline-flex flex-wrap gap-2 justify-content-center" role="tablist">
-                <?php foreach ($modes as $modeIndex => $mode): ?>
-                    <button class="pill-tab-btn <?= ($modeIndex === 0) ? 'active' : '' ?>"
+        <div class="row g-2 mb-4" role="tablist">
+            <?php foreach ($modes as $modeIndex => $mode): ?>
+                <div class="col">
+                    <button class="table-tab-btn <?= ($modeIndex === 0) ? 'active' : '' ?>"
                         id="table-mode-tab-<?= $modeIndex ?>"
                         data-bs-toggle="tab"
                         data-bs-target="#table-mode-<?= $modeIndex ?>"
@@ -839,12 +932,12 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                         role="tab"
                         aria-controls="table-mode-<?= $modeIndex ?>"
                         aria-selected="<?= ($modeIndex === 0) ? 'true' : 'false' ?>">
-                        <i class="bi bi-<?= ($mode === 'online') ? 'wifi' : 'building' ?> me-1"></i>
+                        <i class="bi bi-<?= ($mode === 'online') ? 'wifi' : 'building' ?> me-2"></i>
                         <?= ucfirst($mode) ?>
-                        <span class="badge-pill"><?= $programsByMode[$mode]['total_programs'] ?></span>
+                        <span class="badge-table"><?= $programsByMode[$mode]['total_programs'] ?></span>
                     </button>
-                <?php endforeach ?>
-            </div>
+                </div>
+            <?php endforeach ?>
         </div>
         <?php endif ?>
 
@@ -861,22 +954,20 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                     if (count($categories) > 1): 
                     ?>
                         <!-- Category Navigation for Table -->
-                        <div class="text-center mb-4">
-                            <div class="d-inline-flex flex-wrap gap-2 justify-content-center" role="tablist">
-                                <?php foreach ($categories as $catIndex => $category): ?>
-                                    <button class="pill-tab-btn pill-tab-btn-sm <?= ($catIndex === 0) ? 'active' : '' ?>"
-                                        id="table-cat-tab-<?= $modeIndex ?>-<?= $catIndex ?>"
-                                        data-bs-toggle="tab"
-                                        data-bs-target="#table-cat-<?= $modeIndex ?>-<?= $catIndex ?>"
-                                        type="button"
-                                        role="tab"
-                                        aria-controls="table-cat-<?= $modeIndex ?>-<?= $catIndex ?>"
-                                        aria-selected="<?= ($catIndex === 0) ? 'true' : 'false' ?>">
-                                        <?= esc($category) ?>
-                                        <span class="badge-pill"><?= $programsByMode[$mode]['categories'][$category]['total_programs'] ?></span>
-                                    </button>
-                                <?php endforeach ?>
-                            </div>
+                        <div class="d-flex flex-wrap gap-2 justify-content-center mb-4" role="tablist">
+                            <?php foreach ($categories as $catIndex => $category): ?>
+                                <button class="table-cat-btn <?= ($catIndex === 0) ? 'active' : '' ?>"
+                                    id="table-cat-tab-<?= $modeIndex ?>-<?= $catIndex ?>"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#table-cat-<?= $modeIndex ?>-<?= $catIndex ?>"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="table-cat-<?= $modeIndex ?>-<?= $catIndex ?>"
+                                    aria-selected="<?= ($catIndex === 0) ? 'true' : 'false' ?>">
+                                    <?= esc($category) ?>
+                                    <span class="badge-table"><?= $programsByMode[$mode]['categories'][$category]['total_programs'] ?></span>
+                                </button>
+                            <?php endforeach ?>
                         </div>
                     <?php endif ?>
 
@@ -897,22 +988,20 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                             
                                 <?php if ($hasMultipleSubCats): ?>
                                     <!-- Sub-Category Navigation for Table -->
-                                    <div class="text-center mb-3">
-                                        <div class="d-inline-flex flex-wrap gap-2 justify-content-center" role="tablist">
-                                            <?php foreach ($subCatKeys as $subIndex => $subCategory): ?>
-                                                <button class="pill-tab-btn pill-tab-btn-sm <?= ($subIndex === 0) ? 'active' : '' ?>"
-                                                    id="table-sub-tab-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
-                                                    data-bs-toggle="tab"
-                                                    data-bs-target="#table-sub-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
-                                                    type="button"
-                                                    role="tab"
-                                                    aria-controls="table-sub-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
-                                                    aria-selected="<?= ($subIndex === 0) ? 'true' : 'false' ?>">
-                                                    <?= esc($subCategory) ?>
-                                                    <span class="badge-pill"><?= count($subCategories[$subCategory]) ?></span>
-                                                </button>
-                                            <?php endforeach ?>
-                                        </div>
+                                    <div class="d-flex flex-wrap gap-2 justify-content-center mb-3" role="tablist">
+                                        <?php foreach ($subCatKeys as $subIndex => $subCategory): ?>
+                                            <button class="table-cat-btn <?= ($subIndex === 0) ? 'active' : '' ?>"
+                                                id="table-sub-tab-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
+                                                data-bs-toggle="tab"
+                                                data-bs-target="#table-sub-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
+                                                type="button"
+                                                role="tab"
+                                                aria-controls="table-sub-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
+                                                aria-selected="<?= ($subIndex === 0) ? 'true' : 'false' ?>">
+                                                <?= esc($subCategory) ?>
+                                                <span class="badge-table"><?= count($subCategories[$subCategory]) ?></span>
+                                            </button>
+                                        <?php endforeach ?>
                                     </div>
 
                                     <!-- Sub-Category Tab Content for Table -->
