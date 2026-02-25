@@ -853,7 +853,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
         <p class="lead text-muted">China kini menguasai ekonomi global dan menjadi salah satu negara dengan pertumbuhan tercepat di dunia.</p>
     </div>
 
-    <div class="row g-4 justify-content-center">
+    <div class="row g-4 justify-content-center text-center">
         <div class="col-md-6 col-lg-3">
             <div class="card border-0 shadow-sm h-100 hover-lift">
                 <div class="card-body text-center p-4">

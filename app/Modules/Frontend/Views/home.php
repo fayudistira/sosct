@@ -145,6 +145,45 @@
                         </div>
                         <p class="text-white-50 small mb-3">Kuasai bahasa dengan penutur terbanyak di dunia. Buka peluang karir di perusahaan multinasional.</p>
                         
+                        <!-- Featured Program with Flip Effect -->
+                        <div class="featured-program-container mb-3" data-language="mandarin">
+                            <div class="featured-program-flipper">
+                                <div class="featured-program-front">
+                                    <?php 
+                                    $mandarinProgs = $programsByLanguage['mandarin'] ?? [];
+                                    if (!empty($mandarinProgs)): 
+                                        $randomProg = $mandarinProgs[array_rand($mandarinProgs)];
+                                        $finalPrice = $randomProg['tuition_fee'] * (1 - ($randomProg['discount'] ?? 0) / 100);
+                                    ?>
+                                        <div class="bg-white bg-opacity-10 rounded-3 p-2">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="flex-shrink-0">
+                                                    <?php if (!empty($randomProg['thumbnail'])): ?>
+                                                        <img src="<?= base_url('uploads/programs/thumbs/' . $randomProg['thumbnail']) ?>" 
+                                                            alt="<?= esc($randomProg['title']) ?>" 
+                                                            class="rounded" 
+                                                            style="width: 40px; height: 30px; object-fit: cover;">
+                                                    <?php else: ?>
+                                                        <div class="bg-white bg-opacity-20 rounded d-flex align-items-center justify-content-center" style="width: 40px; height: 30px;">
+                                                            <i class="bi bi-journal-text text-white small"></i>
+                                                        </div>
+                                                    <?php endif ?>
+                                                </div>
+                                                <div class="flex-grow-1 overflow-hidden">
+                                                    <div class="text-white small fw-semibold text-truncate"><?= esc($randomProg['title']) ?></div>
+                                                    <div class="text-white-50 small">Rp <?= number_format($finalPrice, 0, ',', '.') ?></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="bg-white bg-opacity-10 rounded-3 p-2 text-center">
+                                            <span class="text-white-50 small">Program tersedia</span>
+                                        </div>
+                                    <?php endif ?>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="badge bg-white text-danger px-3 py-2">HSK Certified</span>
                             <i class="bi bi-arrow-right-circle-fill text-white fs-4"></i>
@@ -173,6 +212,45 @@
                         </div>
                         <p class="text-white-50 small mb-3">Raih kesempatan bekerja atau kuliah di Jepang. Program persiapan JLPT tersedia.</p>
 
+                        <!-- Featured Program with Flip Effect -->
+                        <div class="featured-program-container mb-3" data-language="japanese">
+                            <div class="featured-program-flipper">
+                                <div class="featured-program-front">
+                                    <?php 
+                                    $japaneseProgs = $programsByLanguage['japanese'] ?? [];
+                                    if (!empty($japaneseProgs)): 
+                                        $randomProg = $japaneseProgs[array_rand($japaneseProgs)];
+                                        $finalPrice = $randomProg['tuition_fee'] * (1 - ($randomProg['discount'] ?? 0) / 100);
+                                    ?>
+                                        <div class="bg-white bg-opacity-10 rounded-3 p-2">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="flex-shrink-0">
+                                                    <?php if (!empty($randomProg['thumbnail'])): ?>
+                                                        <img src="<?= base_url('uploads/programs/thumbs/' . $randomProg['thumbnail']) ?>" 
+                                                            alt="<?= esc($randomProg['title']) ?>" 
+                                                            class="rounded" 
+                                                            style="width: 40px; height: 30px; object-fit: cover;">
+                                                    <?php else: ?>
+                                                        <div class="bg-white bg-opacity-20 rounded d-flex align-items-center justify-content-center" style="width: 40px; height: 30px;">
+                                                            <i class="bi bi-journal-text text-white small"></i>
+                                                        </div>
+                                                    <?php endif ?>
+                                                </div>
+                                                <div class="flex-grow-1 overflow-hidden">
+                                                    <div class="text-white small fw-semibold text-truncate"><?= esc($randomProg['title']) ?></div>
+                                                    <div class="text-white-50 small">Rp <?= number_format($finalPrice, 0, ',', '.') ?></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="bg-white bg-opacity-10 rounded-3 p-2 text-center">
+                                            <span class="text-white-50 small">Program tersedia</span>
+                                        </div>
+                                    <?php endif ?>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="badge bg-white text-danger px-3 py-2">JLPT Ready</span>
                             <i class="bi bi-arrow-right-circle-fill text-white fs-4"></i>
@@ -200,6 +278,46 @@
                             </div>
                         </div>
                         <p class="text-white-50 small mb-3">Ikuti tren K-Culture! Persiapan TOPIK untuk beasiswa dan karir di Korea Selatan.</p>
+                        
+                        <!-- Featured Program with Flip Effect -->
+                        <div class="featured-program-container mb-3" data-language="korean">
+                            <div class="featured-program-flipper">
+                                <div class="featured-program-front">
+                                    <?php 
+                                    $koreanProgs = $programsByLanguage['korean'] ?? [];
+                                    if (!empty($koreanProgs)): 
+                                        $randomProg = $koreanProgs[array_rand($koreanProgs)];
+                                        $finalPrice = $randomProg['tuition_fee'] * (1 - ($randomProg['discount'] ?? 0) / 100);
+                                    ?>
+                                        <div class="bg-white bg-opacity-10 rounded-3 p-2">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="flex-shrink-0">
+                                                    <?php if (!empty($randomProg['thumbnail'])): ?>
+                                                        <img src="<?= base_url('uploads/programs/thumbs/' . $randomProg['thumbnail']) ?>" 
+                                                            alt="<?= esc($randomProg['title']) ?>" 
+                                                            class="rounded" 
+                                                            style="width: 40px; height: 30px; object-fit: cover;">
+                                                    <?php else: ?>
+                                                        <div class="bg-white bg-opacity-20 rounded d-flex align-items-center justify-content-center" style="width: 40px; height: 30px;">
+                                                            <i class="bi bi-journal-text text-white small"></i>
+                                                        </div>
+                                                    <?php endif ?>
+                                                </div>
+                                                <div class="flex-grow-1 overflow-hidden">
+                                                    <div class="text-white small fw-semibold text-truncate"><?= esc($randomProg['title']) ?></div>
+                                                    <div class="text-white-50 small">Rp <?= number_format($finalPrice, 0, ',', '.') ?></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="bg-white bg-opacity-10 rounded-3 p-2 text-center">
+                                            <span class="text-white-50 small">Program tersedia</span>
+                                        </div>
+                                    <?php endif ?>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="d-flex justify-content-between align-items-center mt-4">
                             <span class="badge bg-white text-danger px-3 py-2">TOPIK Certified</span>
                             <i class="bi bi-arrow-right-circle-fill text-white fs-4"></i>
@@ -227,6 +345,46 @@
                             </div>
                         </div>
                         <p class="text-white-50 small mb-3">Persiapan kuliah atau Ausbildung di Jerman. Sertifikasi Goethe Institut tersedia.</p>
+                        
+                        <!-- Featured Program with Flip Effect -->
+                        <div class="featured-program-container mb-3" data-language="german">
+                            <div class="featured-program-flipper">
+                                <div class="featured-program-front">
+                                    <?php 
+                                    $germanProgs = $programsByLanguage['german'] ?? [];
+                                    if (!empty($germanProgs)): 
+                                        $randomProg = $germanProgs[array_rand($germanProgs)];
+                                        $finalPrice = $randomProg['tuition_fee'] * (1 - ($randomProg['discount'] ?? 0) / 100);
+                                    ?>
+                                        <div class="bg-white bg-opacity-10 rounded-3 p-2">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="flex-shrink-0">
+                                                    <?php if (!empty($randomProg['thumbnail'])): ?>
+                                                        <img src="<?= base_url('uploads/programs/thumbs/' . $randomProg['thumbnail']) ?>" 
+                                                            alt="<?= esc($randomProg['title']) ?>" 
+                                                            class="rounded" 
+                                                            style="width: 40px; height: 30px; object-fit: cover;">
+                                                    <?php else: ?>
+                                                        <div class="bg-white bg-opacity-20 rounded d-flex align-items-center justify-content-center" style="width: 40px; height: 30px;">
+                                                            <i class="bi bi-journal-text text-white small"></i>
+                                                        </div>
+                                                    <?php endif ?>
+                                                </div>
+                                                <div class="flex-grow-1 overflow-hidden">
+                                                    <div class="text-white small fw-semibold text-truncate"><?= esc($randomProg['title']) ?></div>
+                                                    <div class="text-white-50 small">Rp <?= number_format($finalPrice, 0, ',', '.') ?></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="bg-white bg-opacity-10 rounded-3 p-2 text-center">
+                                            <span class="text-white-50 small">Program tersedia</span>
+                                        </div>
+                                    <?php endif ?>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="d-flex justify-content-between align-items-center mt-4">
                             <span class="badge bg-white text-success px-3 py-2">Goethe Ready</span>
                             <i class="bi bi-arrow-right-circle-fill text-white fs-4"></i>
@@ -254,6 +412,46 @@
                             </div>
                         </div>
                         <p class="text-white-50 small mb-3">Metode Kampung Inggris Pare yang legendaris. Persiapan TOEFL, IELTS, dan English for Business.</p>
+                        
+                        <!-- Featured Program with Flip Effect -->
+                        <div class="featured-program-container mb-3" data-language="english">
+                            <div class="featured-program-flipper">
+                                <div class="featured-program-front">
+                                    <?php 
+                                    $englishProgs = $programsByLanguage['english'] ?? [];
+                                    if (!empty($englishProgs)): 
+                                        $randomProg = $englishProgs[array_rand($englishProgs)];
+                                        $finalPrice = $randomProg['tuition_fee'] * (1 - ($randomProg['discount'] ?? 0) / 100);
+                                    ?>
+                                        <div class="bg-white bg-opacity-10 rounded-3 p-2">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="flex-shrink-0">
+                                                    <?php if (!empty($randomProg['thumbnail'])): ?>
+                                                        <img src="<?= base_url('uploads/programs/thumbs/' . $randomProg['thumbnail']) ?>" 
+                                                            alt="<?= esc($randomProg['title']) ?>" 
+                                                            class="rounded" 
+                                                            style="width: 40px; height: 30px; object-fit: cover;">
+                                                    <?php else: ?>
+                                                        <div class="bg-white bg-opacity-20 rounded d-flex align-items-center justify-content-center" style="width: 40px; height: 30px;">
+                                                            <i class="bi bi-journal-text text-white small"></i>
+                                                        </div>
+                                                    <?php endif ?>
+                                                </div>
+                                                <div class="flex-grow-1 overflow-hidden">
+                                                    <div class="text-white small fw-semibold text-truncate"><?= esc($randomProg['title']) ?></div>
+                                                    <div class="text-white-50 small">Rp <?= number_format($finalPrice, 0, ',', '.') ?></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="bg-white bg-opacity-10 rounded-3 p-2 text-center">
+                                            <span class="text-white-50 small">Program tersedia</span>
+                                        </div>
+                                    <?php endif ?>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="d-flex justify-content-between align-items-center mt-4">
                             <span class="badge bg-white text-primary px-3 py-2">TOEFL/IELTS</span>
                             <i class="bi bi-arrow-right-circle-fill text-white fs-4"></i>
@@ -552,6 +750,51 @@
     .hover-lift:hover {
         transform: translateY(-10px);
         box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+    }
+    
+    /* Featured Program Flip Animation */
+    .featured-program-container {
+        perspective: 1000px;
+        min-height: 46px;
+    }
+    
+    .featured-program-flipper {
+        position: relative;
+        width: 100%;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-style: preserve-3d;
+    }
+    
+    .featured-program-flipper.flipping {
+        transform: rotateX(180deg);
+    }
+    
+    .featured-program-front,
+    .featured-program-back {
+        width: 100%;
+        backface-visibility: hidden;
+    }
+    
+    .featured-program-back {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: rotateX(180deg);
+    }
+    
+    @keyframes flipIn {
+        0% {
+            transform: rotateX(-90deg);
+            opacity: 0;
+        }
+        100% {
+            transform: rotateX(0);
+            opacity: 1;
+        }
+    }
+    
+    .featured-program-flipper.animate-in {
+        animation: flipIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
     
     .bg-gradient-danger {
@@ -892,6 +1135,75 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Switch language every 2 seconds
     setInterval(switchLanguage, 2000);
+});
+
+// Featured Program Flip Animation
+document.addEventListener('DOMContentLoaded', function() {
+    // Program data passed from PHP
+    const programsData = <?= json_encode($programsByLanguage ?? []) ?>;
+    
+    // Initialize flip animation for each language container
+    const containers = document.querySelectorAll('.featured-program-container');
+    
+    containers.forEach(container => {
+        const language = container.dataset.language;
+        const programs = programsData[language] || [];
+        
+        if (programs.length <= 1) return; // No need to rotate if 0 or 1 program
+        
+        let currentIndex = 0;
+        const flipper = container.querySelector('.featured-program-flipper');
+        const frontCard = container.querySelector('.featured-program-front');
+        
+        setInterval(() => {
+            // Get next random program (different from current)
+            let nextIndex;
+            do {
+                nextIndex = Math.floor(Math.random() * programs.length);
+            } while (nextIndex === currentIndex && programs.length > 1);
+            currentIndex = nextIndex;
+            
+            const prog = programs[currentIndex];
+            const finalPrice = prog.tuition_fee * (1 - (prog.discount || 0) / 100);
+            
+            // Build thumbnail HTML
+            let thumbHtml = '';
+            if (prog.thumbnail) {
+                thumbHtml = `<img src="<?= base_url('uploads/programs/thumbs/') ?>${prog.thumbnail}" 
+                    alt="${prog.title}" class="rounded" style="width: 40px; height: 30px; object-fit: cover;">`;
+            } else {
+                thumbHtml = `<div class="bg-white bg-opacity-20 rounded d-flex align-items-center justify-content-center" style="width: 40px; height: 30px;">
+                    <i class="bi bi-journal-text text-white small"></i>
+                </div>`;
+            }
+            
+            // Build new content
+            const newContent = `
+                <div class="bg-white bg-opacity-10 rounded-3 p-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="flex-shrink-0">${thumbHtml}</div>
+                        <div class="flex-grow-1 overflow-hidden">
+                            <div class="text-white small fw-semibold text-truncate">${prog.title}</div>
+                            <div class="text-white-50 small">Rp ${finalPrice.toLocaleString('id-ID')}</div>
+                        </div>
+                    </div>
+                </div>`;
+            
+            // Animate flip
+            flipper.classList.add('animate-in');
+            flipper.style.transform = 'rotateX(90deg)';
+            
+            setTimeout(() => {
+                frontCard.innerHTML = newContent;
+                flipper.style.transform = 'rotateX(0deg)';
+            }, 300);
+            
+            setTimeout(() => {
+                flipper.classList.remove('animate-in');
+            }, 600);
+            
+        }, 3000);
+    });
 });
 </script>
 

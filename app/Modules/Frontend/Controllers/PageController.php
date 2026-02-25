@@ -25,9 +25,33 @@ class PageController extends BaseController
         $programModel = new ProgramModel();
         $programs = $programModel->where('status', 'active')->orderBy('created_at', 'DESC')->findAll();
 
+        // Group programs by language for featured programs on home page
+        $programsByLanguage = [];
+        $languageMap = [
+            'mandarin' => ['Mandarin', 'Chinese'],
+            'japanese' => ['Japanese', 'Jepang'],
+            'korean' => ['Korean', 'Korea'],
+            'german' => ['German', 'Jerman'],
+            'english' => ['English', 'Inggris']
+        ];
+
+        foreach ($programs as $program) {
+            $lang = strtolower($program['language'] ?? '');
+            foreach ($languageMap as $key => $aliases) {
+                if (in_array($lang, array_map('strtolower', $aliases)) || $lang === $key) {
+                    if (!isset($programsByLanguage[$key])) {
+                        $programsByLanguage[$key] = [];
+                    }
+                    $programsByLanguage[$key][] = $program;
+                    break;
+                }
+            }
+        }
+
         return view('Modules\Frontend\Views\home', [
             'title' => 'Welcome',
-            'programs' => $programs
+            'programs' => $programs,
+            'programsByLanguage' => $programsByLanguage
         ]);
     }
 
