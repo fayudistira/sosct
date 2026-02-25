@@ -415,26 +415,27 @@
                             <img src="<?= base_url('assets/images/sos-logo.png') ?>" alt="SOS Course & Training" height="40" class="me-2">
                             SOS Course & Training
                         </h5>
-                        <p class="text-white-50 small mb-3">
-                            Kursus bahasa asing terbaik di Kampung Inggris Pare sejak 2013. Kami menyediakan program pembelajaran bahasa Mandarin, Inggris, Jepang, Korea, dan Jerman dengan pengajar bersertifikat internasional.
-                        </p>
-                        <div class="d-flex gap-3">
-                            <a href="https://wa.me/6285810310950" target="_blank" class="text-white-50 fs-5" title="WhatsApp">
-                                <i class="bi bi-whatsapp"></i>
-                            </a>
-                            <a href="https://www.instagram.com/soscoursepare" target="_blank" class="text-white-50 fs-5" title="Instagram">
-                                <i class="bi bi-instagram"></i>
-                            </a>
-                            <a href="https://www.facebook.com/soscoursepare" target="_blank" class="text-white-50 fs-5" title="Facebook">
-                                <i class="bi bi-facebook"></i>
-                            </a>
-                            <a href="https://www.youtube.com/@soscoursepare" target="_blank" class="text-white-50 fs-5" title="YouTube">
-                                <i class="bi bi-youtube"></i>
-                            </a>
-                            <a href="https://www.tiktok.com/@soscoursepare" target="_blank" class="text-white-50 fs-5" title="TikTok">
-                                <i class="bi bi-tiktok"></i>
-                            </a>
-                        </div>
+                        <ul class="list-unstyled mb-0">
+                        <li class="mb-2 d-flex align-items-start">
+                            <i class="bi bi-geo-alt-fill text-danger me-2 mt-1"></i>
+                            <span class="text-white-50 small">
+                                Perum Kirana CLuster Blok A No 19 Jl. Camelia, Tulungrejo, Pare- Kab.Kediri
+                            </span>
+                        </li>
+                        <li class="mb-2 d-flex align-items-center">
+                            <i class="bi bi-whatsapp text-danger me-2"></i>
+                            <a href="https://wa.me/6285810310950" class="text-white-50 text-decoration-none small" target="_blank">+62 858-1031-0950</a>
+                        </li>
+                        <li class="mb-2 d-flex align-items-center">
+                            <i class="bi bi-envelope-fill text-danger me-2"></i>
+                            <a href="mailto:info@soscourse.com" class="text-white-50 text-decoration-none small">info@soscourse.com</a>
+                        </li>
+                        <li class="d-flex align-items-center">
+                            <i class="bi bi-clock text-danger me-2"></i>
+                            <span class="text-white-50 small">Senin - Minggu: 07:00 - 21:00</span>
+                        </li>
+                    </ul>
+                        
                     </div>
                 </div>
                 
@@ -464,28 +465,24 @@
                 
                 <!-- Contact Info -->
                 <div class="col-lg-3 col-md-6">
-                    <h6 class="fw-bold text-uppercase mb-3">Hubungi Kami</h6>
-                    <ul class="list-unstyled mb-0">
-                        <li class="mb-2 d-flex align-items-start">
-                            <i class="bi bi-geo-alt-fill text-danger me-2 mt-1"></i>
-                            <span class="text-white-50 small">
-                                Jl. Jendral Sudirman No. 123<br>
-                                Pare, Kediri, Jawa Timur
-                            </span>
-                        </li>
-                        <li class="mb-2 d-flex align-items-center">
-                            <i class="bi bi-telephone-fill text-danger me-2"></i>
-                            <a href="tel:+6285810310950" class="text-white-50 text-decoration-none small">+62 858-1031-0950</a>
-                        </li>
-                        <li class="mb-2 d-flex align-items-center">
-                            <i class="bi bi-envelope-fill text-danger me-2"></i>
-                            <a href="mailto:info@soscourse.com" class="text-white-50 text-decoration-none small">info@soscourse.com</a>
-                        </li>
-                        <li class="d-flex align-items-center">
-                            <i class="bi bi-clock text-danger me-2"></i>
-                            <span class="text-white-50 small">Senin - Minggu: 07:00 - 21:00</span>
-                        </li>
-                    </ul>
+                    <h6 class="fw-bold text-uppercase mb-3">Get Connected</h6>
+                    <div class="d-flex gap-3">
+                            <a href="https://wa.me/6285810310950" target="_blank" class="text-white-50 fs-5" title="WhatsApp">
+                                <i class="bi bi-whatsapp"></i>
+                            </a>
+                            <a href="https://www.instagram.com/soscoursepare" target="_blank" class="text-white-50 fs-5" title="Instagram">
+                                <i class="bi bi-instagram"></i>
+                            </a>
+                            <a href="https://www.facebook.com/soscoursepare" target="_blank" class="text-white-50 fs-5" title="Facebook">
+                                <i class="bi bi-facebook"></i>
+                            </a>
+                            <a href="https://www.youtube.com/@soscoursepare" target="_blank" class="text-white-50 fs-5" title="YouTube">
+                                <i class="bi bi-youtube"></i>
+                            </a>
+                            <a href="https://www.tiktok.com/@soscoursepare" target="_blank" class="text-white-50 fs-5" title="TikTok">
+                                <i class="bi bi-tiktok"></i>
+                            </a>
+                        </div>
                 </div>
             </div>
             
