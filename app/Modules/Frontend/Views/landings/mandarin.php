@@ -368,6 +368,21 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                 </div>
             </div>
 
+            <div class="col-lg-5">
+                <div class="bg-gradient-danger rounded-5 p-5 text-white shadow-lg">
+                    <h3 class="fw-bold mb-4">Program Dimulai</h3>
+                    <div class="display-4 fw-bold mb-3">Tanggal 10</div>
+                    <p class="mb-0 opacity-75">Tiap bulannya</p>
+                    <hr class="my-4 opacity-25">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-award fs-1 opacity-50"></i>
+                        <div>
+                            <div class="fw-bold">Garansi Seumur Hidup</div>
+                            <small class="opacity-75">Berlaku S&K</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

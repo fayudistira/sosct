@@ -525,8 +525,8 @@
                 fetchRecentAdmissions();
             }, 3000); // Wait 3 seconds after page load
 
-            // Poll every 15 seconds
-            setInterval(fetchRecentAdmissions, 15000);
+            // Poll every 30 seconds
+            setInterval(fetchRecentAdmissions, 30000);
 
             // Show popup periodically (every 45-60 seconds)
             setInterval(() => {
