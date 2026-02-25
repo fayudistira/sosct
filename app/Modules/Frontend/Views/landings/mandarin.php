@@ -887,142 +887,143 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                             $subCategories = $programsByMode[$mode]['categories'][$category]['sub_categories'];
                             $subCatKeys = array_keys($subCategories);
                             $hasMultipleSubCats = count($subCatKeys) > 1;
+                            $isCatActive = ($catIndex === 0);
                             ?>
                             
-                            <?php if ($hasMultipleSubCats): ?>
-                                <!-- Sub-Category Navigation for Table -->
-                                <div class="row g-2 mb-3" role="tablist">
-                                    <?php foreach ($subCatKeys as $subIndex => $subCategory): ?>
-                                        <div class="col-auto">
-                                            <button class="btn <?= ($subIndex === 0) ? 'btn-danger' : 'btn-outline-danger' ?> rounded-3 px-3 py-2"
-                                                id="table-sub-tab-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
-                                                data-bs-toggle="tab"
-                                                data-bs-target="#table-sub-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
-                                                type="button"
-                                                role="tab"
-                                                aria-controls="table-sub-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
-                                                aria-selected="<?= ($subIndex === 0) ? 'true' : 'false' ?>">
-                                                <?= esc($subCategory) ?>
-                                                <span class="badge <?= ($subIndex === 0) ? 'bg-white text-danger' : 'bg-danger' ?> rounded-pill ms-1"><?= count($subCategories[$subCategory]) ?></span>
-                                            </button>
-                                        </div>
-                                    <?php endforeach ?>
-                                </div>
+                            <div class="tab-pane fade <?= $isCatActive ? 'show active' : '' ?>"
+                                id="table-cat-<?= $modeIndex ?>-<?= $catIndex ?>"
+                                role="tabpanel"
+                                aria-labelledby="table-cat-tab-<?= $modeIndex ?>-<?= $catIndex ?>">
+                            
+                                <?php if ($hasMultipleSubCats): ?>
+                                    <!-- Sub-Category Navigation for Table -->
+                                    <div class="row g-2 mb-3" role="tablist">
+                                        <?php foreach ($subCatKeys as $subIndex => $subCategory): ?>
+                                            <div class="col-auto">
+                                                <button class="btn <?= ($subIndex === 0) ? 'btn-danger' : 'btn-outline-danger' ?> rounded-3 px-3 py-2"
+                                                    id="table-sub-tab-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
+                                                    data-bs-toggle="tab"
+                                                    data-bs-target="#table-sub-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
+                                                    type="button"
+                                                    role="tab"
+                                                    aria-controls="table-sub-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
+                                                    aria-selected="<?= ($subIndex === 0) ? 'true' : 'false' ?>">
+                                                    <?= esc($subCategory) ?>
+                                                    <span class="badge <?= ($subIndex === 0) ? 'bg-white text-danger' : 'bg-danger' ?> rounded-pill ms-1"><?= count($subCategories[$subCategory]) ?></span>
+                                                </button>
+                                            </div>
+                                        <?php endforeach ?>
+                                    </div>
 
-                                <!-- Sub-Category Tab Content for Table -->
-                                <div class="tab-content">
-                                    <?php foreach ($subCatKeys as $subIndex => $subCategory): 
-                                        $progs = $subCategories[$subCategory];
-                                    ?>
-                                        <div class="tab-pane fade <?= ($subIndex === 0) ? 'show active' : '' ?>"
-                                            id="table-sub-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
-                                            role="tabpanel"
-                                            aria-labelledby="table-sub-tab-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>">
-                                            
-                                            <!-- Program Table -->
-                                            <div class="card border-0 shadow-sm overflow-hidden">
-                                                <div class="card-body p-0">
-                                                    <div class="table-responsive">
-                                                        <table class="table table-hover align-middle mb-0">
-                                                            <thead class="table-light">
-                                                                <tr>
-                                                                    <th class="ps-4" style="width: 35%;">Program</th>
-                                                                    <th style="width: 20%;">Meta</th>
-                                                                    <th style="width: 15%;" class="text-end">Harga</th>
-                                                                    <th style="width: 15%;" class="text-center">Aksi</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <?php foreach ($progs as $program): 
-                                                                    $finalPrice = $program['tuition_fee'] * (1 - ($program['discount'] ?? 0) / 100);
-                                                                ?>
+                                    <!-- Sub-Category Tab Content for Table -->
+                                    <div class="tab-content">
+                                        <?php foreach ($subCatKeys as $subIndex => $subCategory): 
+                                            $progs = $subCategories[$subCategory];
+                                        ?>
+                                            <div class="tab-pane fade <?= ($subIndex === 0) ? 'show active' : '' ?>"
+                                                id="table-sub-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
+                                                role="tabpanel"
+                                                aria-labelledby="table-sub-tab-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>">
+                                                
+                                                <!-- Program Table -->
+                                                <div class="card border-0 shadow-sm overflow-hidden">
+                                                    <div class="card-body p-0">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-hover align-middle mb-0">
+                                                                <thead class="table-light">
                                                                     <tr>
-                                                                        <td class="ps-4">
-                                                                            <div class="d-flex align-items-center gap-3">
-                                                                                <div class="flex-shrink-0">
-                                                                                    <?php if (!empty($program['thumbnail'])): ?>
-                                                                                        <img src="<?= base_url('uploads/programs/thumbs/' . $program['thumbnail']) ?>" 
-                                                                                            alt="<?= esc($program['title']) ?>" 
-                                                                                            class="rounded" 
-                                                                                            style="width: 60px; height: 45px; object-fit: cover;">
-                                                                                    <?php else: ?>
-                                                                                        <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 60px; height: 45px;">
-                                                                                            <i class="bi bi-journal-text text-muted"></i>
-                                                                                        </div>
+                                                                        <th class="ps-4" style="width: 35%;">Program</th>
+                                                                        <th style="width: 20%;">Meta</th>
+                                                                        <th style="width: 15%;" class="text-end">Harga</th>
+                                                                        <th style="width: 15%;" class="text-center">Aksi</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <?php foreach ($progs as $program): 
+                                                                        $finalPrice = $program['tuition_fee'] * (1 - ($program['discount'] ?? 0) / 100);
+                                                                    ?>
+                                                                        <tr>
+                                                                            <td class="ps-4">
+                                                                                <div class="d-flex align-items-center gap-3">
+                                                                                    <div class="flex-shrink-0">
+                                                                                        <?php if (!empty($program['thumbnail'])): ?>
+                                                                                            <img src="<?= base_url('uploads/programs/thumbs/' . $program['thumbnail']) ?>" 
+                                                                                                alt="<?= esc($program['title']) ?>" 
+                                                                                                class="rounded" 
+                                                                                                style="width: 60px; height: 45px; object-fit: cover;">
+                                                                                        <?php else: ?>
+                                                                                            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 60px; height: 45px;">
+                                                                                                <i class="bi bi-journal-text text-muted"></i>
+                                                                                            </div>
+                                                                                        <?php endif ?>
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <h6 class="mb-1 fw-bold text-dark"><?= esc($program['title']) ?></h6>
+                                                                                        <p class="mb-0 text-muted small text-truncate" style="max-width: 250px;">
+                                                                                            <?= esc(strlen($program['description'] ?? '') > 60 ? substr($program['description'], 0, 60) . '...' : ($program['description'] ?? '-')) ?>
+                                                                                        </p>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="d-flex flex-wrap gap-1">
+                                                                                    <?php if (!empty($program['language'])): ?>
+                                                                                        <span class="badge bg-info bg-opacity-10 text-info">
+                                                                                            <i class="bi bi-translate me-1"></i><?= esc($program['language']) ?>
+                                                                                        </span>
+                                                                                    <?php endif ?>
+                                                                                    <?php if (!empty($program['language_level'])): ?>
+                                                                                        <span class="badge bg-secondary bg-opacity-10 text-secondary">
+                                                                                            <?= esc($program['language_level']) ?>
+                                                                                        </span>
+                                                                                    <?php endif ?>
+                                                                                    <?php if (!empty($program['duration'])): ?>
+                                                                                        <span class="badge bg-light text-dark border">
+                                                                                            <i class="bi bi-clock me-1"></i><?= esc($program['duration']) ?>
+                                                                                        </span>
                                                                                     <?php endif ?>
                                                                                 </div>
-                                                                                <div>
-                                                                                    <h6 class="mb-1 fw-bold text-dark"><?= esc($program['title']) ?></h6>
-                                                                                    <p class="mb-0 text-muted small text-truncate" style="max-width: 250px;">
-                                                                                        <?= esc(strlen($program['description'] ?? '') > 60 ? substr($program['description'], 0, 60) . '...' : ($program['description'] ?? '-')) ?>
-                                                                                    </p>
+                                                                            </td>
+                                                                            <td class="text-end">
+                                                                                <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
+                                                                                    <div class="d-flex align-items-center justify-content-end gap-2">
+                                                                                        <span class="badge bg-danger rounded-pill">-<?= $program['discount'] ?>%</span>
+                                                                                    </div>
+                                                                                    <div class="text-decoration-line-through text-muted small">Rp <?= number_format($program['tuition_fee'], 0, ',', '.') ?></div>
+                                                                                    <div class="fw-bold text-danger">Rp <?= number_format($finalPrice, 0, ',', '.') ?></div>
+                                                                                <?php else: ?>
+                                                                                    <div class="fw-bold text-dark">Rp <?= number_format($finalPrice, 0, ',', '.') ?></div>
+                                                                                <?php endif ?>
+                                                                            </td>
+                                                                            <td class="text-center">
+                                                                                <div class="d-flex gap-2 justify-content-center">
+                                                                                    <a href="<?= base_url('programs/' . $program['id']) ?>" 
+                                                                                        class="btn btn-outline-secondary btn-sm rounded px-3" 
+                                                                                        title="Detail">
+                                                                                        <i class="bi bi-eye"></i>
+                                                                                    </a>
+                                                                                    <a href="<?= base_url('apply/' . $program['id']) ?>" 
+                                                                                        class="btn btn-dark-red btn-sm rounded px-3 fw-bold">
+                                                                                        Apply
+                                                                                    </a>
                                                                                 </div>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div class="d-flex flex-wrap gap-1">
-                                                                                <?php if (!empty($program['language'])): ?>
-                                                                                    <span class="badge bg-info bg-opacity-10 text-info">
-                                                                                        <i class="bi bi-translate me-1"></i><?= esc($program['language']) ?>
-                                                                                    </span>
-                                                                                <?php endif ?>
-                                                                                <?php if (!empty($program['language_level'])): ?>
-                                                                                    <span class="badge bg-secondary bg-opacity-10 text-secondary">
-                                                                                        <?= esc($program['language_level']) ?>
-                                                                                    </span>
-                                                                                <?php endif ?>
-                                                                                <?php if (!empty($program['duration'])): ?>
-                                                                                    <span class="badge bg-light text-dark border">
-                                                                                        <i class="bi bi-clock me-1"></i><?= esc($program['duration']) ?>
-                                                                                    </span>
-                                                                                <?php endif ?>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td class="text-end">
-                                                                            <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
-                                                                                <div class="d-flex align-items-center justify-content-end gap-2">
-                                                                                    <span class="badge bg-danger rounded-pill">-<?= $program['discount'] ?>%</span>
-                                                                                </div>
-                                                                                <div class="text-decoration-line-through text-muted small">Rp <?= number_format($program['tuition_fee'], 0, ',', '.') ?></div>
-                                                                                <div class="fw-bold text-danger">Rp <?= number_format($finalPrice, 0, ',', '.') ?></div>
-                                                                            <?php else: ?>
-                                                                                <div class="fw-bold text-dark">Rp <?= number_format($finalPrice, 0, ',', '.') ?></div>
-                                                                            <?php endif ?>
-                                                                        </td>
-                                                                        <td class="text-center">
-                                                                            <div class="d-flex gap-2 justify-content-center">
-                                                                                <a href="<?= base_url('programs/' . $program['id']) ?>" 
-                                                                                    class="btn btn-outline-secondary btn-sm rounded px-3" 
-                                                                                    title="Detail">
-                                                                                    <i class="bi bi-eye"></i>
-                                                                                </a>
-                                                                                <a href="<?= base_url('apply/' . $program['id']) ?>" 
-                                                                                    class="btn btn-dark-red btn-sm rounded px-3 fw-bold">
-                                                                                    Apply
-                                                                                </a>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                <?php endforeach ?>
-                                                            </tbody>
-                                                        </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    <?php endforeach ?>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    <?php endforeach ?>
-                                </div>
-                            <?php else: ?>
-                                <!-- Single sub-category, show table directly -->
-                                <?php 
-                                $subCatKey = $subCatKeys[0] ?? 'Standard';
-                                $progs = $subCategories[$subCatKey];
-                                $isActive = (count($categories) === 1) || ($catIndex === 0);
-                                ?>
-                                <div class="tab-pane fade <?= $isActive ? 'show active' : '' ?>"
-                                    id="table-cat-<?= $modeIndex ?>-<?= $catIndex ?>"
-                                    role="tabpanel"
-                                    aria-labelledby="table-cat-tab-<?= $modeIndex ?>-<?= $catIndex ?>">
+                                        <?php endforeach ?>
+                                    </div>
+                                <?php else: ?>
+                                    <!-- Single sub-category, show table directly -->
+                                    <?php 
+                                    $subCatKey = $subCatKeys[0] ?? 'Standard';
+                                    $progs = $subCategories[$subCatKey];
+                                    ?>
                                     
                                     <div class="card border-0 shadow-sm overflow-hidden">
                                         <div class="card-header bg-white py-3 border-0">
@@ -1119,8 +1120,8 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            <?php endif ?>
+                                <?php endif ?>
+                            </div>
                         <?php endforeach ?>
                     </div>
                 </div>
