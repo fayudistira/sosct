@@ -247,8 +247,9 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
         .table-responsive tbody td::before {
             display: none;
         }
-        /* Hide description column on mobile */
-        .table-responsive tbody td[data-label="Deskripsi"] {
+        /* Hide description and price columns on mobile */
+        .table-responsive tbody td[data-label="Deskripsi"],
+        .table-responsive tbody td[data-label="Harga"] {
             display: none;
         }
         /* Program column - thumbnail + title + meta + price */
@@ -269,12 +270,6 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
             width: 80px !important;
             height: 60px !important;
             object-fit: cover;
-        }
-        /* Price column - show inline with meta */
-        .table-responsive tbody td[data-label="Harga"] {
-            margin-top: 0.5rem;
-            padding-top: 0.5rem;
-            border-top: 1px solid #f0f0f0;
         }
         /* Action column - full width buttons */
         .table-responsive tbody td[data-label="Aksi"] {
@@ -594,7 +589,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                                             </div>
                                                                                         <?php endif ?>
                                                                                     </div>
-                                                                                    <div>
+                                                                                    <div class="flex-grow-1">
                                                                                         <h6 class="mb-1 fw-bold text-dark"><?= esc($program['title']) ?></h6>
                                                                                         <div class="d-flex flex-wrap gap-1">
                                                                                             <?php if (!empty($program['language'])): ?>
@@ -613,6 +608,17 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                                                 </span>
                                                                                             <?php endif ?>
                                                                                         </div>
+                                                                                        <!-- Mobile Price - shown below meta on mobile only -->
+                                                                                        <div class="d-lg-none mt-2">
+                                                                                            <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
+                                                                                                <span class="badge bg-danger rounded-pill me-1">-<?= $program['discount'] ?>%</span>
+                                                                                                <span class="text-decoration-line-through text-muted small">Rp <?= number_format($program['tuition_fee'], 0, ',', '.') ?></span>
+                                                                                                <span class="fw-bold text-danger ms-1">Rp <?= number_format($finalPrice, 0, ',', '.') ?></span>
+                                                                                            <?php else: ?>
+                                                                                                <span class="fw-bold text-dark">Rp <?= number_format($finalPrice, 0, ',', '.') ?></span>
+                                                                                            <?php endif ?>
+                                                                                            <div class="text-muted small">Reg: Rp <?= number_format($program['registration_fee'] ?? 0, 0, ',', '.') ?></div>
+                                                                                        </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </td>
@@ -621,7 +627,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                                     <?= esc(strlen($program['description'] ?? '') > 100 ? substr($program['description'], 0, 100) . '...' : ($program['description'] ?? '-')) ?>
                                                                                 </p>
                                                                             </td>
-                                                                            <td class="text-end" data-label="Harga">
+                                                                            <td class="text-end d-none d-lg-table-cell" data-label="Harga">
                                                                                 <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
                                                                                     <div class="d-flex align-items-center justify-content-end gap-2">
                                                                                         <span class="badge bg-danger rounded-pill">-<?= $program['discount'] ?>%</span>
@@ -631,7 +637,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                                 <?php else: ?>
                                                                                     <div class="fw-bold text-dark">Rp <?= number_format($finalPrice, 0, ',', '.') ?></div>
                                                                                 <?php endif ?>
-                                                                                <div class="text-muted small">Registrasi: Rp <?= number_format($program['registration_fee'] ?? 0, 0, ',', '.') ?></div>
+                                                                                <div class="text-muted small">Reg: Rp <?= number_format($program['registration_fee'] ?? 0, 0, ',', '.') ?></div>
                                                                             </td>
                                                                             <td class="text-center" data-label="Aksi">
                                                                                 <div class="d-flex gap-2 justify-content-center">
@@ -700,7 +706,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                                 </div>
                                                                             <?php endif ?>
                                                                         </div>
-                                                                        <div>
+                                                                        <div class="flex-grow-1">
                                                                             <h6 class="mb-1 fw-bold text-dark"><?= esc($program['title']) ?></h6>
                                                                             <div class="d-flex flex-wrap gap-1">
                                                                                 <?php if (!empty($program['language'])): ?>
@@ -719,6 +725,17 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                                     </span>
                                                                                 <?php endif ?>
                                                                             </div>
+                                                                            <!-- Mobile Price - shown below meta on mobile only -->
+                                                                            <div class="d-lg-none mt-2">
+                                                                                <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
+                                                                                    <span class="badge bg-danger rounded-pill me-1">-<?= $program['discount'] ?>%</span>
+                                                                                    <span class="text-decoration-line-through text-muted small">Rp <?= number_format($program['tuition_fee'], 0, ',', '.') ?></span>
+                                                                                    <span class="fw-bold text-danger ms-1">Rp <?= number_format($finalPrice, 0, ',', '.') ?></span>
+                                                                                <?php else: ?>
+                                                                                    <span class="fw-bold text-dark">Rp <?= number_format($finalPrice, 0, ',', '.') ?></span>
+                                                                                <?php endif ?>
+                                                                                <div class="text-muted small">Reg: Rp <?= number_format($program['registration_fee'] ?? 0, 0, ',', '.') ?></div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </td>
@@ -727,7 +744,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                         <?= esc(strlen($program['description'] ?? '') > 100 ? substr($program['description'], 0, 100) . '...' : ($program['description'] ?? '-')) ?>
                                                                     </p>
                                                                 </td>
-                                                                <td class="text-end" data-label="Harga">
+                                                                <td class="text-end d-none d-lg-table-cell" data-label="Harga">
                                                                     <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
                                                                         <div class="d-flex align-items-center justify-content-end gap-2">
                                                                             <span class="badge bg-danger rounded-pill">-<?= $program['discount'] ?>%</span>
@@ -737,7 +754,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                     <?php else: ?>
                                                                         <div class="fw-bold text-dark">Rp <?= number_format($finalPrice, 0, ',', '.') ?></div>
                                                                     <?php endif ?>
-                                                                    <div class="text-muted small">Registrasi: Rp <?= number_format($program['registration_fee'] ?? 0, 0, ',', '.') ?></div>
+                                                                    <div class="text-muted small">Reg: Rp <?= number_format($program['registration_fee'] ?? 0, 0, ',', '.') ?></div>
                                                                 </td>
                                                                 <td class="text-center" data-label="Aksi">
                                                                     <div class="d-flex gap-2 justify-content-center">
