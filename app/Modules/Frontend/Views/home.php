@@ -185,7 +185,7 @@
                         </div>
                         
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-white text-danger px-3 py-2">HSK Certified</span>
+                            <span class="badge bg-white text-danger px-3 py-2">HSK/HSKK - TOCFL</span>
                             <i class="bi bi-arrow-right-circle-fill text-white fs-4"></i>
                         </div>
                     </div>
@@ -244,7 +244,7 @@
                                         </div>
                                     <?php else: ?>
                                         <div class="bg-white bg-opacity-10 rounded-3 p-2 text-center">
-                                            <span class="text-white-50 small">Program tersedia</span>
+                                            <span class="text-white-50 small">Program belum tersedia</span>
                                         </div>
                                     <?php endif ?>
                                 </div>
@@ -252,7 +252,7 @@
                         </div>
 
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-white text-danger px-3 py-2">JLPT Ready</span>
+                            <span class="badge bg-white text-danger px-3 py-2">JLPT - JFT</span>
                             <i class="bi bi-arrow-right-circle-fill text-white fs-4"></i>
                         </div>
                     </div>
@@ -311,7 +311,7 @@
                                         </div>
                                     <?php else: ?>
                                         <div class="bg-white bg-opacity-10 rounded-3 p-2 text-center">
-                                            <span class="text-white-50 small">Program tersedia</span>
+                                            <span class="text-white-50 small">Program belum tersedia</span>
                                         </div>
                                     <?php endif ?>
                                 </div>
@@ -319,7 +319,7 @@
                         </div>
                         
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-white text-danger px-3 py-2">TOPIK Certified</span>
+                            <span class="badge bg-white text-danger px-3 py-2">EPS - TOPIK</span>
                             <i class="bi bi-arrow-right-circle-fill text-white fs-4"></i>
                         </div>
                     </div>
@@ -378,7 +378,7 @@
                                         </div>
                                     <?php else: ?>
                                         <div class="bg-white bg-opacity-10 rounded-3 p-2 text-center">
-                                            <span class="text-white-50 small">Program tersedia</span>
+                                            <span class="text-white-50 small">Program belum tersedia</span>
                                         </div>
                                     <?php endif ?>
                                 </div>
@@ -386,7 +386,7 @@
                         </div>
                         
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-white text-success px-3 py-2">Goethe Ready</span>
+                            <span class="badge bg-white text-success px-3 py-2">Goethe</span>
                             <i class="bi bi-arrow-right-circle-fill text-white fs-4"></i>
                         </div>
                     </div>
@@ -445,7 +445,7 @@
                                         </div>
                                     <?php else: ?>
                                         <div class="bg-white bg-opacity-10 rounded-3 p-2 text-center">
-                                            <span class="text-white-50 small">Program tersedia</span>
+                                            <span class="text-white-50 small">Program belum tersedia</span>
                                         </div>
                                     <?php endif ?>
                                 </div>
@@ -492,7 +492,7 @@
 
             <div class="d-flex gap-4 mb-4">
                 <div class="bg-light p-3 rounded-4">
-                    <i class="bi bi-shield-check-fill text-success fs-3"></i>
+                    <i class="bi bi-shield-fill-check text-success fs-3"></i>
                 </div>
                 <div>
                     <h5 class="fw-bold">Garansi Bisa</h5>
@@ -562,8 +562,70 @@
     <div class="container">
         <div class="text-center mb-5">
             <h2 class="display-6 fw-bold mb-3" style="color: var(--dark-red);">Partner Terpercaya Kami</h2>
-            <p class="lead text-muted">Berkolaborasi dengan lembaga bahasa terkemuka untuk memberikan pembelajaran berkualitas</p>
+            <p class="lead text-muted">Berbagai Perusahaan yang telah Merekrut Alumni Kami</p>
         </div>
+        
+        <!-- Logo Carousel -->
+        <div class="mb-5">
+            <div class="partner-carousel-container overflow-hidden py-4">
+                <div class="partner-carousel-track d-flex gap-4" style="animation: scroll 20s linear infinite;">
+                    <!-- Logo 1: CCEPC -->
+                    <div class="partner-logo flex-shrink-0 d-flex align-items-center justify-content-center bg-white rounded shadow-sm p-3" style="width: 180px; height: 90px;">
+                        <img src="<?= base_url('assets/images/partners-logo/logo-ccepc.webp') ?>" alt="CCEPC" class="img-fluid" style="max-height: 60px; max-width: 160px;">
+                    </div>
+                    <!-- Logo 2: Golden Tekstil Indonesia -->
+                    <div class="partner-logo flex-shrink-0 d-flex align-items-center justify-content-center bg-white rounded shadow-sm p-3" style="width: 180px; height: 90px;">
+                        <img src="<?= base_url('assets/images/partners-logo/logo-golden-tekstil-indonesia.webp') ?>" alt="Golden Tekstil Indonesia" class="img-fluid" style="max-height: 60px; max-width: 160px;">
+                    </div>
+                    <!-- Logo 3: Harita Nickel -->
+                    <div class="partner-logo flex-shrink-0 d-flex align-items-center justify-content-center bg-white rounded shadow-sm p-3" style="width: 180px; height: 90px;">
+                        <img src="<?= base_url('assets/images/partners-logo/logo-harita-nickel.webp') ?>" alt="Harita Nickel" class="img-fluid" style="max-height: 60px; max-width: 160px;">
+                    </div>
+                    <!-- Logo 4: IMIP -->
+                    <div class="partner-logo flex-shrink-0 d-flex align-items-center justify-content-center bg-white rounded shadow-sm p-3" style="width: 180px; height: 90px;">
+                        <img src="<?= base_url('assets/images/partners-logo/logo-imip.webp') ?>" alt="IMIP" class="img-fluid" style="max-height: 60px; max-width: 160px;">
+                    </div>
+                    <!-- Logo 5: IWIP -->
+                    <div class="partner-logo flex-shrink-0 d-flex align-items-center justify-content-center bg-white rounded shadow-sm p-3" style="width: 180px; height: 90px;">
+                        <img src="<?= base_url('assets/images/partners-logo/logo-iwip.webp') ?>" alt="IWIP" class="img-fluid" style="max-height: 60px; max-width: 160px;">
+                    </div>
+                    <!-- Logo 6: OSS -->
+                    <div class="partner-logo flex-shrink-0 d-flex align-items-center justify-content-center bg-white rounded shadow-sm p-3" style="width: 180px; height: 90px;">
+                        <img src="<?= base_url('assets/images/partners-logo/logo-oss.webp') ?>" alt="OSS" class="img-fluid" style="max-height: 60px; max-width: 160px;">
+                    </div>
+                    <!-- Duplicate for seamless loop -->
+                    <div class="partner-logo flex-shrink-0 d-flex align-items-center justify-content-center bg-white rounded shadow-sm p-3" style="width: 180px; height: 90px;">
+                        <img src="<?= base_url('assets/images/partners-logo/logo-ccepc.webp') ?>" alt="CCEPC" class="img-fluid" style="max-height: 60px; max-width: 160px;">
+                    </div>
+                    <div class="partner-logo flex-shrink-0 d-flex align-items-center justify-content-center bg-white rounded shadow-sm p-3" style="width: 180px; height: 90px;">
+                        <img src="<?= base_url('assets/images/partners-logo/logo-golden-tekstil-indonesia.webp') ?>" alt="Golden Tekstil Indonesia" class="img-fluid" style="max-height: 60px; max-width: 160px;">
+                    </div>
+                    <div class="partner-logo flex-shrink-0 d-flex align-items-center justify-content-center bg-white rounded shadow-sm p-3" style="width: 180px; height: 90px;">
+                        <img src="<?= base_url('assets/images/partners-logo/logo-harita-nickel.webp') ?>" alt="Harita Nickel" class="img-fluid" style="max-height: 60px; max-width: 160px;">
+                    </div>
+                    <div class="partner-logo flex-shrink-0 d-flex align-items-center justify-content-center bg-white rounded shadow-sm p-3" style="width: 180px; height: 90px;">
+                        <img src="<?= base_url('assets/images/partners-logo/logo-imip.webp') ?>" alt="IMIP" class="img-fluid" style="max-height: 60px; max-width: 160px;">
+                    </div>
+                    <div class="partner-logo flex-shrink-0 d-flex align-items-center justify-content-center bg-white rounded shadow-sm p-3" style="width: 180px; height: 90px;">
+                        <img src="<?= base_url('assets/images/partners-logo/logo-iwip.webp') ?>" alt="IWIP" class="img-fluid" style="max-height: 60px; max-width: 160px;">
+                    </div>
+                    <div class="partner-logo flex-shrink-0 d-flex align-items-center justify-content-center bg-white rounded shadow-sm p-3" style="width: 180px; height: 90px;">
+                        <img src="<?= base_url('assets/images/partners-logo/logo-oss.webp') ?>" alt="OSS" class="img-fluid" style="max-height: 60px; max-width: 160px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <style>
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .partner-carousel-container {
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+        </style>
         
         <div class="row g-4 justify-content-center">
             <div class="col-md-5">
@@ -606,12 +668,7 @@
         </div>
         
         <div class="text-center mt-5">
-            <p class="text-muted mb-3">Alumni kami terbukti berdaya saing tinggi dengan peluang karir cemerlang di perusahaan asing dalam dan luar negeri</p>
-            <div class="d-flex justify-content-center gap-3 flex-wrap opacity-50">
-                <span class="badge bg-secondary px-3 py-2">Multinational Companies</span>
-                <span class="badge bg-secondary px-3 py-2">International Organizations</span>
-                <span class="badge bg-secondary px-3 py-2">Global Opportunities</span>
-            </div>
+            <p class="text-muted mb-3">Alumni kami terbukti berdaya saing tinggi dengan peluang karir cemerlang di perusahaan asing dalam dan luar negeri. Terimah kasih atas kepercayaanya merekrut SDM berkualitas lulusan terbaik S.O.S Course & Training</p>
         </div>
     </div>
 </div>

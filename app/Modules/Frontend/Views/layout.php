@@ -536,6 +536,120 @@
             }, 45000 + Math.random() * 15000);
         })();
     </script>
+    
+    <!-- Footer -->
+    <footer class="footer bg-dark text-white pt-5 pb-4">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Company Info -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-3">
+                            <img src="<?= base_url('assets/images/sos-logo.png') ?>" alt="SOS Course & Training" height="40" class="me-2">
+                            SOS Course & Training
+                        </h5>
+                        <p class="text-white-50 small mb-3">
+                            Kursus bahasa asing terbaik di Kampung Inggris Pare sejak 2013. Kami menyediakan program pembelajaran bahasa Mandarin, Inggris, Jepang, Korea, dan Jerman dengan pengajar bersertifikat internasional.
+                        </p>
+                        <div class="d-flex gap-3">
+                            <a href="https://wa.me/6285810310950" target="_blank" class="text-white-50 fs-5" title="WhatsApp">
+                                <i class="bi bi-whatsapp"></i>
+                            </a>
+                            <a href="https://www.instagram.com/soscoursepare" target="_blank" class="text-white-50 fs-5" title="Instagram">
+                                <i class="bi bi-instagram"></i>
+                            </a>
+                            <a href="https://www.facebook.com/soscoursepare" target="_blank" class="text-white-50 fs-5" title="Facebook">
+                                <i class="bi bi-facebook"></i>
+                            </a>
+                            <a href="https://www.youtube.com/@soscoursepare" target="_blank" class="text-white-50 fs-5" title="YouTube">
+                                <i class="bi bi-youtube"></i>
+                            </a>
+                            <a href="https://www.tiktok.com/@soscoursepare" target="_blank" class="text-white-50 fs-5" title="TikTok">
+                                <i class="bi bi-tiktok"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="fw-bold text-uppercase mb-3">Quick Links</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><a href="<?= base_url() ?>" class="text-white-50 text-decoration-none small">Beranda</a></li>
+                        <li class="mb-2"><a href="<?= base_url('about') ?>" class="text-white-50 text-decoration-none small">Tentang Kami</a></li>
+                        <li class="mb-2"><a href="<?= base_url('programs') ?>" class="text-white-50 text-decoration-none small">Program</a></li>
+                        <li class="mb-2"><a href="<?= base_url('contact') ?>" class="text-white-50 text-decoration-none small">Kontak</a></li>
+                        <li class="mb-2"><a href="<?= base_url('apply') ?>" class="text-white-50 text-decoration-none small">Pendaftaran</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Programs -->
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="fw-bold text-uppercase mb-3">Program Bahasa</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><a href="<?= base_url('mandarin') ?>" class="text-white-50 text-decoration-none small">Kursus Bahasa Mandarin</a></li>
+                        <li class="mb-2"><a href="<?= base_url('japanese') ?>" class="text-white-50 text-decoration-none small">Kursus Bahasa Jepang</a></li>
+                        <li class="mb-2"><a href="<?= base_url('korean') ?>" class="text-white-50 text-decoration-none small">Kursus Bahasa Korea</a></li>
+                        <li class="mb-2"><a href="<?= base_url('english') ?>" class="text-white-50 text-decoration-none small">Kursus Bahasa Inggris</a></li>
+                        <li class="mb-2"><a href="<?= base_url('german') ?>" class="text-white-50 text-decoration-none small">Kursus Bahasa Jerman</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Contact Info -->
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="fw-bold text-uppercase mb-3">Hubungi Kami</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2 d-flex align-items-start">
+                            <i class="bi bi-geo-alt-fill text-danger me-2 mt-1"></i>
+                            <span class="text-white-50 small">
+                                Jl. Jendral Sudirman No. 123<br>
+                                Pare, Kediri, Jawa Timur
+                            </span>
+                        </li>
+                        <li class="mb-2 d-flex align-items-center">
+                            <i class="bi bi-telephone-fill text-danger me-2"></i>
+                            <a href="tel:+6285810310950" class="text-white-50 text-decoration-none small">+62 858-1031-0950</a>
+                        </li>
+                        <li class="mb-2 d-flex align-items-center">
+                            <i class="bi bi-envelope-fill text-danger me-2"></i>
+                            <a href="mailto:info@soscourse.com" class="text-white-50 text-decoration-none small">info@soscourse.com</a>
+                        </li>
+                        <li class="d-flex align-items-center">
+                            <i class="bi bi-clock text-danger me-2"></i>
+                            <span class="text-white-50 small">Senin - Minggu: 07:00 - 21:00</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr class="my-4 border-secondary">
+            
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <p class="text-white-50 small mb-0">&copy; <?= date('Y') ?> SOS Course & Training. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" class="text-white-50 small text-decoration-none me-3">Privacy Policy</a>
+                    <a href="#" class="text-white-50 small text-decoration-none">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <style>
+    .footer {
+        background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+    }
+    .footer a:hover {
+        color: #fff !important;
+        transition: color 0.3s;
+    }
+    .footer .bi:hover {
+        color: #fff !important;
+        transform: scale(1.2);
+        transition: all 0.3s;
+    }
+    </style>
 </body>
 
 </html>
