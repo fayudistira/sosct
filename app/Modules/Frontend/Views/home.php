@@ -738,7 +738,7 @@
 <div class="py-5 bg-gradient-danger text-white">
     <div class="container text-center py-5">
         <h2 class="display-5 fw-bold mb-3">Siap Menguasai Bahasa Asing?</h2>
-        <p class="lead mb-4 opacity-75">Daftar sekarang dan dapatkan konsultasi gratis dengan pengajar kami.<br>Mulai perjalanan bahasa Anda bersama SOS Course and Training!</p>
+        <p class="lead mb-4 opacity-75">Investasi Terbaik adalah Investasi dalam Ilmu Pengetahuan dan Skill<br>Mulai perjalanan belajar bahasa Asing bersama SOS Course and Training!</p>
         
         <div class="d-flex justify-content-center gap-3 flex-wrap">
             <a href="https://wa.me/6285810310950?text=Hai,%20saya%20mau%20konsultasi%20mengenai%20program%20kursus%20di%20SOS%20Course%20and%20Training" 
@@ -750,24 +750,7 @@
                 <i class="bi bi-grid-3x3-gap me-2"></i>Jelajahi Semua Program
             </a>
         </div>
-        
-        <div class="mt-5 pt-4 border-top border-white border-opacity-25">
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="d-flex justify-content-center align-items-center gap-4 flex-wrap">
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-envelope-fill fs-5"></i>
-                            <span>info@kursusbahasa.org</span>
-                        </div>
-                        <div class="vr bg-white opacity-25" style="height: 30px;"></div>
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-telephone-fill fs-5"></i>
-                            <span>0858 1031 0950</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
     </div>
 </div>
 
