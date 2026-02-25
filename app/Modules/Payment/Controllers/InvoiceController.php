@@ -344,7 +344,16 @@ class InvoiceController extends BaseController
             return redirect()->to('/invoice')->with('error', 'Invoice not found.');
         }
 
-        if ($invoice['status'] !== 'unpaid') {
+        // Check if invoice is already cancelled
+        if ($invoice['status'] === 'cancelled') {
+            return redirect()->to('/invoice')->with('error', 'Invoice is already cancelled.');
+        }
+
+        // Check if user is superadmin - superadmin can cancel any invoice
+        $isSuperadmin = auth()->user() && auth()->user()->inGroup('superadmin');
+
+        // Regular users can only cancel unpaid invoices
+        if (!$isSuperadmin && $invoice['status'] !== 'unpaid') {
             return redirect()->to('/invoice')->with('error', 'Only unpaid invoices can be cancelled.');
         }
 

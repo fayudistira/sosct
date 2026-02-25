@@ -425,6 +425,25 @@ class InvoiceApiController extends ResourceController
             return $this->failNotFound('Invoice not found');
         }
 
+        // Check if invoice is already cancelled
+        if ($invoice['status'] === 'cancelled') {
+            return $this->fail([
+                'status' => 'error',
+                'message' => 'Invoice is already cancelled'
+            ], 422);
+        }
+
+        // Check if user is superadmin - superadmin can cancel any invoice
+        $isSuperadmin = auth()->user() && auth()->user()->inGroup('superadmin');
+
+        // Regular users can only cancel unpaid invoices
+        if (!$isSuperadmin && $invoice['status'] !== 'unpaid') {
+            return $this->fail([
+                'status' => 'error',
+                'message' => 'Only unpaid invoices can be cancelled'
+            ], 422);
+        }
+
         // Update status to cancelled
         if ($invoiceModel->updateInvoiceStatus($id, 'cancelled')) {
             $invoice = $invoiceModel->find($id);

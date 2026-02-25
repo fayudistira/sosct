@@ -202,7 +202,11 @@
                                         <a href="<?= base_url('invoice/pdf/' . $invoice['id']) ?>"
                                             class="btn btn-sm btn-danger" target="_blank" title="Unduh PDF"><i class="bi bi-file-pdf"></i></a>
 
-                                        <?php if ($invoice['status'] === 'unpaid' || $invoice['status'] === 'expired'): ?>
+                                        <?php 
+                                        $isSuperadmin = auth()->user() && auth()->user()->inGroup('superadmin');
+                                        $canCancel = $invoice['status'] === 'unpaid' || $invoice['status'] === 'expired' || $isSuperadmin;
+                                        ?>
+                                        <?php if ($canCancel && $invoice['status'] !== 'cancelled'): ?>
                                             <a href="<?= base_url('invoice/cancel/' . $invoice['id']) ?>"
                                                 class="btn btn-sm btn-secondary" title="Batalkan Faktur"
                                                 onclick="return confirm('Apakah Anda yakin ingin membatalkan faktur ini? Tindakan ini tidak dapat dibatalkan.')">
@@ -244,6 +248,7 @@ let searchTimeout;
 let currentPage = 1;
 let currentSort = 'due_date';
 let currentOrder = 'desc';
+const isSuperadmin = <?= auth()->user() && auth()->user()->inGroup('superadmin') ? 'true' : 'false' ?>;
 
 // Debounced search function
 function debounceSearch() {
@@ -327,7 +332,8 @@ function updateTable(invoices) {
 
     tbody.innerHTML = invoices.map((invoice, index) => {
         const statusBadge = getStatusBadge(invoice.status);
-        const cancelBtn = (invoice.status === 'unpaid' || invoice.status === 'expired')
+        const canCancel = (invoice.status === 'unpaid' || invoice.status === 'expired' || isSuperadmin) && invoice.status !== 'cancelled';
+        const cancelBtn = canCancel
             ? `<a href="<?= base_url('invoice/cancel/') ?>${invoice.id}" class="btn btn-sm btn-secondary" title="Batalkan Faktur" onclick="return confirm('Apakah Anda yakin ingin membatalkan faktur ini? Tindakan ini tidak dapat dibatalkan.')"><i class="bi bi-x-circle"></i></a>`
             : '<button class="btn btn-sm btn-light disabled" title="Terkunci: Pembayaran Sedang Berjalan/Selesai"><i class="bi bi-lock-fill"></i></button>';
 
