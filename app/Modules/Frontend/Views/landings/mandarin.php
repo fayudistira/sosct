@@ -221,70 +221,14 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
         color: white;
     }
 
-    /* Mobile Responsive Table - Card Layout */
-    @media (max-width: 767.98px) {
-        .table-responsive {
-            overflow-x: visible;
-        }
-        .table-responsive thead {
-            display: none;
-        }
-        .table-responsive tbody tr {
-            display: block;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            margin-bottom: 1rem;
-            padding: 1rem;
-            border: 1px solid #f0f0f0;
-        }
-        .table-responsive tbody td {
-            display: block;
-            padding: 0;
-            border: none;
-            text-align: left !important;
-        }
-        .table-responsive tbody td::before {
-            display: none;
-        }
-        /* Hide description and price columns on mobile */
-        .table-responsive tbody td[data-label="Deskripsi"],
-        .table-responsive tbody td[data-label="Harga"] {
-            display: none;
-        }
-        /* Program column - thumbnail + title + meta + price */
-        .table-responsive tbody td:first-child {
-            display: block;
-        }
-        .table-responsive tbody td:first-child .d-flex {
-            flex-direction: row;
-            align-items: flex-start;
-            gap: 0.75rem;
-        }
-        .table-responsive tbody td:first-child .flex-shrink-0 {
-            width: 80px !important;
-            flex-shrink: 0;
-        }
-        .table-responsive tbody td:first-child .flex-shrink-0 img,
-        .table-responsive tbody td:first-child .flex-shrink-0 div {
-            width: 80px !important;
-            height: 60px !important;
-            object-fit: cover;
-        }
-        /* Action column - full width buttons */
-        .table-responsive tbody td[data-label="Aksi"] {
-            margin-top: 0.75rem;
-            padding-top: 0.75rem;
-            border-top: 1px solid #f0f0f0;
-        }
-        .table-responsive tbody td[data-label="Aksi"] .d-flex {
-            flex-direction: column;
-            gap: 0.5rem !important;
-        }
-        .table-responsive tbody td[data-label="Aksi"] .btn {
-            width: 100%;
-            justify-content: center;
-        }
+    /* Mobile Program Cards */
+    .mobile-program-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border: 1px solid #f0f0f0;
     }
 
     .hover-lift {
@@ -557,8 +501,8 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                 role="tabpanel"
                                                 aria-labelledby="table-sub-tab-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>">
                                                 
-                                                <!-- Program Table -->
-                                                <div class="card border-0 shadow-sm overflow-hidden">
+                                                <!-- Program Table - Desktop Only -->
+                                                <div class="card border-0 shadow-sm overflow-hidden d-none d-md-block">
                                                     <div class="card-body p-0">
                                                         <div class="table-responsive">
                                                             <table class="table table-hover align-middle mb-0">
@@ -575,7 +519,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                         $finalPrice = $program['tuition_fee'] * (1 - ($program['discount'] ?? 0) / 100);
                                                                     ?>
                                                                         <tr>
-                                                                            <td class="ps-4" data-label="Program">
+                                                                            <td class="ps-4">
                                                                                 <div class="d-flex align-items-start gap-3">
                                                                                     <div class="flex-shrink-0">
                                                                                         <?php if (!empty($program['thumbnail'])): ?>
@@ -589,7 +533,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                                             </div>
                                                                                         <?php endif ?>
                                                                                     </div>
-                                                                                    <div class="flex-grow-1">
+                                                                                    <div>
                                                                                         <h6 class="mb-1 fw-bold text-dark"><?= esc($program['title']) ?></h6>
                                                                                         <div class="d-flex flex-wrap gap-1">
                                                                                             <?php if (!empty($program['language'])): ?>
@@ -608,26 +552,15 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                                                 </span>
                                                                                             <?php endif ?>
                                                                                         </div>
-                                                                                        <!-- Mobile Price - shown below meta on mobile only -->
-                                                                                        <div class="d-lg-none mt-2">
-                                                                                            <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
-                                                                                                <span class="badge bg-danger rounded-pill me-1">-<?= $program['discount'] ?>%</span>
-                                                                                                <span class="text-decoration-line-through text-muted small">Rp <?= number_format($program['tuition_fee'], 0, ',', '.') ?></span>
-                                                                                                <span class="fw-bold text-danger ms-1">Rp <?= number_format($finalPrice, 0, ',', '.') ?></span>
-                                                                                            <?php else: ?>
-                                                                                                <span class="fw-bold text-dark">Rp <?= number_format($finalPrice, 0, ',', '.') ?></span>
-                                                                                            <?php endif ?>
-                                                                                            <div class="text-muted small">Reg: Rp <?= number_format($program['registration_fee'] ?? 0, 0, ',', '.') ?></div>
-                                                                                        </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </td>
-                                                                            <td data-label="Deskripsi">
+                                                                            <td>
                                                                                 <p class="mb-0 text-muted small">
                                                                                     <?= esc(strlen($program['description'] ?? '') > 100 ? substr($program['description'], 0, 100) . '...' : ($program['description'] ?? '-')) ?>
                                                                                 </p>
                                                                             </td>
-                                                                            <td class="text-end d-none d-lg-table-cell" data-label="Harga">
+                                                                            <td class="text-end">
                                                                                 <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
                                                                                     <div class="d-flex align-items-center justify-content-end gap-2">
                                                                                         <span class="badge bg-danger rounded-pill">-<?= $program['discount'] ?>%</span>
@@ -639,7 +572,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                                 <?php endif ?>
                                                                                 <div class="text-muted small">Reg: Rp <?= number_format($program['registration_fee'] ?? 0, 0, ',', '.') ?></div>
                                                                             </td>
-                                                                            <td class="text-center" data-label="Aksi">
+                                                                            <td class="text-center">
                                                                                 <div class="d-flex gap-2 justify-content-center">
                                                                                     <a href="<?= base_url('programs/' . $program['id']) ?>" 
                                                                                         class="btn btn-outline-secondary btn-sm rounded px-3" 
@@ -659,6 +592,72 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                         </div>
                                                     </div>
                                                 </div>
+                                                
+                                                <!-- Program Cards - Mobile Only -->
+                                                <div class="d-md-none">
+                                                    <?php foreach ($progs as $program): 
+                                                        $finalPrice = $program['tuition_fee'] * (1 - ($program['discount'] ?? 0) / 100);
+                                                    ?>
+                                                        <div class="mobile-program-card">
+                                                            <div class="d-flex gap-3">
+                                                                <div class="flex-shrink-0">
+                                                                    <?php if (!empty($program['thumbnail'])): ?>
+                                                                        <img src="<?= base_url('uploads/programs/thumbs/' . $program['thumbnail']) ?>" 
+                                                                            alt="<?= esc($program['title']) ?>" 
+                                                                            class="rounded" 
+                                                                            style="width: 80px; height: 60px; object-fit: cover;">
+                                                                    <?php else: ?>
+                                                                        <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 80px; height: 60px;">
+                                                                            <i class="bi bi-journal-text text-muted"></i>
+                                                                        </div>
+                                                                    <?php endif ?>
+                                                                </div>
+                                                                <div class="flex-grow-1">
+                                                                    <h6 class="mb-1 fw-bold text-dark"><?= esc($program['title']) ?></h6>
+                                                                    <div class="d-flex flex-wrap gap-1 mb-2">
+                                                                        <?php if (!empty($program['language'])): ?>
+                                                                            <span class="badge bg-info bg-opacity-10 text-info" style="font-size: 0.65rem;">
+                                                                                <i class="bi bi-translate me-1"></i><?= esc($program['language']) ?>
+                                                                            </span>
+                                                                        <?php endif ?>
+                                                                        <?php if (!empty($program['language_level'])): ?>
+                                                                            <span class="badge bg-secondary bg-opacity-10 text-secondary" style="font-size: 0.65rem;">
+                                                                                <?= esc($program['language_level']) ?>
+                                                                            </span>
+                                                                        <?php endif ?>
+                                                                        <?php if (!empty($program['duration'])): ?>
+                                                                            <span class="badge bg-light text-dark border" style="font-size: 0.65rem;">
+                                                                                <i class="bi bi-clock me-1"></i><?= esc($program['duration']) ?>
+                                                                            </span>
+                                                                        <?php endif ?>
+                                                                    </div>
+                                                                    <div>
+                                                                        <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
+                                                                            <span class="badge bg-danger rounded-pill me-1">-<?= $program['discount'] ?>%</span>
+                                                                            <span class="text-decoration-line-through text-muted small">Rp <?= number_format($program['tuition_fee'], 0, ',', '.') ?></span>
+                                                                            <span class="fw-bold text-danger ms-1">Rp <?= number_format($finalPrice, 0, ',', '.') ?></span>
+                                                                        <?php else: ?>
+                                                                            <span class="fw-bold text-dark">Rp <?= number_format($finalPrice, 0, ',', '.') ?></span>
+                                                                        <?php endif ?>
+                                                                        <div class="text-muted small">Reg: Rp <?= number_format($program['registration_fee'] ?? 0, 0, ',', '.') ?></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="mt-3 pt-3 border-top">
+                                                                <div class="d-grid gap-2">
+                                                                    <a href="<?= base_url('programs/' . $program['id']) ?>" 
+                                                                        class="btn btn-outline-secondary btn-sm rounded">
+                                                                        <i class="bi bi-eye me-1"></i>Detail
+                                                                    </a>
+                                                                    <a href="<?= base_url('apply/' . $program['id']) ?>" 
+                                                                        class="btn btn-dark-red btn-sm rounded fw-bold">
+                                                                        Apply
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    <?php endforeach ?>
+                                                </div>
                                             </div>
                                         <?php endforeach ?>
                                     </div>
@@ -669,7 +668,8 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                     $progs = $subCategories[$subCatKey];
                                     ?>
                                     
-                                    <div class="card border-0 shadow-sm overflow-hidden">
+                                    <!-- Program Table - Desktop Only -->
+                                    <div class="card border-0 shadow-sm overflow-hidden d-none d-md-block">
                                         <div class="card-header bg-white py-3 border-0">
                                             <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                                                 <h5 class="mb-0 fw-bold"><?= esc($category) ?> - <?= esc($subCatKey) ?></h5>
@@ -692,7 +692,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                             $finalPrice = $program['tuition_fee'] * (1 - ($program['discount'] ?? 0) / 100);
                                                         ?>
                                                             <tr>
-                                                                <td class="ps-4" data-label="Program">
+                                                                <td class="ps-4">
                                                                     <div class="d-flex align-items-start gap-3">
                                                                         <div class="flex-shrink-0">
                                                                             <?php if (!empty($program['thumbnail'])): ?>
@@ -706,7 +706,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                                 </div>
                                                                             <?php endif ?>
                                                                         </div>
-                                                                        <div class="flex-grow-1">
+                                                                        <div>
                                                                             <h6 class="mb-1 fw-bold text-dark"><?= esc($program['title']) ?></h6>
                                                                             <div class="d-flex flex-wrap gap-1">
                                                                                 <?php if (!empty($program['language'])): ?>
@@ -725,26 +725,15 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                                     </span>
                                                                                 <?php endif ?>
                                                                             </div>
-                                                                            <!-- Mobile Price - shown below meta on mobile only -->
-                                                                            <div class="d-lg-none mt-2">
-                                                                                <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
-                                                                                    <span class="badge bg-danger rounded-pill me-1">-<?= $program['discount'] ?>%</span>
-                                                                                    <span class="text-decoration-line-through text-muted small">Rp <?= number_format($program['tuition_fee'], 0, ',', '.') ?></span>
-                                                                                    <span class="fw-bold text-danger ms-1">Rp <?= number_format($finalPrice, 0, ',', '.') ?></span>
-                                                                                <?php else: ?>
-                                                                                    <span class="fw-bold text-dark">Rp <?= number_format($finalPrice, 0, ',', '.') ?></span>
-                                                                                <?php endif ?>
-                                                                                <div class="text-muted small">Reg: Rp <?= number_format($program['registration_fee'] ?? 0, 0, ',', '.') ?></div>
-                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </td>
-                                                                <td data-label="Deskripsi">
+                                                                <td>
                                                                     <p class="mb-0 text-muted small">
                                                                         <?= esc(strlen($program['description'] ?? '') > 100 ? substr($program['description'], 0, 100) . '...' : ($program['description'] ?? '-')) ?>
                                                                     </p>
                                                                 </td>
-                                                                <td class="text-end d-none d-lg-table-cell" data-label="Harga">
+                                                                <td class="text-end">
                                                                     <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
                                                                         <div class="d-flex align-items-center justify-content-end gap-2">
                                                                             <span class="badge bg-danger rounded-pill">-<?= $program['discount'] ?>%</span>
@@ -756,7 +745,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                     <?php endif ?>
                                                                     <div class="text-muted small">Reg: Rp <?= number_format($program['registration_fee'] ?? 0, 0, ',', '.') ?></div>
                                                                 </td>
-                                                                <td class="text-center" data-label="Aksi">
+                                                                <td class="text-center">
                                                                     <div class="d-flex gap-2 justify-content-center">
                                                                         <a href="<?= base_url('programs/' . $program['id']) ?>" 
                                                                             class="btn btn-outline-secondary btn-sm rounded px-3" 
@@ -775,6 +764,76 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                 </table>
                                             </div>
                                         </div>
+                                    </div>
+                                    
+                                    <!-- Program Cards - Mobile Only -->
+                                    <div class="d-md-none">
+                                        <div class="mb-3">
+                                            <h5 class="fw-bold"><?= esc($category) ?> - <?= esc($subCatKey) ?></h5>
+                                            <span class="badge bg-light text-muted rounded-pill"><?= count($progs) ?> Program</span>
+                                        </div>
+                                        <?php foreach ($progs as $program): 
+                                            $finalPrice = $program['tuition_fee'] * (1 - ($program['discount'] ?? 0) / 100);
+                                        ?>
+                                            <div class="mobile-program-card">
+                                                <div class="d-flex gap-3">
+                                                    <div class="flex-shrink-0">
+                                                        <?php if (!empty($program['thumbnail'])): ?>
+                                                            <img src="<?= base_url('uploads/programs/thumbs/' . $program['thumbnail']) ?>" 
+                                                                alt="<?= esc($program['title']) ?>" 
+                                                                class="rounded" 
+                                                                style="width: 80px; height: 60px; object-fit: cover;">
+                                                        <?php else: ?>
+                                                            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 80px; height: 60px;">
+                                                                <i class="bi bi-journal-text text-muted"></i>
+                                                            </div>
+                                                        <?php endif ?>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-1 fw-bold text-dark"><?= esc($program['title']) ?></h6>
+                                                        <div class="d-flex flex-wrap gap-1 mb-2">
+                                                            <?php if (!empty($program['language'])): ?>
+                                                                <span class="badge bg-info bg-opacity-10 text-info" style="font-size: 0.65rem;">
+                                                                    <i class="bi bi-translate me-1"></i><?= esc($program['language']) ?>
+                                                                </span>
+                                                            <?php endif ?>
+                                                            <?php if (!empty($program['language_level'])): ?>
+                                                                <span class="badge bg-secondary bg-opacity-10 text-secondary" style="font-size: 0.65rem;">
+                                                                    <?= esc($program['language_level']) ?>
+                                                                </span>
+                                                            <?php endif ?>
+                                                            <?php if (!empty($program['duration'])): ?>
+                                                                <span class="badge bg-light text-dark border" style="font-size: 0.65rem;">
+                                                                    <i class="bi bi-clock me-1"></i><?= esc($program['duration']) ?>
+                                                                </span>
+                                                            <?php endif ?>
+                                                        </div>
+                                                        <div>
+                                                            <?php if (!empty($program['discount']) && $program['discount'] > 0): ?>
+                                                                <span class="badge bg-danger rounded-pill me-1">-<?= $program['discount'] ?>%</span>
+                                                                <span class="text-decoration-line-through text-muted small">Rp <?= number_format($program['tuition_fee'], 0, ',', '.') ?></span>
+                                                                <span class="fw-bold text-danger ms-1">Rp <?= number_format($finalPrice, 0, ',', '.') ?></span>
+                                                            <?php else: ?>
+                                                                <span class="fw-bold text-dark">Rp <?= number_format($finalPrice, 0, ',', '.') ?></span>
+                                                            <?php endif ?>
+                                                            <div class="text-muted small">Reg: Rp <?= number_format($program['registration_fee'] ?? 0, 0, ',', '.') ?></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-3 pt-3 border-top">
+                                                    <div class="d-grid gap-2">
+                                                        <a href="<?= base_url('programs/' . $program['id']) ?>" 
+                                                            class="btn btn-outline-secondary btn-sm rounded">
+                                                            <i class="bi bi-eye me-1"></i>Detail
+                                                        </a>
+                                                        <a href="<?= base_url('apply/' . $program['id']) ?>" 
+                                                            class="btn btn-dark-red btn-sm rounded fw-bold">
+                                                            Apply
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php endforeach ?>
                                     </div>
                                 <?php endif ?>
                             </div>
