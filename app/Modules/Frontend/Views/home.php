@@ -177,7 +177,7 @@
                                         </div>
                                     <?php else: ?>
                                         <div class="bg-white bg-opacity-10 rounded-3 p-2 text-center">
-                                            <span class="text-white-50 small">Program tersedia</span>
+                                            <span class="text-white-50 small">Program belum tersedia</span>
                                         </div>
                                     <?php endif ?>
                                 </div>
@@ -318,7 +318,7 @@
                             </div>
                         </div>
                         
-                        <div class="d-flex justify-content-between align-items-center mt-4">
+                        <div class="d-flex justify-content-between align-items-center">
                             <span class="badge bg-white text-danger px-3 py-2">TOPIK Certified</span>
                             <i class="bi bi-arrow-right-circle-fill text-white fs-4"></i>
                         </div>
@@ -385,7 +385,7 @@
                             </div>
                         </div>
                         
-                        <div class="d-flex justify-content-between align-items-center mt-4">
+                        <div class="d-flex justify-content-between align-items-center">
                             <span class="badge bg-white text-success px-3 py-2">Goethe Ready</span>
                             <i class="bi bi-arrow-right-circle-fill text-white fs-4"></i>
                         </div>
@@ -452,7 +452,7 @@
                             </div>
                         </div>
                         
-                        <div class="d-flex justify-content-between align-items-center mt-4">
+                        <div class="d-flex justify-content-between align-items-center">
                             <span class="badge bg-white text-primary px-3 py-2">TOEFL/IELTS</span>
                             <i class="bi bi-arrow-right-circle-fill text-white fs-4"></i>
                         </div>
@@ -722,12 +722,33 @@
     
     .card-language {
         transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-        min-height: 320px;
+        min-height: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
     }
     
     .card-language:hover {
         transform: translateY(-10px) scale(1.02);
         box-shadow: 0 20px 40px rgba(0,0,0,0.2) !important;
+    }
+    
+    .card-language .card-body {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+    
+    .card-language .card-body p {
+        flex: 1 0 auto;
+    }
+    
+    .card-language .card-body .featured-program-container {
+        flex: 0 0 auto;
+    }
+    
+    .card-language .card-body > .d-flex:last-child {
+        margin-top: auto;
     }
     
     .language-icon {
