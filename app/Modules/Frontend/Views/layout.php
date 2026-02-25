@@ -424,15 +424,19 @@
                         </li>
                         <li class="mb-2 d-flex align-items-center">
                             <i class="bi bi-whatsapp text-danger me-2"></i>
-                            <a href="https://wa.me/6285810310950" class="text-white-50 text-decoration-none small" target="_blank">+62 858-1031-0950</a>
+                            <a href="https://wa.me/6285810310950" class="text-white-50 text-decoration-none small" target="_blank">+62 858-1031-0950(Inggris-Jerman-Korea)</a>
                         </li>
                         <li class="mb-2 d-flex align-items-center">
-                            <i class="bi bi-envelope-fill text-danger me-2"></i>
-                            <a href="mailto:info@soscourse.com" class="text-white-50 text-decoration-none small">info@soscourse.com</a>
+                            <i class="bi bi-whatsapp text-danger me-2"></i>
+                            <a href="https://wa.me/6282240781299" class="text-white-50 text-decoration-none small" target="_blank">+62 822-4078-1299(Mandarin)</a>
+                        </li>
+                        <li class="mb-2 d-flex align-items-center">
+                            <i class="bi bi-whatsapp text-danger me-2"></i>
+                            <a href="https://wa.me/6285607454939" class="text-white-50 text-decoration-none small" target="_blank">+62 856-0745-4939(Jepang)</a>
                         </li>
                         <li class="d-flex align-items-center">
                             <i class="bi bi-clock text-danger me-2"></i>
-                            <span class="text-white-50 small">Senin - Minggu: 07:00 - 21:00</span>
+                            <span class="text-white-50 small">Senin - Jumat: 08:00 - 16:00 WIB</span>
                         </li>
                     </ul>
                         
