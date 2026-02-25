@@ -828,10 +828,10 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
 
         <!-- Mode Navigation for Table -->
         <?php if (count($modes) > 1): ?>
-        <div class="text-center mb-4">
-            <div class="d-inline-flex flex-wrap gap-2 justify-content-center" role="tablist">
-                <?php foreach ($modes as $modeIndex => $mode): ?>
-                    <button class="pill-tab-btn <?= ($modeIndex === 0) ? 'active' : '' ?>"
+        <div class="row g-2 mb-4" role="tablist">
+            <?php foreach ($modes as $modeIndex => $mode): ?>
+                <div class="col">
+                    <button class="btn w-100 py-3 rounded-3 fw-bold <?= ($modeIndex === 0) ? 'btn-danger' : 'btn-outline-danger' ?>"
                         id="table-mode-tab-<?= $modeIndex ?>"
                         data-bs-toggle="tab"
                         data-bs-target="#table-mode-<?= $modeIndex ?>"
@@ -839,12 +839,12 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                         role="tab"
                         aria-controls="table-mode-<?= $modeIndex ?>"
                         aria-selected="<?= ($modeIndex === 0) ? 'true' : 'false' ?>">
-                        <i class="bi bi-<?= ($mode === 'online') ? 'wifi' : 'building' ?> me-1"></i>
+                        <i class="bi bi-<?= ($mode === 'online') ? 'wifi' : 'building' ?> me-2"></i>
                         <?= ucfirst($mode) ?>
-                        <span class="badge-pill"><?= $programsByMode[$mode]['total_programs'] ?></span>
+                        <span class="badge <?= ($modeIndex === 0) ? 'bg-white text-danger' : 'bg-danger' ?> rounded-pill ms-2"><?= $programsByMode[$mode]['total_programs'] ?></span>
                     </button>
-                <?php endforeach ?>
-            </div>
+                </div>
+            <?php endforeach ?>
         </div>
         <?php endif ?>
 
@@ -861,10 +861,10 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                     if (count($categories) > 1): 
                     ?>
                         <!-- Category Navigation for Table -->
-                        <div class="text-center mb-4">
-                            <div class="d-inline-flex flex-wrap gap-2 justify-content-center" role="tablist">
-                                <?php foreach ($categories as $catIndex => $category): ?>
-                                    <button class="pill-tab-btn pill-tab-btn-sm <?= ($catIndex === 0) ? 'active' : '' ?>"
+                        <div class="row g-2 mb-4" role="tablist">
+                            <?php foreach ($categories as $catIndex => $category): ?>
+                                <div class="col-auto">
+                                    <button class="btn <?= ($catIndex === 0) ? 'btn-danger' : 'btn-outline-danger' ?> rounded-3 px-4 py-2 fw-bold"
                                         id="table-cat-tab-<?= $modeIndex ?>-<?= $catIndex ?>"
                                         data-bs-toggle="tab"
                                         data-bs-target="#table-cat-<?= $modeIndex ?>-<?= $catIndex ?>"
@@ -873,10 +873,10 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                         aria-controls="table-cat-<?= $modeIndex ?>-<?= $catIndex ?>"
                                         aria-selected="<?= ($catIndex === 0) ? 'true' : 'false' ?>">
                                         <?= esc($category) ?>
-                                        <span class="badge-pill"><?= $programsByMode[$mode]['categories'][$category]['total_programs'] ?></span>
+                                        <span class="badge <?= ($catIndex === 0) ? 'bg-white text-danger' : 'bg-danger' ?> rounded-pill ms-1"><?= $programsByMode[$mode]['categories'][$category]['total_programs'] ?></span>
                                     </button>
-                                <?php endforeach ?>
-                            </div>
+                                </div>
+                            <?php endforeach ?>
                         </div>
                     <?php endif ?>
 
@@ -891,10 +891,10 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                             
                             <?php if ($hasMultipleSubCats): ?>
                                 <!-- Sub-Category Navigation for Table -->
-                                <div class="text-center mb-3">
-                                    <div class="d-inline-flex flex-wrap gap-2 justify-content-center" role="tablist">
-                                        <?php foreach ($subCatKeys as $subIndex => $subCategory): ?>
-                                            <button class="pill-tab-btn pill-tab-btn-sm <?= ($subIndex === 0) ? 'active' : '' ?>"
+                                <div class="row g-2 mb-3" role="tablist">
+                                    <?php foreach ($subCatKeys as $subIndex => $subCategory): ?>
+                                        <div class="col-auto">
+                                            <button class="btn <?= ($subIndex === 0) ? 'btn-danger' : 'btn-outline-danger' ?> rounded-3 px-3 py-2"
                                                 id="table-sub-tab-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
                                                 data-bs-toggle="tab"
                                                 data-bs-target="#table-sub-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
@@ -903,10 +903,10 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                 aria-controls="table-sub-<?= $modeIndex ?>-<?= $catIndex ?>-<?= $subIndex ?>"
                                                 aria-selected="<?= ($subIndex === 0) ? 'true' : 'false' ?>">
                                                 <?= esc($subCategory) ?>
-                                                <span class="badge-pill"><?= count($subCategories[$subCategory]) ?></span>
+                                                <span class="badge <?= ($subIndex === 0) ? 'bg-white text-danger' : 'bg-danger' ?> rounded-pill ms-1"><?= count($subCategories[$subCategory]) ?></span>
                                             </button>
-                                        <?php endforeach ?>
-                                    </div>
+                                        </div>
+                                    <?php endforeach ?>
                                 </div>
 
                                 <!-- Sub-Category Tab Content for Table -->
