@@ -731,7 +731,7 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                     <?php else: ?>
                                                                         <div class="fw-bold text-dark">Rp <?= number_format($finalPrice, 0, ',', '.') ?></div>
                                                                     <?php endif ?>
-                                                                    <div class="text-muted small">Reg: Rp <?= number_format($program['registration_fee'] ?? 0, 0, ',', '.') ?></div>
+                                                                    <div class="text-muted small">Registrasi: Rp <?= number_format($program['registration_fee'] ?? 0, 0, ',', '.') ?></div>
                                                                 </td>
                                                                 <td class="text-center" data-label="Aksi">
                                                                     <div class="d-flex gap-2 justify-content-center">
