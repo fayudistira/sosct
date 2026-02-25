@@ -240,49 +240,55 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
         }
         .table-responsive tbody td {
             display: block;
-            padding: 0.5rem 0;
+            padding: 0;
             border: none;
             text-align: left !important;
         }
         .table-responsive tbody td::before {
-            content: attr(data-label);
-            font-weight: 600;
-            color: #6b7280;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: block;
-            margin-bottom: 0.25rem;
-        }
-        .table-responsive tbody td:first-child::before {
             display: none;
         }
-        .table-responsive tbody td:first-child {
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid #f0f0f0;
-            margin-bottom: 0.5rem;
+        /* Hide description column on mobile */
+        .table-responsive tbody td[data-label="Deskripsi"] {
+            display: none;
         }
-        .table-responsive tbody td:last-child {
+        /* Program column - thumbnail + title + meta + price */
+        .table-responsive tbody td:first-child {
+            display: block;
+        }
+        .table-responsive tbody td:first-child .d-flex {
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        .table-responsive tbody td:first-child .flex-shrink-0 {
+            width: 80px !important;
+            flex-shrink: 0;
+        }
+        .table-responsive tbody td:first-child .flex-shrink-0 img,
+        .table-responsive tbody td:first-child .flex-shrink-0 div {
+            width: 80px !important;
+            height: 60px !important;
+            object-fit: cover;
+        }
+        /* Price column - show inline with meta */
+        .table-responsive tbody td[data-label="Harga"] {
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid #f0f0f0;
+        }
+        /* Action column - full width buttons */
+        .table-responsive tbody td[data-label="Aksi"] {
+            margin-top: 0.75rem;
             padding-top: 0.75rem;
             border-top: 1px solid #f0f0f0;
-            margin-top: 0.5rem;
         }
-        .table-responsive .d-flex.gap-2.justify-content-center {
-            justify-content: flex-start !important;
-        }
-        .table-responsive .d-flex.align-items-start.gap-3 {
+        .table-responsive tbody td[data-label="Aksi"] .d-flex {
             flex-direction: column;
-            align-items: flex-start !important;
-            gap: 0.75rem !important;
+            gap: 0.5rem !important;
         }
-        .table-responsive .flex-shrink-0 {
-            width: 100% !important;
-        }
-        .table-responsive .flex-shrink-0 img,
-        .table-responsive .flex-shrink-0 div {
-            width: 100% !important;
-            height: 120px !important;
-            object-fit: cover;
+        .table-responsive tbody td[data-label="Aksi"] .btn {
+            width: 100%;
+            justify-content: center;
         }
     }
 
