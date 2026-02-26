@@ -14,6 +14,9 @@
                     <i class="bi bi-award me-1"></i> Promote to Student
                 </a>
             <?php endif; ?>
+            <a href="<?= base_url('admission/switch/' . $admission['admission_id']) ?>" class="btn btn-warning">
+                <i class="bi bi-arrow-left-right me-1"></i> Switch Program
+            </a>
             <a href="<?= base_url('admission/edit/' . $admission['admission_id']) ?>" class="btn btn-outline-primary">
                 <i class="bi bi-pencil me-1"></i> Edit
             </a>

@@ -21,7 +21,9 @@ class AdmissionModel extends Model
         'reviewed_date',
         'reviewed_by',
         'notes',
-        'applicant_notes'
+        'applicant_notes',
+        'previous_program_id',
+        'program_switch_count'
     ];
     
     protected $useTimestamps = true;
@@ -37,7 +39,9 @@ class AdmissionModel extends Model
         'status' => 'required|in_list[pending,approved,rejected,withdrawn]',
         'application_date' => 'permit_empty|valid_date',
         'reviewed_date' => 'permit_empty|valid_date',
-        'reviewed_by' => 'permit_empty|is_natural_no_zero|is_not_unique[users.id]'
+        'reviewed_by' => 'permit_empty|is_natural_no_zero|is_not_unique[users.id]',
+        'previous_program_id' => 'permit_empty|is_natural_no_zero',
+        'program_switch_count' => 'permit_empty|is_natural'
     ];
     
     protected $validationMessages = [
@@ -224,6 +228,8 @@ class AdmissionModel extends Model
                 admissions.reviewed_by,
                 admissions.notes,
                 admissions.applicant_notes,
+                admissions.previous_program_id,
+                admissions.program_switch_count,
                 admissions.created_at,
                 admissions.updated_at,
                 profiles.profile_number,
@@ -251,6 +257,7 @@ class AdmissionModel extends Model
                 programs.title as program_title,
                 programs.category,
                 programs.tuition_fee,
+                programs.registration_fee,
                 programs.discount
             ')
                     ->join('profiles', 'profiles.id = admissions.profile_id')
@@ -278,6 +285,8 @@ class AdmissionModel extends Model
                 admissions.reviewed_by,
                 admissions.notes,
                 admissions.applicant_notes,
+                admissions.previous_program_id,
+                admissions.program_switch_count,
                 admissions.created_at,
                 admissions.updated_at,
                 profiles.profile_number,
@@ -305,6 +314,7 @@ class AdmissionModel extends Model
                 programs.title as program_title,
                 programs.category,
                 programs.tuition_fee,
+                programs.registration_fee,
                 programs.discount
             ')
                     ->join('profiles', 'profiles.id = admissions.profile_id')

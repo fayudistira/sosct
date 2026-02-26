@@ -19,6 +19,11 @@ $routes->group('admission', ['namespace' => 'Modules\Admission\Controllers', 'fi
     $routes->delete('delete/(:num)', 'AdmissionController::delete/$1');
     $routes->get('search', 'AdmissionController::search');
     $routes->get('ajax-search', 'AdmissionController::ajaxSearch');
+    
+    // Program Switch Routes
+    $routes->get('switch/(:num)', 'SwitchProgramController::index/$1');
+    $routes->post('switch/(:num)', 'SwitchProgramController::switch/$1');
+    $routes->get('switch-history/(:num)', 'SwitchProgramController::getHistory/$1');
 });
 
 // API Routes (RESTful) - Protected by session filter for AJAX calls

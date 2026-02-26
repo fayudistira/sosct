@@ -33,7 +33,7 @@ class InstallmentModel extends Model
         'total_contract_amount' => 'required|decimal|greater_than_equal_to[0]',
         'total_paid' => 'permit_empty|decimal|greater_than_equal_to[0]',
         'remaining_balance' => 'required|decimal',
-        'status' => 'permit_empty|in_list[unpaid,partial,paid]'
+        'status' => 'permit_empty|in_list[unpaid,partial,paid,switched]'
     ];
 
     protected $validationMessages = [
