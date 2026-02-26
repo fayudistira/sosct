@@ -579,6 +579,14 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                                         title="Detail">
                                                                                         <i class="bi bi-eye"></i>
                                                                                     </a>
+                                                                                    <?php 
+                                                                                        $waMessage = $program['title'] . "%0A%0ARegistration Fee: Rp " . number_format($program['registration_fee'] ?? 0, 0, ',', '.') . "%0ATuition Fee: Rp " . number_format($program['tuition_fee'], 0, ',', '.') . "%0A%0A" . base_url('programs/' . $program['id']);
+                                                                                    ?>
+                                                                                    <a href="https://wa.me/?text=<?= urlencode($waMessage) ?>" 
+                                                                                        class="btn btn-success btn-sm rounded px-3" 
+                                                                                        title="Share via WhatsApp" target="_blank">
+                                                                                        <i class="bi bi-share"></i>
+                                                                                    </a>
                                                                                     <a href="<?= base_url('apply/' . $program['id']) ?>" 
                                                                                         class="btn btn-dark-red btn-sm rounded px-3 fw-bold">
                                                                                         Apply
@@ -649,10 +657,20 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                         class="btn btn-outline-secondary btn-sm rounded">
                                                                         <i class="bi bi-eye me-1"></i>Detail
                                                                     </a>
-                                                                    <a href="<?= base_url('apply/' . $program['id']) ?>" 
-                                                                        class="btn btn-dark-red btn-sm rounded fw-bold">
-                                                                        Apply
-                                                                    </a>
+                                                                    <?php 
+                                                                        $waMessage = $program['title'] . "%0A%0ARegistration Fee: Rp " . number_format($program['registration_fee'] ?? 0, 0, ',', '.') . "%0ATuition Fee: Rp " . number_format($program['tuition_fee'], 0, ',', '.') . "%0A%0A" . base_url('programs/' . $program['id']);
+                                                                    ?>
+                                                                    <div class="d-flex gap-2">
+                                                                        <a href="https://wa.me/?text=<?= urlencode($waMessage) ?>" 
+                                                                            class="btn btn-success btn-sm rounded flex-fill" 
+                                                                            target="_blank">
+                                                                            <i class="bi bi-share me-1"></i>Share
+                                                                        </a>
+                                                                        <a href="<?= base_url('apply/' . $program['id']) ?>" 
+                                                                            class="btn btn-dark-red btn-sm rounded flex-fill fw-bold">
+                                                                            Apply
+                                                                        </a>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -752,6 +770,14 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                                             title="Detail">
                                                                             <i class="bi bi-eye"></i>
                                                                         </a>
+                                                                        <?php 
+                                                                            $waMessage = $program['title'] . "%0A%0ARegistration Fee: Rp " . number_format($program['registration_fee'] ?? 0, 0, ',', '.') . "%0ATuition Fee: Rp " . number_format($program['tuition_fee'], 0, ',', '.') . "%0A%0A" . base_url('programs/' . $program['id']);
+                                                                        ?>
+                                                                        <a href="https://wa.me/?text=<?= urlencode($waMessage) ?>" 
+                                                                            class="btn btn-success btn-sm rounded px-3" 
+                                                                            title="Share via WhatsApp" target="_blank">
+                                                                            <i class="bi bi-share"></i>
+                                                                        </a>
                                                                         <a href="<?= base_url('apply/' . $program['id']) ?>" 
                                                                             class="btn btn-dark-red btn-sm rounded px-3 fw-bold">
                                                                             Apply
@@ -826,10 +852,20 @@ $ogImage = 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?a
                                                             class="btn btn-outline-secondary btn-sm rounded">
                                                             <i class="bi bi-eye me-1"></i>Detail
                                                         </a>
-                                                        <a href="<?= base_url('apply/' . $program['id']) ?>" 
-                                                            class="btn btn-dark-red btn-sm rounded fw-bold">
-                                                            Apply
-                                                        </a>
+                                                        <?php 
+                                                            $waMessage = $program['title'] . "%0A%0ARegistration Fee: Rp " . number_format($program['registration_fee'] ?? 0, 0, ',', '.') . "%0ATuition Fee: Rp " . number_format($program['tuition_fee'], 0, ',', '.') . "%0A%0A" . base_url('programs/' . $program['id']);
+                                                        ?>
+                                                        <div class="d-flex gap-2">
+                                                            <a href="https://wa.me/?text=<?= urlencode($waMessage) ?>" 
+                                                                class="btn btn-success btn-sm rounded flex-fill" 
+                                                                target="_blank">
+                                                                <i class="bi bi-share me-1"></i>Share
+                                                            </a>
+                                                            <a href="<?= base_url('apply/' . $program['id']) ?>" 
+                                                                class="btn btn-dark-red btn-sm rounded flex-fill fw-bold">
+                                                                Apply
+                                                            </a>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
