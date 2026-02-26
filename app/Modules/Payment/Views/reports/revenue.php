@@ -185,7 +185,7 @@
                             <th>Date</th>
                             <th>Student</th>
                             <th>Method</th>
-                            <th>Document #</th>
+                            <th>Keterangan</th>
                             <th class="text-end">Amount</th>
                         </tr>
                     </thead>
