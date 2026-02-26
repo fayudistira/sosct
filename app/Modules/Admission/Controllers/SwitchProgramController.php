@@ -280,18 +280,25 @@ class SwitchProgramController extends BaseController
     {
         $notificationService = new \App\Services\NotificationService();
         
-        $notificationService->notifyAdmins([
-            'type' => 'program_switch',
-            'title' => 'Program Switched',
-            'message' => sprintf(
-                'Student %s has switched from program %s to %s. Credits: Rp %s, New Total: Rp %s',
-                $admission['full_name'],
-                $admission['program_title'],
-                $newProgram['title'],
-                number_format($credits, 0, ',', '.'),
-                number_format($newTotal, 0, ',', '.')
-            ),
-            'link' => '/admission/view/' . $admission['admission_id']
-        ]);
+        $message = sprintf(
+            'Student %s has switched from program %s to %s. Credits: Rp %s, New Total: Rp %s',
+            $admission['full_name'],
+            $admission['program_title'],
+            $newProgram['title'],
+            number_format($credits, 0, ',', '.'),
+            number_format($newTotal, 0, ',', '.')
+        );
+        
+        $notificationService->notifyAdmins(
+            'program_switch',
+            'Program Switched',
+            $message,
+            [
+                'admission_id' => $admission['admission_id'],
+                'registration_number' => $admission['registration_number'],
+                'old_program' => $admission['program_title'],
+                'new_program' => $newProgram['title']
+            ]
+        );
     }
 }
