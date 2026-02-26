@@ -579,6 +579,11 @@ $ogImage = 'https://images.pexels.com/photos/1546973/pexels-photo-1546973.jpeg?a
                                                                                         title="Detail">
                                                                                         <i class="bi bi-eye"></i>
                                                                                     </a>
+                                                                                    <a href="https://wa.me/6282240781299?text=Hai,%20saya%20tertarik%20dengan%20program%20<?= urlencode($program['title']) ?>%20di%20SOS%20Course" 
+                                                                                        class="btn btn-success btn-sm rounded px-3" 
+                                                                                        title="Share via WhatsApp" target="_blank">
+                                                                                        <i class="bi bi-share"></i>
+                                                                                    </a>
                                                                                     <a href="<?= base_url('apply/' . $program['id']) ?>" 
                                                                                         class="btn btn-primary btn-sm rounded px-3 fw-bold">
                                                                                         Apply
@@ -649,10 +654,17 @@ $ogImage = 'https://images.pexels.com/photos/1546973/pexels-photo-1546973.jpeg?a
                                                                         class="btn btn-outline-secondary btn-sm rounded">
                                                                         <i class="bi bi-eye me-1"></i>Detail
                                                                     </a>
-                                                                    <a href="<?= base_url('apply/' . $program['id']) ?>" 
-                                                                        class="btn btn-primary btn-sm rounded fw-bold">
-                                                                        Apply
-                                                                    </a>
+                                                                    <div class="d-flex gap-2">
+                                                                        <a href="https://wa.me/6282240781299?text=Hai,%20saya%20tertarik%20dengan%20program%20<?= urlencode($program['title']) ?>%20di%20SOS%20Course" 
+                                                                            class="btn btn-success btn-sm rounded flex-fill" 
+                                                                            target="_blank">
+                                                                            <i class="bi bi-share me-1"></i>Share
+                                                                        </a>
+                                                                        <a href="<?= base_url('apply/' . $program['id']) ?>" 
+                                                                            class="btn btn-primary btn-sm rounded flex-fill fw-bold">
+                                                                            Apply
+                                                                        </a>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -752,6 +764,11 @@ $ogImage = 'https://images.pexels.com/photos/1546973/pexels-photo-1546973.jpeg?a
                                                                             title="Detail">
                                                                             <i class="bi bi-eye"></i>
                                                                         </a>
+                                                                        <a href="https://wa.me/6282240781299?text=Hai,%20saya%20tertarik%20dengan%20program%20<?= urlencode($program['title']) ?>%20di%20SOS%20Course" 
+                                                                            class="btn btn-success btn-sm rounded px-3" 
+                                                                            title="Share via WhatsApp" target="_blank">
+                                                                            <i class="bi bi-share"></i>
+                                                                        </a>
                                                                         <a href="<?= base_url('apply/' . $program['id']) ?>" 
                                                                             class="btn btn-primary btn-sm rounded px-3 fw-bold">
                                                                             Apply
@@ -826,10 +843,17 @@ $ogImage = 'https://images.pexels.com/photos/1546973/pexels-photo-1546973.jpeg?a
                                                             class="btn btn-outline-secondary btn-sm rounded">
                                                             <i class="bi bi-eye me-1"></i>Detail
                                                         </a>
-                                                        <a href="<?= base_url('apply/' . $program['id']) ?>" 
-                                                            class="btn btn-primary btn-sm rounded fw-bold">
-                                                            Apply
-                                                        </a>
+                                                        <div class="d-flex gap-2">
+                                                            <a href="https://wa.me/6282240781299?text=Hai,%20saya%20tertarik%20dengan%20program%20<?= urlencode($program['title']) ?>%20di%20SOS%20Course" 
+                                                                class="btn btn-success btn-sm rounded flex-fill" 
+                                                                target="_blank">
+                                                                <i class="bi bi-share me-1"></i>Share
+                                                            </a>
+                                                            <a href="<?= base_url('apply/' . $program['id']) ?>" 
+                                                                class="btn btn-primary btn-sm rounded flex-fill fw-bold">
+                                                                Apply
+                                                            </a>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
