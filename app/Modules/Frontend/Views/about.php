@@ -1,17 +1,17 @@
 <?= $this->extend('Modules\Frontend\Views\layout') ?>
 
 <?= $this->section('content') ?>
-<!-- Documentation Header -->
+<!-- About Header -->
 <div class="hero-section py-5 mb-5">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8">
-                <h1 class="display-4 fw-bold mb-3">System Documentation</h1>
-                <p class="lead mb-0">Complete guide to the ERP V 1.1 - Future English Education Center Management System.</p>
+                <h1 class="display-4 fw-bold mb-3">Tentang Kami</h1>
+                <p class="lead mb-0">SOS Course & Training - Lembaga Pendidikan Bahasa Asing di Kampung Inggris, Pare, Kediri</p>
             </div>
             <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
                 <div class="badge bg-white text-dark p-2 px-3 rounded-pill shadow-sm">
-                    <i class="bi bi-tag-fill me-2 text-primary"></i>Version 1.1.0 Stable
+                    <i class="bi bi-award-fill me-2 text-primary"></i>Beroperasi Sejak 2013
                 </div>
             </div>
         </div>
@@ -24,195 +24,342 @@
         <div class="col-lg-3 mb-4">
             <div class="sticky-top" style="top: 2rem;">
                 <div class="card-custom border-0 shadow-sm overflow-hidden">
-                    <div class="list-group list-group-flush" id="doc-nav">
-                        <a href="#overview" class="list-group-item list-group-item-action border-0 py-3">
-                            <i class="bi bi-info-circle me-2"></i> Overview
+                    <div class="list-group list-group-flush" id="about-nav">
+                        <a href="#tentang" class="list-group-item list-group-item-action border-0 py-3">
+                            <i class="bi bi-info-circle me-2"></i> Tentang Kami
                         </a>
-                        <a href="#modules" class="list-group-item list-group-item-action border-0 py-3">
-                            <i class="bi bi-grid-fill me-2"></i> Core Modules
+                        <a href="#visimisi" class="list-group-item list-group-item-action border-0 py-3">
+                            <i class="bi bi-bullseye me-2"></i> Visi & Misi
                         </a>
-                        <a href="#admission" class="list-group-item list-group-item-action border-0 py-3 ps-5">
-                            <i class="bi bi-person-plus me-2"></i> Admission
+                        <a href="#program" class="list-group-item list-group-item-action border-0 py-3">
+                            <i class="bi bi-book me-2"></i> Program Kursus
                         </a>
-                        <a href="#payment" class="list-group-item list-group-item-action border-0 py-3 ps-5">
-                            <i class="bi bi-credit-card me-2"></i> Payments
+                        <a href="#inggris" class="list-group-item list-group-item-action border-0 py-3 ps-5">
+                            <i class="bi bi-translate me-2"></i> Bahasa Inggris
                         </a>
-                        <a href="#developers" class="list-group-item list-group-item-action border-0 py-3">
-                            <i class="bi bi-code-slash me-2"></i> Developers
+                        <a href="#mandarin" class="list-group-item list-group-item-action border-0 py-3 ps-5">
+                            <i class="bi bi-translate me-2"></i> Bahasa Mandarin
                         </a>
-                        <a href="#command" class="list-group-item list-group-item-action border-0 py-3 ps-5">
-                            <i class="bi bi-terminal me-2"></i> MakeModule
+                        <a href="#jepang" class="list-group-item list-group-item-action border-0 py-3 ps-5">
+                            <i class="bi bi-translate me-2"></i> Bahasa Jepang
+                        </a>
+                        <a href="#korea" class="list-group-item list-group-item-action border-0 py-3 ps-5">
+                            <i class="bi bi-translate me-2"></i> Bahasa Korea
+                        </a>
+                        <a href="#jerman" class="list-group-item list-group-item-action border-0 py-3 ps-5">
+                            <i class="bi bi-translate me-2"></i> Bahasa Jerman
+                        </a>
+                        <a href="#lingkungan" class="list-group-item list-group-item-action border-0 py-3">
+                            <i class="bi bi-geo-alt me-2"></i> Kampung Inggris
+                        </a>
+                        <a href="#keunggulan" class="list-group-item list-group-item-action border-0 py-3">
+                            <i class="bi bi-star me-2"></i> Keunggulan
                         </a>
                     </div>
                 </div>
                 
                 <div class="card-custom bg-light border-0 mt-4 p-4">
-                    <h6 class="fw-bold mb-2">Need Help?</h6>
-                    <p class="small text-muted mb-0">Contact the system administrator if you encounter any issues with the ERP modules.</p>
+                    <h6 class="fw-bold mb-2">Hubungi Kami</h6>
+                    <p class="small text-muted mb-0">Kampus: Kampung Inggris, Pare, Kediri, Jawa Timur</p>
                 </div>
             </div>
         </div>
 
-        <!-- Main Documentation Content -->
+        <!-- Main Content -->
         <div class="col-lg-9">
-            <!-- Overview Section -->
-            <section id="overview" class="mb-5">
+            <!-- About Section -->
+            <section id="tentang" class="mb-5">
                 <h2 class="fw-bold mb-4 d-flex align-items-center">
                     <span class="feature-icon ms-0 me-3 shadow-sm" style="width: 40px; height: 40px; font-size: 1rem;">
-                        <i class="bi bi-stars"></i>
+                        <i class="bi bi-info-circle"></i>
                     </span>
-                    System Overview
+                    Tentang SOS Course & Training
                 </h2>
                 <div class="card-custom p-4 border-0 shadow-sm">
-                    <p class="lead">The FEEC ERP is a comprehensive management system built on CodeIgniter 4, designed to handle the recruitment, academic, and financial operations of the education center.</p>
-                    <p>It utilizes an <strong>HMVC (Hierarchical Model-View-Controller)</strong> architecture, allowing for modular development and easy scaling. Each feature is encapsulated within its own "Module" directory, containing its own Config, Controllers, Models, and Views.</p>
+                    <p class="lead">SOS Course & Training adalah lembaga pendidikan non-formal yang berfokus pada pembelajaran 5 bahasa asing di Kampung Inggris, Pare, Kediri.</p>
+                    <p>Sejak berdiri pertama kali di tahun 2013, kami berkomitmen menyediakan program kursus yang berkualitas dan relevan dengan kebutuhan era global. Saat ini, SOS Course & Training menawarkan lima program bahasa asing, yaitu:</p>
                     
                     <div class="row mt-4 g-3">
                         <div class="col-md-4">
                             <div class="p-3 bg-light rounded text-center">
-                                <h3 class="fw-bold text-primary mb-1">7</h3>
-                                <div class="small fw-semibold">Core Modules</div>
+                                <h3 class="fw-bold text-primary mb-1">5</h3>
+                                <div class="small fw-semibold">Bahasa Asing</div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="p-3 bg-light rounded text-center">
-                                <h3 class="fw-bold text-success mb-1">CI4</h3>
-                                <div class="small fw-semibold">Framework</div>
+                                <h3 class="fw-bold text-success mb-1">2013</h3>
+                                <div class="small fw-semibold">Tahun Berdiri</div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="p-3 bg-light rounded text-center">
                                 <h3 class="fw-bold text-danger mb-1">HMVC</h3>
-                                <div class="small fw-semibold">Architecture</div>
+                                <div class="small fw-semibold">Arsitektur</div>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="mt-4 p-3 bg-primary bg-opacity-10 rounded border-start border-primary border-4">
+                        <p class="mb-0">Sebagai pusat pembelajaran, kami menyadari bahwa penguasaan bahasa asing tidak hanya sebatas keterampilan komunikasi, melainkan juga sarana untuk memahami budaya, memperluas wawasan, serta membuka peluang akademik dan profesional. Karena itu, setiap program kami dirancang secara sistematis dengan menggabungkan pendekatan komunikatif, praktik intensif, serta pemahaman budaya dari bahasa yang dipelajari.</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Core Modules Section -->
-            <section id="modules" class="mb-5">
+            <!-- Vision & Mission Section -->
+            <section id="visimisi" class="mb-5">
                 <h2 class="fw-bold mb-4 d-flex align-items-center">
                     <span class="feature-icon ms-0 me-3 shadow-sm" style="width: 40px; height: 40px; font-size: 1rem;">
-                        <i class="bi bi-grid-fill"></i>
+                        <i class="bi bi-bullseye"></i>
                     </span>
-                    Core Modules
+                    Visi dan Misi
                 </h2>
                 
                 <div class="row g-4">
-                    <div id="admission" class="col-12 scroll-mt" style="scroll-margin-top: 2rem;">
-                        <div class="card-custom border-0 shadow-sm h-100 overflow-hidden">
-                            <div class="bg-primary p-2"></div>
-                            <div class="p-4">
-                                <h4 class="fw-bold"><i class="bi bi-person-plus me-2 text-primary"></i>Admission Module</h4>
-                                <p class="text-muted">Handles new student registrations, admission forms, and applicant tracking.</p>
-                                <ul class="mb-0">
-                                    <li><strong>Public Form:</strong> Multi-step registration for prospective students.</li>
-                                    <li><strong>Management:</strong> Backend dashboard to approve or reject applications.</li>
-                                    <li><strong>JSON Data:</strong> Complex fields like addresses are stored as JSON for flexibility.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="payment" class="col-12 scroll-mt" style="scroll-margin-top: 2rem;">
+                    <div class="col-12">
                         <div class="card-custom border-0 shadow-sm h-100 overflow-hidden">
                             <div class="bg-success p-2"></div>
                             <div class="p-4">
-                                <h4 class="fw-bold"><i class="bi bi-credit-card me-2 text-success"></i>Payment & Finance</h4>
-                                <p class="text-muted">Automated invoicing and payment tracking for student fees.</p>
+                                <h4 class="fw-bold"><i class="bi bi-eye me-2 text-success"></i>Visi Kami</h4>
+                                <p class="mb-0">Menjadi lembaga kursus bahasa asing unggulan yang mampu mencetak generasi pembelajar berdaya saing global melalui penguasaan bahasa dan pemahaman lintas budaya.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12">
+                        <div class="card-custom border-0 shadow-sm h-100 overflow-hidden">
+                            <div class="bg-primary p-2"></div>
+                            <div class="p-4">
+                                <h4 class="fw-bold"><i class="bi bi-list-task me-2 text-primary"></i>Misi Kami</h4>
                                 <ul class="mb-0">
-                                    <li><strong>Smart Search:</strong> AJAX-powered student search using Select2.</li>
-                                    <li><strong>Invoice Population:</strong> Dynamically loads unpaid invoices upon student selection.</li>
-                                    <li><strong>Financial Reporting:</strong> Track income and pending balances in real-time.</li>
+                                    <li>Menyelenggarakan program pembelajaran bahasa asing yang terstruktur, praktis, dan efektif.</li>
+                                    <li>Menyediakan tenaga pengajar yang kompeten dan berpengalaman, termasuk tutor yang memiliki latar belakang akademik dan budaya dari negara terkait.</li>
+                                    <li>Membentuk lingkungan belajar yang mendukung, disiplin, dan kondusif bagi siswa untuk berlatih menggunakan bahasa secara aktif.</li>
+                                    <li>Membantu siswa mencapai tujuan spesifik, baik untuk studi, karier, maupun pengembangan diri.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Programs Section -->
+            <section id="program" class="mb-5">
+                <h2 class="fw-bold mb-4 d-flex align-items-center">
+                    <span class="feature-icon ms-0 me-3 shadow-sm" style="width: 40px; height: 40px; font-size: 1rem;">
+                        <i class="bi bi-book"></i>
+                    </span>
+                    Program Kursus dan Pelatihan
+                </h2>
+                
+                <div class="alert alert-info border-0 shadow-sm mb-4">
+                    <i class="bi bi-info-circle me-2"></i>Kami membuka Program Kursus dan Pelatihan 5 Bahasa Asing terpopuler di Dunia khususnya di Indonesia karena dapat membuka peluang besar bagi mereka yang menguasai bahasa-bahasa tersebut.
+                </div>
+
+                <div class="row g-4">
+                    <!-- Bahasa Inggris -->
+                    <div id="inggris" class="col-12 scroll-mt" style="scroll-margin-top: 2rem;">
+                        <div class="card-custom border-0 shadow-sm h-100 overflow-hidden">
+                            <div class="bg-warning p-2"></div>
+                            <div class="p-4">
+                                <h4 class="fw-bold"><i class="bi bi-translate me-2 text-warning"></i>Bahasa Inggris</h4>
+                                <p class="text-muted">Bahasa internasional yang menjadi syarat utama untuk melanjutkan studi ke berbagai negara.</p>
+                                <ul class="mb-0">
+                                    <li>Syarat utama studi ke AS, Inggris, Australia, dan negara Eropa lainnya.</li>
+                                    <li>Kualifikasi penting dalam dunia kerja global.</li>
+                                    <li>Program: Reguler, Semi-Privat, Privat (Online/Offline)</li>
+                                    <li>Fasilitas: Camp/Asrama English Area, modul, sertifikat, kaos eksklusif</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-6">
-                        <div class="card-custom border-0 shadow-sm h-100 p-4">
-                            <h5 class="fw-bold">Program Management</h5>
-                            <p class="small text-muted">Defines educational tracks, durations, and pricing tiers.</p>
+                    <!-- Bahasa Mandarin -->
+                    <div id="mandarin" class="col-12 scroll-mt" style="scroll-margin-top: 2rem;">
+                        <div class="card-custom border-0 shadow-sm h-100 overflow-hidden">
+                            <div class="bg-danger p-2"></div>
+                            <div class="p-4">
+                                <h4 class="fw-bold"><i class="bi bi-translate me-2 text-danger"></i>Bahasa Mandarin</h4>
+                                <p class="text-muted">Bahasa dengan jumlah penutur terbesar di dunia.</p>
+                                <ul class="mb-0">
+                                    <li>Peluang besar studi di Tiongkok/Taiwan melalui beasiswa internasional.</li>
+                                    <li>Akses karier global di sektor perdagangan, teknologi, pariwisata.</li>
+                                    <li>Fokus pada keterampilan mendengar, berbicara, membaca Hanzi, dan menulis.</li>
+                                    <li>Persiapan HSK (Hanyu Shuiping Kaoshi)</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="col-md-6">
-                        <div class="card-custom border-0 shadow-sm h-100 p-4">
-                            <h5 class="fw-bold">User RBAC</h5>
-                            <p class="small text-muted">Role-based access control for students, tutors, and administrators.</p>
+
+                    <!-- Bahasa Jepang -->
+                    <div id="jepang" class="col-12 scroll-mt" style="scroll-margin-top: 2rem;">
+                        <div class="card-custom border-0 shadow-sm h-100 overflow-hidden">
+                            <div class="bg-pink p-2"></div>
+                            <div class="p-4">
+                                <h4 class="fw-bold"><i class="bi bi-translate me-2" style="color: #ff6b9d;"></i>Bahasa Jepang</h4>
+                                <p class="text-muted">Bahasa dengan peluang studi dan kerja di Jepang.</p>
+                                <ul class="mb-0">
+                                    <li>Peluang studi melalui program beasiswa MEXT dan universitas.</li>
+                                    <li>Kesempatan kerja di industri, kesehatan, teknologi.</li>
+                                    <li>Fokus: Mendengar, berbicara, membaca, menulis (Hiragana, Katakana, Kanji)</li>
+                                    <li>Persiapan JLPT (Japanese Language Proficiency Test)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bahasa Korea -->
+                    <div id="korea" class="col-12 scroll-mt" style="scroll-margin-top: 2rem;">
+                        <div class="card-custom border-0 shadow-sm h-100 overflow-hidden">
+                            <div class="bg-info p-2"></div>
+                            <div class="p-4">
+                                <h4 class="fw-bold"><i class="bi bi-translate me-2 text-info"></i>Bahasa Korea</h4>
+                                <p class="text-muted">Bahasa asing yang sangat populer karena budaya Korea.</p>
+                                <ul class="mb-0">
+                                    <li>Pengaruh K-Pop, K-Drama, K-Movie</li>
+                                    <li>Kesempatan studi di Korea Selatan melalui program beasiswa.</li>
+                                    <li>Peluang karier di teknologi, manufaktur, kesehatan.</li>
+                                    <li>Fokus: Percakapan praktis, tata bahasa, Hangul, budaya Korea</li>
+                                    <li>Persiapan TOPIK</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bahasa Jerman -->
+                    <div id="jerman" class="col-12 scroll-mt" style="scroll-margin-top: 2rem;">
+                        <div class="card-custom border-0 shadow-sm h-100 overflow-hidden">
+                            <div class="bg-secondary p-2"></div>
+                            <div class="p-4">
+                                <h4 class="fw-bold"><i class="bi bi-translate me-2 text-secondary"></i>Bahasa Jerman</h4>
+                                <p class="text-muted">Bahasa penting di Eropa dengan akses luas pendidikan tinggi.</p>
+                                <ul class="mb-0">
+                                    <li>Akses melanjutkan studi di Jerman dengan kualitas tinggi.</li>
+                                    <li>Banyak pilihan beasiswa dan biaya kuliah terjangkau.</li>
+                                    <li>Karier di teknik, kesehatan, penelitian.</li>
+                                    <li>Persiapan Goethe-Zertifikat</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Developer Section -->
-            <section id="developers" class="mb-5">
+            <!-- Learning Environment Section -->
+            <section id="lingkungan" class="mb-5">
                 <h2 class="fw-bold mb-4 d-flex align-items-center">
                     <span class="feature-icon ms-0 me-3 shadow-sm" style="width: 40px; height: 40px; font-size: 1rem;">
-                        <i class="bi bi-code-slash"></i>
+                        <i class="bi bi-geo-alt"></i>
                     </span>
-                    Developer Resources
+                    Suasana Belajar di Kampung Inggris
                 </h2>
                 
-                <div id="command" class="card-custom border-0 shadow-sm p-4 scroll-mt" style="scroll-margin-top: 2rem;">
-                    <h4 class="fw-bold"><i class="bi bi-terminal me-2"></i>Module Generator</h4>
-                    <p>To speed up development, the ERP includes a custom CLI generator. This tool automatically creates the necessary HMVC structure and registers namespaces.</p>
+                <div class="card-custom border-0 shadow-sm p-4">
+                    <p>SOS Course & Training berlokasi di Kampung Inggris, Pare, Kediri, sebuah pusat pembelajaran bahasa asing yang telah berkembang sejak 1977. Lingkungan ini dikenal dengan ekosistem multibahasa yang unik, didukung ratusan lembaga kursus dan aturan English Area yang mendorong praktik bahasa setiap hari.</p>
                     
-                    <div class="bg-dark text-white p-3 rounded mb-3 position-relative">
-                        <code>php spark make:module <span class="text-info">[ModuleName]</span></code>
+                    <div class="row mt-4 g-3">
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <h6 class="fw-bold text-success"><i class="bi bi-check-circle me-2"></i>Keunggulan Lingkungan</h6>
+                                <ul class="mb-0 small">
+                                    <li>Suasana inklusif dan suportif</li>
+                                    <li>Interaksi dengan pelajar dari seluruh Nusantara</li>
+                                    <li>Fasilitas: asrama, café, taman</li>
+                                    <li>Nuansa pedesaan yang asri</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <h6 class="fw-bold text-warning"><i class="bi bi-exclamation-triangle me-2"></i>Catatan</h6>
+                                <p class="mb-0 small">Tantangan tetap ada—dari fasilitas sederhana hingga lokasi desa. Namun, faktor terpenting tetap pada kualitas pengajaran dan metode, bukan megahnya infrastruktur.</p>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <h6 class="fw-bold mb-2">Automated Actions:</h6>
-                    <ul class="mb-0">
-                        <li>Creates folders: Config, Controllers, Models, Views, Migrations.</li>
-                        <li>Generates boilerplate Routes, Base Controller, and Layouts.</li>
-                        <li>Automatically registers the namespace in <code>app/Config/Autoload.php</code>.</li>
-                        <li>Optional CRUD generation with standard boilerplate methods.</li>
-                    </ul>
                 </div>
             </section>
 
-            <!-- Technical Spec -->
-            <section id="tech-spec" class="mb-5">
-                <h2 class="fw-bold mb-4">Technical Stack</h2>
-                <div class="table-responsive">
-                    <table class="table table-hover border">
-                        <thead class="bg-light">
-                            <tr>
-                                <th>Component</th>
-                                <th>Technology</th>
-                                <th>Role</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="fw-bold">Framework</td>
-                                <td>CodeIgniter 4.x</td>
-                                <td>Back-end processing & Routing</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">UI Framework</td>
-                                <td>Bootstrap 5.3</td>
-                                <td>Responsive Layouts & Components</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Database</td>
-                                <td>MySQL / MariaDB</td>
-                                <td>Relational Data Persistence</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Icons</td>
-                                <td>Bootstrap Icons</td>
-                                <td>Visual cues & iconography</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Interactions</td>
-                                <td>Vanilla JS / jQuery</td>
-                                <td>AJAX Operations & Form Logic</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <!-- Advantages Section -->
+            <section id="keunggulan" class="mb-5">
+                <h2 class="fw-bold mb-4 d-flex align-items-center">
+                    <span class="feature-icon ms-0 me-3 shadow-sm" style="width: 40px; height: 40px; font-size: 1rem;">
+                        <i class="bi bi-star"></i>
+                    </span>
+                    Keunggulan SOS Course & Training
+                </h2>
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="card-custom border-0 shadow-sm h-100 p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="feature-icon me-3" style="width: 50px; height: 50px;">
+                                    <i class="bi bi-translate"></i>
+                                </div>
+                                <h5 class="fw-bold mb-0">Program Lengkap</h5>
+                            </div>
+                            <p class="text-muted mb-0">Lima bahasa asing dalam satu lembaga.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card-custom border-0 shadow-sm h-100 p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="feature-icon me-3" style="width: 50px; height: 50px;">
+                                    <i class="bi bi-lightbulb"></i>
+                                </div>
+                                <h5 class="fw-bold mb-0">Metode Interaktif</h5>
+                            </div>
+                            <p class="text-muted mb-0">Pembelajaran interaktif dan aplikatif, menekankan praktik langsung.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card-custom border-0 shadow-sm h-100 p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="feature-icon me-3" style="width: 50px; height: 50px;">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                                <h5 class="fw-bold mb-0">Tutor Berpengalaman</h5>
+                            </div>
+                            <p class="text-muted mb-0">Tenaga pengajar berpengalaman dengan pendekatan sesuai kebutuhan siswa.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card-custom border-0 shadow-sm h-100 p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="feature-icon me-3" style="width: 50px; height: 50px;">
+                                    <i class="bi bi-geo-alt"></i>
+                                </div>
+                                <h5 class="fw-bold mb-0">Lokasi Strategis</h5>
+                            </div>
+                            <p class="text-muted mb-0">Lingkungan belajar kondusif di Kampung Inggris.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card-custom border-0 shadow-sm h-100 p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="feature-icon me-3" style="width: 50px; height: 50px;">
+                                    <i class="bi bi-grid"></i>
+                                </div>
+                                <h5 class="fw-bold mb-0">Kelas Variatif</h5>
+                            </div>
+                            <p class="text-muted mb-0">Pilihannya reguler, intensif, private, maupun persiapan ujian.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA Section -->
+            <section class="mb-5">
+                <div class="card-custom bg-primary border-0 shadow-sm p-5 text-center text-white">
+                    <h2 class="fw-bold mb-3">Jangan Hanya Bermimpi, Take Action!</h2>
+                    <p class="lead mb-4">Kuasai bahasa Asing dengan belajar bersama SOS Course & Training di Kampung Inggris Pare.</p>
+                    <p class="mb-4">Setiap kelas adalah langkah nyata untuk membuka peluang studi ke luar negeri, karier global, hingga pengembangan diri yang lebih percaya diri.</p>
+                    <a href="#" class="btn btn-light btn-lg fw-bold px-5 py-3">
+                        <i class="bi bi-calendar-check me-2"></i>Daftar Sekarang
+                    </a>
                 </div>
             </section>
         </div>
@@ -229,7 +376,7 @@
         border-color: var(--dark-red);
     }
     
-    #doc-nav .list-group-item:hover {
+    #about-nav .list-group-item:hover {
         background-color: var(--light-red);
         color: var(--dark-red);
     }
@@ -238,15 +385,13 @@
         transition: all 0.3s;
     }
     
-    code {
-        font-family: 'Consolas', 'Monaco', monospace;
+    .bg-pink {
+        background-color: #ff6b9d !important;
     }
 </style>
 
 <script>
-    // Simple scrollspy implementation if needed manually, 
-    // though the anchor tags work by default.
-    document.querySelectorAll('#doc-nav a').forEach(anchor => {
+    document.querySelectorAll('#about-nav a').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const targetId = this.getAttribute('href');
