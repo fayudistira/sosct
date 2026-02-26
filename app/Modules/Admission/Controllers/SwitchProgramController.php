@@ -59,7 +59,7 @@ class SwitchProgramController extends BaseController
             $totalPaid += (float) $payment['amount'];
         }
 
-        // Get all available programs (excluding current program)
+        // Get all available programs with category "Paket" (excluding current program)
         $allPrograms = $this->programModel->where('status', 'active')->where('category', 'Paket')->findAll();
         
         // Filter out current program
@@ -90,6 +90,9 @@ class SwitchProgramController extends BaseController
 
     /**
      * Process the program switch
+     * 
+     * Creates a NEW installment record (not update existing).
+     * NO credits from old payments - student pays full new fees.
      * 
      * @param int $id Admission ID
      * @return \CodeIgniter\HTTP\RedirectResponse
@@ -126,38 +129,24 @@ class SwitchProgramController extends BaseController
         // Get current installment
         $oldInstallment = $this->installmentModel->getByRegistrationNumber($admission['registration_number']);
 
-        // Get total paid from old installment
-        $totalPaid = $oldInstallment ? (float) $oldInstallment['total_paid'] : 0;
-
-        // Get new program fees
-        $newRegFee = (float) ($newProgram['registration_fee'] ?? 0);
-        $newTuitionFee = (float) ($newProgram['tuition_fee'] ?? 0);
-        $newTotal = $newRegFee + $newTuitionFee;
-
-        // Calculate new remaining balance
-        $newRemainingBalance = $newTotal - $totalPaid;
-
-        // Determine new status
-        $newStatus = 'unpaid';
-        if ($newRemainingBalance <= 0) {
-            $newStatus = 'paid';
-        } elseif ($totalPaid > 0) {
-            $newStatus = 'partial';
-        }
-
         // Start database transaction
         $db = \Config\Database::connect();
         $db->transBegin();
 
         try {
-            // 1. Cancel all unpaid invoices from old installment
+            // Calculate new contract amount (NO credits - full new fees)
+            $newRegFee = (float) ($newProgram['registration_fee'] ?? 0);
+            $newTuitionFee = (float) ($newProgram['tuition_fee'] ?? 0);
+            $newTotal = $newRegFee + $newTuitionFee;
+
+            // Cancel all unpaid invoices from old installment
             if ($oldInstallment) {
                 $this->invoiceModel->where('installment_id', $oldInstallment['id'])
                     ->where('status', 'unpaid')
                     ->set(['status' => 'cancelled'])
                     ->update();
 
-                // Update old installment to mark it as switched
+                // Mark old installment as switched
                 $this->installmentModel->update($oldInstallment['id'], [
                     'status' => 'switched',
                     'switch_date' => date('Y-m-d H:i:s'),
@@ -165,16 +154,14 @@ class SwitchProgramController extends BaseController
                 ]);
             }
 
-            // 2. Create new installment record
-            $dueDate = date('Y-m-d', strtotime('+2 weeks'));
-            
+            // Create NEW installment record (not update existing)
             $newInstallmentData = [
                 'registration_number' => $admission['registration_number'],
                 'total_contract_amount' => $newTotal,
-                'total_paid' => $totalPaid,
-                'remaining_balance' => $newRemainingBalance,
-                'status' => $newStatus,
-                'due_date' => $dueDate,
+                'total_paid' => 0, // NO credits - student pays full new fees
+                'remaining_balance' => $newTotal,
+                'status' => 'unpaid',
+                'due_date' => date('Y-m-d', strtotime('+2 weeks')),
                 'parent_installment_id' => $oldInstallment ? $oldInstallment['id'] : null,
                 'switch_date' => date('Y-m-d H:i:s'),
                 'switch_reason' => $switchReason
@@ -183,7 +170,7 @@ class SwitchProgramController extends BaseController
             $this->installmentModel->insert($newInstallmentData);
             $newInstallmentId = $this->installmentModel->insertID();
 
-            // 3. Create new invoices for the new program
+            // Create new invoices for the new program (full amount - no credits)
             $invoiceItems = [
                 [
                     'description' => 'Biaya Pendaftaran Program ' . $newProgram['title'],
@@ -203,7 +190,7 @@ class SwitchProgramController extends BaseController
                 'installment_id' => $newInstallmentId,
                 'description' => 'Payment for ' . $newProgram['title'] . ' Program (Program Switch)',
                 'amount' => $newTotal,
-                'due_date' => $dueDate,
+                'due_date' => date('Y-m-d', strtotime('+2 weeks')),
                 'invoice_type' => 'tuition_fee',
                 'status' => 'unpaid',
                 'items' => json_encode($invoiceItems, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
@@ -211,7 +198,7 @@ class SwitchProgramController extends BaseController
 
             $this->invoiceModel->createInvoice($invoiceData);
 
-            // 4. Update admission record
+            // Update admission record
             $this->admissionModel->update($id, [
                 'program_id' => $newProgramId,
                 'previous_program_id' => $admission['program_id'],
@@ -219,16 +206,15 @@ class SwitchProgramController extends BaseController
                 'notes' => ($admission['notes'] ?? '') . "\n\n[" . date('Y-m-d H:i:s') . "] Program switched to: " . $newProgram['title'] . ". Reason: " . $switchReason
             ]);
 
-            // 5. Complete transaction
+            // Complete transaction
             $db->transCommit();
 
-            // 6. Create notification
-            $this->notifyProgramSwitch($admission, $newProgram, $totalPaid, $newTotal);
+            // Create notification
+            $this->notifyProgramSwitch($admission, $newProgram, $newTotal);
 
             return redirect()->to('/admission/view/' . $id)->with('success', 
                 'Program successfully switched to ' . $newProgram['title'] . '. ' .
-                'Previous payments of Rp ' . number_format($totalPaid, 0, ',', '.') . ' have been credited. ' .
-                'New remaining balance: Rp ' . number_format(max(0, $newRemainingBalance), 0, ',', '.')
+                'New contract amount: Rp ' . number_format($newTotal, 0, ',', '.')
             );
 
         } catch (\Exception $e) {
@@ -273,19 +259,17 @@ class SwitchProgramController extends BaseController
      * 
      * @param array $admission
      * @param array $newProgram
-     * @param float $credits
      * @param float $newTotal
      */
-    private function notifyProgramSwitch(array $admission, array $newProgram, float $credits, float $newTotal): void
+    private function notifyProgramSwitch(array $admission, array $newProgram, float $newTotal): void
     {
         $notificationService = new \App\Services\NotificationService();
         
         $message = sprintf(
-            'Student %s has switched from program %s to %s. Credits: Rp %s, New Total: Rp %s',
+            'Student %s has switched from program %s to %s. New contract: Rp %s',
             $admission['full_name'],
             $admission['program_title'],
             $newProgram['title'],
-            number_format($credits, 0, ',', '.'),
             number_format($newTotal, 0, ',', '.')
         );
         

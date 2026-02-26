@@ -26,18 +26,14 @@
                     </div>
                 </div>
 
-                <!-- Payment Summary -->
-                <?php if ($totalPaid > 0): ?>
-                <div class="alert alert-success">
-                    <h6 class="alert-heading"><i class="bi bi-cash me-2"></i>Payment Credits</h6>
+                <!-- Important Notice - No Credits -->
+                <div class="alert alert-warning">
+                    <h6 class="alert-heading"><i class="bi bi-exclamation-triangle me-2"></i>Important Notice</h6>
                     <hr>
                     <p class="mb-0">
-                        <strong>Total Paid:</strong> 
-                        <span class="text-success fw-bold">Rp <?= number_format($totalPaid, 0, ',', '.') ?></span>
-                        <small class="text-muted">(This amount will be credited to the new program)</small>
+                        <strong>No credits from previous payments.</strong> When switching programs, you will need to pay the full fees for the new program (registration fee + tuition fee). Previous payments are not refunded or credited.
                     </p>
                 </div>
-                <?php endif; ?>
 
                 <form action="<?= base_url('admission/switch/' . $admission['admission_id']) ?>" method="post">
                     <?= csrf_field() ?>
@@ -119,8 +115,8 @@
                         <h6 class="alert-heading"><i class="bi bi-exclamation-circle me-2"></i>Important Notes</h6>
                         <ul class="mb-0 small">
                             <li>All unpaid invoices from the current program will be <strong>cancelled</strong>.</li>
-                            <li>Previous payments will be <strong>credited</strong> to the new program contract.</li>
-                            <li>You will need to pay the <strong>difference</strong> (new program fees - previous payments).</li>
+                            <li>You will need to pay the <strong>full new program fees</strong> (registration + tuition).</li>
+                            <li><strong>No credits</strong> from previous payments - this is a fresh start.</li>
                             <li>This action can be performed multiple times if needed.</li>
                         </ul>
                     </div>
@@ -154,7 +150,7 @@ foreach ($availablePrograms as $prog) {
 }
 ?>
 
-const currentProgram = {
+    const currentProgram = {
     title: '<?= esc($admission['program_title']) ?>',
     registration_fee: <?= $currentRegFee ?>,
     tuition_fee: <?= $currentTuitionFee ?>,
@@ -162,7 +158,6 @@ const currentProgram = {
 };
 
 const availablePrograms = <?= json_encode($programData) ?>;
-const totalPaid = <?= $totalPaid ?>;
 
 function showProgramDetails(programId) {
     const program = availablePrograms[programId];
@@ -197,20 +192,9 @@ function showProgramDetails(programId) {
             <td>${formatDiff(tuitionDiff)}</td>
         </tr>
         <tr class="table-primary">
-            <td><strong>Total Contract</strong></td>
-            <td><strong>Rp ${formatNumber(currentProgram.total)}</strong></td>
-            <td><strong>Rp ${formatNumber(program.total)}</strong></td>
-            <td>${formatDiff(totalDiff)}</td>
-        </tr>
-        <tr class="table-success">
-            <td><strong>Credits (Previous Payments)</strong></td>
-            <td colspan="2"><strong>Rp ${formatNumber(totalPaid)}</strong></td>
-            <td></td>
-        </tr>
-        <tr class="table-warning">
-            <td><strong>New Remaining Balance</strong></td>
+            <td><strong>Total Contract (New)</strong></td>
             <td colspan="2"></td>
-            <td><strong>Rp ${formatNumber(Math.max(0, program.total - totalPaid))}</strong></td>
+            <td><strong>Rp ${formatNumber(program.total)}</strong></td>
         </tr>
     `;
     
