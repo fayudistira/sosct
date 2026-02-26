@@ -1,4 +1,347 @@
+<?php
+/**
+ * German Landing Page
+ * 
+ * Page-specific SEO and content for German language course
+ */
+
+// Page-specific variables for SEO
+$pageTitle = 'Kursus Bahasa Jerman Kampung Inggris Pare - SOS Course | Goethe Certificate';
+$pageDescription = 'Kursus Bahasa Jerman terbaik di Kampung Inggris Pare, Kediri. Spesialis untuk persiapan kuliah dan Ausbildung di Jerman. Program Goethe Institut dengan native speaker.';
+$pageKeywords = 'kursus bahasa jerman pare, Kampung Inggris Pare, les jerman kediri, kursus jerman pare, belajar jerman di pare, kursus bahasa jerman bersertifikat, goethe institut, ausbildung jerman, kuliah di jerman, sos course';
+$ogImage = 'https://images.pexels.com/photos/2034356/pexels-photo-2034356.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
+?>
+
 <?= $this->extend('Modules\Frontend\Views\layout') ?>
+
+<?= $this->section('extra_head') ?>
+<!-- Page-specific styles for German landing -->
+<style>
+    /* Custom Scrollbar for mobile navigation */
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    /* Language Header Tabs - Teal Background */
+    .btn-lang-header {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        border: none;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .btn-lang-header:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    .btn-lang-header.active {
+        background: white;
+        color: #2a9d8f;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-lang-header .badge-lang {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0.5rem;
+        padding: 0.15rem 0.5rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.2);
+        color: inherit;
+    }
+
+    .btn-lang-header.active .badge-lang {
+        background: #a8ddd6;
+        color: #2a9d8f;
+    }
+
+    /* Pill Tab Buttons - Rounded Style */
+    .pill-tab-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #666;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        white-space: nowrap;
+    }
+
+    .pill-tab-btn:hover {
+        border-color: #d1d5db;
+        background: #f9fafb;
+    }
+
+    .pill-tab-btn.active {
+        background: #2a9d8f;
+        color: white;
+        border-color: #2a9d8f;
+        box-shadow: 0 2px 8px rgba(42, 157, 143, 0.25);
+    }
+
+    .pill-tab-btn .badge-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0.4rem;
+        padding: 0.1rem 0.45rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+
+    .pill-tab-btn.active .badge-pill {
+        background: rgba(255, 255, 255, 0.25);
+        color: white;
+    }
+
+    /* Small variant for sub-categories */
+    .pill-tab-btn-sm {
+        padding: 0.35rem 0.85rem;
+        font-size: 0.8rem;
+    }
+
+    .pill-tab-btn-sm .badge-pill {
+        font-size: 0.65rem;
+        padding: 0.1rem 0.35rem;
+    }
+
+    /* Table Section Tabs - Rounded Corner Full Width */
+    .table-tab-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #666;
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        width: 100%;
+    }
+
+    .table-tab-btn:hover {
+        border-color: #2a9d8f;
+        background: #f0fdfa;
+    }
+
+    .table-tab-btn.active {
+        background: #2a9d8f;
+        color: white;
+        border-color: #2a9d8f;
+        box-shadow: 0 4px 12px rgba(42, 157, 143, 0.25);
+    }
+
+    .table-tab-btn .badge-table {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0.5rem;
+        padding: 0.2rem 0.6rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+
+    .table-tab-btn.active .badge-table {
+        background: rgba(255, 255, 255, 0.25);
+        color: white;
+    }
+
+    /* Table Section Category Tabs - Rounded Corner */
+    .table-cat-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 1.25rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #666;
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+    }
+
+    .table-cat-btn:hover {
+        border-color: #2a9d8f;
+        background: #f0fdfa;
+    }
+
+    .table-cat-btn.active {
+        background: #2a9d8f;
+        color: white;
+        border-color: #2a9d8f;
+        box-shadow: 0 2px 8px rgba(42, 157, 143, 0.2);
+    }
+
+    .table-cat-btn .badge-table {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0.4rem;
+        padding: 0.15rem 0.5rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+
+    .table-cat-btn.active .badge-table {
+        background: rgba(255, 255, 255, 0.25);
+        color: white;
+    }
+
+    /* Mobile Program Cards */
+    .mobile-program-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border: 1px solid #f0f0f0;
+    }
+
+    .hover-lift {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+    }
+    .bg-gradient-danger {
+        background: linear-gradient(135deg, #2a9d8f 0%, #264653 100%);
+    }
+    .program-card-modern {
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        border: 1px solid #f0f0f0 !important;
+        border-radius: 16px !important;
+        overflow: hidden;
+    }
+    .program-card-modern:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+        border-color: #ddd !important;
+    }
+    .program-img-zoom {
+        transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    .program-card-modern:hover .program-img-zoom {
+        transform: scale(1.05);
+    }
+    .bg-gradient-dark {
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
+    }
+    .tab-pane {
+        animation: fadeIn 0.4s ease-out;
+    }
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(5px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    .feature-icon-teal {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, #2a9d8f 0%, #264653 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: white;
+        font-size: 1.5rem;
+    }
+    .section-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, #2a9d8f 0%, #264653 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+        margin-right: 12px;
+    }
+    .reason-icon {
+        width: 56px;
+        height: 56px;
+        background: #e8f6f5;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #2a9d8f;
+        font-size: 1.5rem;
+        margin-bottom: 16px;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .btn-lang-header {
+            padding: 0.6rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .pill-tab-btn {
+            padding: 0.4rem 0.85rem;
+            font-size: 0.8rem;
+        }
+
+        .pill-tab-btn-sm {
+            padding: 0.3rem 0.7rem;
+            font-size: 0.75rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .btn-lang-header {
+            padding: 0.5rem 0.85rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-lang-header .badge-lang {
+            font-size: 0.65rem;
+            padding: 0.1rem 0.4rem;
+        }
+    }
+</style>
+<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 <!-- Hero Section -->
@@ -569,6 +912,53 @@
                             <div class="h4 fw-bold mb-0">Native</div>
                             <small class="opacity-75">Pengajar</small>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- About Section -->
+<div class="container py-5">
+    <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+            <h2 class="display-5 fw-bold mb-4" style="color: #2a9d8f;">Tentang Kursus Bahasa Jerman SOS Course</h2>
+            <p class="text-muted mb-4">
+                SOS Course and Training adalah lembaga kursus bahasa Jerman terbaik di <strong>Kampung Inggris Pare</strong>, Kediri Jawa Timur yang telah berdiri sejak tahun 2013.
+            </p>
+            <p class="text-muted mb-4">
+                Kami adalah pusat pembelajaran bahasa Jerman yang spesialis untuk persiapan kuliah dan Ausbildung di Jerman. Programs kami mencakup persiapan sertifikasi Goethe Institut dari level A1 hingga C2.
+            </p>
+            <p class="text-muted mb-4">
+                Dengan pengajar berpengalaman dan kurikulum yang disesuaikan dengan standar Goethe Institut, kami siap membantu Anda mewujudkan mimpi kuliah atau bekerja di Jerman.
+            </p>
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+                <div class="bg-success text-white rounded-4 px-4 py-3 text-center">
+                    <div class="h4 fw-bold mb-0">Goethe</div>
+                    <small>A1-C2</small>
+                </div>
+                <div class="bg-success text-white rounded-4 px-4 py-3 text-center">
+                    <div class="h4 fw-bold mb-0">TestDAF</div>
+                    <small>Preparation</small>
+                </div>
+                <div class="bg-success text-white rounded-4 px-4 py-3 text-center">
+                    <div class="h4 fw-bold mb-0">DSH</div>
+                    <small>University</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="bg-gradient-danger rounded-5 p-5 text-white shadow-lg">
+                <h3 class="fw-bold mb-4">Program Dimulai</h3>
+                <div class="display-4 fw-bold mb-3">Setiap Senin</div>
+                <p class="mb-0 opacity-75">Sepanjang tahun</p>
+                <hr class="my-4 opacity-25">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="bi bi-briefcase fs-1 opacity-50"></i>
+                    <div>
+                        <div class="fw-bold">Bantuan Ausbildung</div>
+                        <small class="opacity-75">Karunia Indonesia</small>
                     </div>
                 </div>
             </div>
