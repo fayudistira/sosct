@@ -578,7 +578,7 @@ $ogImage = 'https://images.pexels.com/photos/2506923/pexels-photo-2506923.jpeg?a
                                                                                         title="Detail">
                                                                                         <i class="bi bi-eye"></i>
                                                                                     </a>
-                                                                                    <a href="https://wa.me/6282240781299?text=Hai,%20saya%20tertarik%20dengan%20program%20<?= urlencode($program['title']) ?>%20di%20SOS%20Course" 
+                                                                                    <a href="https://wa.me/?text=<?= urlencode($program['title'] . "%0A%0ARegistration Fee: Rp " . number_format($program['registration_fee'] ?? 0, 0, ',', '.') . "%0ATuition Fee: Rp " . number_format($program['tuition_fee'], 0, ',', '.') . "%0A%0A" . base_url('programs/' . $program['id'])) ?>" 
                                                                                         class="btn btn-success btn-sm rounded px-3" 
                                                                                         title="Share via WhatsApp" target="_blank">
                                                                                         <i class="bi bi-share"></i>
@@ -654,7 +654,7 @@ $ogImage = 'https://images.pexels.com/photos/2506923/pexels-photo-2506923.jpeg?a
                                                                         <i class="bi bi-eye me-1"></i>Detail
                                                                     </a>
                                                                     <div class="d-flex gap-2">
-                                                                        <a href="https://wa.me/6282240781299?text=Hai,%20saya%20tertarik%20dengan%20program%20<?= urlencode($program['title']) ?>%20di%20SOS%20Course" 
+                                                                        <a href="https://wa.me/?text=<?= urlencode($program['title'] . "%0A%0ARegistration Fee: Rp " . number_format($program['registration_fee'] ?? 0, 0, ',', '.') . "%0ATuition Fee: Rp " . number_format($program['tuition_fee'], 0, ',', '.') . "%0A%0A" . base_url('programs/' . $program['id'])) ?>" 
                                                                             class="btn btn-success btn-sm rounded flex-fill" 
                                                                             target="_blank">
                                                                             <i class="bi bi-share me-1"></i>Share
@@ -763,7 +763,7 @@ $ogImage = 'https://images.pexels.com/photos/2506923/pexels-photo-2506923.jpeg?a
                                                                             title="Detail">
                                                                             <i class="bi bi-eye"></i>
                                                                         </a>
-                                                                        <a href="https://wa.me/6282240781299?text=Hai,%20saya%20tertarik%20dengan%20program%20<?= urlencode($program['title']) ?>%20di%20SOS%20Course" 
+                                                                        <a href="https://wa.me/?text=<?= urlencode($program['title'] . "%0A%0ARegistration Fee: Rp " . number_format($program['registration_fee'] ?? 0, 0, ',', '.') . "%0ATuition Fee: Rp " . number_format($program['tuition_fee'], 0, ',', '.') . "%0A%0A" . base_url('programs/' . $program['id'])) ?>" 
                                                                             class="btn btn-success btn-sm rounded px-3" 
                                                                             title="Share via WhatsApp" target="_blank">
                                                                             <i class="bi bi-share"></i>
