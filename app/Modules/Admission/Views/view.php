@@ -9,10 +9,14 @@
     </div>
     <div class="col-auto">
         <div class="btn-group">
-            <?php if ($admission['status'] === 'approved'): ?>
+            <?php if ($admission['status'] === 'approved' && empty($alreadyPromoted)): ?>
                 <a href="<?= base_url('admission/promote/' . $admission['admission_id']) ?>" class="btn btn-primary">
                     <i class="bi bi-award me-1"></i> Promote to Student
                 </a>
+            <?php elseif (!empty($alreadyPromoted)): ?>
+                <button class="btn btn-secondary" disabled title="Already promoted to student">
+                    <i class="bi bi-check-circle me-1"></i> Already Promoted
+                </button>
             <?php endif; ?>
             <a href="<?= base_url('admission/switch/' . $admission['admission_id']) ?>" class="btn btn-warning">
                 <i class="bi bi-arrow-left-right me-1"></i> Switch Program

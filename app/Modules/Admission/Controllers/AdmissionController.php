@@ -75,6 +75,11 @@ class AdmissionController extends BaseController
         // Get Invoice Status for this admission (by registration number)
         $invoiceModel = new InvoiceModel();
         $installmentModel = new InstallmentModel();
+        $studentModel = new \Modules\Student\Models\StudentModel();
+
+        // Check if already promoted (has student record)
+        $existingStudent = $studentModel->where('admission_id', $id)->first();
+        $data['alreadyPromoted'] = !empty($existingStudent);
 
         $invoices = $invoiceModel->getInvoicesByStudent($data['admission']['registration_number']);
         $data['invoice'] = !empty($invoices) ? $invoices[0] : null; // Get latest invoice

@@ -60,7 +60,7 @@ class SwitchProgramController extends BaseController
         }
 
         // Get all available programs (excluding current program)
-        $allPrograms = $this->programModel->where('status', 'active')->findAll();
+        $allPrograms = $this->programModel->where('status', 'active')->where('category', 'Paket')->findAll();
         
         // Filter out current program
         $availablePrograms = array_filter($allPrograms, function($prog) use ($admission) {
