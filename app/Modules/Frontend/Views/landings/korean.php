@@ -915,8 +915,8 @@ $ogImage = 'https://images.pexels.com/photos/3403138/pexels-photo-3403138.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-music-note-beamed"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">K-Pop Wave</h5>
-                        <p class="text-muted small mb-0">Ikuti tren K-Pop dan Korean Wave yang sedang populer di seluruh dunia.</p>
+                        <h5 class="fw-bold mb-2">Ramah Pemula</h5>
+                        <p class="text-muted small mb-0">Cocok untuk semua level, dari nol hingga mahir.</p>
                     </div>
                 </div>
             </div>
@@ -928,8 +928,8 @@ $ogImage = 'https://images.pexels.com/photos/3403138/pexels-photo-3403138.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-globe"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Ekonomi K-Pop</h5>
-                        <p class="text-muted small mb-0">Korea Selatan adalah ekonomi terbesar ke-10 di dunia.</p>
+                        <h5 class="fw-bold mb-2">Instruktur Profesional</h5>
+                        <p class="text-muted small mb-0">Tim pengajar bersertifikat dengan pengalaman bertahun-tahun.</p>
                     </div>
                 </div>
             </div>
@@ -941,8 +941,8 @@ $ogImage = 'https://images.pexels.com/photos/3403138/pexels-photo-3403138.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-mortarboard"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Beasiswa Korea</h5>
-                        <p class="text-muted small mb-0">Persiapan untuk mendapatkan beasiswa ke universitas Korea Selatan.</p>
+                        <h5 class="fw-bold mb-2">Metode Kampung Inggris</h5>
+                        <p class="text-muted small mb-0">Metode immersion 24/7 yang terbukti efektif.</p>
                     </div>
                 </div>
             </div>
@@ -954,8 +954,8 @@ $ogImage = 'https://images.pexels.com/photos/3403138/pexels-photo-3403138.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-briefcase"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Peluang Kerja</h5>
-                        <p class="text-muted small mb-0">Banyak perusahaan Korea yang membutuhkan tenaga kerja Indonesia.</p>
+                        <h5 class="fw-bold mb-2">TOEFL & IELTS</h5>
+                        <p class="text-muted small mb-0">Persiapan intensif untuk sertifikasi internasional.</p>
                     </div>
                 </div>
             </div>
@@ -967,8 +967,8 @@ $ogImage = 'https://images.pexels.com/photos/3403138/pexels-photo-3403138.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-person-badge"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Native Speaker</h5>
-                        <p class="text-muted small mb-0">Pengajar native speaker Korea untuk pronunciation yang benar.</p>
+                        <h5 class="fw-bold mb-2">TOEFL & IELTS</h5>
+                        <p class="text-muted small mb-0">Persiapan intensif untuk sertifikasi internasional.</p>
                     </div>
                 </div>
             </div>
@@ -980,8 +980,8 @@ $ogImage = 'https://images.pexels.com/photos/3403138/pexels-photo-3403138.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-award"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Sertifikat TOPIK</h5>
-                        <p class="text-muted small mb-0">Sertifikasi TOPIK yang diakui resmi oleh pemerintah Korea.</p>
+                        <h5 class="fw-bold mb-2">Relasi Kuat</h5>
+                        <p class="text-muted small mb-0">Networking dengan alumni yang tersebar di berbagai negara.</p>
                     </div>
                 </div>
             </div>
@@ -993,8 +993,8 @@ $ogImage = 'https://images.pexels.com/photos/3403138/pexels-photo-3403138.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-geo-alt"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Kampung Inggris Pare</h5>
-                        <p class="text-muted small mb-0">Terlettak di lokasi strategis di Kampung Inggris Pare, Kediri.</p>
+                        <h5 class="fw-bold mb-2">Garansi Seumur Hidup</h5>
+                        <p class="text-muted small mb-0">Siswa dapat mengulang kelas yang ingin diikuti kembali tanpa biaya tambahan dan berlaku seumur hidup.</p>
                     </div>
                 </div>
             </div>

@@ -915,8 +915,8 @@ $ogImage = 'https://images.pexels.com/photos/5031312/pexels-photo-5031312.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-globe"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Ekonomi Besar Dunia</h5>
-                        <p class="text-muted small mb-0">Jepang adalah ekonomi terbesar ke-3 di dunia dengan banyak peluang kerja.</p>
+                        <h5 class="fw-bold mb-2">Ramah Pemula</h5>
+                        <p class="text-muted small mb-0">Cocok untuk semua level, dari nol hingga mahir.</p>
                     </div>
                 </div>
             </div>
@@ -928,8 +928,8 @@ $ogImage = 'https://images.pexels.com/photos/5031312/pexels-photo-5031312.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-mortarboard"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Beasiswa MEXT</h5>
-                        <p class="text-muted small mb-0">Persiapan lengkap untuk mendapatkan beasiswa MEXT dan kuliah di Jepang.</p>
+                        <h5 class="fw-bold mb-2">Instruktur Profesional</h5>
+                        <p class="text-muted small mb-0">Tim pengajar bersertifikat dengan pengalaman bertahun-tahun.</p>
                     </div>
                 </div>
             </div>
@@ -941,8 +941,8 @@ $ogImage = 'https://images.pexels.com/photos/5031312/pexels-photo-5031312.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-briefcase"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Peluang Kerja</h5>
-                        <p class="text-muted small mb-0">Banyak perusahaan Jepang yang membutuhkan tenaga kerja Indonesia.</p>
+                        <h5 class="fw-bold mb-2">Metode Kampung Inggris</h5>
+                        <p class="text-muted small mb-0">Metode immersion 24/7 yang terbukti efektif.</p>
                     </div>
                 </div>
             </div>
@@ -954,8 +954,8 @@ $ogImage = 'https://images.pexels.com/photos/5031312/pexels-photo-5031312.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-person-badge"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Native Speaker</h5>
-                        <p class="text-muted small mb-0">Pengajar native speaker Jepang untuk pronunciation yang benar.</p>
+                        <h5 class="fw-bold mb-2">TOEFL & IELTS</h5>
+                        <p class="text-muted small mb-0">Persiapan intensif untuk sertifikasi internasional.</p>
                     </div>
                 </div>
             </div>
@@ -980,8 +980,8 @@ $ogImage = 'https://images.pexels.com/photos/5031312/pexels-photo-5031312.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-award"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Sertifikat JLPT</h5>
-                        <p class="text-muted small mb-0">Sertifikasi JLPT yang diakui resmi oleh pemerintah Jepang.</p>
+                        <h5 class="fw-bold mb-2">Relasi Kuat</h5>
+                        <p class="text-muted small mb-0">Networking dengan alumni yang tersebar di berbagai negara.</p>
                     </div>
                 </div>
             </div>
@@ -993,8 +993,8 @@ $ogImage = 'https://images.pexels.com/photos/5031312/pexels-photo-5031312.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-geo-alt"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Kampung Inggris Pare</h5>
-                        <p class="text-muted small mb-0">Terlettak di lokasi strategis di Kampung Inggris Pare, Kediri.</p>
+                        <h5 class="fw-bold mb-2">Garansi Seumur Hidup</h5>
+                        <p class="text-muted small mb-0">Siswa dapat mengulang kelas yang ingin diikuti kembali tanpa biaya tambahan dan berlaku seumur hidup.</p>
                     </div>
                 </div>
             </div>

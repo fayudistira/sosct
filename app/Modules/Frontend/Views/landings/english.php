@@ -915,8 +915,8 @@ $ogImage = 'https://images.pexels.com/photos/6324702/pexels-photo-6324702.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-globe"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Bahasa Global</h5>
-                        <p class="text-muted small mb-0">Bahasa Inggris adalah bahasa internasional yang digunakan di seluruh dunia untuk bisnis, akademisi, dan komunikasi.</p>
+                        <h5 class="fw-bold mb-2">Ramah Pemula</h5>
+                        <p class="text-muted small mb-0">Cocok untuk semua level, dari nol hingga mahir.</p>
                     </div>
                 </div>
             </div>
@@ -928,8 +928,8 @@ $ogImage = 'https://images.pexels.com/photos/6324702/pexels-photo-6324702.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-briefcase"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Peluang Karir</h5>
-                        <p class="text-muted small mb-0">Menguasai bahasa Inggris membuka pintu karir yang lebih luas baik di dalam maupun luar negeri.</p>
+                        <h5 class="fw-bold mb-2">Instruktur Profesional</h5>
+                        <p class="text-muted small mb-0">Tim pengajar bersertifikat dengan pengalaman bertahun-tahun.</p>
                     </div>
                 </div>
             </div>
@@ -941,7 +941,7 @@ $ogImage = 'https://images.pexels.com/photos/6324702/pexels-photo-6324702.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-mortarboard"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Kuliah Abroad</h5>
+                        <h5 class="fw-bold mb-2">Metode Kampung Inggris</h5>
                         <p class="text-muted small mb-0">Persiapan TOEFL/IELTS untuk masuk universitas ternama di luar negeri.</p>
                     </div>
                 </div>
@@ -954,8 +954,8 @@ $ogImage = 'https://images.pexels.com/photos/6324702/pexels-photo-6324702.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-people"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Native Speaker</h5>
-                        <p class="text-muted small mb-0">Pengajar native speaker yang berpengalaman dalam mengajar bahasa Inggris.</p>
+                        <h5 class="fw-bold mb-2">TOEFL & IELTS</h5>
+                        <p class="text-muted small mb-0">Persiapan intensif untuk sertifikasi internasional.</p>
                     </div>
                 </div>
             </div>
@@ -980,8 +980,8 @@ $ogImage = 'https://images.pexels.com/photos/6324702/pexels-photo-6324702.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-award"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Sertifikat Resmi</h5>
-                        <p class="text-muted small mb-0">Sertifikat yang diakui secara nasional dan internasional.</p>
+                        <h5 class="fw-bold mb-2">Relasi Kuat</h5>
+                        <p class="text-muted small mb-0">Networking dengan alumni yang tersebar di berbagai negara.</p>
                     </div>
                 </div>
             </div>
@@ -993,8 +993,8 @@ $ogImage = 'https://images.pexels.com/photos/6324702/pexels-photo-6324702.jpeg?a
                         <div class="reason-icon">
                             <i class="bi bi-geo-alt"></i>
                         </div>
-                        <h5 class="fw-bold mb-2">Kampung Inggris Pare</h5>
-                        <p class="text-muted small mb-0">Terletak di lokasi strategis di Kampung Inggris Pare, Kediri.</p>
+                        <h5 class="fw-bold mb-2">Garansi Seumur Hidup</h5>
+                        <p class="text-muted small mb-0">Siswa dapat mengulang kelas yang ingin diikuti kembali tanpa biaya tambahan dan berlaku seumur hidup.</p>
                     </div>
                 </div>
             </div>
@@ -1004,36 +1004,7 @@ $ogImage = 'https://images.pexels.com/photos/6324702/pexels-photo-6324702.jpeg?a
     </div>
 </div>
 
-<!-- Mode Navigation Bar - Sticky -->
-<?php if (!empty($modes)): ?>
-    <div class="sticky-top" id="explore" style="top: 0; z-index: 1020;">
-        <nav class="py-2 px-2 d-flex flex-wrap gap-2 justify-content-center" style="background: linear-gradient(135deg, var(--dark-red) 0%, #600000 100%);" role="tablist">
-            <?php foreach ($modes as $modeIndex => $mode): ?>
-                <button class="btn-lang-header <?= ($modeIndex === 0) ? 'active' : '' ?>"
-                    id="mode-tab-<?= $modeIndex ?>"
-                    data-bs-toggle="tab"
-                    data-bs-target="#mode-<?= $modeIndex ?>"
-                    type="button"
-                    role="tab"
-                    aria-controls="mode-<?= $modeIndex ?>"
-                    aria-selected="<?= ($modeIndex === 0) ? 'true' : 'false' ?>">
-                    <i class="bi bi-<?= ($mode === 'online') ? 'wifi' : 'building' ?> me-2"></i>
-                    <?= ucfirst($mode) ?>
-                    <span class="badge-lang"><?= $programsByMode[$mode]['total_programs'] ?></span>
-                </button>
-            <?php endforeach ?>
-        </nav>
-    </div>
-<?php endif ?>
-
-<!-- Available Programs Section -->
-<div class="container py-3">
-    <?php if (empty($programsByMode)): ?>
-        <div class="text-center py-5">
-            <div class="feature-icon mb-4 mx-auto" style="width: 100px; height: 100px; font-size: 3rem; background: var(--light-red); color: var(--dark-red);">
-                <i class="bi bi-search"></i>
-            </div>
-            <h3 class="fw-bold">No Programs Available</h3>
+<!-- About Section -->
             <p class="text-muted">Belum ada program Inggris yang tersedia saat ini. Silakan hubungi kami untuk informasi lebih lanjut.</p>
             <a href="https://wa.me/6285810310950?text=Hai,%20saya%20mau%20tanya%20tentang%20program%20Inggris"
                 target="_blank"
@@ -1041,8 +1012,9 @@ $ogImage = 'https://images.pexels.com/photos/6324702/pexels-photo-6324702.jpeg?a
                 <i class="bi bi-whatsapp me-2"></i>Hubungi Kami
             </a>
         </div>
-    <?php else: ?>
-        <!-- Tab Content for Modes -->
+</div>
+
+<!-- Call to Action Section -->
         <div class="tab-content" id="modeTabContent">
             <?php foreach ($modes as $modeIndex => $mode): ?>
                 <div class="tab-pane fade <?= ($modeIndex === 0) ? 'show active' : '' ?>"
@@ -1308,14 +1280,9 @@ $ogImage = 'https://images.pexels.com/photos/6324702/pexels-photo-6324702.jpeg?a
                 </div>
             <?php endforeach ?>
         </div>
-    <?php endif ?>
 </div>
 
-<!-- Program Levels Section -->
-<div class="py-5 bg-light">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold mb-3" style="color: var(--dark-red);">Level Program Kami</h2>
+<!-- About Section -->
             <p class="lead text-muted">Pilih level yang sesuai dengan kemampuan dan tujuan Anda</p>
         </div>
 
@@ -1374,16 +1341,7 @@ $ogImage = 'https://images.pexels.com/photos/6324702/pexels-photo-6324702.jpeg?a
     </div>
 </div>
 
-<!-- Features Section -->
-<div class="container py-5">
-    <div class="row align-items-center g-5">
-        <div class="col-lg-6">
-            <h2 class="display-5 fw-bold mb-4" style="color: var(--dark-red);">Keunggulan Program Kami</h2>
-
-            <div class="d-flex gap-4 mb-4">
-                <div class="bg-light p-3 rounded-4">
-                    <i class="bi bi-person-video3 text-danger fs-3"></i>
-                </div>
+<!-- About Section -->
                 <div>
                     <h5 class="fw-bold">Pengajar Native Speaker</h5>
                     <p class="text-muted small mb-0">Belajar langsung dari pengajar asli Inggris/Amerika dengan pengalaman mengajar profesional.</p>
