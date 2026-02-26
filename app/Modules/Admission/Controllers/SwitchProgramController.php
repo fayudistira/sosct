@@ -96,11 +96,6 @@ class SwitchProgramController extends BaseController
      */
     public function switch(int $id)
     {
-        // Validate CSRF
-        if (!$this->validate(['csrf_field' => 'required'])) {
-            return redirect()->back()->with('error', 'Invalid security token');
-        }
-
         // Get admission
         $admission = $this->admissionModel->getWithDetails($id);
         
