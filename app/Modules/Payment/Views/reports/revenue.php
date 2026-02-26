@@ -195,7 +195,7 @@
                                 <td><?= date('M d, Y', strtotime($payment['payment_date'])) ?></td>
                                 <td><?= esc($payment['registration_number']) ?></td>
                                 <td><?= ucwords(str_replace('_', ' ', $payment['payment_method'])) ?></td>
-                                <td><?= esc($payment['document_number']) ?></td>
+                                <td><?= esc($payment['notes'] ?? '-') ?></td>
                                 <td class="text-end">Rp <?= number_format($payment['amount'], 0, ',', '.') ?></td>
                             </tr>
                         <?php endforeach ?>
