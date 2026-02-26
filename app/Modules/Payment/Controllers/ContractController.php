@@ -144,11 +144,19 @@ class ContractController extends BaseController
         $keyword = $this->request->getGet('search');
 
         $db = \Config\Database::connect();
+        
+        // Get latest installment ID per registration_number
+        $subQuery = $db->table('installments')
+            ->select('MAX(id) as max_id')
+            ->groupBy('registration_number')
+            ->getCompiledSelect();
+        
         $builder = $db->table('installments')
             ->select('installments.*, profiles.full_name, profiles.email, programs.title as program_title')
             ->join('admissions', 'admissions.registration_number = installments.registration_number')
             ->join('profiles', 'profiles.id = admissions.profile_id')
-            ->join('programs', 'programs.id = admissions.program_id');
+            ->join('programs', 'programs.id = admissions.program_id')
+            ->where_in('installments.id', $subQuery, false);
 
         // Apply filters
         if ($status) {
@@ -166,7 +174,7 @@ class ContractController extends BaseController
         $total = $builder->countAllResults(false);
         $offset = ($page - 1) * $perPage;
 
-        $contracts = $builder->orderBy('installments.created_at', 'DESC')
+        $contracts = $builder->orderBy('installments.id', 'DESC')
             ->limit($perPage, $offset)
             ->get()
             ->getResultArray();

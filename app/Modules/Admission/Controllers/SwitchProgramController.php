@@ -41,8 +41,8 @@ class SwitchProgramController extends BaseController
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Admission not found');
         }
 
-        // Get current installment/contract
-        $installment = $this->installmentModel->getByRegistrationNumber($admission['registration_number']);
+        // Get current installment (use latest)
+        $installment = $this->installmentModel->getLatestByRegistrationNumber($admission['registration_number']);
         
         // Get payments made so far
         $payments = [];
@@ -126,8 +126,8 @@ class SwitchProgramController extends BaseController
             return redirect()->back()->with('error', 'You cannot switch to the same program');
         }
 
-        // Get current installment
-        $oldInstallment = $this->installmentModel->getByRegistrationNumber($admission['registration_number']);
+        // Get current installment (for checking old payments)
+        $oldInstallment = $this->installmentModel->getLatestByRegistrationNumber($admission['registration_number']);
 
         // Start database transaction
         $db = \Config\Database::connect();

@@ -164,7 +164,7 @@ class PaymentController extends BaseController
         // This allows direct payments without invoice to still affect contract balance
         // Note: Direct payments without invoice are assumed to be for contract/tuition
         if (!$installmentId && $registrationNumber) {
-            $installment = $this->installmentModel->getByRegistrationNumber($registrationNumber);
+            $installment = $this->installmentModel->getLatestByRegistrationNumber($registrationNumber);
             if ($installment) {
                 $installmentId = $installment['id'];
             }

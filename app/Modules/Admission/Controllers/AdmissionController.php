@@ -84,8 +84,8 @@ class AdmissionController extends BaseController
         $invoices = $invoiceModel->getInvoicesByStudent($data['admission']['registration_number']);
         $data['invoice'] = !empty($invoices) ? $invoices[0] : null; // Get latest invoice
 
-        // Get installment record
-        $installment = $installmentModel->getByRegistrationNumber($data['admission']['registration_number']);
+        // Get installment record (use latest for program switch scenarios)
+        $installment = $installmentModel->getLatestByRegistrationNumber($data['admission']['registration_number']);
         $data['installment'] = $installment;
 
         $data['menuItems'] = $this->loadModuleMenus();

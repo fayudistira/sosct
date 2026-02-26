@@ -169,7 +169,7 @@ class PaymentApiController extends ResourceController
         // If no installment from invoice, try to find by registration_number (for direct payments)
         if (!$installmentId && isset($data['registration_number'])) {
             $installmentModel = new \Modules\Payment\Models\InstallmentModel();
-            $installment = $installmentModel->getByRegistrationNumber($data['registration_number']);
+            $installment = $installmentModel->getLatestByRegistrationNumber($data['registration_number']);
             if ($installment) {
                 $installmentId = $installment['id'];
             }

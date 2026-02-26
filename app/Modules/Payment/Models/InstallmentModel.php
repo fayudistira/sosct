@@ -85,6 +85,20 @@ class InstallmentModel extends Model
     }
 
     /**
+     * Get LATEST installment by registration number (most recent)
+     * This is useful when there are multiple installments (e.g., after program switch)
+     *
+     * @param string $registrationNumber
+     * @return array|null
+     */
+    public function getLatestByRegistrationNumber(string $registrationNumber): ?array
+    {
+        return $this->where('registration_number', $registrationNumber)
+            ->orderBy('id', 'DESC')
+            ->first();
+    }
+
+    /**
      * Update payment total and recalculate balance
      *
      * @param int $installmentId
@@ -169,6 +183,8 @@ class InstallmentModel extends Model
             ->join('profiles', 'profiles.id = admissions.profile_id')
             ->join('programs', 'programs.id = admissions.program_id')
             ->where('installments.registration_number', $registrationNumber)
+            ->orderBy('installments.id', 'DESC')
+            ->limit(1)
             ->get()
             ->getRowArray();
 
