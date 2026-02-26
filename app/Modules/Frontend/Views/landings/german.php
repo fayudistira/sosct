@@ -476,6 +476,110 @@ $ogImage = 'https://images.pexels.com/photos/2034356/pexels-photo-2034356.jpeg?a
     </div>
 </div>
 
+<!-- 7 Reasons Section -->
+<div class="py-5" style="background: linear-gradient(180deg, #f0fdfa 0%, #fff 100%);">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3" style="color: #2a9d8f;">Mengapa Harus SOS Course?</h2>
+        </div>
+
+        <div class="row g-4">
+            <!-- Reason 1 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
+                    <div class="card-body p-4">
+                        <div class="reason-icon">
+                            <i class="bi bi-globe"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Ekonomi Terbesar Eropa</h5>
+                        <p class="text-muted small mb-0">Jerman adalah ekonomi terbesar di Eropa dengan banyak peluang kerja dan karir.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reason 2 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
+                    <div class="card-body p-4">
+                        <div class="reason-icon">
+                            <i class="bi bi-mortarboard"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Pendidikan Gratis</h5>
+                        <p class="text-muted small mb-0">Kuliah gratis di universitas negeri Jerman dengan kualitas pendidikan terbaik.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reason 3 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
+                    <div class="card-body p-4">
+                        <div class="reason-icon">
+                            <i class="bi bi-briefcase"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Ausbildung</h5>
+                        <p class="text-muted small mb-0">Peluang Ausbildung (magang terstruktur) dengan gaji dan pengalaman kerja.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reason 4 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
+                    <div class="card-body p-4">
+                        <div class="reason-icon">
+                            <i class="bi bi-person-badge"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Instruktur Berpengalaman</h5>
+                        <p class="text-muted small mb-0">Pengajar berpengalaman dalam mempersiapkan siswa untuk Goethe exam.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reason 5 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
+                    <div class="card-body p-4">
+                        <div class="reason-icon">
+                            <i class="bi bi-book"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Kelas Intensif</h5>
+                        <p class="text-muted small mb-0">Program intensif hingga 5x pertemuan per hari untuk progres lebih cepat.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reason 6 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
+                    <div class="card-body p-4">
+                        <div class="reason-icon">
+                            <i class="bi bi-award"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Sertifikat Goethe</h5>
+                        <p class="text-muted small mb-0">Sertifikasi Goethe yang diakui resmi oleh pemerintah Jerman.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reason 7 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
+                    <div class="card-body p-4">
+                        <div class="reason-icon">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Kampung Inggris Pare</h5>
+                        <p class="text-muted small mb-0">Terlettak di lokasi strategis di Kampung Inggris Pare, Kediri.</p>
+                    </div>
+                </div>
+            </div>
+
+            
+        </div>
+    </div>
+</div>
+
 <!-- Mode Navigation Bar - Sticky -->
 <?php if (!empty($modes)): ?>
     <div class="sticky-top" id="explore" style="top: 0; z-index: 1020;">

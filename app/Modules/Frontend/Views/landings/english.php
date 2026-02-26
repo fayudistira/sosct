@@ -476,6 +476,110 @@ $ogImage = 'https://images.pexels.com/photos/6324702/pexels-photo-6324702.jpeg?a
     </div>
 </div>
 
+<!-- 7 Reasons Section -->
+<div class="py-5" style="background: linear-gradient(180deg, #f0f9ff 0%, #fff 100%);">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3" style="color: #457b9d;">Mengapa Harus SOS Course?</h2>
+        </div>
+
+        <div class="row g-4">
+            <!-- Reason 1 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
+                    <div class="card-body p-4">
+                        <div class="reason-icon">
+                            <i class="bi bi-globe"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Bahasa Global</h5>
+                        <p class="text-muted small mb-0">Bahasa Inggris adalah bahasa internasional yang digunakan di seluruh dunia untuk bisnis, akademisi, dan komunikasi.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reason 2 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
+                    <div class="card-body p-4">
+                        <div class="reason-icon">
+                            <i class="bi bi-briefcase"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Peluang Karir</h5>
+                        <p class="text-muted small mb-0">Menguasai bahasa Inggris membuka pintu karir yang lebih luas baik di dalam maupun luar negeri.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reason 3 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
+                    <div class="card-body p-4">
+                        <div class="reason-icon">
+                            <i class="bi bi-mortarboard"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Kuliah Abroad</h5>
+                        <p class="text-muted small mb-0">Persiapan TOEFL/IELTS untuk masuk universitas ternama di luar negeri.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reason 4 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
+                    <div class="card-body p-4">
+                        <div class="reason-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Native Speaker</h5>
+                        <p class="text-muted small mb-0">Pengajar native speaker yang berpengalaman dalam mengajar bahasa Inggris.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reason 5 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
+                    <div class="card-body p-4">
+                        <div class="reason-icon">
+                            <i class="bi bi-book"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Kelas Intensif</h5>
+                        <p class="text-muted small mb-0">Program intensif dengan hingga 5x pertemuan per hari untuk progres lebih cepat.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reason 6 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
+                    <div class="card-body p-4">
+                        <div class="reason-icon">
+                            <i class="bi bi-award"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Sertifikat Resmi</h5>
+                        <p class="text-muted small mb-0">Sertifikat yang diakui secara nasional dan internasional.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reason 7 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
+                    <div class="card-body p-4">
+                        <div class="reason-icon">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Kampung Inggris Pare</h5>
+                        <p class="text-muted small mb-0">Terletak di lokasi strategis di Kampung Inggris Pare, Kediri.</p>
+                    </div>
+                </div>
+            </div>
+
+            
+        </div>
+    </div>
+</div>
+
 <!-- Mode Navigation Bar - Sticky -->
 <?php if (!empty($modes)): ?>
     <div class="sticky-top" id="explore" style="top: 0; z-index: 1020;">
