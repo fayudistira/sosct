@@ -28,6 +28,9 @@
                         <a href="#tentang" class="list-group-item list-group-item-action border-0 py-3">
                             <i class="bi bi-info-circle me-2"></i> Tentang Kami
                         </a>
+                        <a href="#sejarah" class="list-group-item list-group-item-action border-0 py-3">
+                            <i class="bi bi-clock-history me-2"></i> Sejarah
+                        </a>
                         <a href="#visimisi" class="list-group-item list-group-item-action border-0 py-3">
                             <i class="bi bi-bullseye me-2"></i> Visi & Misi
                         </a>
@@ -94,14 +97,115 @@
                         </div>
                         <div class="col-md-4">
                             <div class="p-3 bg-light rounded text-center">
-                                <h3 class="fw-bold text-danger mb-1">HMVC</h3>
-                                <div class="small fw-semibold">Arsitektur</div>
+                                <h3 class="fw-bold text-danger mb-1">3000+</h3>
+                                <div class="small fw-semibold">Alumni</div>
                             </div>
                         </div>
                     </div>
 
                     <div class="mt-4 p-3 bg-primary bg-opacity-10 rounded border-start border-primary border-4">
                         <p class="mb-0">Sebagai pusat pembelajaran, kami menyadari bahwa penguasaan bahasa asing tidak hanya sebatas keterampilan komunikasi, melainkan juga sarana untuk memahami budaya, memperluas wawasan, serta membuka peluang akademik dan profesional. Karena itu, setiap program kami dirancang secara sistematis dengan menggabungkan pendekatan komunikatif, praktik intensif, serta pemahaman budaya dari bahasa yang dipelajari.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- History Section -->
+            <section id="sejarah" class="mb-5">
+                <h2 class="fw-bold mb-4 d-flex align-items-center">
+                    <span class="feature-icon ms-0 me-3 shadow-sm" style="width: 40px; height: 40px; font-size: 1rem;">
+                        <i class="bi bi-clock-history"></i>
+                    </span>
+                    Jejak Langkah SOS Course & Training
+                </h2>
+                
+                <div class="row g-4">
+                    <!-- 2013 - Beginning -->
+                    <div class="col-12">
+                        <div class="card-custom border-0 shadow-sm h-100 overflow-hidden">
+                            <div class="bg-warning p-2"></div>
+                            <div class="p-4">
+                                <h4 class="fw-bold"><i class="bi bi-sun me-2 text-warning"></i>1. Fajar Pertama di Kampung Inggris (2013)</h4>
+                                <p class="text-muted">Kisah SOS Course & Training bermula pada tahun 2013 di pusat pendidikan bahasa terbesar di Indonesia, Kampung Inggris Pare.</p>
+                                <p>Sejak awal pendiriannya, SOS telah mengusung visi yang berani dengan menghadirkan Program 5 Bahasa sekaligus. Hal ini menjadikannya salah satu pionir lembaga multibahasa di kawasan tersebut, memberikan pilihan yang lebih luas bagi para pencari ilmu.</p>
+                                <div class="alert alert-info border-0 shadow-sm mt-3 mb-0">
+                                    <i class="bi bi-geo-alt me-2"></i><strong>Fase Nomaden:</strong> Pada masa awal, SOS menjalani perjalanan operasional yang berpindah-pindah di jalan-jalan ikonik Tulungrejo - mulai dari Jl. Asparaga, beralih ke Jl. Anyelir, hingga sempat menetap di Jl. Sakura.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pandemic Period -->
+                    <div class="col-12">
+                        <div class="card-custom border-0 shadow-sm h-100 overflow-hidden">
+                            <div class="bg-secondary p-2"></div>
+                            <div class="p-4">
+                                <h4 class="fw-bold"><i class="bi bi-shield-exclamation me-2 text-secondary"></i>2. Ujian Pandemi: Bertahan di Tengah Kelumpuhan Kota (2020-2022)</h4>
+                                <p class="text-muted">Tahun 2020 menjadi titik balik yang paling menguji daya tahan.</p>
+                                <p>Pandemi COVID-19 menghantam dunia, dan Kampung Inggris Pare yang biasanya berdenyut dengan ribuan pelajar seketika lumpuh total. Kebijakan pembatasan sosial memaksa banyak lembaga kursus gulung tikar.</p>
+                                <div class="alert alert-success border-0 shadow-sm mt-3 mb-0">
+                                    <i class="bi bi-arrow-up-circle me-2"></i><strong>Kesuksesan:</strong> SOS tetap bertahan dengan merombak metode pengajaran dan mempersiapkan infrastruktur yang lebih kuat. Pasca-pandemi, SOS muncul dengan energi yang jauh lebih besar dan standar kualitas yang lebih matang.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Career Partnerships -->
+                    <div class="col-12">
+                        <div class="card-custom border-0 shadow-sm h-100 overflow-hidden">
+                            <div class="bg-primary p-2"></div>
+                            <div class="p-4">
+                                <h4 class="fw-bold"><i class="bi bi-briefcase me-2 text-primary"></i>3. Jembatan Karier dan Kemitraan Strategis</h4>
+                                <p>SOS Course & Training berhasil mengubah citra kursus bahasa menjadi gerbang karier nyata. Melalui kerja sama yang erat dengan berbagai instansi, SOS berperan aktif dalam:</p>
+                                <ul>
+                                    <li><strong>Penyelenggaraan Pelatihan:</strong> Mengadakan in-house training bahasa bagi instansi pemerintah maupun swasta.</li>
+                                    <li><strong>Program OJT ke Cina:</strong> Mengirimkan kandidat terbaik untuk merasakan pengalaman kerja langsung di Tiongkok.</li>
+                                    <li><strong>Penyaluran Tenaga Kerja:</strong> Menjadi mitra strategis dalam proses interview dengan HRD perusahaan-perusahaan besar berbasis Cina di Indonesia.</li>
+                                </ul>
+                                <div class="mt-3 p-3 bg-light rounded">
+                                    <strong class="text-primary">Mitra Perusahaan:</strong> IMIP (Morowali), IWIP (Weda Bay), OSS (Konawe), CCECP, Global Textile, dan berbagai manufaktur besar lainnya.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modern Facilities -->
+                    <div class="col-12">
+                        <div class="card-custom border-0 shadow-sm h-100 overflow-hidden">
+                            <div class="bg-success p-2"></div>
+                            <div class="p-4">
+                                <h4 class="fw-bold"><i class="bi bi-building me-2 text-success"></i>4. Stabilitas dan Fasilitas Modern</h4>
+                                <p>Kegigihan selama bertahun-tahun membuahkan hasil manis dengan berdirinya fasilitas permanen yang representatif.</p>
+                                
+                                <div class="row mt-3 g-3">
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded h-100">
+                                            <h6 class="fw-bold"><i class="bi bi-house me-2"></i>Kantor Pusat & Fasilitas Utama</h6>
+                                            <p class="mb-0 small">Perumahan Green Pare Residence 1, Jl. PB. Sudirman, Tulungrejo, Pare, Kediri.</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded h-100">
+                                            <h6 class="fw-bold"><i class="bi bi-star me-2"></i>Fasilitas Terbaru (Kirana Cluster)</h6>
+                                            <p class="mb-0 small">Terletak di Perumahan Kirana Cluster, Tulungrejo, Pare, Kediri. Diririkan untuk mengakomodasi antusiasme siswa yang terus meningkat.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Future Commitment -->
+                    <div class="col-12">
+                        <div class="card-custom border-0 shadow-sm h-100 overflow-hidden">
+                            <div class="bg-danger p-2"></div>
+                            <div class="p-4">
+                                <h4 class="fw-bold"><i class="bi bi-flag me-2 text-danger"></i>5. Komitmen Masa Depan</h4>
+                                <p class="mb-0">Memasuki dekade kedua perjalanannya, SOS Course & Training tetap memegang teguh komitmennya untuk terus meningkatkan kualitas pendidikan, pembaruan fasilitas penunjang yang modern, serta perluasan networking baik di dalam maupun luar negeri.</p>
+                                <div class="alert alert-warning border-0 shadow-sm mt-3 mb-0">
+                                    <i class="bi bi-lightbulb me-2"></i><strong>SOS bukan sekadar tempat belajar bahasa, melainkan ekosistem pertumbuhan yang menghubungkan potensi lokal dengan peluang karir global.</strong>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
