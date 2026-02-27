@@ -347,7 +347,7 @@
                         <select class="form-select" id="course" name="course" required>
                             <option value="">Pilih Program</option>
                             <?php foreach ($programs as $program): ?>
-                                <option value="<?= esc($program['id']) ?>" data-title="<?= esc($program['title']) ?>" <?= old('course') === $program['id'] ? 'selected' : '' ?>>
+                                <option value="<?= esc($program['id']) ?>" data-title="<?= esc($program['title']) ?>" data-category="<?= esc($program['category'] ?? '') ?>" <?= old('course') === $program['id'] ? 'selected' : '' ?>>
                                     <?= esc($program['title']) ?>
                                     <?php if ($program['discount'] > 0): ?>
                                         (<?= number_format($program['discount'], 0) ?>% OFF)
@@ -362,49 +362,103 @@
                     <?php endif ?>
                 </div>
                 <?php
-                // Generate start date options: 10th of each month for current and next year
-                $startDateOptions = [];
-                $currentYear = date('Y');
-                $nextYear = $currentYear + 1;
-                
-                for ($year = $currentYear; $year <= $nextYear; $year++) {
-                    for ($month = 1; $month <= 12; $month++) {
-                        // Skip past months in current year
-                        if ($year == $currentYear && $month < date('n')) {
-                            continue;
-                        }
-                        
-                        // Find the 10th day of the month
-                        $tenthDay = mktime(0, 0, 0, $month, 10, $year);
-                        $dayOfWeek = date('N', $tenthDay);
-                        
-                        // If 10th is Friday (5), Saturday (6), or Sunday (7), move to next Monday
-                        if ($dayOfWeek >= 5) {
-                            $daysUntilMonday = 8 - $dayOfWeek; // Days until next Monday
-                            $tenthDay = strtotime("+{$daysUntilMonday} days", $tenthDay);
-                        }
-                        
-                        $dateValue = date('Y-m-d', $tenthDay);
-                        $displayDate = date('d F Y', $tenthDay);
-                        $startDateOptions[$dateValue] = $displayDate;
-                    }
+                // Get the program category for conditional display
+                $programCategory = '';
+                if (isset($selectedProgram) && $selectedProgram) {
+                    $programCategory = $selectedProgram['category'] ?? '';
                 }
                 ?>
-                <div class="mb-3">
+                
+                <!-- Start Date Section - Paket vs Non-Paket -->
+                <div class="mb-3" id="startDateSection">
                     <label for="start_date" class="form-label">Tanggal Mulai Dimulai</label>
-                    <select class="form-select" id="start_date" name="start_date">
-                        <option value="">Pilih Tanggal Mulai</option>
-                        <?php foreach ($startDateOptions as $value => $label): ?>
-                            <option value="<?= $value ?>" <?= old('start_date') === $value ? 'selected' : '' ?>>
-                                <?= $label ?>
-                            </option>
-                        <?php endforeach ?>
-                    </select>
-                    <small class="text-muted">
-                        <i class="bi bi-info-circle me-1"></i>
-                        Kelas dimulai pada tanggal 10 setiap bulan. Jika tanggal 10 jatuh pada akhir pekan, kelas akan dimulai pada Senin berikutnya.
-                    </small>
+                    
+                    <?php if ($programCategory === 'Paket'): ?>
+                        <!-- Paket programs: Show dropdown with 10th of month options -->
+                        <select class="form-select" id="start_date" name="start_date">
+                            <option value="">Pilih Tanggal Mulai</option>
+                            <?php foreach ($startDateOptions as $value => $label): ?>
+                                <option value="<?= $value ?>" <?= old('start_date') === $value ? 'selected' : '' ?>>
+                                    <?= $label ?>
+                                </option>
+                            <?php endforeach ?>
+                        </select>
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Kelas dimulai pada tanggal 10 setiap bulan. Jika tanggal 10 jatuh pada akhir pekan, kelas akan dimulai pada Senin berikutnya.
+                        </small>
+                    <?php else: ?>
+                        <!-- Non-Paket programs: Show regular datepicker with backwards date disabled -->
+                        <input type="date" class="form-control" id="start_date" name="start_date" 
+                            min="<?= date('Y-m-d') ?>" value="<?= old('start_date') ?>">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Pilih tanggal mulai kursus. Tanggal lampau tidak diperbolehkan.
+                        </small>
+                    <?php endif; ?>
                 </div>
+                
+                <script>
+                // Handle program selection change to toggle between dropdown and datepicker
+                document.addEventListener('DOMContentLoaded', function() {
+                    const courseSelect = document.getElementById('course');
+                    const startDateSection = document.getElementById('startDateSection');
+                    
+                    if (courseSelect && startDateSection) {
+                        courseSelect.addEventListener('change', function() {
+                            const selectedOption = this.options[this.selectedIndex];
+                            const programCategory = selectedOption.getAttribute('data-category');
+                            
+                            // Rebuild the start date section based on program category
+                            if (programCategory === 'Paket') {
+                                // Show dropdown with 10th of month options
+                                startDateSection.innerHTML = `
+                                    <label for="start_date" class="form-label">Tanggal Mulai Dimulai</label>
+                                    <select class="form-select" id="start_date" name="start_date">
+                                        <option value="">Pilih Tanggal Mulai</option>
+                                        <?php foreach ($startDateOptions as $value => $label): ?>
+                                            <option value="<?= $value ?>"><?= $label ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Kelas dimulai pada tanggal 10 setiap bulan. Jika tanggal 10 jatuh pada akhir pekan, kelas akan dimulai pada Senin berikutnya.
+                                    </small>
+                                `;
+                            } else {
+                                // Show regular datepicker with backwards date disabled
+                                startDateSection.innerHTML = `
+                                    <label for="start_date" class="form-label">Tanggal Mulai Dimulai</label>
+                                    <input type="date" class="form-control" id="start_date" name="start_date" 
+                                        min="<?= date('Y-m-d') ?>">
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Pilih tanggal mulai kursus. Tanggal lampau tidak diperbolehkan.
+                                    </small>
+                                `;
+                            }
+                        });
+                        
+                        // Also check initial selection on page load (for pre-selected program)
+                        const initialSelectedOption = courseSelect.options[courseSelect.selectedIndex];
+                        if (initialSelectedOption) {
+                            const initialCategory = initialSelectedOption.getAttribute('data-category');
+                            if (initialCategory && initialCategory !== 'Paket') {
+                                // For non-Paket pre-selected, convert dropdown to datepicker
+                                startDateSection.innerHTML = `
+                                    <label for="start_date" class="form-label">Tanggal Mulai Dimulai</label>
+                                    <input type="date" class="form-control" id="start_date" name="start_date" 
+                                        min="<?= date('Y-m-d') ?>">
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Pilih tanggal mulai kursus. Tanggal lampau tidak diperbolehkan.
+                                    </small>
+                                `;
+                            }
+                        }
+                    }
+                });
+                </script>
             </div>
         </div>
 
