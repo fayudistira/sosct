@@ -21,6 +21,13 @@ class ToolsController extends BaseController
         // Define available tools
         $tools = [
             [
+                'name' => 'API Tester',
+                'description' => 'Test REST APIs with support for GET, POST, PUT, PATCH, DELETE methods',
+                'url' => 'tools/api-tester',
+                'icon' => 'api',
+                'permission' => 'tools.access'
+            ],
+            [
                 'name' => 'QR Code Generator',
                 'description' => 'Create custom QR codes for URLs, text, or WhatsApp links',
                 'url' => 'tools/qrgen',
@@ -48,6 +55,25 @@ class ToolsController extends BaseController
             'user' => $user,
             'menuItems' => $menuItems,
             'tools' => $tools
+        ]);
+    }
+    
+    /**
+     * API Tester page
+     * 
+     * @return string
+     */
+    public function apiTester(): string
+    {
+        $user = auth()->user();
+        
+        // Get menu items from all modules
+        $menuItems = $this->loadModuleMenus();
+        
+        return view('Modules\Tools\Views\api_tester', [
+            'title' => 'API Tester',
+            'user' => $user,
+            'menuItems' => $menuItems
         ]);
     }
     
