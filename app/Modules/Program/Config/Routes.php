@@ -18,8 +18,8 @@ $routes->group('program', ['namespace' => 'Modules\Program\Controllers', 'filter
     $routes->post('bulk-upload', 'ProgramController::bulkUpload', ['filter' => 'permission:program.manage']);
 });
 
-// Program API Routes
-$routes->group('api/programs', ['namespace' => 'Modules\Program\Controllers\Api', 'filter' => 'session'], function($routes) {
+// Program API Routes - Protected with token authentication
+$routes->group('api/programs', ['filter' => 'tokens', 'namespace' => 'Modules\Program\Controllers\Api'], function($routes) {
     // CRUD operations
     $routes->get('/', 'ProgramApiController::index');
     $routes->get('(:segment)', 'ProgramApiController::show/$1');
@@ -38,4 +38,9 @@ $routes->group('api/programs', ['namespace' => 'Modules\Program\Controllers\Api'
     // Special endpoints
     $routes->get('active', 'ProgramApiController::active');
     $routes->get('categories', 'ProgramApiController::categories');
+    $routes->get('languages', 'ProgramApiController::languages');
+    $routes->get('language-levels', 'ProgramApiController::languageLevels');
+    $routes->get('by-language', 'ProgramApiController::byLanguage');
+    $routes->get('filter/language', 'ProgramApiController::filterByLanguage');
+    $routes->get('filter/language-level', 'ProgramApiController::filterByLanguageLevel');
 });

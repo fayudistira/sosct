@@ -51,8 +51,8 @@ $routes->group('invoice', ['namespace' => 'Modules\Payment\Controllers', 'filter
     $routes->get('invoice-summary', 'InvoiceController::getInvoiceSummary');
 });
 
-// Payment API Routes
-$routes->group('api/payments', ['namespace' => 'Modules\Payment\Controllers\Api', 'filter' => 'session'], function ($routes) {
+// Payment API Routes - Protected with token authentication
+$routes->group('api/payments', ['filter' => 'tokens', 'namespace' => 'Modules\Payment\Controllers\Api'], function ($routes) {
     // CRUD operations
     $routes->get('/', 'PaymentApiController::index');
     $routes->get('(:segment)', 'PaymentApiController::show/$1');
@@ -76,13 +76,11 @@ $routes->group('api/payments', ['namespace' => 'Modules\Payment\Controllers\Api'
 
     // Receipt upload
     $routes->post('(:segment)/receipt', 'PaymentApiController::uploadReceipt/$1');
-
-    // Add this line
     $routes->get('(:segment)/receipt', 'PaymentApiController::getReceipt/$1');
 });
 
-// Invoice API Routes
-$routes->group('api/invoices', ['namespace' => 'Modules\Payment\Controllers\Api', 'filter' => 'session'], function ($routes) {
+// Invoice API Routes - Protected with token authentication
+$routes->group('api/invoices', ['filter' => 'tokens', 'namespace' => 'Modules\Payment\Controllers\Api'], function ($routes) {
     // Search and filter (MUST be before CRUD routes with wildcards)
     $routes->get('search', 'InvoiceApiController::search');
     $routes->get('search-admissions', 'InvoiceApiController::searchAdmissions');
@@ -109,9 +107,13 @@ $routes->group('api/invoices', ['namespace' => 'Modules\Payment\Controllers\Api'
     $routes->put('(:segment)/cancel', 'InvoiceApiController::cancel/$1');
 });
 
-// Installment API Routes
-$routes->group('api/installments', ['namespace' => 'Modules\Payment\Controllers\Api', 'filter' => 'session'], function ($routes) {
-    $routes->get('student/(:segment)', 'InvoiceApiController::getInstallmentInfo/$1');
+// Installment API Routes - Protected with token authentication
+$routes->group('api/installments', ['filter' => 'tokens', 'namespace' => 'Modules\Payment\Controllers\Api'], function ($routes) {
+    $routes->get('/', 'InstallmentApiController::index');
+    $routes->get('(:segment)', 'InstallmentApiController::show/$1');
+    $routes->put('(:segment)', 'InstallmentApiController::update/$1');
+    $routes->get('student/(:segment)', 'InstallmentApiController::getByStudent/$1');
+    $routes->get('statistics', 'InstallmentApiController::statistics');
 });
 
 // Student Payment Routes (requires authentication and student role)

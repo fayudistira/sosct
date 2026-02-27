@@ -14,10 +14,13 @@ $routes->group('classroom', ['namespace' => 'Modules\Classroom\Controllers'], fu
     $routes->post('delete/(:num)', 'ClassroomController::delete/$1');
 });
 
-// Classroom API Routes
-$routes->group('api/classrooms', ['namespace' => 'Modules\Classroom\Controllers\Api', 'filter' => 'session'], function ($routes) {
+// Classroom API Routes - Protected with token authentication
+$routes->group('api/classrooms', ['filter' => 'tokens', 'namespace' => 'Modules\Classroom\Controllers\Api'], function ($routes) {
     $routes->get('/', 'ClassroomApiController::index');
     $routes->get('(:segment)', 'ClassroomApiController::show/$1');
+    $routes->post('/', 'ClassroomApiController::create');
+    $routes->put('(:segment)', 'ClassroomApiController::update/$1');
+    $routes->delete('(:segment)', 'ClassroomApiController::delete/$1');
 });
 
 // Student Classroom Routes (requires authentication and student role)

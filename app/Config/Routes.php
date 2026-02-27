@@ -24,6 +24,20 @@ $routes->post('login', '\App\Controllers\Auth\LoginController::loginAction');
 $routes->get('register', '\App\Controllers\Auth\RegisterController::registerView', ['as' => 'register']);
 $routes->post('register', '\App\Controllers\Auth\RegisterController::registerAction');
 
+// API Routes - Public (no authentication required)
+$routes->group('api/auth', ['namespace' => 'App\Controllers\Api'], function($routes) {
+    $routes->post('login', 'AuthApiController::login');
+    $routes->post('register', 'AuthApiController::register');
+});
+
+// API Routes - Protected (authentication required)
+$routes->group('api/auth', ['filter' => 'tokens', 'namespace' => 'App\Controllers\Api'], function($routes) {
+    $routes->post('logout', 'AuthApiController::logout');
+    $routes->get('me', 'AuthApiController::me');
+    $routes->post('refresh', 'AuthApiController::refresh');
+    $routes->post('change-password', 'AuthApiController::changePassword');
+});
+
 //Auto-Load Modules' Routes
 $modulesPath = APPPATH . 'Modules/';
 if (is_dir($modulesPath)) {

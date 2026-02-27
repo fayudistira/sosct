@@ -27,9 +27,19 @@ $routes->group('admission', ['namespace' => 'Modules\Admission\Controllers', 'fi
 });
 
 // API Routes (RESTful) - Protected by session filter for AJAX calls
-$routes->group('api/admissions', ['namespace' => 'Modules\Admission\Controllers\Api', 'filter' => 'session'], function($routes) {
+$routes->group('api/admissions', ['namespace' => 'Modules\Admission\Controllers\Api', 'filter' => 'tokens'], function($routes) {
+    // CRUD operations (MUST be after specific routes)
     $routes->get('/', 'AdmissionApiController::index');
-    $routes->get('(:segment)', 'AdmissionApiController::show/$1');
+    $routes->post('/', 'AdmissionApiController::create');
     $routes->get('search', 'AdmissionApiController::search');
     $routes->get('filter', 'AdmissionApiController::filter');
+    $routes->get('statistics', 'AdmissionApiController::statistics');
+    $routes->get('(:segment)', 'AdmissionApiController::show/$1');
+    $routes->put('(:segment)', 'AdmissionApiController::update/$1');
+    $routes->delete('(:segment)', 'AdmissionApiController::delete/$1');
+    
+    // Action endpoints
+    $routes->post('(:segment)/approve', 'AdmissionApiController::approve/$1');
+    $routes->post('(:segment)/reject', 'AdmissionApiController::reject/$1');
+    $routes->post('(:segment)/promote', 'AdmissionApiController::promote/$1');
 });

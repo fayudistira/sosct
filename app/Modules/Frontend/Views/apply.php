@@ -200,7 +200,7 @@
                         <input type="text" class="form-control" id="full_name" name="full_name" value="<?= old('full_name') ?>" required>
                     </div>
                     <div class="col-md-6">
-                        <label for="nickname" class="form-label">Nickname</label>
+                        <label for="nickname" class="form-label">Nama Panggilan</label>
                         <input type="text" class="form-control" id="nickname" name="nickname" value="<?= old('nickname') ?>">
                     </div>
                     <div class="col-md-6">
@@ -391,8 +391,8 @@
                 }
                 ?>
                 <div class="mb-3">
-                    <label for="start_date" class="form-label">Tanggal Mulai Dimulai <span class="text-danger">*</span></label>
-                    <select class="form-select" id="start_date" name="start_date" required>
+                    <label for="start_date" class="form-label">Tanggal Mulai Dimulai</label>
+                    <select class="form-select" id="start_date" name="start_date">
                         <option value="">Pilih Tanggal Mulai</option>
                         <?php foreach ($startDateOptions as $value => $label): ?>
                             <option value="<?= $value ?>" <?= old('start_date') === $value ? 'selected' : '' ?>>
@@ -418,12 +418,12 @@
                     <div class="col-md-6">
                         <label for="photo" class="form-label">Foto Profil <span class="text-danger">*</span></label>
                         <input type="file" class="form-control" id="photo" name="photo" accept="image/jpeg,image/jpg,image/png,image/webp" required>
-                        <small class="text-muted">Diterima: JPG, PNG, WebP. Maks: 2MB. Foto akan dikonversi ke WebP untuk optimasi.</small>
+                        <small class="text-muted">Format: JPG, PNG, WebP. Maks: 2MB. Foto akan dikonversi ke WebP untuk optimasi.</small>
                     </div>
                     <div class="col-md-6">
-                        <label for="documents" class="form-label">Berkas Pendukung</label>
+                        <label for="documents" class="form-label">KTP/ID</label>
                         <input type="file" class="form-control" id="documents" name="documents[]" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,image/*" multiple>
-                        <small class="text-muted">Diterima: PDF, DOC, DOCX, JPG, PNG, GIF. Maks: 5MB per berkas</small>
+                        <small class="text-muted">Format: PDF, DOC, DOCX, JPG, PNG, GIF. Maks: 5MB per berkas</small>
                     </div>
                 </div>
             </div>
@@ -437,7 +437,7 @@
             <div class="card-body">
                 <div class="mb-3">
                     <label for="notes" class="form-label">Catatan Tambahan</label>
-                    <textarea class="form-control" id="notes" name="notes" rows="4" placeholder="Informasi tambahan yang ingin Anda sampaikan..."><?= old('notes') ?></textarea>
+                    <textarea class="form-control" id="notes" name="notes" rows="4" placeholder="Informasi tambahan yang ingin Anda sampaikan seperti riwayat alergi dan lainnya..."><?= old('notes') ?></textarea>
                 </div>
             </div>
         </div>

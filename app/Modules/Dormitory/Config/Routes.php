@@ -34,9 +34,14 @@ $routes->group('', ['namespace' => 'Modules\Dormitory\Controllers'], function ($
     $routes->get('dormitories/(:segment)', 'DormitoryFrontendController::show/$1');
 });
 
-// API Routes
-$routes->group('api/dormitories', ['namespace' => 'Modules\Dormitory\Controllers\Api'], function ($routes) {
+// API Routes - Protected with token authentication
+$routes->group('api/dormitories', ['filter' => 'tokens', 'namespace' => 'Modules\Dormitory\Controllers\Api'], function ($routes) {
     $routes->get('/', 'DormitoryApiController::index');
     $routes->get('available', 'DormitoryApiController::available');
     $routes->get('(:segment)', 'DormitoryApiController::show/$1');
+    $routes->post('/', 'DormitoryApiController::create');
+    $routes->put('(:segment)', 'DormitoryApiController::update/$1');
+    $routes->delete('(:segment)', 'DormitoryApiController::delete/$1');
+    $routes->post('(:segment)/assign', 'DormitoryApiController::assign/$1');
+    $routes->post('(:segment)/unassign', 'DormitoryApiController::unassign/$1');
 });
