@@ -369,6 +369,34 @@
                     $programCategory = $selectedProgram['category'] ?? '';
                 }
                 
+                // Generate start date options: 10th of each month for current and next year
+                $startDateOptions = [];
+                $currentYear = date('Y');
+                $nextYear = $currentYear + 1;
+                
+                for ($year = $currentYear; $year <= $nextYear; $year++) {
+                    for ($month = 1; $month <= 12; $month++) {
+                        // Skip past months in current year
+                        if ($year == $currentYear && $month < date('n')) {
+                            continue;
+                        }
+                        
+                        // Find the 10th day of the month
+                        $tenthDay = mktime(0, 0, 0, $month, 10, $year);
+                        $dayOfWeek = date('N', $tenthDay);
+                        
+                        // If 10th is Friday (5), Saturday (6), or Sunday (7), move to next Monday
+                        if ($dayOfWeek >= 5) {
+                            $daysUntilMonday = 8 - $dayOfWeek; // Days until next Monday
+                            $tenthDay = strtotime("+{$daysUntilMonday} days", $tenthDay);
+                        }
+                        
+                        $dateValue = date('Y-m-d', $tenthDay);
+                        $displayDate = date('d F Y', $tenthDay);
+                        $startDateOptions[$dateValue] = $displayDate;
+                    }
+                }
+                
                 // Encode start date options as JSON for JavaScript
                 $startDateOptionsJson = json_encode($startDateOptions);
                 ?>
