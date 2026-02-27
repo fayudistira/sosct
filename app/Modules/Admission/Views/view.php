@@ -214,6 +214,12 @@
                         <label class="stat-label">Application Date</label>
                         <div class="fw-medium"><?= date('M d, Y', strtotime($admission['application_date'])) ?></div>
                     </div>
+                    <?php if (!empty($admission['start_date'])): ?>
+                    <div class="col-md-6">
+                        <label class="stat-label">Start Date</label>
+                        <div class="fw-medium"><?= date('M d, Y', strtotime($admission['start_date'])) ?></div>
+                    </div>
+                    <?php endif; ?>
                 </div>
                 <?php if (!empty($admission['applicant_notes'])): ?>
                     <div class="mt-3">

@@ -23,7 +23,8 @@ class AdmissionModel extends Model
         'notes',
         'applicant_notes',
         'previous_program_id',
-        'program_switch_count'
+        'program_switch_count',
+        'start_date'
     ];
     
     protected $useTimestamps = true;
@@ -41,7 +42,8 @@ class AdmissionModel extends Model
         'reviewed_date' => 'permit_empty|valid_date',
         'reviewed_by' => 'permit_empty|is_natural_no_zero|is_not_unique[users.id]',
         'previous_program_id' => 'permit_empty|is_natural_no_zero',
-        'program_switch_count' => 'permit_empty|is_natural'
+        'program_switch_count' => 'permit_empty|is_natural',
+        'start_date' => 'permit_empty|valid_date'
     ];
     
     protected $validationMessages = [

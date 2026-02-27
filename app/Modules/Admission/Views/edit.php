@@ -177,7 +177,7 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label">Program <span class="text-danger">*</span></label>
-                    <select name="program_id" class="form-select form-select-sm" required>
+                    <select name="program_id" class="form-select form-select-sm" required disabled>
                         <option value="">Select Program</option>
                         <?php foreach ($programs as $program): ?>
                             <option value="<?= esc($program['id']) ?>" <?= old('program_id', $admission['program_id']) === $program['id'] ? 'selected' : '' ?>>
@@ -185,6 +185,49 @@
                             </option>
                         <?php endforeach ?>
                     </select>
+                    <input type="hidden" name="program_id" value="<?= esc($admission['program_id']) ?>">
+                    <small class="text-muted">Program cannot be changed after admission is created</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Start Date</label>
+                    <?php
+                    // Generate start date options: 10th of each month for current and next year
+                    $startDateOptions = [];
+                    $currentYear = date('Y');
+                    $nextYear = $currentYear + 1;
+                    
+                    for ($year = $currentYear; $year <= $nextYear; $year++) {
+                        for ($month = 1; $month <= 12; $month++) {
+                            // Skip past months in current year
+                            if ($year == $currentYear && $month < date('n')) {
+                                continue;
+                            }
+                            
+                            // Find the 10th day of the month
+                            $tenthDay = mktime(0, 0, 0, $month, 10, $year);
+                            $dayOfWeek = date('N', $tenthDay);
+                            
+                            // If 10th is Friday (5), Saturday (6), or Sunday (7), move to next Monday
+                            if ($dayOfWeek >= 5) {
+                                $daysUntilMonday = 8 - $dayOfWeek; // Days until next Monday
+                                $tenthDay = strtotime("+{$daysUntilMonday} days", $tenthDay);
+                            }
+                            
+                            $dateValue = date('Y-m-d', $tenthDay);
+                            $displayDate = date('F d, Y (l)', $tenthDay);
+                            $startDateOptions[$dateValue] = $displayDate;
+                        }
+                    }
+                    ?>
+                    <select name="start_date" class="form-select form-select-sm">
+                        <option value="">Select Start Date</option>
+                        <?php foreach ($startDateOptions as $value => $label): ?>
+                            <option value="<?= $value ?>" <?= old('start_date', $admission['start_date'] ?? '') === $value ? 'selected' : '' ?>>
+                                <?= $label ?>
+                            </option>
+                        <?php endforeach ?>
+                    </select>
+                    <small class="text-muted">10th of each month (moved to Monday if weekend)</small>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Status <span class="text-danger">*</span></label>
