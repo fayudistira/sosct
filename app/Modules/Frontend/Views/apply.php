@@ -361,22 +361,26 @@
                         </small>
                     <?php endif ?>
                 </div>
+                
                 <?php
                 // Get the program category for conditional display
                 $programCategory = '';
                 if (isset($selectedProgram) && $selectedProgram) {
                     $programCategory = $selectedProgram['category'] ?? '';
                 }
+                
+                // Encode start date options as JSON for JavaScript
+                $startDateOptionsJson = json_encode($startDateOptions);
                 ?>
                 
                 <!-- Start Date Section - Paket vs Non-Paket -->
                 <div class="mb-3" id="startDateSection">
-                    <label for="start_date" class="form-label">Tanggal Mulai Dimulai</label>
+                    <label for="start_date" class="form-label">Periode</label>
                     
                     <?php if ($programCategory === 'Paket'): ?>
                         <!-- Paket programs: Show dropdown with 10th of month options -->
                         <select class="form-select" id="start_date" name="start_date">
-                            <option value="">Pilih Tanggal Mulai</option>
+                            <option value="">Pilih Tanggal Mulai Kursus</option>
                             <?php foreach ($startDateOptions as $value => $label): ?>
                                 <option value="<?= $value ?>" <?= old('start_date') === $value ? 'selected' : '' ?>>
                                     <?= $label ?>
@@ -399,63 +403,61 @@
                 </div>
                 
                 <script>
+                // Start date options from PHP
+                const startDateOptions = <?= $startDateOptionsJson ?>;
+                const today = '<?= date('Y-m-d') ?>';
+                
                 // Handle program selection change to toggle between dropdown and datepicker
                 document.addEventListener('DOMContentLoaded', function() {
                     const courseSelect = document.getElementById('course');
                     const startDateSection = document.getElementById('startDateSection');
                     
                     if (courseSelect && startDateSection) {
+                        // Function to build dropdown HTML
+                        function buildDropdown() {
+                            let options = '<option value="">Pilih Tanggal Mulai</option>';
+                            for (const [value, label] of Object.entries(startDateOptions)) {
+                                options += '<option value="' + value + '">' + label + '</option>';
+                            }
+                            return '<label for="start_date" class="form-label">Tanggal Mulai Dimulai</label>' +
+                                   '<select class="form-select" id="start_date" name="start_date">' + options + '</select>' +
+                                   '<small class="text-muted"><i class="bi bi-info-circle me-1"></i>' +
+                                   'Kelas dimulai pada tanggal 10 setiap bulan. Jika tanggal 10 jatuh pada akhir pekan, kelas akan dimulai pada Senin berikutnya.</small>';
+                        }
+                        
+                        // Function to build datepicker HTML
+                        function buildDatepicker() {
+                            return '<label for="start_date" class="form-label">Tanggal Mulai Dimulai</label>' +
+                                   '<input type="date" class="form-control" id="start_date" name="start_date" min="' + today + '">' +
+                                   '<small class="text-muted"><i class="bi bi-info-circle me-1"></i>' +
+                                   'Pilih tanggal mulai kursus. Tanggal lampau tidak diperbolehkan.</small>';
+                        }
+                        
+                        // Check current selection on load
+                        function checkProgramCategory() {
+                            const selectedOption = courseSelect.options[courseSelect.selectedIndex];
+                            if (selectedOption) {
+                                const programCategory = selectedOption.getAttribute('data-category');
+                                if (programCategory && programCategory !== 'Paket') {
+                                    startDateSection.innerHTML = buildDatepicker();
+                                }
+                            }
+                        }
+                        
+                        // Run on page load
+                        checkProgramCategory();
+                        
+                        // Listen for changes
                         courseSelect.addEventListener('change', function() {
                             const selectedOption = this.options[this.selectedIndex];
                             const programCategory = selectedOption.getAttribute('data-category');
                             
-                            // Rebuild the start date section based on program category
                             if (programCategory === 'Paket') {
-                                // Show dropdown with 10th of month options
-                                startDateSection.innerHTML = `
-                                    <label for="start_date" class="form-label">Tanggal Mulai Dimulai</label>
-                                    <select class="form-select" id="start_date" name="start_date">
-                                        <option value="">Pilih Tanggal Mulai</option>
-                                        <?php foreach ($startDateOptions as $value => $label): ?>
-                                            <option value="<?= $value ?>"><?= $label ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                    <small class="text-muted">
-                                        <i class="bi bi-info-circle me-1"></i>
-                                        Kelas dimulai pada tanggal 10 setiap bulan. Jika tanggal 10 jatuh pada akhir pekan, kelas akan dimulai pada Senin berikutnya.
-                                    </small>
-                                `;
+                                startDateSection.innerHTML = buildDropdown();
                             } else {
-                                // Show regular datepicker with backwards date disabled
-                                startDateSection.innerHTML = `
-                                    <label for="start_date" class="form-label">Tanggal Mulai Dimulai</label>
-                                    <input type="date" class="form-control" id="start_date" name="start_date" 
-                                        min="<?= date('Y-m-d') ?>">
-                                    <small class="text-muted">
-                                        <i class="bi bi-info-circle me-1"></i>
-                                        Pilih tanggal mulai kursus. Tanggal lampau tidak diperbolehkan.
-                                    </small>
-                                `;
+                                startDateSection.innerHTML = buildDatepicker();
                             }
                         });
-                        
-                        // Also check initial selection on page load (for pre-selected program)
-                        const initialSelectedOption = courseSelect.options[courseSelect.selectedIndex];
-                        if (initialSelectedOption) {
-                            const initialCategory = initialSelectedOption.getAttribute('data-category');
-                            if (initialCategory && initialCategory !== 'Paket') {
-                                // For non-Paket pre-selected, convert dropdown to datepicker
-                                startDateSection.innerHTML = `
-                                    <label for="start_date" class="form-label">Tanggal Mulai Dimulai</label>
-                                    <input type="date" class="form-control" id="start_date" name="start_date" 
-                                        min="<?= date('Y-m-d') ?>">
-                                    <small class="text-muted">
-                                        <i class="bi bi-info-circle me-1"></i>
-                                        Pilih tanggal mulai kursus. Tanggal lampau tidak diperbolehkan.
-                                    </small>
-                                `;
-                            }
-                        }
                     }
                 });
                 </script>

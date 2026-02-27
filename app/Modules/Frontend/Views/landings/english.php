@@ -874,7 +874,7 @@ $ogImage = 'https://images.pexels.com/photos/1546973/pexels-photo-1546973.jpeg?a
 <div class="container py-5">
     <div class="text-center mb-5">
         <h2 class="display-5 fw-bold mb-3" style="color: #0d6efd;">Mengapa Belajar Bahasa Inggris?</h2>
-        <p class="lead text-muted">Bahasa Inggris adalah bahasa internasional yang打开通往 dunia的大门。</p>
+        <p class="lead text-muted">Bahasa Inggris adalah bahasa internasional yang paling luas digunakan di seluruh dunia。</p>
     </div>
 
     <div class="row g-4 justify-content-center text-center">
