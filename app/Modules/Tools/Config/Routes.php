@@ -5,5 +5,7 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('tools/api-tester', 'Tools\ToolsController::apiTester');
-$routes->get('tools', 'Tools\ToolsController::index');
+$routes->group('tools', ['namespace' => 'Modules\Tools\Controllers'], function($routes) {
+    $routes->get('/', 'ToolsController::index');
+    $routes->get('api-tester', 'ToolsController::apiTester');
+});
