@@ -288,6 +288,7 @@ class PageController extends BaseController
                 'status' => 'pending',
                 'application_date' => date('Y-m-d'),
                 'applicant_notes' => $this->request->getPost('notes'),
+                'start_date' => $this->request->getPost('start_date'),
             ];
 
             $admissionId = $admissionModel->insert($admissionData);
