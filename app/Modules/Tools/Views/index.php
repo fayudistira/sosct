@@ -18,7 +18,7 @@
         // Check permission
         $hasAccess = true;
         if (!empty($tool['permission'])) {
-            $hasAccess = $user->can($tool['permission']);
+            $hasAccess = $user && $user->can($tool['permission']);
         }
         ?>
         <?php if ($hasAccess): ?>
@@ -70,7 +70,7 @@
                     </div>
                     <div class="col-4">
                         <div class="h4 mb-0 text-success">
-                            <?= count(array_filter($tools, fn($t) => empty($t['permission']) || $user->can($t['permission']))) ?>
+                            <?= count(array_filter($tools, fn($t) => empty($t['permission']) || ($user && $user->can($t['permission'])))) ?>
                         </div>
                         <small class="text-muted">Accessible</small>
                     </div>
