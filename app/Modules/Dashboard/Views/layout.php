@@ -35,10 +35,10 @@
                             if (empty($item['permission'])) {
                                 // No permission required
                                 $hasPermission = true;
-                            } elseif (is_string($item['permission'])) {
+                            } elseif ($user && is_string($item['permission'])) {
                                 // Single permission
                                 $hasPermission = $user->can($item['permission']);
-                            } elseif (is_array($item['permission'])) {
+                            } elseif ($user && is_array($item['permission'])) {
                                 // Multiple permissions (any)
                                 foreach ($item['permission'] as $permission) {
                                     if ($user->can($permission)) {
