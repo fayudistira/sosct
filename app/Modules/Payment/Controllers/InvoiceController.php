@@ -487,6 +487,7 @@ class InvoiceController extends BaseController
                 profiles.phone,
                 programs.title as program_title,
                 programs.category,
+                programs.language,
                 programs.tuition_fee,
                 programs.registration_fee as program_registration_fee
             ')
@@ -558,6 +559,7 @@ class InvoiceController extends BaseController
                 profiles.phone,
                 programs.title as program_title,
                 programs.category,
+                programs.language,
                 programs.tuition_fee,
                 programs.registration_fee as program_registration_fee
             ')

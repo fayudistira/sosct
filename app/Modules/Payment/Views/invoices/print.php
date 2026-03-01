@@ -603,14 +603,14 @@
         <!-- Action Buttons -->
         <div class="action-buttons no-print">
             <?php
-            // Determine WhatsApp number based on language/category
-            $category = strtolower(trim($student['category'] ?? ''));
+            // Determine WhatsApp number based on language from Programs table
+            $language = strtolower(trim($student['language'] ?? ''));
             
-            if ($category === 'chinese') {
+            if ($language === 'chinese' || $language === 'mandarin') {
                 // Mandarin/Chinese - send to +62 822-4078-1299
                 $waNumber = '6282240781299';
                 $waDisplay = '0822 4078 1299';
-            } elseif ($category === 'japanese') {
+            } elseif ($language === 'japanese') {
                 // Japanese - send to +62 856-0745-4939
                 $waNumber = '6285607454939';
                 $waDisplay = '0856 0745 4939';
