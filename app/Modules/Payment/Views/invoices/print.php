@@ -603,7 +603,22 @@
         <!-- Action Buttons -->
         <div class="action-buttons no-print">
             <?php
-            $waNumber = '6285810310950';
+            // Determine WhatsApp number based on language/category
+            $category = strtolower(trim($student['category'] ?? ''));
+            
+            if ($category === 'chinese') {
+                // Mandarin/Chinese - send to +62 822-4078-1299
+                $waNumber = '6282240781299';
+                $waDisplay = '0822 4078 1299';
+            } elseif ($category === 'japanese') {
+                // Japanese - send to +62 856-0745-4939
+                $waNumber = '6285607454939';
+                $waDisplay = '0856 0745 4939';
+            } else {
+                // All other languages - send to +62 858-1031-0950
+                $waNumber = '6285810310950';
+                $waDisplay = '0858 1031 0950';
+            }
             
             // Build comprehensive WhatsApp message with registration details
             $message = "Halo Admin SOS Course & Training,\n\n";
@@ -668,7 +683,7 @@
             $waUrl = "https://wa.me/" . $waNumber . "?text=" . urlencode($message);
             ?>
             <a href="<?= $waUrl ?>" target="_blank" class="btn-action btn-whatsapp">
-                <i class="bi bi-whatsapp"></i> Konfirmasi : 0858 1031 0950
+                <i class="bi bi-whatsapp"></i> Konfirmasi : <?= $waDisplay ?>
             </a>
         </div>
 
