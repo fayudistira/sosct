@@ -1,0 +1,364 @@
+<!-- Terms Modal -->
+    <div class="terms-modal" id="termsModal">
+      <div class="terms-modal-content">
+        <div class="terms-modal-header">
+          <h2>Syarat dan Ketentuan</h2>
+          <button class="terms-modal-close" id="termsModalClose">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="terms-modal-body">
+          <h3>1. Pendaftaran</h3>
+          <p>
+            Pendaftaran kursus di Xihuan Mandarin Indonesia bersifat online
+            melalui formulir pendaftaran yang tersedia. Calon siswa wajib
+            mengisi formulir dengan data yang benar dan lengkap.
+          </p>
+          <hr />
+          <h3>2. Pembayaran</h3>
+          <ul>
+            <li>
+              Pembayaran biaya pendaftaran harus dilakukan setelah mengisi
+              formulir pendaftaran.
+            </li>
+            <li>
+              Pembayaran dapat dilakukan melalui transfer bank ke rekening yang
+              telah ditentukan.
+            </li>
+            <li>
+              Bukti pembayaran <strong>WAJIB</strong> dikirimkan melalui
+              WhatsApp kepada admin.
+            </li>
+            <li>
+              Admin akan memberikan Kuitansi Pembayaran setelah pembayaran
+              <strong>Terkonfirmasi</strong> dan dianggap sah.
+            </li>
+            <li>
+              Pembayaran tidak dapat dikembalikan (non-refundable) dengan alasan
+              apapun.
+            </li>
+          </ul>
+          <hr />
+          <h4>2.1 Prosedur Pembayaran Kelas Paket 3 Bulan</h4>
+          <ul>
+            <li>
+              Biaya Pendaftaran sebesar
+              <strong>Rp. 500.000,-</strong> dibayarkan setelah填写 Formulir
+              Pendaftaran
+            </li>
+            <li>
+              Pembayaran program dapat dilakukan sebelum pembelajaran dimulai.
+            </li>
+            <li>
+              Pembayaran dapat dilakukan dengan cicilan 2 tahap sebagai berikut:
+              <ul>
+                <li>
+                  Pembayaran <strong>Tahap 1 : Rp. 4.000.000,-</strong>
+                  dibayarkan ketika check-in asrama
+                </li>
+                <li>
+                  Pembayaran
+                  <strong>Tahap 2 (Pelunasan) : Rp. 3.999.000,-</strong>
+                  dibayarkan sebelum memasuki bulan ke-2
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <hr />
+          <h4>2.2 Prosedur Pembayaran Kelas Paket 5 Bulan</h4>
+          <ul>
+            <li>
+              Biaya Pendaftaran sebesar <strong>Rp. 500.000,-</strong>
+              dibayarkan setelah填写 Formulir Pendaftaran
+            </li>
+            <li>
+              Pembayaran program dapat dilakukan sebelum pembelajaran dimulai.
+            </li>
+            <li>
+              Pembayaran dapat dilakukan dengan cicilan 3 tahap sebagai berikut:
+              <ul>
+                <li>
+                  Pembayaran <strong>Tahap 1 : Rp. 4.000.000,-</strong>
+                  dibayarkan ketika check in asrama
+                </li>
+                <li>
+                  Pembayaran <strong>Tahap 2 : Rp. 4.000.000,-</strong>
+                  dibayarkan sebelum memasuki bulan ke-2
+                </li>
+                <li>
+                  Pembayaran
+                  <strong>Tahap 3 (Pelunasan) : Rp. 3.999.000,-</strong>
+                  dibayarkan sebelum memasuki bulan ke-3
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <hr />
+          <h4>2.3 Prosedur Pembayaran Kelas Paket 7 Bulan</h4>
+          <ul>
+            <li>
+              Biaya Pendaftaran sebesar <strong>Rp. 500.000,-</strong>
+              ketika填写 Formulir Pendaftaran
+            </li>
+            <li>
+              Pembayaran program dapat dilakukan sebelum pembelajaran dimulai.
+            </li>
+            <li>
+              Pembayaran dapat dilakukan dengan cicilan 3 tahap sebagai berikut:
+            </li>
+            <ul>
+              <li>
+                Pembayaran <strong>Tahap 1 : Rp 6.000.000,-</strong>
+                dibayarkan ketika check in asrama
+              </li>
+              <li>
+                Pembayaran <strong>Tahap 2 : Rp. 5.000.000,-</strong>
+                dibayarkan sebelum memasuki bulan ke-2
+              </li>
+              <li>
+                Pembayaran
+                <strong>Tahap 3 (Pelunasan): Rp. 4.999.000,-</strong>
+                dibayarkan sebelum memasuki bulan ke-3
+              </li>
+            </ul>
+          </ul>
+          <hr />
+          <h4>2.3 Prosedur Pembayaran Kelas Paket 9 Bulan (Gap Year)</h4>
+          <ul>
+            <li>
+              Biaya Pendaftaran sebesar <strong>Rp. 500.000,-</strong>
+              ketika填写 Formulir Pendaftaran
+            </li>
+            <li>Total biaya program sebesar <strong>Rp 19.500.000.</strong></li>
+            <li>
+              Pembayaran program dapat dilakukan sebelum pembelajaran dimulai.
+            </li>
+            <li>
+              Pembayaran dapat dilakukan dengan cicilan 3 tahap sebagai berikut:
+            </li>
+            <ul>
+              <li>
+                Pembayaran <strong>Tahap 1 : Rp 7.000.000</strong> Dibayarkan
+                saat check-in asrama / sebelum kelas dimulai
+              </li>
+              <li>
+                Pembayaran <strong>Tahap 2 : Rp. 6.500.000,-</strong> dibayarkan
+                sebelum memasuki bulan ke-2
+              </li>
+              <li>
+                Pembayaran
+                <strong>Tahap 3 (Pelunasan): Rp. 6.000.000,-</strong> dibayarkan
+                sebelum memasuki bulan ke-3
+              </li>
+            </ul>
+          </ul>
+          <hr />
+          <h4>
+            2.4 Prosedur Pembayaran Rombongan diberikan secara 2 (Dua) Tahap.
+          </h4>
+          <ul>
+            <li>
+              Tahap I sebesar 50% dari jumlah Nominal yang tertera dikali jumlah
+              peserta kursus yang didaftarkan. Jika jumlah peserta adalah 20
+              orang, silahkan melakukan pembayaran sebanyak 10 orang dan
+              menyertakan kode unik sebagai tanda pengenal pembayaran
+              masing-masing peserta.
+            </li>
+            <li>
+              Pembayaran Tahap I, dibayarkan 30 (Tiga Puluh) Hari sebelum
+              Tanggal Pelaksanaan Kursus. Tahap II 50% berikutnya dibayarkan
+              setibanya peserta kursus di Kampung Inggris Pare.
+            </li>
+            <li>
+              Kwitansi dan Invoice akan dikirimkan ke alamat Email valid salah
+              satu Penanggung Jawab / Perwakilan Rombongan yang bersangkutan.
+            </li>
+          </ul>
+          <hr />
+          <h4>2.5 Prosedur Pembayaran Reguler</h4>
+          <p>
+            Jika siswa mendaftar lebih dari satu program dengan biaya langsung
+            lunas diawal (contoh: ambil program hsk 2 dan 3 secara bersamaan,
+            maka siswa hanya dikenakan biaya registrasi 1x saja)
+          </p>
+          <hr />
+          <h3>3. Condition of Implementation | Ketentuan Pelaksanaan</h3>
+          <ul>
+            <li>
+              Kursus dimulai setiap tanggal 10 setiap bulan sepanjang tahun.
+              Jika pada tanggal tersebut jatuh pada hari Sabtu, Minggu, atau
+              Hari Libur maka akan dimajukan/disesuaikan. Khusus untuk kelas
+              reguler kuota minimal 3 orang, sehingga pembelajaran akan dimulai
+              setelah ada minimal 3 orang pendaftar. Tanggal 10 dikenal dengan
+              nama PERIODE.
+            </li>
+            <li>
+              Khusus bagi Anda yang melakukan request untuk kursus di Luar
+              Periode tanggal 10 silahkan menghubungi admin kami. Aturan ini
+              berlaku untuk pdaftar Perseorangan maupun Kolektif.
+            </li>
+            <li>
+              Bagi siswa yg ingin melakukan garansi (mengulang kelas) tidak
+              dikenakan biaya apapun kecuali biaya asrama per bulan 500k
+            </li>
+            <li>
+              jika siswa ingin melanjutkan program offline ke level lebih tinggi
+              /selanjutnya, maka akan di kenakan biaya registrasi ulang sebesar
+              500k
+            </li>
+          </ul>
+          <hr />
+          <h3>4. Ketentuan Pembatalan dan Perubahan Program</h3>
+          <h4>4.A. PEMBATALAN KURSUS:</h4>
+          <ul>
+            <li>
+              Konfirmasi Pembatalan Kursus wajib disampaikan maksimal 5 HARI
+              sebelum pelaksanaan tanggal kursus.
+            </li>
+            <li>
+              Konsekuensi dari pembatalan sesuai poin 1 adalah biaya pendaftaran
+              hangus.
+            </li>
+            <li>
+              Pengembalian biaya (Refund) hanya dapat dilakukan apabila
+              pembelajaran belum dimulai/dilaksanakan.
+            </li>
+            <li>
+              Pengembalian biaya paling lambat 2 Minggu setelah siswa melakukan
+              pengajuan pembatalan.
+            </li>
+          </ul>
+          <hr />
+          <h4>4.B. PERUBAHAN PROGRAM</h4>
+          <ul>
+            <li>
+              Perubahan program dapat dilakukan maksimal sebelum check-in
+              asrama/sebelum program pembelajaran dimulai.
+            </li>
+            <li>
+              Perubahan program paket hanya bisa dilakukan ke program paket lain
+              dan tidak bisa ke program per level / reguler.
+            </li>
+            <li>
+              Ketika siswa mengganti program paket ke program paket yang
+              berdurasi lebih pendek, maka biaya yang telah masuk bisa di refund
+              50% dari sisa biaya paket yang dipilih.
+            </li>
+            <li>
+              Apabila perubahan dilakukan setelah program dimulai, siswa wajib
+              melakukan registrasi ulang sebesar Rp 500.000,-.
+            </li>
+            <li>Ketentuan Refund TIDAK berlaku untuk program paket.</li>
+            <li>
+              Apabila pembelajaran telah dimulai, biaya yang sudah masuk tidak
+              dapat ditarik kembali dengan alasan apapun.
+            </li>
+            <li>
+              Perubahan paket kursus SETELAH KURSUS BERJALAN tidak akan kami
+              proses, dan menyebabkan dana yang telah masuk HANGUS jika anda
+              tidak mengikuti paket kursus yang telah anda pesan.
+            </li>
+          </ul>
+          <hr />
+          <h3>5. Term of Warranty | Ketentuan Garansi</h3>
+          <p>
+            Garansi diberikan untuk Program Paket dengan target yang sudah
+            ditentukan sebelumnya. Pelaksanaan garansi dengan cara siswa yang
+            mendapatkan garansi mengikuti pembelajaran program yang berjalan
+            yang sama dengan program yang siswa ambil dengan tanpa tambahan
+            biaya program, hanya harus membayar asrama saja.
+          </p>
+          <p>
+            Contoh: "Clara mengikuti program Paket 7 bulan Bahasa Mandarin pada
+            periode 10 Januari 2021 dan selesai pada 9 Agustus 2021, tetapi
+            Clara merasa belum mencapai target meskipun dia sudah belajar dengan
+            keras selama 7 bulan. Maka Clara berhak mengikuti pembelajaran
+            program Paket 7 bulan Bahasa Mandarin pada periode berikutnya."
+          </p>
+          <ol>
+            <li>Ketentuan</li>
+            <ul>
+              <li>Garansi tidak terpaut jangka waktu.</li>
+              <li>
+                Garansi dilaksanakan dengan mengikuti program yang sama yang
+                akan/sedang berjalan diperiode berikutnya.
+              </li>
+              <li>
+                Peserta garansi diwajibkan registrasi asrama/camp dan tidak
+                diperbolehkan tinggal diluar asrama.
+              </li>
+            </ul>
+            <li>Persyaratan klaim garansi</li>
+            <ul>
+              <li>
+                Siswa patuh dengan semua aturan yang sudah ditetapkan Lembaga.
+              </li>
+              <li>Siswa aktif dalam kelas pembelajaran.</li>
+              <li>Selalu mengerjakan tugas sesuai ketentuan pengajar.</li>
+            </ul>
+            <li>Garansi tidak berlaku bila:</li>
+            <ul>
+              <li>Siswa tidak patuh dengan aturan Lembaga.</li>
+              <li>Siswa malas belajar.</li>
+              <li>
+                Siswa membuat kesepakatan tersendiri dengan guru untuk merubah
+                target dan metode pembelajaran.
+              </li>
+              <li>
+                Siswa tidak mengerjakan tugas lebih dari 3 kali dalam sebulan.
+              </li>
+              <li>
+                Absen (tidak masuk) siswa lebih dari 3 kali Pertemuan (untuk
+                durasi paket 1 bulan), 9 kali Pertemuan (untuk durasi paket 3
+                bulan), 12 kali Pertemuan (untuk durasi paket 5 bulan), 15 kali
+                Pertemuan (untuk durasi paket 7 bulan).
+              </li>
+            </ul>
+            <li>Pencabutan garansi</li>
+            <p>
+              Pencabutan garansi dapat dilakukan sepihak oleh Lembaga apabila
+              Siswa melakukan hal yang menyebabkan garansi tidak berlaku (poin
+              3) ketika menjalani pembelajaran di periode garansi.
+            </p>
+          </ol>
+          <hr />
+          <h3>6. Privasi Data</h3>
+          <p>
+            Data pribadi siswa akan dijaga kerahasiaannya dan hanya digunakan
+            untuk keperluan administrasi internal Xihuan Mandarin Indonesia.
+          </p>
+          <hr />
+          <h3>7. Lain-lain</h3>
+          <ul>
+            <li>
+              Xihuan Mandarin Indonesia berhak mengubah syarat dan ketentuan
+              sewaktu-waktu dengan memberitahukan terlebih dahulu.
+            </li>
+            <li>
+              Hal-hal yang belum diatur dalam syarat dan ketentuan ini akan
+              ditentukan kemudian oleh pihak Xihuan Mandarin Indonesia.
+            </li>
+          </ul>
+          <hr />
+          <p>
+            Untuk informasi lebih lanjut, silakan hubungi admin Xihuan Mandarin
+            Indonesia.
+          </p>
+        </div>
+
+        <!-- Footer dengan Checkbox dan Tombol -->
+        <div class="terms-modal-footer">
+          <div class="terms-modal-checkbox">
+            <input type="checkbox" id="termsAgreeCheckbox" />
+            <label for="termsAgreeCheckbox">
+              Saya telah membaca, memahami, dan menyetujui seluruh Syarat dan
+              Ketentuan di atas
+            </label>
+          </div>
+          <button class="send-btn" id="acceptTermsBtn" disabled>
+            <i class="fas fa-check-circle"></i> Setuju & Lanjutkan ke
+            Pendaftaran
+          </button>
+        </div>
+      </div>
+    </div>
