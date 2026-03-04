@@ -6,10 +6,12 @@
 <style>
 .wysiwyg-editor {
     border: 1px solid #ced4da;
-    border-radius: 0.375rem;
+    border-radius: 0 0 0.375rem 0.375rem;
     min-height: 400px;
+    max-height: 500px;
     padding: 1rem;
     background: #fff;
+    overflow-y: auto;
 }
 
 .wysiwyg-editor:focus {
