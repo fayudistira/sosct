@@ -1,18 +1,25 @@
-<?= $this->extend('Modules\Dashboard\Views\layout') ?>
+<?= $this->extend('Modules\Frontend\Views\layout') ?>
 
 <?= $this->section('content') ?>
+
 <!-- Page Header -->
-<div class="row mb-4">
-    <div class="col">
-        <h4 class="fw-bold">Create New Terms & Conditions</h4>
-        <p class="text-muted mb-0">Add terms and conditions for a specific language</p>
-    </div>
-    <div class="col-auto">
-        <a href="<?= base_url('settings/terms') ?>" class="btn btn-outline-dark-red">
-            <i class="bi bi-arrow-left me-1"></i> Back to Terms List
-        </a>
+<div class="hero-section py-4" style="background: linear-gradient(135deg, #8B0000 0%, #a52a2a 100%);">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col">
+                <h4 class="fw-bold mb-1" style="color: white;">Create New Terms & Conditions</h4>
+                <p class="mb-0" style="color: rgba(255,255,255,0.8);">Add terms and conditions for a specific language</p>
+            </div>
+            <div class="col-auto">
+                <a href="<?= base_url('settings/terms') ?>" class="btn btn-light">
+                    <i class="bi bi-arrow-left me-1"></i> Back to Terms List
+                </a>
+            </div>
+        </div>
     </div>
 </div>
+
+<div class="container py-4">
 
 <!-- Error Messages -->
 <?php if (session('errors')): ?>
@@ -30,11 +37,6 @@
 
 <!-- Create Form -->
 <form action="<?= base_url('settings/terms/store') ?>" method="post">
-    <?= csrf_field() ?>
-
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card mb-4">
                 <div class="card-header">
                     <i class="bi bi-file-text me-2"></i>Terms Content
                 </div>
@@ -72,7 +74,7 @@
         </div>
 
         <div class="col-md-4">
-            <div class="card mb-4">
+            <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header">
                     <i class="bi bi-gear me-2"></i>Settings
                 </div>

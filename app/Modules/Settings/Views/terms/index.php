@@ -1,22 +1,28 @@
-<?= $this->extend('Modules\Dashboard\Views\layout') ?>
+<?= $this->extend('Modules\Frontend\Views\layout') ?>
 
 <?= $this->section('content') ?>
+
 <!-- Page Header -->
-<div class="row mb-4">
-    <div class="col">
-        <h4 class="fw-bold">Terms & Conditions</h4>
-        <p class="text-muted mb-0">Manage terms and conditions for different languages</p>
-    </div>
-    <div class="col-auto">
-        <a href="<?= base_url('settings/terms/create') ?>" class="btn btn-dark-red">
-            <i class="bi bi-plus-lg me-1"></i> Add New Terms
-        </a>
-        <a href="<?= base_url('settings') ?>" class="btn btn-outline-dark-red">
-            <i class="bi bi-arrow-left me-1"></i> Back to Settings
-        </a>
+<div class="hero-section py-4" style="background: linear-gradient(135deg, #8B0000 0%, #a52a2a 100%);">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col">
+                <h4 class="fw-bold mb-1" style="color: white;">Terms & Conditions</h4>
+                <p class="mb-0" style="color: rgba(255,255,255,0.8);">Manage terms and conditions for different languages</p>
+            </div>
+            <div class="col-auto">
+                <a href="<?= base_url('settings/terms/create') ?>" class="btn btn-light">
+                    <i class="bi bi-plus-lg me-1"></i> Add New Terms
+                </a>
+                <a href="<?= base_url('settings') ?>" class="btn btn-outline-light">
+                    <i class="bi bi-arrow-left me-1"></i> Back
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 
+<div class="container py-4">
 <!-- Success/Error Messages -->
 <?php if (session('success')): ?>
     <div class="alert alert-success alert-dismissible fade show">
@@ -35,7 +41,7 @@
 <?php endif; ?>
 
 <!-- Terms List -->
-<div class="card">
+<div class="card border-0 shadow-sm">
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-hover">
@@ -110,11 +116,12 @@
         </div>
     </div>
 </div>
+</div>
 
 <!-- Info Card -->
 <div class="row mt-4">
     <div class="col-md-12">
-        <div class="card bg-light">
+        <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
             <div class="card-body">
                 <h6><i class="bi bi-info-circle me-2"></i>How it works</h6>
                 <ul class="mb-0 text-muted">

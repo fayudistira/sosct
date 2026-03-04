@@ -1,7 +1,25 @@
-<?= $this->extend('Modules\Dashboard\Views\layout') ?>
+<?= $this->extend('Modules\Frontend\Views\layout') ?>
 
 <?= $this->section('content') ?>
+
 <!-- Page Header -->
+<div class="hero-section py-4" style="background: linear-gradient(135deg, #8B0000 0%, #a52a2a 100%);">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col">
+                <h4 class="fw-bold mb-1" style="color: white;">Edit Terms & Conditions</h4>
+                <p class="mb-0" style="color: rgba(255,255,255,0.8);">Update terms for <?= esc($term['language']) ?></p>
+            </div>
+            <div class="col-auto">
+                <a href="<?= base_url('settings/terms') ?>" class="btn btn-light">
+                    <i class="bi bi-arrow-left me-1"></i> Back to Terms List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-4">
 <div class="row mb-4">
     <div class="col">
         <h4 class="fw-bold">Edit Terms & Conditions</h4>
@@ -34,7 +52,7 @@
 
     <div class="row">
         <div class="col-md-8">
-            <div class="card mb-4">
+            <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header">
                     <i class="bi bi-file-text me-2"></i>Terms Content
                 </div>
@@ -71,7 +89,7 @@
         </div>
 
         <div class="col-md-4">
-            <div class="card mb-4">
+            <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header">
                     <i class="bi bi-gear me-2"></i>Settings
                 </div>
@@ -103,7 +121,7 @@
             </div>
 
             <!-- Info Card -->
-            <div class="card mt-3">
+            <div class="card border-0 shadow-sm mt-3">
                 <div class="card-body">
                     <h6><i class="bi bi-info-circle me-2"></i>Info</h6>
                     <small class="text-muted">

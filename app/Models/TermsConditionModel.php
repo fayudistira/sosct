@@ -86,9 +86,10 @@ class TermsConditionModel extends Model
     {
         $db = \Config\Database::connect();
         return $db->table('programs')
-                  ->select('DISTINCT language')
+                  ->select('language')
                   ->where('language IS NOT NULL')
                   ->where('language !=', '')
+                  ->groupBy('language')
                   ->orderBy('language', 'ASC')
                   ->get()
                   ->getResultArray();
