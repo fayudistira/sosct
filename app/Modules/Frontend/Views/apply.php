@@ -50,60 +50,88 @@ document.addEventListener('DOMContentLoaded',function(){
         r=document.getElementById('applicationFormContent'),
         s=document.getElementById('termsModalTitle'),
         a=document.getElementById('termsModalBody'),
-        c={};
+        c={},
+        initialLang='';
     
-    var l='';
+    // Get initial language from selected program (PHP variable)
     <?php if(isset($selectedProgram)&&$selectedProgram):?>
-    l='<?=esc($selectedProgram['language']??'')?>';
+    initialLang='<?=esc($selectedProgram['language']??'')?>';
     <?php endif;?>
+    
+    // Function to display terms for a given language
+    function displayTerms(lang) {
+        var langKey = lang ? lang.toLowerCase() : '';
+        console.log('displayTerms called with:', lang, '-> key:', langKey);
+        console.log('Available terms:', c);
+        
+        // Try exact match first
+        if(langKey && c[langKey]){
+            s.textContent=c[langKey].title;
+            a.innerHTML=c[langKey].content;
+            return true;
+        }
+        
+        // If no match, show first available or default message
+        var keys = Object.keys(c);
+        if(keys.length > 0){
+            s.textContent=c[keys[0]].title;
+            a.innerHTML=c[keys[0]].content;
+        }else{
+            s.textContent='Syarat dan Ketentuan';
+            a.innerHTML='<div class="no-terms-warning"><i class="bi bi-exclamation-triangle"></i> Syarat dan ketentuan belum tersedia.</div>';
+        }
+        return false;
+    }
     
     // Fetch terms from API
     fetch('<?= base_url('settings/api/terms') ?>')
         .then(function(response){return response.json();})
         .then(function(data){
+            console.log('Terms API response:', data);
             if(data.success && data.data){
                 data.data.forEach(function(term){
-                    c[term.language]={
+                    // Store with lowercase key for case-insensitive matching
+                    var langKey = term.language.toLowerCase();
+                    c[langKey]={
                         id:term.id,
                         title:term.title,
-                        content:term.content
+                        content:term.content,
+                        originalLanguage:term.language
                     };
+                    console.log('Added term for:', term.language, 'key:', langKey);
                 });
             }
-            // Initialize with default or selected program language
-            if(l&&c[l]){
-                s.textContent=c[l].title;
-                a.innerHTML=c[l].content;
-            }else if(Object.keys(c).length > 0){
-                // Use first available language
-                var firstLang=Object.keys(c)[0];
-                s.textContent=c[firstLang].title;
-                a.innerHTML=c[firstLang].content;
-            }else{
-                s.textContent='Syarat dan Ketentuan';
-                a.innerHTML='<div class="no-terms-warning"><i class="bi bi-exclamation-triangle"></i> Syarat dan ketentuan belum tersedia.</div>';
+            
+            // Display terms after data is loaded
+            // First try initialLang from PHP, then try selected course dropdown
+            var d=document.getElementById('course');
+            var selectedLang = '';
+            
+            if(initialLang){
+                selectedLang = initialLang;
+            }else if(d && d.value && d.options[d.selectedIndex]){
+                selectedLang = d.options[d.selectedIndex].dataset.language || '';
             }
+            
+            displayTerms(selectedLang);
         })
-        .catch(function(){
+        .catch(function(err){
+            console.error('Failed to load terms:', err);
             s.textContent='Syarat dan Ketentuan';
             a.innerHTML='<div class="no-terms-warning"><i class="bi bi-exclamation-triangle"></i> Gagal memuat syarat dan ketentuan.</div>';
         });
     
-    function i(e){
-        if(c&&c[e]){
-            s.textContent=c[e].title;
-            a.innerHTML=c[e].content;
-            return true;
-        }
-        s.textContent='Syarat dan Ketentuan';
-        a.innerHTML='<div class="no-terms-warning"><i class="bi bi-exclamation-triangle"></i> Syarat dan ketentuan belum tersedia.</div>';
-        return false;
-    }
-    
+    // Handle course selection change
     var d=document.getElementById('course');
-    if(d&&d.value&&d.options[d.selectedIndex]){
-        l=d.options[d.selectedIndex].dataset.language||'';
-        l&&i(l);
+    if(d){
+        d.addEventListener('change',function(){
+            var lang=this.options[this.selectedIndex].dataset.language||'';
+            console.log('Course changed to:', lang);
+            displayTerms(lang);
+            // Reset checkbox
+            e.checked=false;
+            n.disabled=true;
+        });
     }
     
     e.addEventListener('change',function(){
@@ -128,18 +156,6 @@ document.addEventListener('DOMContentLoaded',function(){
             alert('Anda harus menyetujui syarat dan ketentuan.');
         }
     });
-    
-    if(d){
-        d.addEventListener('change',function(){
-            var lang=this.options[this.selectedIndex].dataset.language||'';
-            if(lang&&lang!==l){
-                l=lang;
-                i(l);
-                e.checked=false;
-                n.disabled=true;
-            }
-        });
-    }
 });
 </script>
 <!-- Page Header -->
