@@ -114,4 +114,23 @@ class ToolsController extends BaseController
             'menuItems' => $menuItems
         ]);
     }
+    
+    /**
+     * Hanzi Flashcard page
+     * 
+     * @return string
+     */
+    public function hanzi(): string
+    {
+        $user = auth()->user();
+        
+        // Get menu items from all modules
+        $menuItems = $this->loadModuleMenus();
+        
+        return view('Modules\Tools\Hanzi\Views\index', [
+            'title' => 'Hanzi Flashcard',
+            'user' => $user,
+            'menuItems' => $menuItems
+        ]);
+    }
 }
