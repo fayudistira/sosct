@@ -353,8 +353,9 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container">
-            <a class="navbar-brand" href="<?= base_url('/') ?>">
-                <i class="bi bi-mortarboard me-2"></i>SOS Course
+            <a class="navbar-brand d-flex align-items-center" href="<?= base_url('/') ?>">
+                <img src="<?= base_url('assets/images/sos-logo.png') ?>" alt="SOS Course" height="36" class="me-2" style="filter: invert(1);">
+                <span class="d-none d-lg-inline" style="font-size: 1.1rem; font-weight: 600; white-space: nowrap; color: white;">SOS Course & Training</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border-color: rgba(255,255,255,0.5);">
                 <span class="navbar-toggler-icon" style="filter: invert(1);"></span>

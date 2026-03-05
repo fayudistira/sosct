@@ -1359,4 +1359,45 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<!-- Coming Soon Popup -->
+<div class="coming-soon-popup position-fixed bottom-0 end-0 m-4 p-4 rounded-3 shadow-lg bg-white z-index-9999" style="max-width: 320px; animation: slideInUp 0.5s ease-out;">
+    <button type="button" class="btn-close position-absolute top-0 end-0 m-2" onclick="this.parentElement.style.display='none'" aria-label="Close"></button>
+    <div class="d-flex align-items-center gap-3">
+        <div class="flex-shrink-0">
+            <span style="font-size: 2.5rem;">📝</span>
+        </div>
+        <div class="flex-grow-1">
+            <h6 class="fw-bold mb-1" style="color: var(--dark-red);">Simulasi Ujian HSK!</h6>
+            <p class="small mb-0 text-muted">Coming Soon!</p>
+        </div>
+    </div>
+</div>
+
+<style>
+@keyframes slideInUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+.coming-soon-popup {
+    animation: slideInUp 0.5s ease-out, pulse 2s infinite;
+}
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(139, 0, 0, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(139, 0, 0, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(139, 0, 0, 0);
+    }
+}
+</style>
+
 <?= $this->endSection() ?>
