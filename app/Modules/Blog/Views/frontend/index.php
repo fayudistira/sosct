@@ -48,7 +48,7 @@
         <!-- Main Content -->
         <div class="col-lg-8">
             <!-- Featured Posts -->
-            <?php if (!empty($featuredPosts) && config('Blog')->enableFeaturedPosts): ?>
+            <?php if (!empty($featuredPosts) && (config('Blog')->enableFeaturedPosts ?? true)): ?>
             <div class="row mb-5">
                 <div class="col-12">
                     <h4 class="mb-4"><i class="bi bi-star-fill text-warning me-2"></i>Featured Articles</h4>

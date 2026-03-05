@@ -65,11 +65,11 @@ class CategoryController extends BaseController
 
         $data = [
             'name' => $this->request->getPost('name'),
-            'slug' => $this->request->getPost('slug') ?? '',
-            'description' => $this->request->getPost('description'),
-            'image' => $this->request->getPost('image'),
-            'parent_id' => $this->request->getPost('parent_id') ?: null,
-            'display_order' => $this->request->getPost('display_order') ?: 0,
+            'slug' => $this->request->getPost('slug') ?: '',
+            'description' => $this->request->getPost('description') ?: '',
+            'image' => $this->request->getPost('image') ?: '',
+            'parent_id' => !empty($this->request->getPost('parent_id')) ? (int) $this->request->getPost('parent_id') : null,
+            'display_order' => (int) $this->request->getPost('display_order') ?: 0,
             'is_active' => $this->request->getPost('is_active') ? 1 : 1,
         ];
 
@@ -139,11 +139,11 @@ class CategoryController extends BaseController
 
         $data = [
             'name' => $this->request->getPost('name'),
-            'slug' => $this->request->getPost('slug') ?? '',
-            'description' => $this->request->getPost('description'),
-            'image' => $this->request->getPost('image'),
-            'parent_id' => $parentId ?: null,
-            'display_order' => $this->request->getPost('display_order') ?: 0,
+            'slug' => $this->request->getPost('slug') ?: '',
+            'description' => $this->request->getPost('description') ?: '',
+            'image' => $this->request->getPost('image') ?: '',
+            'parent_id' => !empty($parentId) ? (int) $parentId : null,
+            'display_order' => (int) $this->request->getPost('display_order') ?: 0,
             'is_active' => $this->request->getPost('is_active') ? 1 : 0,
         ];
 

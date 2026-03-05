@@ -160,17 +160,52 @@ class BlogPostModel extends Model
     /**
      * Get single post by slug
      */
-    public function getPostBySlug(string $slug)
+    public function getPostBySlug(string $slug, bool $publishedOnly = true)
     {
+        // First, get the basic post without joins to check existence
+        $post = $this->where('slug', $slug)->first();
+        
+        if (!$post) {
+            return null;
+        }
+        
+        // Check published status
+        if ($publishedOnly) {
+            if (!$post['is_published']) {
+                return null;
+            }
+            if (strtotime($post['published_at']) > time()) {
+                return null;
+            }
+        }
+        
+        // Now get full data with joins
         return $this->select('blog_posts.*, 
             users.username as author_name,
-            users.email as author_email,
+            auth_identities.secret as author_email,
             blog_categories.name as category_name,
             blog_categories.slug as category_slug')
             ->join('users', 'users.id = blog_posts.author_id', 'left')
+            ->join('auth_identities', 'auth_identities.user_id = users.id AND auth_identities.type = \'email\'', 'left')
             ->join('blog_categories', 'blog_categories.id = blog_posts.category_id', 'left')
             ->where('blog_posts.slug', $slug)
-            ->published()
+            ->first();
+    }
+    
+    /**
+     * Get single post by ID
+     */
+    public function getPostById(int $id)
+    {
+        return $this->select('blog_posts.*, 
+            users.username as author_name,
+            auth_identities.secret as author_email,
+            blog_categories.name as category_name,
+            blog_categories.slug as category_slug')
+            ->join('users', 'users.id = blog_posts.author_id', 'left')
+            ->join('auth_identities', 'auth_identities.user_id = users.id AND auth_identities.type = \'email\'', 'left')
+            ->join('blog_categories', 'blog_categories.id = blog_posts.category_id', 'left')
+            ->where('blog_posts.id', $id)
             ->first();
     }
 
@@ -284,7 +319,7 @@ class BlogPostModel extends Model
     /**
      * Get related posts
      */
-    public function getRelatedPosts(int $postId, int $categoryId = null, int $limit = 3)
+    public function getRelatedPosts(int $postId, ?int $categoryId = null, int $limit = 3)
     {
         $builder = $this->select('blog_posts.id, blog_posts.title, blog_posts.slug, 
             blog_posts.excerpt, blog_posts.featured_image, blog_posts.published_at,

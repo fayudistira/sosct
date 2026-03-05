@@ -36,7 +36,6 @@ class BlogCategoryModel extends Model
 
     protected array $casts = [
         'id' => 'int',
-        'parent_id' => 'int',
         'display_order' => 'int',
         'is_active' => 'bool',
     ];
@@ -176,7 +175,7 @@ class BlogCategoryModel extends Model
     /**
      * Build category tree from flat array
      */
-    protected function buildTree(array $categories, int $parentId = null): array
+    protected function buildTree(array $categories, ?int $parentId = null): array
     {
         $tree = [];
         

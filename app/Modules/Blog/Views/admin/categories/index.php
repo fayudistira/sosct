@@ -1,6 +1,30 @@
-<?= $this->extend('Modules\Dashboard\Views\layout') ?>
+<?= $this->extend('Modules\Blog\Views\admin\layout') ?>
 
 <?= $this->section('content') ?>
+<?= $this->section('breadcrumb') ?>
+<li class="breadcrumb-item active">Categories</li>
+<?= $this->endSection() ?>
+
+<!-- Success Message -->
+<?php if (session('success')): ?>
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle me-2"></i>
+        <?= session('success') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
+
+<!-- Error Message -->
+<?php if (session('error')): ?>
+    <div class="alert alert-danger alert-dismissible fade show">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <?= session('error') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
+<?= $this->section('breadcrumb') ?>
+<li class="breadcrumb-item active">Categories</li>
+<?= $this->endSection() ?>
 
 <div class="row mb-4">
     <div class="col">

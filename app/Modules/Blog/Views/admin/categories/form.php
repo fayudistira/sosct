@@ -1,6 +1,40 @@
-<?= $this->extend('Modules\Dashboard\Views\layout') ?>
+<?= $this->extend('Modules\Blog\Views\admin\layout') ?>
 
 <?= $this->section('content') ?>
+<?= $this->section('breadcrumb') ?>
+<li class="breadcrumb-item active"><?= isset($category) ? 'Edit Category' : 'New Category' ?></li>
+<?= $this->endSection() ?>
+
+<!-- Success Message -->
+<?php if (session('success')): ?>
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle me-2"></i>
+        <?= session('success') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
+
+<!-- Error Messages -->
+<?php if (session('error')): ?>
+    <div class="alert alert-danger alert-dismissible fade show">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <?= session('error') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
+
+<?php if (session('errors')): ?>
+    <div class="alert alert-danger alert-dismissible fade show">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <strong>Validation Errors:</strong>
+        <ul class="mb-0 mt-2">
+            <?php foreach (session('errors') as $error): ?>
+                <li><?= esc($error) ?></li>
+            <?php endforeach; ?>
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
 
 <div class="row mb-4">
     <div class="col">
@@ -67,7 +101,7 @@
                                 <?php foreach ($categories as $cat): ?>
                                     <?php if (!isset($category) || $category['id'] !== $cat['id']): ?>
                                         <option value="<?= $cat['id'] ?>" 
-                                                <?= (isset($category) && ($category['parent_id'] ?? null) == $cat['id']) ? 'selected' : '' ?>>
+                                                <?= (isset($category) && $category['parent_id'] == $cat['id']) ? 'selected' : '' ?>>
                                             <?= esc($cat['name']) ?>
                                         </option>
                                     <?php endif; ?>

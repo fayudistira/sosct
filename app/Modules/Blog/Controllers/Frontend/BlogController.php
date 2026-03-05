@@ -60,11 +60,15 @@ class BlogController extends Controller
      */
     public function post(string $slug)
     {
-        $post = $this->postModel->getPostBySlug($slug);
+        // First check if post exists with simple query
+        $post = $this->postModel->where('slug', $slug)->first();
         
         if (!$post) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound('Blog post not found');
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound('Blog post not found: ' . $slug);
         }
+        
+        // Get full post data with joins
+        $post = $this->postModel->getPostBySlug($slug, false);
 
         // Increment view count
         $this->postModel->incrementViewCount($post['id']);
