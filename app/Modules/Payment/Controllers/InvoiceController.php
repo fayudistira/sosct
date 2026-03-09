@@ -19,6 +19,31 @@ class InvoiceController extends BaseController
     }
 
     /**
+     * Generate WhatsApp URL for invoice confirmation
+     */
+    protected function generateWhatsAppUrl($invoice, $student)
+    {
+        $waNumber = '6289509778659';
+        $message = "Hello Admin, I have completed my registration payment.\n\n";
+        
+        if ($student) {
+            $message .= "Registration No: " . ($student['registration_number'] ?? '-') . "\n";
+            $message .= "Name: " . ($student['full_name'] ?? '-') . "\n";
+            $message .= "Program: " . ($student['program_title'] ?? '-') . "\n";
+            $message .= "Invoice No: " . ($invoice['invoice_number'] ?? '-') . "\n";
+            $message .= "Amount: Rp " . number_format($invoice['amount'] ?? 0, 0, ',', '.') . "\n";
+            $message .= "Phone: " . ($student['phone'] ?? '-') . "\n";
+            $message .= "Email: " . ($student['email'] ?? '-') . "\n\n";
+        } else {
+            $message .= "Registration No: " . ($invoice['registration_number'] ?? '-') . "\n\n";
+        }
+        
+        $message .= "Please help me to confirm my payment. Thank you!";
+        
+        return "https://wa.me/" . $waNumber . "?text=" . urlencode($message);
+    }
+
+    /**
      * Display list of invoices
      */
     public function index()
@@ -526,7 +551,8 @@ class InvoiceController extends BaseController
             'student' => $student,
             'installment' => $installment,
             'invoiceHistory' => $invoiceHistory,
-            'totalPaid' => $totalPaid
+            'totalPaid' => $totalPaid,
+            'waUrl' => $this->generateWhatsAppUrl($invoice, $student)
         ]);
     }
 
@@ -603,7 +629,8 @@ class InvoiceController extends BaseController
             'student' => $student,
             'installment' => $installment,
             'invoiceHistory' => $invoiceHistory,
-            'totalPaid' => $totalPaid
+            'totalPaid' => $totalPaid,
+            'waUrl' => $this->generateWhatsAppUrl($invoice, $student)
         ]);
     }
 

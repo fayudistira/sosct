@@ -1,0 +1,1331 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
+    />
+    <title>HSK 1 Flashcard • TTS Otomatis (Mandarin)</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", "Segoe UI", Roboto, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(145deg, #f8f0e7 0%, #f2e3d5 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 12px;
+      }
+
+      .app-container {
+        max-width: 600px;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(8px);
+        border-radius: 40px 40px 32px 32px;
+        box-shadow:
+          0 20px 40px rgba(0, 0, 0, 0.15),
+          0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 20px 16px 24px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 16px;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, #b43b3b, #6d2e2e);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: 1px;
+      }
+
+      .header p {
+        color: #5f4e3c;
+        font-weight: 300;
+        font-size: 0.95rem;
+        background: rgba(255, 245, 235, 0.8);
+        display: inline-block;
+        padding: 4px 16px;
+        border-radius: 40px;
+        backdrop-filter: blur(4px);
+        margin-top: 6px;
+        border: 1px solid #e9d9cb;
+      }
+
+      /* FLASHCARD */
+      .card-wrapper {
+        margin: 8px 0 16px;
+        cursor: pointer;
+      }
+
+      .flip-container {
+        perspective: 1500px;
+        width: 100%;
+        min-height: 280px;
+      }
+
+      .flip-card {
+        position: relative;
+        width: 100%;
+        min-height: 280px;
+        transition: transform 0.4s ease-in-out;
+        transform-style: preserve-3d;
+        border-radius: 28px;
+        box-shadow: 0 12px 24px -8px rgba(80, 50, 30, 0.3);
+      }
+
+      .flip-card.flipped {
+        transform: rotateY(180deg);
+      }
+
+      .card-front,
+      .card-back {
+        position: absolute;
+        width: 100%;
+        min-height: 280px;
+        backface-visibility: hidden;
+        border-radius: 28px;
+        padding: 20px 16px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: #ffffffdd;
+        backdrop-filter: blur(12px);
+        border: 2px solid rgba(255, 240, 230, 0.9);
+        box-shadow:
+          inset 0 2px 8px rgba(255, 255, 255, 0.8),
+          0 8px 18px rgba(100, 60, 30, 0.15);
+      }
+
+      .card-front {
+        background: linear-gradient(125deg, #fff9f2, #fff1e6);
+      }
+
+      .card-back {
+        background: linear-gradient(125deg, #f5efe9, #faeadc);
+        transform: rotateY(180deg);
+      }
+
+      .hanzi {
+        font-size: 7rem;
+        font-weight: 400;
+        line-height: 1.1;
+        margin-bottom: 8px;
+        text-shadow:
+          2px 2px 0 #ffe3d0,
+          4px 4px 0 rgba(180, 100, 50, 0.1);
+        color: #3e2c1a;
+      }
+
+      .pinyin {
+        font-size: 2.2rem;
+        font-weight: 400;
+        color: #b45f3a;
+        background: #f5e1d4;
+        padding: 6px 24px;
+        border-radius: 60px;
+        letter-spacing: 1px;
+        margin-bottom: 12px;
+        border: 1px solid #eccbb8;
+      }
+
+      .arti {
+        font-size: 1.5rem;
+        font-weight: 400;
+        color: #2b4b3b;
+        background: #dff0e6;
+        padding: 8px 20px;
+        border-radius: 40px;
+        border: 1px solid #b8d9cc;
+        margin: 6px 0;
+        text-align: center;
+        width: 100%;
+      }
+
+      .arti-eng {
+        font-size: 1.4rem;
+        background: #e3dac9;
+        color: #4f4232;
+        border-color: #c8b59c;
+      }
+
+      .label-badge {
+        align-self: flex-start;
+        font-size: 0.85rem;
+        color: #886e54;
+        background: #ece1d6;
+        padding: 4px 12px;
+        border-radius: 30px;
+        margin-bottom: 6px;
+        font-weight: 300;
+        border: 1px solid #dacbbc;
+      }
+
+      .hint-text {
+        font-size: 1rem;
+        color: #9b7a62;
+        margin-top: 6px;
+        background: rgba(230, 210, 190, 0.3);
+        padding: 4px 12px;
+        border-radius: 40px;
+      }
+
+      /* info bar */
+      .info-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f2e3d8c9;
+        backdrop-filter: blur(8px);
+        padding: 10px 16px;
+        border-radius: 60px;
+        margin: 16px 0 14px;
+        border: 1px solid #edd7c9;
+      }
+
+      .card-counter {
+        background: #a77b5b;
+        color: white;
+        padding: 5px 18px;
+        border-radius: 40px;
+        font-weight: 500;
+        font-size: 1rem;
+        box-shadow: inset 0 -2px 0 #5e3e2b;
+      }
+
+      .mode-indicator {
+        background: #c9ad97;
+        color: #2d1f14;
+        padding: 4px 16px;
+        border-radius: 30px;
+        font-size: 0.85rem;
+        font-weight: 400;
+      }
+
+      .nav-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 6px;
+      }
+
+      .btn {
+        background: white;
+        border: none;
+        padding: 12px 16px;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #4d3b2a;
+        box-shadow:
+          0 4px 0 #cbad93,
+          0 6px 12px rgba(110, 70, 40, 0.2);
+        transition: 0.1s ease-out;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        cursor: pointer;
+        border: 2px solid #ffeede;
+        flex: 1 0 auto;
+        min-width: 100px;
+      }
+
+      .btn:active {
+        transform: translateY(4px);
+        box-shadow:
+          0 2px 0 #cbad93,
+          0 4px 8px rgba(110, 70, 40, 0.15);
+      }
+
+      .btn:disabled {
+        opacity: 0.4;
+        transform: translateY(0);
+        box-shadow: 0 3px 0 #b39b86;
+        pointer-events: none;
+      }
+
+      .btn-flip {
+        background: #b3d9c0;
+        color: #1b4e3a;
+        box-shadow: 0 4px 0 #6f9a81;
+      }
+
+      .btn-shuffle {
+        background: #f3d8bf;
+        color: #7b4d2e;
+        box-shadow: 0 4px 0 #c9a27e;
+      }
+
+      .btn-reset {
+        background: #cfb7aa;
+        color: #3f2d1f;
+        box-shadow: 0 4px 0 #9d8472;
+      }
+
+      .btn-sound {
+        background: #d4c0ae;
+        color: #3f2d1f;
+        box-shadow: 0 4px 0 #a48d78;
+      }
+
+      .footer-note {
+        text-align: center;
+        margin-top: 22px;
+        color: #7c6050;
+        font-size: 0.9rem;
+        font-weight: 300;
+        border-top: 1px dashed #dac1af;
+        padding-top: 14px;
+      }
+
+      .footer-note span {
+        font-weight: 500;
+        background: #f2d5c0;
+        padding: 2px 10px;
+        border-radius: 30px;
+      }
+
+      /* penyesuaian mobile ekstra */
+      @media (max-width: 500px) {
+        .app-container {
+          padding: 16px 12px 20px;
+        }
+        .hanzi {
+          font-size: 5.5rem;
+        }
+        .pinyin {
+          font-size: 1.8rem;
+        }
+        .arti {
+          font-size: 1.2rem;
+        }
+        .btn {
+          min-width: 70px;
+          padding: 10px 10px;
+          font-size: 1rem;
+        }
+        .header h1 {
+          font-size: 1.8rem;
+        }
+        .flip-container,
+        .flip-card,
+        .card-front,
+        .card-back {
+          min-height: 250px;
+        }
+        .card-front,
+        .card-back {
+          padding: 16px 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <div class="header">
+        <h1>📇 HSK 1 · 闪卡</h1>
+        <p>150 kosakata · tebak bunyi + TTS otomatis</p>
+      </div>
+
+      <!-- Flashcard area -->
+      <div class="card-wrapper" id="cardWrapper">
+        <div class="flip-container">
+          <div class="flip-card" id="flipCard">
+            <!-- SISI DEPAN (HANZI SAJA) -->
+            <div class="card-front">
+              <span class="label-badge">🇨🇳 Hanzi</span>
+              <div class="hanzi" id="hanziFront">爱</div>
+              <div class="hint-text">👆 klik / balik</div>
+            </div>
+            <!-- SISI BELAKANG (Pinyin + Arti) -->
+            <div class="card-back">
+              <span class="label-badge">🔤 Pinyin & Arti</span>
+              <div class="pinyin" id="pinyinBack">ài</div>
+              <div class="arti" id="artiIndo">menyukai; mencintai</div>
+              <div class="arti arti-eng" id="artiEng">love</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info & counter -->
+      <div class="info-bar">
+        <div class="card-counter" id="cardCounter">1 / 150</div>
+        <div class="mode-indicator" id="modeIndicator">📖 urut asli</div>
+      </div>
+
+      <!-- Navigation buttons (dengan tombol suara manual opsional) -->
+      <div class="nav-buttons">
+        <button class="btn" id="prevBtn" title="Sebelumnya">◀ Sebelum</button>
+        <button class="btn btn-flip" id="flipBtn" title="Balik kartu">
+          🔄 Balik
+        </button>
+        <button class="btn" id="nextBtn" title="Selanjutnya">Berikut ▶</button>
+        <button class="btn btn-shuffle" id="shuffleBtn" title="Acak kartu">
+          🎲 Acak
+        </button>
+        <button
+          class="btn btn-reset"
+          id="resetBtn"
+          title="Kembali ke urutan awal"
+        >
+          ⟲ Reset
+        </button>
+      </div>
+
+      <div class="footer-note">
+        <span>📌 150 HSK 1</span> · setiap kartu baru otomatis bersuara · 加油
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        // --------------------------------------------------------------
+        // DATA FLASHCARD (sama persis dengan artikel)
+        // --------------------------------------------------------------
+        const originalFlashcards = [
+          {
+            hanzi: "爱",
+            pinyin: "ài",
+            english: "love",
+            indonesia: "menyukai; mencintai",
+          },
+          { hanzi: "八", pinyin: "bā", english: "eight", indonesia: "delapan" },
+          {
+            hanzi: "爸爸",
+            pinyin: "bà ba",
+            english: "dad",
+            indonesia: "ayah; bapak",
+          },
+          {
+            hanzi: "杯子",
+            pinyin: "bēi zi",
+            english: "cup; glass",
+            indonesia: "cangkir; gelas",
+          },
+          {
+            hanzi: "北京",
+            pinyin: "běi jīng",
+            english: "Beijing",
+            indonesia: "Beijing",
+          },
+          {
+            hanzi: "本",
+            pinyin: "běn",
+            english: "measure word for books",
+            indonesia: "kata satuan untuk buku",
+          },
+          {
+            hanzi: "不",
+            pinyin: "bù",
+            english: "no; not",
+            indonesia: "tidak; bukan",
+          },
+          {
+            hanzi: "不客气",
+            pinyin: "bú kè qi",
+            english: "you're welcome; don't be polite",
+            indonesia: "tidak usah sungkan",
+          },
+          {
+            hanzi: "菜",
+            pinyin: "cài",
+            english: "dish (type of food); vegetables",
+            indonesia: "masakan; sayuran",
+          },
+          { hanzi: "茶", pinyin: "chá", english: "tea", indonesia: "teh" },
+          { hanzi: "吃", pinyin: "chī", english: "eat", indonesia: "makan" },
+          {
+            hanzi: "出租车",
+            pinyin: "chū zū chē",
+            english: "taxi; cab",
+            indonesia: "taksi",
+          },
+          {
+            hanzi: "打电话",
+            pinyin: "dǎ diàn huà",
+            english: "make a phone call",
+            indonesia: "menelepon",
+          },
+          {
+            hanzi: "大",
+            pinyin: "dà",
+            english: "big; large",
+            indonesia: "besar; tua (umur)",
+          },
+          {
+            hanzi: "的",
+            pinyin: "de",
+            english: "indicates possession",
+            indonesia: "milik (setelah atribut)",
+          },
+          {
+            hanzi: "点",
+            pinyin: "diǎn",
+            english: "a dot; a little; o'clock",
+            indonesia: "kata satuan untuk jam",
+          },
+          {
+            hanzi: "电脑",
+            pinyin: "diàn nǎo",
+            english: "computer",
+            indonesia: "komputer",
+          },
+          {
+            hanzi: "电视",
+            pinyin: "diàn shì",
+            english: "television; TV",
+            indonesia: "televisi",
+          },
+          {
+            hanzi: "电影",
+            pinyin: "diàn yǐng",
+            english: "movie; film",
+            indonesia: "film",
+          },
+          {
+            hanzi: "东西",
+            pinyin: "dōng xi",
+            english: "things; stuff",
+            indonesia: "benda; barang",
+          },
+          {
+            hanzi: "都",
+            pinyin: "dōu",
+            english: "all; both",
+            indonesia: "semua",
+          },
+          {
+            hanzi: "读",
+            pinyin: "dú",
+            english: "to read; to study",
+            indonesia: "membaca",
+          },
+          {
+            hanzi: "对不起",
+            pinyin: "duì bu qǐ",
+            english: "sorry",
+            indonesia: "maaf",
+          },
+          {
+            hanzi: "多",
+            pinyin: "duō",
+            english: "many",
+            indonesia: "banyak; seberapa (pertanyaan)",
+          },
+          {
+            hanzi: "多少",
+            pinyin: "duō shao",
+            english: "how much?; how many?",
+            indonesia: "berapa banyak (pertanyaan)",
+          },
+          {
+            hanzi: "儿子",
+            pinyin: "ér zi",
+            english: "son",
+            indonesia: "anak laki-laki",
+          },
+          { hanzi: "二", pinyin: "èr", english: "two", indonesia: "dua" },
+          {
+            hanzi: "饭店",
+            pinyin: "fàn diàn",
+            english: "restaurant; hotel",
+            indonesia: "restoran; hotel",
+          },
+          {
+            hanzi: "飞机",
+            pinyin: "fēi jī",
+            english: "airplane",
+            indonesia: "pesawat",
+          },
+          {
+            hanzi: "分钟",
+            pinyin: "fēn zhōng",
+            english: "minute",
+            indonesia: "menit",
+          },
+          {
+            hanzi: "高兴",
+            pinyin: "gāo xìng",
+            english: "happy; glad",
+            indonesia: "senang; gembira",
+          },
+          {
+            hanzi: "个",
+            pinyin: "gè",
+            english: "general measure word",
+            indonesia: "sebuah (kata satuan benda)",
+          },
+          {
+            hanzi: "工作",
+            pinyin: "gōng zuò",
+            english: "work; a job",
+            indonesia: "pekerjaan; bekerja",
+          },
+          { hanzi: "狗", pinyin: "gǒu", english: "dog", indonesia: "anjing" },
+          {
+            hanzi: "汉语",
+            pinyin: "hàn yǔ",
+            english: "Chinese language",
+            indonesia: "Bahasa Mandarin",
+          },
+          {
+            hanzi: "好",
+            pinyin: "hǎo",
+            english: "good",
+            indonesia: "bagus; baik",
+          },
+          {
+            hanzi: "号",
+            pinyin: "hào",
+            english: "number; day of a month",
+            indonesia: "tanggal; nomor",
+          },
+          {
+            hanzi: "喝",
+            pinyin: "hē",
+            english: "to drink",
+            indonesia: "minum",
+          },
+          {
+            hanzi: "和",
+            pinyin: "hé",
+            english: "and; with",
+            indonesia: "dan; dengan",
+          },
+          {
+            hanzi: "很",
+            pinyin: "hěn",
+            english: "very; quite",
+            indonesia: "sangat",
+          },
+          {
+            hanzi: "后面",
+            pinyin: "hòu miàn",
+            english: "back; behind",
+            indonesia: "belakang",
+          },
+          {
+            hanzi: "回",
+            pinyin: "huí",
+            english: "to return; to go back",
+            indonesia: "pulang; kembali",
+          },
+          {
+            hanzi: "会",
+            pinyin: "huì",
+            english: "know how to",
+            indonesia: "bisa; mampu",
+          },
+          {
+            hanzi: "几",
+            pinyin: "jǐ",
+            english: "how many; several",
+            indonesia: "berapa",
+          },
+          {
+            hanzi: "家",
+            pinyin: "jiā",
+            english: "family; home",
+            indonesia: "keluarga; rumah",
+          },
+          {
+            hanzi: "叫",
+            pinyin: "jiào",
+            english: "to be called",
+            indonesia: "dipanggil; memanggil",
+          },
+          {
+            hanzi: "今天",
+            pinyin: "jīn tiān",
+            english: "today",
+            indonesia: "hari ini",
+          },
+          {
+            hanzi: "九",
+            pinyin: "jiǔ",
+            english: "nine",
+            indonesia: "sembilan",
+          },
+          {
+            hanzi: "开",
+            pinyin: "kāi",
+            english: "to open; to start; to operate",
+            indonesia: "membuka; mengemudi",
+          },
+          {
+            hanzi: "看",
+            pinyin: "kàn",
+            english: "see; look at; to watch",
+            indonesia: "melihat; membaca",
+          },
+          {
+            hanzi: "看见",
+            pinyin: "kàn jiàn",
+            english: "see; catch sight of",
+            indonesia: "lihat; kelihatan",
+          },
+          {
+            hanzi: "块",
+            pinyin: "kuài",
+            english: "piece; sum of money",
+            indonesia: "RMB; yuan (mata uang)",
+          },
+          {
+            hanzi: "来",
+            pinyin: "lái",
+            english: "come; arrive",
+            indonesia: "datang",
+          },
+          {
+            hanzi: "老师",
+            pinyin: "lǎo shī",
+            english: "teacher",
+            indonesia: "guru",
+          },
+          {
+            hanzi: "了",
+            pinyin: "le",
+            english: "indicates completed action",
+            indonesia: "sudah",
+          },
+          { hanzi: "冷", pinyin: "lěng", english: "cold", indonesia: "dingin" },
+          { hanzi: "里", pinyin: "lǐ", english: "inside", indonesia: "dalam" },
+          { hanzi: "六", pinyin: "liù", english: "six", indonesia: "enam" },
+          {
+            hanzi: "妈妈",
+            pinyin: "mā ma",
+            english: "mom; mum",
+            indonesia: "ibu",
+          },
+          {
+            hanzi: "吗",
+            pinyin: "ma",
+            english: "yes/no question particle",
+            indonesia: "(kata tanya)",
+          },
+          {
+            hanzi: "买",
+            pinyin: "mǎi",
+            english: "to buy",
+            indonesia: "membeli",
+          },
+          { hanzi: "猫", pinyin: "māo", english: "cat", indonesia: "kucing" },
+          {
+            hanzi: "没关系",
+            pinyin: "méi guān xi",
+            english: "never mind",
+            indonesia: "tidak masalah",
+          },
+          {
+            hanzi: "没有",
+            pinyin: "méi yǒu",
+            english: "not have; there is not",
+            indonesia: "tidak ada; tidak punya",
+          },
+          {
+            hanzi: "米饭",
+            pinyin: "mǐ fàn",
+            english: "(cooked) rice",
+            indonesia: "nasi",
+          },
+          {
+            hanzi: "明天",
+            pinyin: "míng tiān",
+            english: "tomorrow",
+            indonesia: "besok",
+          },
+          {
+            hanzi: "名字",
+            pinyin: "míng zi",
+            english: "name",
+            indonesia: "nama",
+          },
+          {
+            hanzi: "哪",
+            pinyin: "nǎ",
+            english: "which; how",
+            indonesia: "yang mana",
+          },
+          {
+            hanzi: "哪儿",
+            pinyin: "nǎ r",
+            english: "where?",
+            indonesia: "dimana",
+          },
+          {
+            hanzi: "那",
+            pinyin: "nà",
+            english: "that; then",
+            indonesia: "itu",
+          },
+          {
+            hanzi: "呢",
+            pinyin: "ne",
+            english: "question particle for context",
+            indonesia: "bagaimana dengan...",
+          },
+          {
+            hanzi: "能",
+            pinyin: "néng",
+            english: "can; be able",
+            indonesia: "boleh",
+          },
+          {
+            hanzi: "你",
+            pinyin: "nǐ",
+            english: "you (singular)",
+            indonesia: "kamu",
+          },
+          { hanzi: "年", pinyin: "nián", english: "year", indonesia: "tahun" },
+          {
+            hanzi: "女儿",
+            pinyin: "nǚ ér",
+            english: "daughter",
+            indonesia: "anak perempuan",
+          },
+          {
+            hanzi: "朋友",
+            pinyin: "péng you",
+            english: "friend",
+            indonesia: "teman",
+          },
+          {
+            hanzi: "漂亮",
+            pinyin: "piào liang",
+            english: "pretty; beautiful",
+            indonesia: "cantik; indah",
+          },
+          {
+            hanzi: "苹果",
+            pinyin: "píng guǒ",
+            english: "apple",
+            indonesia: "apel",
+          },
+          { hanzi: "七", pinyin: "qī", english: "seven", indonesia: "tujuh" },
+          { hanzi: "钱", pinyin: "qián", english: "money", indonesia: "uang" },
+          {
+            hanzi: "前面",
+            pinyin: "qián miàn",
+            english: "in front",
+            indonesia: "depan",
+          },
+          {
+            hanzi: "请",
+            pinyin: "qǐng",
+            english: "please; invite",
+            indonesia: "silahkan; mohon",
+          },
+          {
+            hanzi: "去",
+            pinyin: "qù",
+            english: "go; to leave",
+            indonesia: "pergi",
+          },
+          {
+            hanzi: "热",
+            pinyin: "rè",
+            english: "heat; hot",
+            indonesia: "panas",
+          },
+          {
+            hanzi: "人",
+            pinyin: "rén",
+            english: "person; people",
+            indonesia: "orang",
+          },
+          {
+            hanzi: "认识",
+            pinyin: "rèn shi",
+            english: "recognize; know (a person)",
+            indonesia: "mengenal",
+          },
+          { hanzi: "三", pinyin: "sān", english: "three", indonesia: "tiga" },
+          {
+            hanzi: "商店",
+            pinyin: "shāng diàn",
+            english: "shop; store",
+            indonesia: "toko",
+          },
+          {
+            hanzi: "上",
+            pinyin: "shàng",
+            english: "above; up",
+            indonesia: "atas",
+          },
+          {
+            hanzi: "上午",
+            pinyin: "shàng wǔ",
+            english: "morning",
+            indonesia: "pagi",
+          },
+          {
+            hanzi: "少",
+            pinyin: "shǎo",
+            english: "few; little",
+            indonesia: "sedikit",
+          },
+          { hanzi: "谁", pinyin: "shéi", english: "who", indonesia: "siapa" },
+          {
+            hanzi: "什么",
+            pinyin: "shén me",
+            english: "what?",
+            indonesia: "apa",
+          },
+          { hanzi: "十", pinyin: "shí", english: "ten", indonesia: "sepuluh" },
+          {
+            hanzi: "时候",
+            pinyin: "shí hòu",
+            english: "time",
+            indonesia: "waktu; saat",
+          },
+          {
+            hanzi: "是",
+            pinyin: "shì",
+            english: "be; is; are; am",
+            indonesia: "adalah; ya",
+          },
+          { hanzi: "书", pinyin: "shū", english: "book", indonesia: "buku" },
+          { hanzi: "水", pinyin: "shuǐ", english: "water", indonesia: "air" },
+          {
+            hanzi: "水果",
+            pinyin: "shuǐ guǒ",
+            english: "fruit",
+            indonesia: "buah-buahan",
+          },
+          {
+            hanzi: "睡觉",
+            pinyin: "shuì jiào",
+            english: "to sleep; go to bed",
+            indonesia: "tidur",
+          },
+          {
+            hanzi: "说",
+            pinyin: "shuō",
+            english: "speak",
+            indonesia: "bicara",
+          },
+          { hanzi: "四", pinyin: "sì", english: "four", indonesia: "empat" },
+          {
+            hanzi: "岁",
+            pinyin: "suì",
+            english: "years old",
+            indonesia: "tahun (satuan umur)",
+          },
+          {
+            hanzi: "他",
+            pinyin: "tā",
+            english: "he; him",
+            indonesia: "dia (laki-laki)",
+          },
+          {
+            hanzi: "她",
+            pinyin: "tā",
+            english: "she",
+            indonesia: "dia (perempuan)",
+          },
+          {
+            hanzi: "太",
+            pinyin: "tài",
+            english: "too (much)",
+            indonesia: "terlalu; sangat",
+          },
+          {
+            hanzi: "天气",
+            pinyin: "tiān qì",
+            english: "weather",
+            indonesia: "cuaca",
+          },
+          {
+            hanzi: "听",
+            pinyin: "tīng",
+            english: "listen; hear",
+            indonesia: "mendengarkan",
+          },
+          {
+            hanzi: "同学",
+            pinyin: "tóng xué",
+            english: "schoolmate",
+            indonesia: "teman sekelas",
+          },
+          {
+            hanzi: "喂",
+            pinyin: "wèi",
+            english: "hello (on phone)",
+            indonesia: "halo (dalam telepon)",
+          },
+          { hanzi: "我", pinyin: "wǒ", english: "I; me", indonesia: "saya" },
+          {
+            hanzi: "我们",
+            pinyin: "wǒ men",
+            english: "we; us",
+            indonesia: "kami",
+          },
+          { hanzi: "五", pinyin: "wǔ", english: "five", indonesia: "lima" },
+          {
+            hanzi: "喜欢",
+            pinyin: "xǐ huān",
+            english: "to like",
+            indonesia: "suka; senang",
+          },
+          {
+            hanzi: "下",
+            pinyin: "xià",
+            english: "below; down",
+            indonesia: "bawah",
+          },
+          {
+            hanzi: "下午",
+            pinyin: "xià wǔ",
+            english: "afternoon",
+            indonesia: "sore",
+          },
+          {
+            hanzi: "下雨",
+            pinyin: "xià yǔ",
+            english: "to rain",
+            indonesia: "hujan",
+          },
+          {
+            hanzi: "先生",
+            pinyin: "xiān shēng",
+            english: "Mr.; Sir",
+            indonesia: "tuan; bapak",
+          },
+          {
+            hanzi: "现在",
+            pinyin: "xiàn zài",
+            english: "now",
+            indonesia: "sekarang; saat ini",
+          },
+          {
+            hanzi: "想",
+            pinyin: "xiǎng",
+            english: "think; would like to",
+            indonesia: "ingin",
+          },
+          {
+            hanzi: "小",
+            pinyin: "xiǎo",
+            english: "small; young",
+            indonesia: "kecil",
+          },
+          {
+            hanzi: "小姐",
+            pinyin: "xiǎo jiě",
+            english: "miss; young lady",
+            indonesia: "nona",
+          },
+          {
+            hanzi: "些",
+            pinyin: "xiē",
+            english: "some; few",
+            indonesia: "beberapa",
+          },
+          {
+            hanzi: "写",
+            pinyin: "xiě",
+            english: "to write",
+            indonesia: "menulis",
+          },
+          {
+            hanzi: "谢谢",
+            pinyin: "xiè xie",
+            english: "thank you",
+            indonesia: "terima kasih",
+          },
+          {
+            hanzi: "星期",
+            pinyin: "xīng qī",
+            english: "week",
+            indonesia: "minggu",
+          },
+          {
+            hanzi: "学生",
+            pinyin: "xué shēng",
+            english: "student",
+            indonesia: "murid",
+          },
+          {
+            hanzi: "学习",
+            pinyin: "xué xí",
+            english: "learn; to study",
+            indonesia: "belajar",
+          },
+          {
+            hanzi: "学校",
+            pinyin: "xué xiào",
+            english: "school",
+            indonesia: "sekolah",
+          },
+          { hanzi: "一", pinyin: "yī", english: "one; a", indonesia: "satu" },
+          {
+            hanzi: "一点儿",
+            pinyin: "yì diǎn r",
+            english: "a bit",
+            indonesia: "sedikit; beberapa",
+          },
+          {
+            hanzi: "衣服",
+            pinyin: "yī fu",
+            english: "clothes",
+            indonesia: "pakaian",
+          },
+          {
+            hanzi: "医生",
+            pinyin: "yī shēng",
+            english: "doctor",
+            indonesia: "dokter",
+          },
+          {
+            hanzi: "医院",
+            pinyin: "yī yuàn",
+            english: "hospital",
+            indonesia: "rumah sakit",
+          },
+          {
+            hanzi: "椅子",
+            pinyin: "yǐ zi",
+            english: "chair",
+            indonesia: "kursi",
+          },
+          {
+            hanzi: "有",
+            pinyin: "yǒu",
+            english: "have",
+            indonesia: "memiliki; mempunyai",
+          },
+          {
+            hanzi: "月",
+            pinyin: "yuè",
+            english: "moon; month",
+            indonesia: "bulan",
+          },
+          {
+            hanzi: "在",
+            pinyin: "zài",
+            english: "at; on; in; (action in progress)",
+            indonesia: "di; sedang",
+          },
+          {
+            hanzi: "再见",
+            pinyin: "zài jiàn",
+            english: "goodbye",
+            indonesia: "sampai jumpa",
+          },
+          {
+            hanzi: "怎么",
+            pinyin: "zěn me",
+            english: "how?",
+            indonesia: "bagaimana caranya",
+          },
+          {
+            hanzi: "怎么样",
+            pinyin: "zěn me yàng",
+            english: "how is it?",
+            indonesia: "bagaimana?",
+          },
+          { hanzi: "这", pinyin: "zhè", english: "this", indonesia: "ini" },
+          {
+            hanzi: "中国",
+            pinyin: "zhōng guó",
+            english: "China",
+            indonesia: "Tiongkok",
+          },
+          {
+            hanzi: "中午",
+            pinyin: "zhōng wǔ",
+            english: "noon; midday",
+            indonesia: "siang hari",
+          },
+          {
+            hanzi: "住",
+            pinyin: "zhù",
+            english: "to live; reside",
+            indonesia: "tinggal",
+          },
+          {
+            hanzi: "桌子",
+            pinyin: "zhuō zi",
+            english: "table; desk",
+            indonesia: "meja",
+          },
+          {
+            hanzi: "字",
+            pinyin: "zì",
+            english: "letter; character",
+            indonesia: "huruf",
+          },
+          {
+            hanzi: "昨天",
+            pinyin: "zuó tiān",
+            english: "yesterday",
+            indonesia: "kemarin",
+          },
+          {
+            hanzi: "做",
+            pinyin: "zuò",
+            english: "do; make",
+            indonesia: "membuat",
+          },
+          { hanzi: "坐", pinyin: "zuò", english: "sit", indonesia: "duduk" },
+        ];
+
+        // --- state ---
+        let currentList = originalFlashcards.slice();
+        let currentIndex = 0;
+        let isFlipped = false;
+        let lastSpokenHanzi = ""; // untuk menghindari pengulangan suara saat flip
+
+        // --- elemen DOM ---
+        const flipCardEl = document.getElementById("flipCard");
+        const hanziFront = document.getElementById("hanziFront");
+        const pinyinBack = document.getElementById("pinyinBack");
+        const artiIndo = document.getElementById("artiIndo");
+        const artiEng = document.getElementById("artiEng");
+        const cardCounter = document.getElementById("cardCounter");
+        const modeIndicator = document.getElementById("modeIndicator");
+
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const flipBtn = document.getElementById("flipBtn");
+        const shuffleBtn = document.getElementById("shuffleBtn");
+        const resetBtn = document.getElementById("resetBtn");
+
+        // --- Fungsi TTS Mandarin ---
+        function speakChinese(text) {
+          if (!window.speechSynthesis) {
+            console.log("TTS tidak didukung di browser ini.");
+            return;
+          }
+          // Batalkan ucapan sebelumnya agar tidak bertumpuk
+          window.speechSynthesis.cancel();
+
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = "zh-CN"; // Mandarin
+          utterance.rate = 0.9; // sedikit lebih lambat untuk pendengar pemula
+          utterance.pitch = 1.0;
+          utterance.volume = 1.0;
+          window.speechSynthesis.speak(utterance);
+        }
+
+        // --- helper: acak array (Fisher-Yates) ---
+        function shuffleArray(arr) {
+          const a = arr.slice();
+          for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+          }
+          return a;
+        }
+
+        // --- render kartu berdasarkan currentList & index ---
+        function renderCard() {
+          if (
+            !currentList.length ||
+            currentIndex < 0 ||
+            currentIndex >= currentList.length
+          )
+            return;
+          const card = currentList[currentIndex];
+          hanziFront.textContent = card.hanzi;
+          pinyinBack.textContent = card.pinyin;
+          artiIndo.textContent = card.indonesia;
+          artiEng.textContent = card.english;
+
+          // update flip class
+          if (isFlipped) {
+            flipCardEl.classList.add("flipped");
+          } else {
+            flipCardEl.classList.remove("flipped");
+          }
+
+          cardCounter.textContent = `${currentIndex + 1} / ${currentList.length}`;
+
+          // update mode indicator
+          if (
+            currentList.length === originalFlashcards.length &&
+            currentList.every((val, idx) => val === originalFlashcards[idx])
+          ) {
+            modeIndicator.textContent = "📖 urut asli";
+            modeIndicator.style.background = "#c9ad97";
+          } else {
+            modeIndicator.textContent = "🎲 mode acak";
+            modeIndicator.style.background = "#e1bba3";
+          }
+
+          prevBtn.disabled = currentIndex === 0;
+          nextBtn.disabled = currentIndex === currentList.length - 1;
+
+          // === TTS OTOMATIS: bicarakan hanzi jika konten berubah ===
+          if (card.hanzi !== lastSpokenHanzi) {
+            speakChinese(card.hanzi);
+            lastSpokenHanzi = card.hanzi;
+          }
+        }
+
+        // --- event: klik kartu untuk flip ---
+        flipCardEl.addEventListener("click", (e) => {
+          isFlipped = !isFlipped;
+          renderCard(); // saat flip, hanzi sama, TTS tidak dipicu (karena lastSpokenHanzi tidak berubah)
+        });
+
+        flipBtn.addEventListener("click", () => {
+          isFlipped = !isFlipped;
+          renderCard();
+        });
+
+        prevBtn.addEventListener("click", () => {
+          if (currentIndex > 0) {
+            currentIndex--;
+            isFlipped = false;
+            renderCard(); // akan memicu TTS jika hanzi baru
+          }
+        });
+
+        nextBtn.addEventListener("click", () => {
+          if (currentIndex < currentList.length - 1) {
+            currentIndex++;
+            isFlipped = false;
+            renderCard();
+          }
+        });
+
+        shuffleBtn.addEventListener("click", () => {
+          currentList = shuffleArray(originalFlashcards);
+          currentIndex = 0;
+          isFlipped = false;
+          lastSpokenHanzi = ""; // reset agar TTS tetap aktif untuk kata pertama
+          renderCard();
+        });
+
+        resetBtn.addEventListener("click", () => {
+          currentList = originalFlashcards.slice();
+          currentIndex = 0;
+          isFlipped = false;
+          lastSpokenHanzi = "";
+          renderCard();
+        });
+
+        // inisialisasi pertama
+        renderCard(); // akan memicu TTS untuk kartu pertama (爱)
+      })();
+    </script>
+  </body>
+</html>

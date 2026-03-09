@@ -257,9 +257,14 @@
                                 $waUrl = "https://wa.me/" . $waNumber . "?text=" . urlencode($message);
                                 ?>
 
-                                <a href="<?= $waUrl ?>" target="_blank" class="btn btn-whatsapp btn-lg w-100 py-3 rounded-pill fw-bold">
+                                <a href="<?= $waUrl ?>" target="_blank" id="wa-confirm-btn" class="btn btn-whatsapp btn-lg w-100 py-3 rounded-pill fw-bold">
                                     <i class="bi bi-whatsapp me-2"></i>Confirm via WA
                                 </a>
+
+                                <!-- Auto-redirect countdown -->
+                                <div id="wa-countdown" class="mt-3 small text-muted">
+                                    <span id="countdown-text">Auto-confirming in 3 seconds...</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -296,4 +301,30 @@
         </div>
     </div>
 </div>
+
+<script>
+// Auto-redirect to WhatsApp after 3 seconds
+document.addEventListener('DOMContentLoaded', function() {
+    const waBtn = document.getElementById('wa-confirm-btn');
+    const countdownText = document.getElementById('countdown-text');
+    
+    if (waBtn && countdownText) {
+        let secondsLeft = 3;
+        
+        // Update countdown every second
+        const countdownInterval = setInterval(function() {
+            secondsLeft--;
+            if (secondsLeft > 0) {
+                countdownText.textContent = 'Auto-confirming in ' + secondsLeft + ' seconds...';
+            } else {
+                clearInterval(countdownInterval);
+                countdownText.innerHTML = '<i class="bi bi-check-circle text-success me-1"></i>Redirecting to WhatsApp...';
+                
+                // Open WhatsApp in new tab
+                waBtn.click();
+            }
+        }, 1000);
+    }
+});
+</script>
 <?= $this->endSection() ?>

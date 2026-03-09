@@ -340,7 +340,47 @@
         <div class="invoice-url">
             <p><strong>Invoice URL:</strong> <a href="<?= base_url('invoice/view/' . $invoice['id']) ?>"><?= base_url('invoice/view/' . $invoice['id']) ?></a></p>
         </div>
+
+        <!-- WhatsApp Confirmation -->
+        <div class="no-print" style="margin-top: 30px; text-align: center; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+            <h5 style="color: #25D366; margin-bottom: 15px;"><i class="bi bi-whatsapp"></i> Confirm Payment via WhatsApp</h5>
+            <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Click the button below to notify our admission team about your payment.</p>
+            
+            <a href="<?= $waUrl ?? '#' ?>" target="_blank" id="wa-confirm-btn" class="btn" style="background-color: #25D366; color: white; padding: 12px 30px; border-radius: 25px; text-decoration: none; font-weight: bold; display: inline-block;">
+                <i class="bi bi-whatsapp me-2"></i>Confirm via WhatsApp
+            </a>
+            
+            <div id="wa-countdown" style="margin-top: 15px; font-size: 12px; color: #666;">
+                <span id="countdown-text">Auto-confirming in 3 seconds...</span>
+            </div>
+        </div>
     </div>
 </body>
+
+<script>
+// Auto-redirect to WhatsApp after 3 seconds
+document.addEventListener('DOMContentLoaded', function() {
+    const waBtn = document.getElementById('wa-confirm-btn');
+    const countdownText = document.getElementById('countdown-text');
+    
+    if (waBtn && countdownText && waBtn.href && waBtn.href !== '#') {
+        let secondsLeft = 3;
+        
+        // Update countdown every second
+        const countdownInterval = setInterval(function() {
+            secondsLeft--;
+            if (secondsLeft > 0) {
+                countdownText.textContent = 'Auto-confirming in ' + secondsLeft + ' seconds...';
+            } else {
+                clearInterval(countdownInterval);
+                countdownText.innerHTML = '<span style="color: #25D366;"><i class="bi bi-check-circle"></i> Redirecting to WhatsApp...</span>';
+                
+                // Open WhatsApp in new tab
+                waBtn.click();
+            }
+        }, 1000);
+    }
+});
+</script>
 
 </html>
