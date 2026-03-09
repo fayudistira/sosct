@@ -324,7 +324,7 @@
         </div>
 
         <!-- Payment Info -->
-        <div class="payment-info">
+        <!-- <div class="payment-info">
             <div class="bank-info">
                 <h4>Payment Information</h4>
                 <p><strong>Bank:</strong> BNI</p>
@@ -334,7 +334,7 @@
                     Please include invoice number #<?= esc($invoice['invoice_number']) ?> in the transfer description.
                 </p>
             </div>
-        </div>
+        </div> -->
 
         <!-- Invoice URL -->
         <div class="invoice-url">
