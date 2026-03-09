@@ -44,6 +44,7 @@ class Autoload extends AutoloadConfig
         'Modules\Program' => APPPATH . 'Modules/Program',
         'Modules\Classroom' => APPPATH . 'Modules/Classroom',
         'Modules\Academic' => APPPATH . 'Modules/Academic',
+        'Modules\Inventory' => APPPATH . 'Modules/Inventory',
     ];
 
     /**
@@ -93,5 +94,5 @@ class Autoload extends AutoloadConfig
      *
      * @var list<string>
      */
-    public $helpers = ['auth', 'setting'];
+    public $helpers = ['auth', 'setting', 'inventory'];
 }

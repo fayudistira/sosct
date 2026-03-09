@@ -110,6 +110,12 @@ class AuthGroups extends ShieldAuthGroups
         'blog.delete'        => 'Can delete blog posts',
         'blog.categories.manage' => 'Can manage blog categories',
         'blog.tags.manage'   => 'Can manage blog tags',
+        'inventory.manage'   => 'Can manage inventory (full CRUD)',
+        'inventory.view'     => 'Can view inventory (read-only)',
+        'inventory.stock-opname.manage' => 'Can manage stock opname',
+        'inventory.movement.manage' => 'Can manage stock movements',
+        'inventory.alert.manage' => 'Can manage alerts',
+        'inventory.report.view' => 'Can view inventory reports',
     ];
 
     /**
@@ -135,6 +141,7 @@ class AuthGroups extends ShieldAuthGroups
             'student.manage',
             'tools.*',
             'blog.*',
+            'inventory.*',
         ],
         'admin' => [
             'admin.access',
