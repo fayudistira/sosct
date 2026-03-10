@@ -3,9 +3,15 @@
 <?= $this->section('content') ?>
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="mb-0"><i class="bi bi-box-seam me-2"></i>Barang Inventaris</h4>
-            <a href="/inventory/items/create" class="btn btn-primary">
-                <i class="bi bi-plus-circle me-1"></i> Tambah Barang
-            </a>
+            <div class="d-flex gap-2">
+                <div class="text-end">
+                    <small class="text-muted d-block">Scan untuk Stok Opname</small>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=<?= urlencode('/inventory/items/barcode/85502f0f-f604-465e-be65-f2367f59b6ec') ?>" alt="QR Code" class="border rounded">
+                </div>
+                <a href="/inventory/items/create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i> Tambah Barang
+                </a>
+            </div>
         </div>
 
         <!-- Filters -->
