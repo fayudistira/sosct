@@ -159,5 +159,14 @@
                     transferQuantity.removeAttribute('required');
                 }
             }
+            
+            // Dummy function - can be expanded to show current stock
+            function updateCurrentStock() {
+                const itemSelect = document.getElementById('itemSelect');
+                const selectedOption = itemSelect.options[itemSelect.selectedIndex];
+                const stock = selectedOption.getAttribute('data-stock');
+                // Could display stock somewhere if needed
+                console.log('Selected item stock:', stock);
+            }
         </script>
     <?= $this->endSection() ?>
