@@ -2,9 +2,9 @@
 
 <?= $this->section('content') ?>
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="mb-0"><i class="bi bi-clipboard-check me-2"></i>Stock Opname Details</h4>
+    <h4 class="mb-0"><i class="bi bi-clipboard-check me-2"></i>Detail Stock Opname</h4>
     <a href="/inventory/stock-opname" class="btn btn-outline-secondary">
-        <i class="bi bi-arrow-left me-1"></i> Back to List
+        <i class="bi bi-arrow-left me-1"></i> Kembali ke Daftar
     </a>
 </div>
 
@@ -13,12 +13,12 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-3">
-                <strong>Opname Number:</strong><br>
+                <strong>Nomor Opname:</strong><br>
                 <?= esc($opname['opname_number']) ?>
             </div>
             <div class="col-md-3">
-                <strong>Location:</strong><br>
-                <?= esc($location['name'] ?? 'All Locations') ?>
+                <strong>Lokasi:</strong><br>
+                <?= esc($location['name'] ?? 'Semua Lokasi') ?>
             </div>
             <div class="col-md-3">
                 <strong>Status:</strong><br>
@@ -34,7 +34,7 @@
                 <span class="<?= $statusClass ?>"><?= ucfirst(str_replace('_', ' ', $opname['status'])) ?></span>
             </div>
             <div class="col-md-3">
-                <strong>Performed By:</strong><br>
+                <strong>Dilakukan Oleh:</strong><br>
                 <?= esc($opname['performed_by'] ?? '-') ?>
             </div>
         </div>
@@ -54,7 +54,7 @@
     <div class="col-md-3">
         <div class="card text-center border-success">
             <div class="card-body">
-                <h5 class="card-title text-success">Matched</h5>
+                <h5 class="card-title text-success">Sesuai</h5>
                 <h2 class="text-success"><?= $summary['matched'] ?></h2>
             </div>
         </div>
@@ -62,7 +62,7 @@
     <div class="col-md-3">
         <div class="card text-center border-warning">
             <div class="card-body">
-                <h5 class="card-title text-warning">Pending</h5>
+                <h5 class="card-title text-warning">Menunggu</h5>
                 <h2 class="text-warning"><?= $summary['pending'] ?></h2>
             </div>
         </div>
@@ -70,7 +70,7 @@
     <div class="col-md-3">
         <div class="card text-center border-danger">
             <div class="card-body">
-                <h5 class="card-title text-danger">Discrepancy</h5>
+                <h5 class="card-title text-danger">Selisih</h5>
                 <h2 class="text-danger"><?= $summary['discrepancy'] ?></h2>
             </div>
         </div>
@@ -83,13 +83,13 @@
     <form method="post" action="/inventory/stock-opname/start/<?= $opname['id'] ?>" style="display:inline;">
         <?= csrf_field() ?>
         <button type="submit" class="btn btn-primary">
-            <i class="bi bi-play-fill me-1"></i> Start Opname
+            <i class="bi bi-play-fill me-1"></i> Mulai Opname
         </button>
     </form>
     <form method="post" action="/inventory/stock-opname/complete/<?= $opname['id'] ?>" style="display:inline;">
         <?= csrf_field() ?>
         <button type="submit" class="btn btn-success">
-            <i class="bi bi-check-circle me-1"></i> Complete Opname
+            <i class="bi bi-check-circle me-1"></i> Selesaikan Opname
         </button>
     </form>
 </div>
@@ -102,14 +102,14 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>Item Code</th>
-                        <th>Item Name</th>
-                        <th>Category</th>
-                        <th>System Stock</th>
-                        <th>Physical Stock</th>
-                        <th>Difference</th>
+                        <th>Kode Item</th>
+                        <th>Nama Item</th>
+                        <th>Kategori</th>
+                        <th>Stok Sistem</th>
+                        <th>Stok Fisik</th>
+                        <th>Selisih</th>
                         <th>Status</th>
-                        <th>Actions</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -117,7 +117,7 @@
                         <?php foreach ($details as $detail): ?>
                             <tr>
                                 <td><?= esc($items[$detail['item_id']]['item_code'] ?? '-') ?></td>
-                                <td><?= esc($items[$detail['item_id']]['name'] ?? 'Unknown') ?></td>
+                                <td><?= esc($items[$detail['item_id']]['name'] ?? 'Tidak Diketahui') ?></td>
                                 <td><?= esc($items[$detail['item_id']]['category_id'] ?? '-') ?></td>
                                 <td><?= $detail['system_stock'] ?></td>
                                 <td>
@@ -162,7 +162,7 @@
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="8" class="text-center text-muted">No items found for this stock opname</td>
+                            <td colspan="8" class="text-center text-muted">Tidak ada item untuk stock opname ini</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

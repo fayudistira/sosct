@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Inventory') ?> - Inventory Module</title>
+    <title><?= esc($title ?? 'Inventaris') ?> - Modul Inventaris</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
@@ -165,35 +165,35 @@
     <div class="inventory-sidebar">
         <div class="brand">
             <i class="bi bi-box-seam"></i>
-            <span>Inventory</span>
+            <span>Inventaris</span>
         </div>
         
         <nav class="nav-menu">
             <a href="<?= base_url('inventory/items') ?>" class="nav-item <?= strpos(current_url(), 'inventory/items') !== false && strpos(current_url(), 'create') === false ? 'active' : '' ?>">
                 <i class="bi bi-list-ul"></i>
-                <span>Items</span>
+                <span>Barang</span>
             </a>
             <a href="<?= base_url('inventory/items/create') ?>" class="nav-item <?= strpos(current_url(), 'inventory/items/create') !== false ? 'active' : '' ?>">
                 <i class="bi bi-plus-circle"></i>
-                <span>Add Item</span>
+                <span>Tambah Barang</span>
             </a>
             
-            <div class="nav-section">Master Data</div>
+            <div class="nav-section">Data Master</div>
             
             <a href="<?= base_url('inventory/categories') ?>" class="nav-item <?= strpos(current_url(), 'inventory/categories') !== false ? 'active' : '' ?>">
                 <i class="bi bi-folder"></i>
-                <span>Categories</span>
+                <span>Kategori</span>
             </a>
             <a href="<?= base_url('inventory/locations') ?>" class="nav-item <?= strpos(current_url(), 'inventory/locations') !== false ? 'active' : '' ?>">
                 <i class="bi bi-geo-alt"></i>
-                <span>Locations</span>
+                <span>Lokasi</span>
             </a>
             
-            <div class="nav-section">Operations</div>
+            <div class="nav-section">Operasi</div>
             
             <a href="<?= base_url('inventory/movements') ?>" class="nav-item <?= strpos(current_url(), 'inventory/movements') !== false ? 'active' : '' ?>">
                 <i class="bi bi-arrow-left-right"></i>
-                <span>Movements</span>
+                <span>Mutasi</span>
             </a>
             <a href="<?= base_url('inventory/stock-opname') ?>" class="nav-item <?= strpos(current_url(), 'inventory/stock-opname') !== false ? 'active' : '' ?>">
                 <i class="bi bi-clipboard-data"></i>
@@ -201,21 +201,21 @@
             </a>
             <a href="<?= base_url('inventory/alerts') ?>" class="nav-item <?= strpos(current_url(), 'inventory/alerts') !== false ? 'active' : '' ?>">
                 <i class="bi bi-exclamation-triangle"></i>
-                <span>Alerts</span>
+                <span>Peringatan</span>
             </a>
             
-            <div class="nav-section">Reports</div>
+            <div class="nav-section">Laporan</div>
             
             <a href="<?= base_url('inventory/reports/summary') ?>" class="nav-item <?= strpos(current_url(), 'inventory/reports') !== false ? 'active' : '' ?>">
                 <i class="bi bi-bar-chart"></i>
-                <span>Summary</span>
+                <span>Ringkasan</span>
             </a>
             
-            <div class="nav-section">System</div>
+            <div class="nav-section">Sistem</div>
             
             <a href="<?= base_url('/') ?>" class="nav-item">
                 <i class="bi bi-house"></i>
-                <span>Back to Dashboard</span>
+                <span>Kembali ke Dashboard</span>
             </a>
         </nav>
     </div>
@@ -226,7 +226,7 @@
         <div class="inventory-header">
             <h4>
                 <i class="bi bi-<?= $icon ?? 'box-seam' ?>"></i>
-                <?= $pageTitle ?? 'Inventory' ?>
+                <?= $pageTitle ?? 'Inventaris' ?>
             </h4>
             <div>
                 <?= $headerActions ?? '' ?>

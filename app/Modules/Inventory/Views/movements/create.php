@@ -4,7 +4,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="mb-0"><i class="bi bi-arrow-left-right me-2"></i>Catat Mutasi Stok</h4>
             <a href="/inventory/movements" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-1"></i> Back
+                <i class="bi bi-arrow-left me-1"></i> Kembali
             </a>
         </div>
 
@@ -26,17 +26,17 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Movement Type</label>
+                                <label class="form-label">Tipe Mutasi</label>
                                 <select name="movement_type" id="movementType" class="form-select" onchange="toggleLocationFields()">
-                                    <option value="purchase">Purchase</option>
-                                    <option value="return">Return</option>
-                                    <option value="sale">Sale</option>
-                                    <option value="distributed">Distributed</option>
-                                    <option value="adjustment">Adjustment</option>
+                                    <option value="purchase">Pembelian</option>
+                                    <option value="return">Retur</option>
+                                    <option value="sale">Penjualan</option>
+                                    <option value="distributed">Distribusi</option>
+                                    <option value="adjustment">Penyesuaian</option>
                                     <option value="transfer">Transfer</option>
-                                    <option value="damage">Damage</option>
-                                    <option value="expired">Expired</option>
-                                    <option value="initial">Initial Stock</option>
+                                    <option value="damage">Kerusakan</option>
+                                    <option value="expired">Kedaluwarsa</option>
+                                    <option value="initial">Stok Awal</option>
                                 </select>
                             </div>
                         </div>
@@ -47,9 +47,9 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">From Location (Source)</label>
+                                    <label class="form-label">Lokasi Asal</label>
                                     <select name="source_location_id" class="form-select">
-                                        <option value="">Select Source Location</option>
+                                        <option value="">Pilih Lokasi Asal</option>
                                         <?php foreach($locations as $loc): ?>
                                         <option value="<?= $loc['id'] ?>"><?= $loc['name'] ?></option>
                                         <?php endforeach; ?>
@@ -58,9 +58,9 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">To Location (Destination)</label>
+                                    <label class="form-label">Lokasi Tujuan</label>
                                     <select name="to_location_id" class="form-select">
-                                        <option value="">Select Destination Location</option>
+                                        <option value="">Pilih Lokasi Tujuan</option>
                                         <?php foreach($locations as $loc): ?>
                                         <option value="<?= $loc['id'] ?>"><?= $loc['name'] ?></option>
                                         <?php endforeach; ?>
@@ -75,9 +75,9 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label class="form-label">Location</label>
+                                    <label class="form-label">Lokasi</label>
                                     <select name="location_id" class="form-select">
-                                        <option value="">Select Location</option>
+                                        <option value="">Pilih Lokasi</option>
                                         <?php foreach($locations as $loc): ?>
                                         <option value="<?= $loc['id'] ?>"><?= $loc['name'] ?></option>
                                         <?php endforeach; ?>
@@ -86,14 +86,14 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label class="form-label">Quantity</label>
+                                    <label class="form-label">Jumlah</label>
                                     <input type="number" name="quantity" id="quantityInput" class="form-control" required min="1">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label class="form-label">Reference Number</label>
-                                    <input type="text" name="reference_number" class="form-control" placeholder="Invoice #, PO #, etc.">
+                                    <label class="form-label">Nomor Referensi</label>
+                                    <input type="text" name="reference_number" class="form-control" placeholder="No. Invoice, PO, dll.">
                                 </div>
                             </div>
                         </div>
@@ -104,28 +104,28 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label class="form-label">Quantity to Transfer</label>
+                                    <label class="form-label">Jumlah yang Ditransfer</label>
                                     <input type="number" name="quantity" id="transferQuantity" class="form-control" min="1">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label class="form-label">Reference Number</label>
-                                    <input type="text" name="reference_number" class="form-control" placeholder="Transfer #, etc.">
+                                    <label class="form-label">Nomor Referensi</label>
+                                    <input type="text" name="reference_number" class="form-control" placeholder="No. Transfer, dll.">
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Description / Notes</label>
+                        <label class="form-label">Keterangan</label>
                         <textarea name="description" class="form-control" rows="2"></textarea>
                     </div>
 
                     <div class="text-end">
-                        <a href="/inventory/movements" class="btn btn-secondary me-2">Cancel</a>
+                        <a href="/inventory/movements" class="btn btn-secondary me-2">Batal</a>
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-circle me-1"></i> Record Movement
+                            <i class="bi bi-check-circle me-1"></i> Catat Mutasi
                         </button>
                     </div>
                 </form>

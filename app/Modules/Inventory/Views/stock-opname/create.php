@@ -2,9 +2,9 @@
 
 <?= $this->section('content') ?>
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="mb-0"><i class="bi bi-clipboard-plus me-2"></i>New Stock Opname</h4>
+            <h4 class="mb-0"><i class="bi bi-clipboard-plus me-2"></i>Stock Opname Baru</h4>
             <a href="/inventory/stock-opname" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-1"></i> Back
+                <i class="bi bi-arrow-left me-1"></i> Kembali
             </a>
         </div>
 
@@ -15,9 +15,9 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Location</label>
+                                <label class="form-label">Lokasi</label>
                                 <select name="location_id" class="form-select">
-                                    <option value="">All Locations</option>
+                                    <option value="">Semua Lokasi</option>
                                     <?php foreach($locations as $loc): ?>
                                     <option value="<?= $loc['id'] ?>"><?= $loc['name'] ?></option>
                                     <?php endforeach; ?>
@@ -26,21 +26,21 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Performed By</label>
+                                <label class="form-label">Dilakukan Oleh</label>
                                 <input type="text" name="performed_by" class="form-control" required>
                             </div>
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Notes</label>
-                        <textarea name="notes" class="form-control" rows="2" placeholder="Purpose of stock opname, date range, etc."></textarea>
+                        <label class="form-label">Catatan</label>
+                        <textarea name="notes" class="form-control" rows="2" placeholder="Tujuan stock opname, rentang tanggal, dll."></textarea>
                     </div>
 
                     <div class="text-end">
-                        <a href="/inventory/stock-opname" class="btn btn-secondary me-2">Cancel</a>
+                        <a href="/inventory/stock-opname" class="btn btn-secondary me-2">Batal</a>
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-play-circle me-1"></i> Start Opname
+                            <i class="bi bi-play-circle me-1"></i> Mulai Opname
                         </button>
                     </div>
                 </form>

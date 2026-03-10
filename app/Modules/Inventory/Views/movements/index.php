@@ -73,7 +73,7 @@
                         <?php foreach ($movements as $movement): ?>
                             <tr>
                                 <td><?= date('d M Y H:i', strtotime($movement['movement_date'])) ?></td>
-                                <td><?= esc($items[$movement['item_id']] ?? 'Unknown') ?></td>
+                                <td><?= esc($items[$movement['item_id']] ?? 'Tidak Diketahui') ?></td>
                                 <td>
                                     <?php 
                                     $typeClass = '';
@@ -102,8 +102,8 @@
                                 <td><?= esc($locations[$movement['location_id']] ?? $movement['location_id'] ?? '-') ?></td>
                                 <td>
                                     <?php if ($movement['movement_type'] === 'transfer' && !empty($movement['source_location_id'])): ?>
-                                        <span class="text-info">From: <?= esc($locations[$movement['source_location_id']] ?? $movement['source_location_id'] ?? '-') ?></span><br>
-                                        <span class="text-success">To: <?= esc($locations[$movement['to_location_id']] ?? $movement['to_location_id'] ?? '-') ?></span>
+                                        <span class="text-info">Dari: <?= esc($locations[$movement['source_location_id']] ?? $movement['source_location_id'] ?? '-') ?></span><br>
+                                        <span class="text-success">Ke: <?= esc($locations[$movement['to_location_id']] ?? $movement['to_location_id'] ?? '-') ?></span>
                                     <?php else: ?>
                                         -
                                     <?php endif; ?>
