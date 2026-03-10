@@ -18,7 +18,7 @@
                     <div class="col-md-2">
                         <select name="category" class="form-select">
                             <option value="">Semua Kategori</option>
-                            <?php foreach($categories as $cat): ?>
+                            <?php foreach($categoryList ?? [] as $cat): ?>
                             <option value="<?= $cat['id'] ?>" <?= ($selectedCategory ?? '') == $cat['id'] ? 'selected' : '' ?>><?= $cat['name'] ?></option>
                             <?php endforeach; ?>
                         </select>
@@ -26,7 +26,7 @@
                     <div class="col-md-2">
                         <select name="location" class="form-select">
                             <option value="">Semua Lokasi</option>
-                            <?php foreach($locations as $loc): ?>
+                            <?php foreach($locationList ?? [] as $loc): ?>
                             <option value="<?= $loc['id'] ?>" <?= ($selectedLocation ?? '') == $loc['id'] ? 'selected' : '' ?>><?= $loc['name'] ?></option>
                             <?php endforeach; ?>
                         </select>

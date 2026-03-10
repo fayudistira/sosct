@@ -69,6 +69,22 @@ class ItemController extends BaseController
             'selectedStatus' => $status
         ];
 
+        // Index categories and locations by ID for easy lookup in view
+        $categoryList = [];
+        foreach ($this->categoryModel->findAll() as $cat) {
+            $categoryList[$cat['id']] = $cat;
+        }
+        $locationList = [];
+        foreach ($this->locationModel->findAll() as $loc) {
+            $locationList[$loc['id']] = $loc;
+        }
+        $data['categories'] = $categoryList;
+        $data['locations'] = $locationList;
+        
+        // Also keep original arrays for filter dropdowns
+        $data['categoryList'] = $this->categoryModel->findAll();
+        $data['locationList'] = $this->locationModel->findAll();
+
         return view('Modules\Inventory\Views\items\index', $data);
     }
 
