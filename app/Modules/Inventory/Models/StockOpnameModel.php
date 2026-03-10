@@ -30,8 +30,9 @@ class StockOpnameModel extends Model
     protected $updatedField = 'updated_at';
 
     protected $validationRules = [
+        'id' => 'permit_empty|max_length[36]',
         'opname_number' => 'required|is_unique[inventory_stock_opnames.opname_number,id,{id}]',
-        'location_id' => 'permit_empty|is_natural',
+        'location_id' => 'permit_empty|max_length[36]',
         'status' => 'required|in_list[draft,in_progress,completed,cancelled]'
     ];
 
