@@ -144,24 +144,28 @@ class MovementController extends BaseController
         $inTypes = ['purchase', 'return', 'initial'];
         $outTypes = ['sale', 'distributed', 'damage', 'expired'];
         
+        // Cast to integer to avoid type errors
+        $currentStock = (int) $item['current_stock'];
+        $quantity = (int) $data['quantity'];
+        
         if (in_array($data['movement_type'], $inTypes)) {
             // Add stock for in-types
-            $data['quantity_after'] = $item['current_stock'] + $data['quantity'];
+            $data['quantity_after'] = $currentStock + $quantity;
         } elseif (in_array($data['movement_type'], $outTypes)) {
             // Subtract stock for out-types
-            $data['quantity_after'] = $item['current_stock'] - $data['quantity'];
+            $data['quantity_after'] = $currentStock - $quantity;
             // Ensure stock doesn't go negative
             if ($data['quantity_after'] < 0) {
                 $data['quantity_after'] = 0;
             }
         } else {
             // For adjustment and transfer, use the value as-is (can be positive or negative)
-            $data['quantity_after'] = $item['current_stock'] + $data['quantity'];
+            $data['quantity_after'] = $currentStock + $quantity;
         }
         
         // Store the signed quantity for reference
         if (in_array($data['movement_type'], $outTypes)) {
-            $data['quantity'] = -abs($data['quantity']); // Store as negative for out types
+            $data['quantity'] = -abs($quantity); // Store as negative for out types
         }
         
         $data['movement_date'] = date('Y-m-d H:i:s');
