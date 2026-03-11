@@ -3,6 +3,7 @@
 namespace Modules\Frontend\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\PageviewModel;
 use Modules\Account\Models\ProfileModel;
 use Modules\Admission\Models\AdmissionModel;
 use Modules\Program\Models\ProgramModel;
@@ -25,6 +26,20 @@ class PageController extends BaseController
      */
     public function index(): string
     {
+        // Record page view
+        $pageviewModel = new PageviewModel();
+        $currentUrl = current_url();
+        $pageviewCount = $pageviewModel->recordPageView($currentUrl, 'Home');
+
+        // Check if user is admin (superadmin or admin group)
+        $isAdmin = false;
+        if (auth()->loggedIn()) {
+            $user = auth()->user();
+            if ($user) {
+                $isAdmin = $user->inGroup('superadmin', 'admin');
+            }
+        }
+
         $programModel = new ProgramModel();
         $programs = $programModel->where('status', 'active')->orderBy('created_at', 'DESC')->findAll();
 
@@ -70,7 +85,9 @@ class PageController extends BaseController
             'programsByLanguage' => $programsByLanguage,
             'recentPosts' => $recentPosts ?? [],
             'featuredPosts' => $featuredPosts ?? [],
-            'blogCategories' => $blogCategories ?? []
+            'blogCategories' => $blogCategories ?? [],
+            'pageviewCount' => $pageviewCount,
+            'isAdmin' => $isAdmin
         ]);
     }
 

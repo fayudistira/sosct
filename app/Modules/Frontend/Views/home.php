@@ -1,6 +1,19 @@
 <?= $this->extend('Modules\Frontend\Views\layout') ?>
 
 <?= $this->section('content') ?>
+<!-- Pageview Counter (Admin Only) -->
+<?php if (isset($isAdmin) && $isAdmin): ?>
+<div class="container mt-3">
+    <div class="alert alert-info d-flex align-items-center justify-content-between">
+        <div>
+            <i class="bi bi-eye-fill me-2"></i>
+            <strong>Pageview Counter:</strong> This page has been viewed 
+            <span class="badge bg-primary"><?= number_format($pageviewCount ?? 0) ?></span> times
+        </div>
+        <small class="text-muted">Only visible to admin users</small>
+    </div>
+</div>
+<?php endif; ?>
 <!-- Hero Showcase Section -->
 <div class="hero-section position-relative overflow-hidden py-5 d-flex align-items-center" style="min-height: 85vh;">
     <!-- Abstract background elements -->
