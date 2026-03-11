@@ -14,7 +14,7 @@ class PageviewModel extends Model
     protected $allowedFields    = ['page_url', 'page_name', 'view_count', 'last_viewed_at', 'created_at', 'updated_at'];
     protected $useTimestamps      = true;
     protected $createdField     = 'created_at';
-    protected $updatedField     = 'updated_field';
+    protected $updatedField     = 'updated_at';
 
     /**
      * Record a page view - increments the view count or creates new record
