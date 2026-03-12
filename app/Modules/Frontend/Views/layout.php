@@ -444,6 +444,7 @@
                             <li><a class="dropdown-item" href="<?= base_url('german') ?>">German</a></li>
                         </ul>
                     </li>
+                    <?php if (auth()->loggedIn() && auth()->user()->inGroup('superadmin', 'admin')): ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="testDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Test
@@ -454,6 +455,7 @@
                             </a></li>
                         </ul>
                     </li>
+                    <?php endif; ?>
                     <li class="nav-item">
                         <a class="nav-link" href="<?= base_url('about') ?>">Tentang SOS</a>
                     </li>
