@@ -9,7 +9,7 @@ use CodeIgniter\Router\RouteCollection;
 // $routes->get('/', 'Home::index');
 
 // Redirect old formulir-pendaftaran-mandarin route to /mandarin
-$routes->get('public/formulir-pendaftaran-mandarin', redirect('/mandarin', 301));
+// $routes->get('public/formulir-pendaftaran-mandarin', redirect('/mandarin', 301));
 
 // Register Shield routes except login and register (we'll override those)
 // Wrap in try-catch to prevent errors if Shield service isn't ready
