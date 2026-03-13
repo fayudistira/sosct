@@ -288,7 +288,6 @@ class ItemController extends BaseController
      */
     public function template()
     {
-        \PhpOffice\PhpSpreadsheet\Spreadsheet::create();
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
