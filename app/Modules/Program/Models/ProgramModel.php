@@ -218,12 +218,34 @@ class ProgramModel extends Model
 
         $results = $builder->select('category, COUNT(*) as total')
             ->where('deleted_at', null)
+            ->where('status', 'active')
             ->groupBy('category')
-            ->orderBy('category', 'ASC')
+            ->orderBy('total', 'DESC')
             ->get()
             ->getResultArray();
 
         return $results;
+    }
+
+    /**
+     * Get random active programs
+     * 
+     * @param int $limit Number of programs to return
+     * @return array
+     */
+    public function getRandomPrograms(int $limit = 3): array
+    {
+        $db = \Config\Database::connect();
+        
+        // Get random programs using ORDER BY RAND()
+        return $db->table($this->table)
+            ->select('id, title, description, thumbnail, language, category, tuition_fee, discount, status')
+            ->where('deleted_at', null)
+            ->where('status', 'active')
+            ->orderBy('RAND()')
+            ->limit($limit)
+            ->get()
+            ->getResultArray();
     }
 
     /**

@@ -413,6 +413,176 @@
         .admission-popup-close:hover {
             color: #333;
         }
+
+        /* Program Popup - Bottom Right */
+        @media (min-width: 992px) {
+            .program-popup {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                left: auto;
+                z-index: 9999;
+                max-width: 350px;
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+                border: 1px solid #e0e0e0;
+                padding: 0;
+                display: none;
+                animation: slideInUp 0.4s ease-out;
+                overflow: hidden;
+            }
+
+            .program-popup.show {
+                display: block;
+            }
+
+            .program-popup.hide {
+                animation: slideOutRight 0.3s ease-in forwards;
+            }
+
+            @keyframes slideInUp {
+                from {
+                    transform: translateY(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+
+            @keyframes slideOutRight {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+
+            .program-popup-header {
+                background: linear-gradient(135deg, var(--dark-red) 0%, var(--medium-red) 100%);
+                color: white;
+                padding: 12px 16px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .program-popup-title {
+                font-weight: 600;
+                font-size: 0.95rem;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .program-popup-close {
+                background: none;
+                border: none;
+                color: white;
+                cursor: pointer;
+                padding: 4px;
+                font-size: 1.2rem;
+                line-height: 1;
+                opacity: 0.8;
+            }
+
+            .program-popup-close:hover {
+                opacity: 1;
+            }
+
+            .program-popup-image {
+                width: 100%;
+                height: 120px;
+                object-fit: cover;
+            }
+
+            .program-popup-body {
+                padding: 14px;
+            }
+
+            .program-popup-name {
+                font-weight: 600;
+                color: #333;
+                font-size: 0.95rem;
+                margin-bottom: 6px;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .program-popup-meta {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 10px;
+                font-size: 0.8rem;
+            }
+
+            .program-popup-language {
+                background: #f0f0f0;
+                padding: 2px 8px;
+                border-radius: 4px;
+                color: #555;
+            }
+
+            .program-popup-price {
+                font-size: 0.9rem;
+            }
+
+            .program-popup-original {
+                text-decoration: line-through;
+                color: #999;
+                font-size: 0.8rem;
+            }
+
+            .program-popup-discount {
+                background: var(--dark-red);
+                color: white;
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-size: 0.7rem;
+                margin-left: 6px;
+            }
+
+            .program-popup-final {
+                color: var(--dark-red);
+                font-weight: 700;
+                font-size: 1.1rem;
+            }
+
+            .program-popup-cta {
+                display: block;
+                width: 100%;
+                padding: 8px 12px;
+                background: var(--dark-red);
+                color: white;
+                text-align: center;
+                border-radius: 6px;
+                text-decoration: none;
+                font-size: 0.85rem;
+                font-weight: 500;
+                margin-top: 10px;
+                transition: background 0.2s;
+            }
+
+            .program-popup-cta:hover {
+                background: var(--medium-red);
+                color: white;
+            }
+        }
+
+        /* Hide on mobile */
+        @media (max-width: 991.98px) {
+            .program-popup {
+                display: none !important;
+            }
+        }
     </style>
     
     <?= $this->renderSection('extra_head') ?>
@@ -628,6 +798,23 @@
         </div>
     </div>
 
+    <!-- Program Popup Notification (Desktop Only) -->
+    <div class="program-popup" id="programPopup">
+        <div class="program-popup-header">
+            <div class="program-popup-title">
+                <i class="bi bi-mortarboard"></i>
+                Program Pilihan
+            </div>
+            <button class="program-popup-close" onclick="closeProgramPopup()">
+                <i class="bi bi-x"></i>
+            </button>
+        </div>
+        <img src="" alt="Program" class="program-popup-image" id="programPopupImage" style="display: none;">
+        <div class="program-popup-body" id="programPopupBody">
+            <!-- Content will be injected by JavaScript -->
+        </div>
+    </div>
+
     <script>
         // Admission Popup Notification System
         (function() {
@@ -723,6 +910,125 @@
                     showRandomAdmission();
                 }
             }, 45000 + Math.random() * 15000);
+        })();
+
+        // Program Popup Notification System
+        (function() {
+            const popup = document.getElementById('programPopup');
+            const popupBody = document.getElementById('programPopupBody');
+            const popupImage = document.getElementById('programPopupImage');
+            let lastShownIndex = -1;
+            let programsData = [];
+
+            // Fetch random programs
+            const fetchRandomPrograms = async () => {
+                try {
+                    const response = await fetch('<?= base_url('frontend/api/random-programs') ?>?limit=3');
+                    const data = await response.json();
+                    
+                    if (data.success && data.programs && data.programs.length > 0) {
+                        programsData = data.programs;
+                        // Show popup after 5 seconds on page load
+                        setTimeout(() => {
+                            showRandomProgram();
+                        }, 5000);
+                        
+                        // Show popup periodically (every 60-90 seconds)
+                        setInterval(() => {
+                            if (programsData.length > 0) {
+                                showRandomProgram();
+                            }
+                        }, 60000 + Math.random() * 30000);
+                    }
+                } catch (error) {
+                    console.error('Error fetching random programs:', error);
+                }
+            };
+
+            // Show random program popup
+            const showRandomProgram = () => {
+                if (programsData.length === 0) return;
+
+                // Pick a random program (different from last shown)
+                let randomIndex;
+                if (programsData.length > 1) {
+                    do {
+                        randomIndex = Math.floor(Math.random() * programsData.length);
+                    } while (randomIndex === lastShownIndex);
+                } else {
+                    randomIndex = 0;
+                }
+
+                lastShownIndex = randomIndex;
+                const program = programsData[randomIndex];
+
+                // Format price
+                const formatPrice = (price) => {
+                    return new Intl.NumberFormat('id-ID', { 
+                        style: 'currency', 
+                        currency: 'IDR',
+                        minimumFractionDigits: 0
+                    }).format(price);
+                };
+
+                // Update popup content
+                if (program.thumbnail) {
+                    popupImage.src = program.thumbnail;
+                    popupImage.style.display = 'block';
+                } else {
+                    popupImage.style.display = 'none';
+                }
+
+                let priceHtml = '';
+                if (program.original_price > 0) {
+                    if (program.discount > 0) {
+                        priceHtml = `
+                            <span class="program-popup-original">${formatPrice(program.original_price)}</span>
+                            <span class="program-popup-discount">-${program.discount}%</span>
+                            <span class="program-popup-final">${formatPrice(program.final_price)}</span>
+                        `;
+                    } else {
+                        priceHtml = `<span class="program-popup-final">${formatPrice(program.original_price)}</span>`;
+                    }
+                }
+
+                popupBody.innerHTML = `
+                    <div class="program-popup-name">${escapeHtml(program.title)}</div>
+                    <div class="program-popup-meta">
+                        <span class="program-popup-language"><i class="bi bi-translate me-1"></i>${escapeHtml(program.language || 'General')}</span>
+                    </div>
+                    ${priceHtml ? `<div class="program-popup-price">${priceHtml}</div>` : ''}
+                    <a href="${program.url}" class="program-popup-cta" target="_blank">
+                        Lihat Detail <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                `;
+
+                // Show popup
+                popup.classList.remove('hide');
+                popup.classList.add('show');
+
+                // Auto-hide after 8 seconds
+                setTimeout(() => {
+                    hideProgramPopup();
+                }, 8000);
+            };
+
+            // Hide popup with animation
+            const hideProgramPopup = () => {
+                popup.classList.remove('show');
+                popup.classList.add('hide');
+                setTimeout(() => {
+                    popup.classList.remove('hide');
+                }, 300);
+            };
+
+            // Close popup manually
+            window.closeProgramPopup = function() {
+                hideProgramPopup();
+            };
+
+            // Initial fetch
+            fetchRandomPrograms();
         })();
     </script> 
   

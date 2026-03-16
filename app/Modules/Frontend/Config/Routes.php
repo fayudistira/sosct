@@ -33,5 +33,6 @@ $routes->group('', ['namespace' => 'Modules\Frontend\Controllers'], function ($r
 // Frontend API routes (for popup notifications, etc.)
 $routes->group('frontend/api', ['namespace' => 'Modules\Frontend\Controllers\Api'], function ($routes) {
     $routes->get('recent-admissions', 'FrontendApiController::recentAdmissions');
+    $routes->get('random-programs', 'FrontendApiController::randomPrograms');
     $routes->post('test-registration', 'FrontendApiController::registerTest');
 });

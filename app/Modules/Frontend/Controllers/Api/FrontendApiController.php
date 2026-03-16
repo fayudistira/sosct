@@ -4,6 +4,7 @@ namespace Modules\Frontend\Controllers\Api;
 
 use CodeIgniter\RESTful\ResourceController;
 use Modules\Admission\Models\AdmissionModel;
+use Modules\Program\Models\ProgramModel;
 use Modules\Test\Models\TestRegistrationModel;
 
 class FrontendApiController extends ResourceController
@@ -86,6 +87,50 @@ class FrontendApiController extends ResourceController
         } else {
             return date('d M Y', $timestamp);
         }
+    }
+
+    /**
+     * Get random programs for popup
+     * 
+     * GET /frontend/api/random-programs
+     * 
+     * @return \CodeIgniter\HTTP\ResponseInterface
+     */
+    public function randomPrograms()
+    {
+        $programModel = new ProgramModel();
+        $limit = (int) ($this->request->getGet('limit') ?? 3);
+        
+        // Get random programs
+        $programs = $programModel->getRandomPrograms($limit);
+        
+        // Format the data for display
+        $formattedPrograms = array_map(function ($program) {
+            // Calculate discounted price if discount exists
+            $originalPrice = $program['tuition_fee'] ?? 0;
+            $discount = $program['discount'] ?? 0;
+            $finalPrice = $originalPrice > 0 && $discount > 0 
+                ? $originalPrice - ($originalPrice * $discount / 100) 
+                : $originalPrice;
+            
+            return [
+                'id' => $program['id'],
+                'title' => $program['title'],
+                'description' => $program['description'] ? substr(strip_tags($program['description']), 0, 100) . '...' : '',
+                'thumbnail' => $program['thumbnail'],
+                'language' => $program['language'],
+                'category' => $program['category'],
+                'original_price' => $originalPrice,
+                'discount' => $discount,
+                'final_price' => $finalPrice,
+                'url' => base_url('programs/' . $program['id']),
+            ];
+        }, $programs);
+        
+        return $this->respond([
+            'success' => true,
+            'programs' => $formattedPrograms
+        ]);
     }
 
     /**
