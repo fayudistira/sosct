@@ -952,7 +952,12 @@
 
             // Show random program popup
             const showRandomProgram = () => {
-                if (programsData.length === 0) return;
+                if (programsData.length === 0) {
+                    console.log('No programs data to show');
+                    return;
+                }
+
+                console.log('Showing program popup with data:', programsData);
 
                 // Pick a random program (different from last shown)
                 let randomIndex;
@@ -1009,8 +1014,10 @@
                 `;
 
                 // Show popup
+                console.log('Adding show class to popup, current classes:', popup.className);
                 popup.classList.remove('hide');
                 popup.classList.add('show');
+                console.log('Popup shown, classes now:', popup.className);
 
                 // Auto-hide after 8 seconds
                 setTimeout(() => {
