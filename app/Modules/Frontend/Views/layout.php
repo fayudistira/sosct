@@ -817,7 +817,7 @@
 
     <script>
         // Escape HTML to prevent XSS (global function)
-        const escapeHtml = (text) => {
+        window.escapeHtml = (text) => {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
