@@ -113,11 +113,17 @@ class FrontendApiController extends ResourceController
                 ? $originalPrice - ($originalPrice * $discount / 100) 
                 : $originalPrice;
             
+            // Build thumbnail URL
+            $thumbnailUrl = null;
+            if (!empty($program['thumbnail'])) {
+                $thumbnailUrl = base_url('uploads/programs/thumbs/' . $program['thumbnail']);
+            }
+            
             return [
                 'id' => $program['id'],
                 'title' => $program['title'],
                 'description' => $program['description'] ? substr(strip_tags($program['description']), 0, 100) . '...' : '',
-                'thumbnail' => $program['thumbnail'],
+                'thumbnail' => $thumbnailUrl,
                 'language' => $program['language'],
                 'category' => $program['category'],
                 'original_price' => $originalPrice,
