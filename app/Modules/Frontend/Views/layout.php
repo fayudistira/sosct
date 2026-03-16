@@ -816,6 +816,13 @@
     </div>
 
     <script>
+        // Escape HTML to prevent XSS (global function)
+        const escapeHtml = (text) => {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        };
+
         // Admission Popup Notification System
         (function() {
             const popup = document.getElementById('admissionPopup');
@@ -887,13 +894,6 @@
             // Close popup manually
             window.closeAdmissionPopup = function() {
                 hidePopup();
-            };
-
-            // Escape HTML to prevent XSS
-            const escapeHtml = (text) => {
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
             };
 
             // Initial fetch after page load
