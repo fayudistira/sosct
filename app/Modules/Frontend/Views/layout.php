@@ -316,7 +316,7 @@
             position: fixed;
             bottom: 20px;
             left: 20px;
-            z-index: 9999;
+            z-index: 10000;
             max-width: 320px;
             background: white;
             border-radius: 12px;
@@ -421,7 +421,7 @@
                 bottom: 20px;
                 right: 20px;
                 left: auto;
-                z-index: 9999;
+                z-index: 10000;
                 max-width: 350px;
                 background: white;
                 border-radius: 12px;
@@ -923,15 +923,18 @@
             // Fetch random programs
             const fetchRandomPrograms = async () => {
                 try {
+                    console.log('Fetching random programs...');
                     const response = await fetch('<?= base_url('frontend/api/random-programs') ?>?limit=3');
                     const data = await response.json();
+                    console.log('Programs API response:', data);
                     
                     if (data.success && data.programs && data.programs.length > 0) {
                         programsData = data.programs;
-                        // Show popup after 5 seconds on page load
+                        console.log('Programs loaded:', programsData.length);
+                        // Show popup after 3 seconds on page load
                         setTimeout(() => {
                             showRandomProgram();
-                        }, 5000);
+                        }, 3000);
                         
                         // Show popup periodically (every 60-90 seconds)
                         setInterval(() => {
@@ -939,6 +942,8 @@
                                 showRandomProgram();
                             }
                         }, 60000 + Math.random() * 30000);
+                    } else {
+                        console.log('No programs found or API error');
                     }
                 } catch (error) {
                     console.error('Error fetching random programs:', error);
