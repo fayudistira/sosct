@@ -23,7 +23,7 @@ class InvoiceController extends BaseController
      */
     protected function generateWhatsAppUrl($invoice, $student)
     {
-        $waNumber = '6289509778659';
+        $waNumber = '6285810310950';
         $message = "Halo Admin, saya telah menyelesaikan pembayaran registrasi.\n\n";
         
         if ($student) {

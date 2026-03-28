@@ -27,7 +27,7 @@
                         </div>
                         <h5 class="fw-bold">Phone & WhatsApp</h5>
                         <p class="text-muted small">Available for quick calls or chat via WhatsApp</p>
-                        <a href="https://wa.me/6289509778659" class="h5 fw-bold text-decoration-none" style="color: var(--dark-red);">
+                        <a href="https://wa.me/6285810310950" class="h5 fw-bold text-decoration-none" style="color: var(--dark-red);">
                             +62 895 0977 8659
                         </a>
                     </div>
