@@ -145,6 +145,9 @@
                                     <a href="<?= base_url('admission/edit/' . $admission['id']) ?>" class="btn btn-outline-dark-red btn-sm" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
+                                    <button type="button" class="btn btn-outline-dark-red btn-sm" title="Forward to WhatsApp" onclick="forwardToWhatsApp(<?= $admission['id'] ?>)">
+                                        <i class="bi bi-whatsapp"></i>
+                                    </button>
                                     <button type="button" class="btn btn-outline-dark-red btn-sm" title="Delete" onclick="confirmDelete(<?= $admission['id'] ?>)">
                                         <i class="bi bi-trash"></i>
                                     </button>
@@ -286,6 +289,9 @@ function updateTable(admissions) {
                     <a href="<?= base_url('admission/edit/') ?>${admission.id}" class="btn btn-outline-dark-red btn-sm" title="Edit">
                         <i class="bi bi-pencil"></i>
                     </a>
+                    <button type="button" class="btn btn-outline-dark-red btn-sm" title="Forward to WhatsApp" onclick="forwardToWhatsApp(${admission.id})">
+                        <i class="bi bi-whatsapp"></i>
+                    </button>
                     <button type="button" class="btn btn-outline-dark-red btn-sm" title="Delete" onclick="confirmDelete(${admission.id})">
                         <i class="bi bi-trash"></i>
                     </button>
@@ -434,6 +440,78 @@ function confirmDelete(id) {
             performSearch(currentPage);
         });
     }
+}
+
+// Forward admission data to WhatsApp
+function forwardToWhatsApp(id) {
+    // Show loading state
+    const btn = event.target.closest('button');
+    const originalHtml = btn.innerHTML;
+    btn.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+    btn.disabled = true;
+    
+    // Fetch admission details
+    fetch(`<?= base_url('api/admissions/') ?>${id}`, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success' && data.data) {
+            const admission = data.data;
+            
+            // Format message as specified
+            let message = "Halo Admin, saya ingin mendaftar kursus dengan data berikut:\n\n";
+            message += "DATA PRIBADI\n";
+            message += `Nama Lengkap: ${admission.full_name || '-'}\n`;
+            message += `Nomor KTP: ${admission.citizen_id || '-'}\n`;
+            message += `Jenis Kelamin: ${admission.gender || '-'}\n`;
+            message += `Agama: ${admission.religion || '-'}\n`;
+            message += `Tempat, Tanggal Lahir: ${admission.place_of_birth || '-'}, ${admission.date_of_birth ? admission.date_of_birth.split('T')[0] : '-'}\n`;
+            message += `Alamat: ${admission.street_address || '-'}, ${admission.district || '-'}, ${admission.regency || '-'}, ${admission.province || '-'}, ${admission.postal_code || '-'}\n`;
+            message += `No. Telp: ${admission.phone || '-'}\n`;
+            message += `Email: ${admission.email || '-'}\n\n`;
+            
+            message += "KONTAK DARURAT\n";
+            message += `Nama: ${admission.emergency_contact_name || '-'} (${admission.emergency_contact_phone || '-'}) - ${admission.emergency_contact_relation || '-'}\n\n`;
+            
+            message += "DATA DAPODIK\n";
+            message += `Ayah: ${admission.father_name || '-'}\n`;
+            message += `Ibu: ${admission.mother_name || '-'}\n\n`;
+            
+            message += "PROGRAM KURSUS\n";
+            message += `Program: ${admission.program_title || '-'}\n`;
+            message += `Detail: ${admission.category || '-'}\n`;
+            message += `Mulai Kursus: ${admission.start_date || '-'}\n\n`;
+            
+            message += "INFORMASI HARGA\n";
+            message += `Harga Program: Rp ${admission.tuition_fee ? Number(admission.tuition_fee).toLocaleString('id-ID') : '0'}\n\n`;
+            
+            message += "CATATAN: Biaya registrasi Rp 500.000 dibayarkan setelah mengisi formulir ini.\n\n";
+            message += "DATA TELAH DISIMPAN KE DATABASE\n";
+            message += "Terima kasih.";
+            
+            // URL encode the message and create WhatsApp URL
+            const encodedMessage = encodeURIComponent(message);
+            const waUrl = `https://wa.me/6282240781299?text=${encodedMessage}`;
+            
+            // Open WhatsApp in new tab
+            window.open(waUrl, '_blank');
+        } else {
+            alert('Gagal memuat data pendaftaran');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat memuat data');
+    })
+    .finally(() => {
+        // Reset button state
+        btn.innerHTML = originalHtml;
+        btn.disabled = false;
+    });
 }
 </script>
 <?= $this->endSection() ?>
