@@ -464,7 +464,7 @@
         const admission = <?= json_encode($admission) ?>;
         
         // Format message as specified
-        let message = "Halo Admin, saya ingin mendaftar kursus dengan data berikut:\n\n";
+        let message = "Halo Xihuan Mandarin Indonesia, saya ingin mendaftar kursus dengan data berikut:\n\n";
         message += "DATA PRIBADI\n";
         message += `Nama Lengkap: ${admission.full_name || '-'}\n`;
         message += `Nomor KTP: ${admission.citizen_id || '-'}\n`;
@@ -487,11 +487,17 @@
         message += `Detail: ${admission.category || '-'}\n`;
         message += `Mulai Kursus: ${admission.start_date || '-'}\n\n`;
         
+        // Calculate costs
+        const programFee = Number(admission.tuition_fee) || 0;
+        const registrationFee = 500000;
+        const totalFee = programFee + registrationFee;
+        
         message += "INFORMASI HARGA\n";
-        message += `Harga Program: Rp ${admission.tuition_fee ? Number(admission.tuition_fee).toLocaleString('id-ID') : '0'}\n\n`;
+        message += `Biaya Program: Rp ${programFee.toLocaleString('id-ID')},-\n`;
+        message += `Biaya Registrasi : Rp ${registrationFee.toLocaleString('id-ID')},-\n`;
+        message += `Total : Rp ${totalFee.toLocaleString('id-ID')},-\n\n`;
         
         message += "CATATAN: Biaya registrasi Rp 500.000 dibayarkan setelah mengisi formulir ini.\n\n";
-        message += "DATA TELAH DISIMPAN KE DATABASE\n";
         message += "Terima kasih.";
         
         // URL encode the message and create WhatsApp URL
