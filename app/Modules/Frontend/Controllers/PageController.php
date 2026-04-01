@@ -95,6 +95,79 @@ class PageController extends BaseController
     }
 
     /**
+     * Display career/job vacancy page
+     */
+    public function karir(): string
+    {
+        // Job vacancies data
+        $jobVacancies = [
+            [
+                'id' => 1,
+                'title' => 'Tutor',
+                'type' => 'full-time',
+                'type_label' => 'Full Time',
+                'description' => 'Bergabunglah menjadi Tutor di Kampung Inggris Pare dan bantu kami mendidik generasi baru yang fluent dalam bahasa asing!',
+                'requirements' => [
+                    'Minimal pendidikan SMA/SMK',
+                    'Mampu berbahasa Inggris dengan baik (minimal TOEFL 450 atau setara)',
+                    'Komunikatif dan suka berbagi pengetahuan',
+                    'Bersedia bekerja di Pare, Kediri'
+                ],
+                'benefits' => [
+                    'Gaji kompetitif',
+                    'Tunjangan транспорт dan makan',
+                    'Peluang pengembangan karir',
+                    'Ambience kerja yang menyenangkan di Kampung Inggris'
+                ]
+            ],
+            [
+                'id' => 2,
+                'title' => 'Admin Sosial Media',
+                'type' => 'full-time',
+                'type_label' => 'Full Time',
+                'description' => 'Kelola kehadiran digital kami di berbagai platform sosial media dan bantu kami terhubung dengan calon siswa.',
+                'requirements' => [
+                    'Minimal pendidikan SMA/SMK',
+                    'Aktif menggunakan Instagram, Facebook, TikTok, dan YouTube',
+                    'Mampu membuat konten kreatif (gambar/video)',
+                    'Kemampuan menulis konten bahasa Inggris dan Indonesia yang baik'
+                ],
+                'benefits' => [
+                    'Gaji kompetitif',
+                    'Tunjangan transportasi',
+                    'Fleksibel waktu kerja',
+                    'Peluang mempelajari strategi marketing digital'
+                ]
+            ],
+            [
+                'id' => 3,
+                'title' => 'Admin CS',
+                'type' => 'full-time',
+                'type_label' => 'Full Time',
+                'description' => 'Hadapi langsung calon siswa dan orang tua untuk memberikan informasi dan layanan terbaik.',
+                'requirements' => [
+                    'Minimal pendidikan SMA/SMK',
+                    'Memiliki kemampuan komunikasi yang baik',
+                    'Ramah, patience, dan profesional',
+                    'Mampu mengoperasikan Microsoft Office dan WhatsApp',
+                    'Bersedia bekerja di Pare, Kediri'
+                ],
+                'benefits' => [
+                    'Gaji kompetitif',
+                    'Tunjangan транспорт dan makan',
+                    'Lingkungan kerja nyaman',
+                    'Peluang晋升 ke posisi lain'
+                ]
+            ]
+        ];
+
+        return view('Modules\Frontend\Views\karir', [
+            'title' => 'Karir - Lowongan Kerja',
+            'jobVacancies' => $jobVacancies
+        ]);
+    }
+
+    /**
      * Handle contact form submission
      */
     public function submitContact()

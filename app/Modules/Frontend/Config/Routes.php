@@ -8,6 +8,7 @@ $routes->group('', ['namespace' => 'Modules\Frontend\Controllers'], function ($r
     $routes->get('/', 'PageController::index');
     $routes->get('about', 'PageController::about');
     $routes->get('contact', 'PageController::contact');
+    $routes->get('karir', 'PageController::karir');
 
     // Programs routes
     $routes->get('programs', 'PageController::programs');
