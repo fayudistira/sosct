@@ -332,14 +332,39 @@ document.addEventListener('DOMContentLoaded', function() {
     const waBtn = document.getElementById('wa-confirm-btn');
     const countdownText = document.getElementById('countdown-text');
     
-    // Get WhatsApp URL from session
-    const waUrl = '<?= session('waUrl') ?? '' ?>';
+    // Get WhatsApp URL - regenerate from admission data if not in session
+    let waUrl = '<?= session('waUrl') ?? '' ?>';
     
-    if (waUrl && waUrl !== '') {
+    // If no waUrl in session, regenerate from admission data
+    if (!waUrl || waUrl === '') {
+        const admissionData = <?= json_encode($admission ?? []) ?>;
+        if (admissionData && admissionData.language) {
+            const language = admissionData.language.toLowerCase();
+            let waNumber = '6285810310950';
+            
+            if (language === 'mandarin') {
+                waNumber = '6282240781299';
+            } else if (language === 'japanese') {
+                waNumber = '6285607454939';
+            }
+            
+            const message = "Halo Admin, saya telah mengisi formulir pendaftaran.\n\nNo. Registrasi: " + (admissionData.registration_number || '-') + "\nProgram: " + (admissionData.program_title || '-') + "\nNama: " + (admissionData.full_name || '-') + "\nHP: " + (admissionData.phone || '-') + "\n\nMohon bantuannya!";
+            
+            waUrl = 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(message);
+            
+            if (waBtn) {
+                waBtn.href = waUrl;
+            }
+        }
+    }
+    
+    // Auto-redirect after 3 seconds only on first load (not on page revisit)
+    let hasAutoRedirected = sessionStorage.getItem('waAutoRedirected');
+    
+    if (waUrl && waUrl !== '' && !hasAutoRedirected) {
         if (waBtn && countdownText) {
             let secondsLeft = 3;
             
-            // Update countdown setiap detik
             const countdownInterval = setInterval(function() {
                 secondsLeft--;
                 if (secondsLeft > 0) {
@@ -347,12 +372,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     clearInterval(countdownInterval);
                     countdownText.textContent = 'Mengalihkan...';
-                    
-                    // Buka WhatsApp di tab baru
+                    sessionStorage.setItem('waAutoRedirected', 'true');
                     window.open(waUrl, '_blank');
                 }
             }, 1000);
         }
+    }
+    
+    // Handle manual button click
+    if (waBtn) {
+        waBtn.addEventListener('click', function() {
+            sessionStorage.setItem('waAutoRedirected', 'true');
+            if (countdownText) {
+                countdownText.style.display = 'none';
+            }
+        });
     }
 });
 </script>
