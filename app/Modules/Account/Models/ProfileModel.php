@@ -49,7 +49,7 @@ class ProfileModel extends Model
         'profile_number' => 'permit_empty|is_unique[profiles.profile_number,id,{id}]',
         'user_id' => 'permit_empty|is_natural_no_zero|is_unique[profiles.user_id,id,{id}]',
         'full_name' => 'required|max_length[100]',
-        'email' => 'required|valid_email|is_unique[profiles.email,id,{id}]',
+        'email' => 'required|valid_email',
         'gender' => 'required|in_list[Male,Female]',
         'place_of_birth' => 'required|max_length[100]',
         'date_of_birth' => 'required|valid_date',
