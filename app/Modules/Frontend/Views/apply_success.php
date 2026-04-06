@@ -265,8 +265,8 @@
                                     $message .= "Detail: " . ($admission['category'] ?? '-') . "\n";
                                     $message .= "Mulai Kursus: " . ($admission['start_date'] ?? '-') . "\n\n";
                                     
-                                    $programFee = (int) ($admission['tuition_fee'] ?? 0);
-                                    $registrationFee = 500000;
+                                     $programFee = (int) ($admission['tuition_fee'] ?? 0);
+                                     $registrationFee = (int) ($admission['registration_fee'] ?? 500000);
                                     $totalFee = $programFee + $registrationFee;
                                     
                                     $message .= "INFORMASI HARGA\n";
@@ -368,7 +368,7 @@ document.addEventListener('DOMContentLoaded', function() {
             message += "Mulai Kursus: " + (admissionData.start_date || '-') + "\n\n";
             
             const programFee = Number(admissionData.tuition_fee) || 0;
-            const registrationFee = 500000;
+            const registrationFee = Number(admissionData.registration_fee) || 500000;
             const totalFee = programFee + registrationFee;
             
             message += "INFORMASI HARGA\n";

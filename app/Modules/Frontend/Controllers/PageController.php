@@ -620,9 +620,9 @@ class PageController extends BaseController
         if ($registrationNumber) {
             $admissionModel = new \Modules\Admission\Models\AdmissionModel();
             $profileModel = new \Modules\Account\Models\ProfileModel();
-            
+
             $admissionData = $admissionModel
-                ->select('admissions.*, profiles.*, programs.title as program_title')
+                ->select('admissions.*, profiles.*, programs.*')
                 ->join('profiles', 'profiles.id = admissions.profile_id')
                 ->join('programs', 'programs.id = admissions.program_id')
                 ->where('admissions.registration_number', $registrationNumber)
