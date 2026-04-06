@@ -235,48 +235,48 @@
                                 $waUrl = session('waUrl') ?? '';
                                 
                                 if (!$waUrl && isset($admission)) {
-                                    // Fallback: determine WhatsApp number based on program language
-                                    $language = strtolower($admission['language'] ?? '');
-                                    switch ($language) {
-                                        case 'mandarin':
-                                            $waNumber = '6282240781299';
-                                            break;
-                                        case 'japanese':
-                                            $waNumber = '6285607454939';
-                                            break;
-                                        default:
-                                            $waNumber = '6285810310950';
-                                    }
+                                    $waNumber = '6282240781299';
                                     
-                                    $message = "Halo Admin, saya telah mengisi formulir pendaftaran.\n\n";
-                                    $message .= "=== DATA PENDAFTARAN ===\n";
-                                    $message .= "No. Registrasi: " . ($admission['registration_number'] ?? '-') . "\n";
-                                    $message .= "Program: " . ($admission['program_title'] ?? '-') . "\n\n";
-                                    $message .= "=== DATA PRIBADI ===\n";
+                                    $message = "Halo Xihuan Mandarin Indonesia, saya ingin mendaftar kursus dengan data berikut:\n\n";
+                                    $message .= "DATA PRIBADI\n";
                                     $message .= "Nama Lengkap: " . ($admission['full_name'] ?? '-') . "\n";
-                                    $message .= "Nama Panggilan: " . ($admission['nickname'] ?? '-') . "\n";
+                                    $message .= "Nomor KTP: " . ($admission['citizen_id'] ?? '-') . "\n";
                                     $message .= "Jenis Kelamin: " . ($admission['gender'] ?? '-') . "\n";
-                                    $message .= "Tempat Lahir: " . ($admission['place_of_birth'] ?? '-') . "\n";
-                                    $message .= "Tanggal Lahir: " . ($admission['date_of_birth'] ?? '-') . "\n";
                                     $message .= "Agama: " . ($admission['religion'] ?? '-') . "\n";
-                                    $message .= "KTP: " . ($admission['citizen_id'] ?? '-') . "\n\n";
-                                    $message .= "=== KONTAK ===\n";
-                                    $message .= "HP: " . ($admission['phone'] ?? '-') . "\n";
+                                    
+                                    $dob = $admission['date_of_birth'] ?? '-';
+                                    if ($dob !== '-' && strpos($dob, 'T') !== false) {
+                                        $dob = explode('T', $dob)[0];
+                                    }
+                                    $message .= "Tempat, Tanggal Lahir: " . ($admission['place_of_birth'] ?? '-') . ", " . $dob . "\n";
+                                    $message .= "Alamat: " . ($admission['street_address'] ?? '-') . ", " . ($admission['district'] ?? '-') . ", " . ($admission['regency'] ?? '-') . ", " . ($admission['province'] ?? '-') . ", " . ($admission['postal_code'] ?? '-') . "\n";
+                                    $message .= "No. Telp: " . ($admission['phone'] ?? '-') . "\n";
                                     $message .= "Email: " . ($admission['email'] ?? '-') . "\n\n";
-                                    $message .= "=== ALAMAT ===\n";
-                                    $message .= "Jalan: " . ($admission['street_address'] ?? '-') . "\n";
-                                    $message .= "Kecamatan: " . ($admission['district'] ?? '-') . "\n";
-                                    $message .= "Kab/Kota: " . ($admission['regency'] ?? '-') . "\n";
-                                    $message .= "Provinsi: " . ($admission['province'] ?? '-') . "\n";
-                                    $message .= "Kode Pos: " . ($admission['postal_code'] ?? '-') . "\n\n";
-                                    $message .= "=== KONTAK DARURAT ===\n";
-                                    $message .= "Nama: " . ($admission['emergency_contact_name'] ?? '-') . "\n";
-                                    $message .= "HP: " . ($admission['emergency_contact_phone'] ?? '-') . "\n";
-                                    $message .= "Hubungan: " . ($admission['emergency_contact_relation'] ?? '-') . "\n\n";
-                                    $message .= "=== DATA KELUARGA ===\n";
-                                    $message .= "Nama Ayah: " . ($admission['father_name'] ?? '-') . "\n";
-                                    $message .= "Nama Ibu: " . ($admission['mother_name'] ?? '-') . "\n\n";
-                                    $message .= "Mohon bantuannya untuk memproses pendaftaran saya. Terima kasih!";
+                                    
+                                    $message .= "KONTAK DARURAT\n";
+                                    $message .= "Nama: " . ($admission['emergency_contact_name'] ?? '-') . " (" . ($admission['emergency_contact_phone'] ?? '-') . ") - " . ($admission['emergency_contact_relation'] ?? '-') . "\n\n";
+                                    
+                                    $message .= "DATA DAPODIK\n";
+                                    $message .= "Ayah: " . ($admission['father_name'] ?? '-') . "\n";
+                                    $message .= "Ibu: " . ($admission['mother_name'] ?? '-') . "\n\n";
+                                    
+                                    $message .= "PROGRAM KURSUS\n";
+                                    $message .= "Program: " . ($admission['program_title'] ?? '-') . "\n";
+                                    $message .= "Detail: " . ($admission['category'] ?? '-') . "\n";
+                                    $message .= "Mulai Kursus: " . ($admission['start_date'] ?? '-') . "\n\n";
+                                    
+                                    $programFee = (int) ($admission['tuition_fee'] ?? 0);
+                                    $registrationFee = 500000;
+                                    $totalFee = $programFee + $registrationFee;
+                                    
+                                    $message .= "INFORMASI HARGA\n";
+                                    $message .= "Biaya Program: Rp " . number_format($programFee, 0, ',', '.') . ",-\n";
+                                    $message .= "Biaya Registrasi : Rp " . number_format($registrationFee, 0, ',', '.') . ",-\n";
+                                    $message .= "Total : Rp " . number_format($totalFee, 0, ',', '.') . ",-\n\n";
+                                    
+                                    $message .= "CATATAN: Biaya registrasi Rp 500.000 dibayarkan setelah mengisi formulir ini.\n\n";
+                                    $message .= "Terima kasih.";
+                                    
                                     $waUrl = "https://wa.me/" . $waNumber . "?text=" . urlencode($message);
                                 }
                                 ?>
@@ -338,19 +338,48 @@ document.addEventListener('DOMContentLoaded', function() {
     // If no waUrl in session, regenerate from admission data
     if (!waUrl || waUrl === '') {
         const admissionData = <?= json_encode($admission ?? []) ?>;
-        if (admissionData && admissionData.language) {
-            const language = admissionData.language.toLowerCase();
-            let waNumber = '6285810310950';
+        if (admissionData && admissionData.full_name) {
+            let message = "Halo Xihuan Mandarin Indonesia, saya ingin mendaftar kursus dengan data berikut:\n\n";
+            message += "DATA PRIBADI\n";
+            message += "Nama Lengkap: " + (admissionData.full_name || '-') + "\n";
+            message += "Nomor KTP: " + (admissionData.citizen_id || '-') + "\n";
+            message += "Jenis Kelamin: " + (admissionData.gender || '-') + "\n";
+            message += "Agama: " + (admissionData.religion || '-') + "\n";
             
-            if (language === 'mandarin') {
-                waNumber = '6282240781299';
-            } else if (language === 'japanese') {
-                waNumber = '6285607454939';
+            let dob = admissionData.date_of_birth || '-';
+            if (dob !== '-' && dob.includes('T')) {
+                dob = dob.split('T')[0];
             }
+            message += "Tempat, Tanggal Lahir: " + (admissionData.place_of_birth || '-') + ", " + dob + "\n";
+            message += "Alamat: " + (admissionData.street_address || '-') + ", " + (admissionData.district || '-') + ", " + (admissionData.regency || '-') + ", " + (admissionData.province || '-') + ", " + (admissionData.postal_code || '-') + "\n";
+            message += "No. Telp: " + (admissionData.phone || '-') + "\n";
+            message += "Email: " + (admissionData.email || '-') + "\n\n";
             
-            const message = "Halo Admin, saya telah mengisi formulir pendaftaran.\n\nNo. Registrasi: " + (admissionData.registration_number || '-') + "\nProgram: " + (admissionData.program_title || '-') + "\nNama: " + (admissionData.full_name || '-') + "\nHP: " + (admissionData.phone || '-') + "\n\nMohon bantuannya!";
+            message += "KONTAK DARURAT\n";
+            message += "Nama: " + (admissionData.emergency_contact_name || '-') + " (" + (admissionData.emergency_contact_phone || '-') + ") - " + (admissionData.emergency_contact_relation || '-') + "\n\n";
             
-            waUrl = 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(message);
+            message += "DATA DAPODIK\n";
+            message += "Ayah: " + (admissionData.father_name || '-') + "\n";
+            message += "Ibu: " + (admissionData.mother_name || '-') + "\n\n";
+            
+            message += "PROGRAM KURSUS\n";
+            message += "Program: " + (admissionData.program_title || '-') + "\n";
+            message += "Detail: " + (admissionData.category || '-') + "\n";
+            message += "Mulai Kursus: " + (admissionData.start_date || '-') + "\n\n";
+            
+            const programFee = Number(admissionData.tuition_fee) || 0;
+            const registrationFee = 500000;
+            const totalFee = programFee + registrationFee;
+            
+            message += "INFORMASI HARGA\n";
+            message += "Biaya Program: Rp " + programFee.toLocaleString('id-ID') + ",-\n";
+            message += "Biaya Registrasi : Rp " + registrationFee.toLocaleString('id-ID') + ",-\n";
+            message += "Total : Rp " + totalFee.toLocaleString('id-ID') + ",-\n\n";
+            
+            message += "CATATAN: Biaya registrasi Rp 500.000 dibayarkan setelah mengisi formulir ini.\n\n";
+            message += "Terima kasih.";
+            
+            waUrl = 'https://wa.me/6282240781299?text=' + encodeURIComponent(message);
             
             if (waBtn) {
                 waBtn.href = waUrl;
