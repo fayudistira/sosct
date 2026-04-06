@@ -345,7 +345,7 @@ document.addEventListener('DOMContentLoaded', function() {
             message += "Nomor KTP: " + (admissionData.citizen_id || '-') + "\n";
             message += "Jenis Kelamin: " + (admissionData.gender || '-') + "\n";
             message += "Agama: " + (admissionData.religion || '-') + "\n";
-            
+
             let dob = admissionData.date_of_birth || '-';
             if (dob !== '-' && dob.includes('T')) {
                 dob = dob.split('T')[0];
@@ -354,32 +354,44 @@ document.addEventListener('DOMContentLoaded', function() {
             message += "Alamat: " + (admissionData.street_address || '-') + ", " + (admissionData.district || '-') + ", " + (admissionData.regency || '-') + ", " + (admissionData.province || '-') + ", " + (admissionData.postal_code || '-') + "\n";
             message += "No. Telp: " + (admissionData.phone || '-') + "\n";
             message += "Email: " + (admissionData.email || '-') + "\n\n";
-            
+
             message += "KONTAK DARURAT\n";
             message += "Nama: " + (admissionData.emergency_contact_name || '-') + " (" + (admissionData.emergency_contact_phone || '-') + ") - " + (admissionData.emergency_contact_relation || '-') + "\n\n";
-            
+
             message += "DATA DAPODIK\n";
             message += "Ayah: " + (admissionData.father_name || '-') + "\n";
             message += "Ibu: " + (admissionData.mother_name || '-') + "\n\n";
-            
+
             message += "PROGRAM KURSUS\n";
             message += "Program: " + (admissionData.program_title || '-') + "\n";
             message += "Detail: " + (admissionData.category || '-') + "\n";
             message += "Mulai Kursus: " + (admissionData.start_date || '-') + "\n\n";
-            
+
             const programFee = Number(admissionData.tuition_fee) || 0;
             const registrationFee = Number(admissionData.registration_fee) || 500000;
             const totalFee = programFee + registrationFee;
-            
+
             message += "INFORMASI HARGA\n";
             message += "Biaya Program: Rp " + programFee.toLocaleString('id-ID') + ",-\n";
             message += "Biaya Registrasi : Rp " + registrationFee.toLocaleString('id-ID') + ",-\n";
             message += "Total : Rp " + totalFee.toLocaleString('id-ID') + ",-\n\n";
-            
-            message += "CATATAN: Biaya registrasi Rp 500.000 dibayarkan setelah mengisi formulir ini.\n\n";
+
+            message += "CATATAN: Biaya registrasi Rp " + registrationFee.toLocaleString('id-ID') + " dibayarkan setelah mengisi formulir ini.\n\n";
             message += "Terima kasih.";
-            
-            waUrl = 'https://wa.me/6282240781299?text=' + encodeURIComponent(message);
+
+            // Determine WhatsApp number based on program language
+            let waNumber = '6285810310950'; // Default (Korean, German, English)
+            const programLanguage = (admissionData.language || '').toLowerCase().trim();
+            switch (programLanguage) {
+                case 'mandarin':
+                    waNumber = '6282240781299'; // 0822-4078-1299
+                    break;
+                case 'japanese':
+                    waNumber = '6285607454939'; // 0856-0745-4939
+                    break;
+            }
+
+            waUrl = 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(message);
             
             if (waBtn) {
                 waBtn.href = waUrl;
