@@ -23,7 +23,20 @@ class InvoiceController extends BaseController
      */
     protected function generateWhatsAppUrl($invoice, $student)
     {
-        $waNumber = '6285810310950';
+        // Determine WhatsApp number based on program language
+        $language = strtolower(trim($student['language'] ?? ''));
+        switch ($language) {
+            case 'mandarin':
+                $waNumber = '6282240781299'; // 0822-4078-1299
+                break;
+            case 'japanese':
+                $waNumber = '6285607454939'; // 0856-0745-4939
+                break;
+            default:
+                $waNumber = '6285810310950'; // 0858-1031-0950 (Korean, German, English, etc)
+                break;
+        }
+
         $message = "Halo Admin, saya telah menyelesaikan pembayaran registrasi.\n\n";
         
         if ($student) {

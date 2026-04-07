@@ -365,13 +365,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const waBtn = document.getElementById('wa-confirm-btn');
     const countdownText = document.getElementById('countdown-text');
     
-    // Get WhatsApp URL from session (passed via controller)
-    const waUrl = '<?= session('waUrl') ?? '' ?>';
-    
+    // Get WhatsApp URL from session first, then from controller-passed waUrl
+    let waUrl = '<?= session('waUrl') ?? '' ?>';
+
+    // If no session waUrl, use the one passed from controller
+    if (!waUrl || waUrl === '') {
+        waUrl = '<?= $waUrl ?? '' ?>';
+    }
+
+    // Update button href with the correct waUrl
+    if (waBtn) {
+        waBtn.href = waUrl || '#';
+    }
+
     if (waUrl && waUrl !== '') {
         if (waBtn && countdownText) {
             let secondsLeft = 3;
-            
+
             // Update countdown setiap detik
             const countdownInterval = setInterval(function() {
                 secondsLeft--;
@@ -380,11 +390,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     clearInterval(countdownInterval);
                     countdownText.textContent = 'Mengalihkan...';
-                    
+
                     // Buka WhatsApp di tab baru
                     window.open(waUrl, '_blank');
                 }
             }, 1000);
+        }
+    } else {
+        // If no waUrl available, hide countdown and update button text
+        if (countdownText) {
+            countdownText.textContent = 'Klik tombol di atas untuk konfirmasi pembayaran';
         }
     }
 });
