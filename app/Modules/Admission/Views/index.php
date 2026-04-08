@@ -72,18 +72,25 @@
 <!-- Search Bar -->
 <div class="row mb-3">
     <div class="col-md-8">
-        <div class="input-group">
-            <input type="text" id="search-input" class="form-control" placeholder="Cari berdasarkan nama, email, nomor registrasi, atau telepon..." value="<?= esc($keyword ?? '') ?>">
-            <select id="status-filter" class="form-select" style="max-width: 150px;">
-                <option value="">Semua Status</option>
-                <option value="pending">Pending</option>
-                <option value="approved">Approved</option>
-                <option value="rejected">Rejected</option>
-            </select>
-            <button type="button" id="clear-filters" class="btn btn-outline-secondary" title="Clear Filters">
-                <i class="bi bi-x-circle"></i>
-            </button>
-        </div>
+        <form id="search-form" method="GET" action="<?= base_url('admission') ?>">
+            <div class="input-group">
+                <input type="text" name="q" id="search-input" class="form-control" placeholder="Cari berdasarkan nama, email, nomor registrasi, atau telepon..." value="<?= esc($keyword ?? '') ?>">
+                <select name="status" id="status-filter" class="form-select" style="max-width: 150px;">
+                    <option value="">Semua Status</option>
+                    <option value="pending" <?= ($statusFilter ?? '') === 'pending' ? 'selected' : '' ?>>Pending</option>
+                    <option value="approved" <?= ($statusFilter ?? '') === 'approved' ? 'selected' : '' ?>>Approved</option>
+                    <option value="rejected" <?= ($statusFilter ?? '') === 'rejected' ? 'selected' : '' ?>>Rejected</option>
+                </select>
+                <input type="hidden" name="sort" id="sort-input" value="<?= $currentSort ?? 'application_date' ?>">
+                <input type="hidden" name="order" id="order-input" value="<?= $currentOrder ?? 'desc' ?>">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i>
+                </button>
+                <button type="button" id="clear-filters" class="btn btn-outline-secondary" title="Clear Filters">
+                    <i class="bi bi-x-circle"></i>
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -166,9 +173,19 @@
         <?php if (isset($totalPages) && $totalPages > 1): ?>
             <nav>
                 <ul class="pagination justify-content-center mb-0">
+                    <?php
+                    // Build query string for pagination links
+                    $queryParams = [];
+                    if (!empty($keyword)) $queryParams['q'] = $keyword;
+                    if (!empty($statusFilter)) $queryParams['status'] = $statusFilter;
+                    if (!empty($currentSort) && $currentSort !== 'application_date') $queryParams['sort'] = $currentSort;
+                    if (!empty($currentOrder) && $currentOrder !== 'desc') $queryParams['order'] = $currentOrder;
+
+                    $queryString = !empty($queryParams) ? '?' . http_build_query($queryParams) : '';
+                    ?>
                     <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                         <li class="page-item <?= ($currentPage ?? 1) == $i ? 'active' : '' ?>">
-                            <a class="page-link" href="<?= base_url('admission?page=' . $i) ?>"><?= $i ?></a>
+                            <a class="page-link" href="<?= base_url('admission' . $queryString . ($queryString ? '&' : '?') . 'page=' . $i) ?>"><?= $i ?></a>
                         </li>
                     <?php endfor ?>
                 </ul>
@@ -184,10 +201,27 @@
 
 <script>
 let searchTimeout;
-let currentPage = 1;
-let currentSort = 'application_date';
-let currentOrder = 'desc';
-let totalRecords = 0;
+let currentPage = <?= $currentPage ?? 1 ?>;
+let currentSort = '<?= $currentSort ?? 'application_date' ?>';
+let currentOrder = '<?= $currentOrder ?? 'desc' ?>';
+let totalRecords = <?= $totalAdmissions ?? 0 ?>;
+
+// Initialize sort indicators on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateSortIndicators();
+});
+
+function updateSortIndicators() {
+    // Update sort indicators
+    document.querySelectorAll('.sortable').forEach(th => {
+        th.classList.remove('asc', 'desc');
+    });
+
+    const activeHeader = document.querySelector(`.sortable[data-sort="${currentSort}"]`);
+    if (activeHeader) {
+        activeHeader.classList.add(currentOrder);
+    }
+}
 
 // Debounced search function
 function debounceSearch() {
@@ -390,15 +424,12 @@ function handleSort(sortField) {
         currentOrder = 'asc';
     }
 
-    // Update sort indicators
-    document.querySelectorAll('.sortable').forEach(th => {
-        th.classList.remove('asc', 'desc');
-    });
+    // Update hidden form fields
+    document.getElementById('sort-input').value = currentSort;
+    document.getElementById('order-input').value = currentOrder;
 
-    const clickedHeader = document.querySelector(`.sortable[data-sort="${sortField}"]`);
-    if (clickedHeader) {
-        clickedHeader.classList.add(currentOrder);
-    }
+    // Update sort indicators
+    updateSortIndicators();
 
     performSearch(1);
 }
@@ -407,10 +438,23 @@ function handleSort(sortField) {
 document.getElementById('search-input').addEventListener('input', debounceSearch);
 document.getElementById('status-filter').addEventListener('change', () => performSearch(1));
 
+// Allow form submission on Enter key
+document.getElementById('search-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('search-form').submit();
+    }
+});
+
 // Clear filters
 document.getElementById('clear-filters').addEventListener('click', function() {
     document.getElementById('search-input').value = '';
     document.getElementById('status-filter').value = '';
+    document.getElementById('sort-input').value = 'application_date';
+    document.getElementById('order-input').value = 'desc';
+    currentSort = 'application_date';
+    currentOrder = 'desc';
+    updateSortIndicators();
     performSearch(1);
 });
 

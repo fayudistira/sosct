@@ -28,19 +28,86 @@ class AdmissionController extends BaseController
      */
     public function index(): string
     {
-        // Use getAllWithDetails to get joined data from profiles and programs
-        $allAdmissions = $this->admissionModel->getAllWithDetails();
+        // Handle search and filter parameters
+        $search = $this->request->getGet('q');
+        $status = $this->request->getGet('status');
+        $sort = $this->request->getGet('sort') ?? 'application_date';
+        $order = $this->request->getGet('order') ?? 'desc';
 
-        // Manual pagination (since we're using a custom query)
+        // Validate sort order
+        $order = strtolower($order) === 'asc' ? 'ASC' : 'DESC';
+
+        // Allowed sort fields
+        $allowedSortFields = [
+            'registration_number' => 'admissions.registration_number',
+            'full_name' => 'profiles.full_name',
+            'email' => 'profiles.email',
+            'phone' => 'profiles.phone',
+            'program_title' => 'programs.title',
+            'status' => 'admissions.status',
+            'application_date' => 'admissions.application_date'
+        ];
+
+        // Validate sort field
+        $sortField = $allowedSortFields[$sort] ?? 'admissions.application_date';
+
+        // Build query
+        $query = $this->admissionModel->select('
+                admissions.id,
+                admissions.registration_number,
+                admissions.status,
+                admissions.application_date,
+                admissions.start_date,
+                profiles.full_name,
+                profiles.email,
+                profiles.phone,
+                programs.title as program_title,
+                programs.category
+            ')
+            ->join('profiles', 'profiles.id = admissions.profile_id')
+            ->join('programs', 'programs.id = admissions.program_id', 'left');
+
+        // Apply search filter
+        if (!empty($search)) {
+            $query->groupStart()
+                ->like('admissions.registration_number', $search)
+                ->orLike('profiles.full_name', $search)
+                ->orLike('profiles.email', $search)
+                ->orLike('profiles.phone', $search)
+                ->orLike('programs.title', $search)
+                ->groupEnd();
+        }
+
+        // Apply status filter
+        if (!empty($status)) {
+            $query->where('admissions.status', $status);
+        }
+
+        // Apply sorting
+        $query->orderBy($sortField, $order);
+
+        // Get total count for pagination
+        $totalRecords = $query->countAllResults(false);
+
+        // Manual pagination
         $perPage = 10;
         $page = $this->request->getGet('page') ?? 1;
         $offset = ($page - 1) * $perPage;
 
-        $data['admissions'] = array_slice($allAdmissions, $offset, $perPage);
-        $data['totalAdmissions'] = count($allAdmissions);
+        // Get paginated results
+        $admissions = $query->limit($perPage, $offset)->findAll();
+
+        $data['admissions'] = $admissions;
+        $data['totalAdmissions'] = $totalRecords;
         $data['currentPage'] = $page;
         $data['perPage'] = $perPage;
-        $data['totalPages'] = ceil(count($allAdmissions) / $perPage);
+        $data['totalPages'] = ceil($totalRecords / $perPage);
+
+        // Pass search/filter parameters to view for form population
+        $data['keyword'] = $search;
+        $data['statusFilter'] = $status;
+        $data['currentSort'] = $sort;
+        $data['currentOrder'] = strtolower($order);
 
         $data['statusCounts'] = $this->admissionModel->getStatusCounts();
         $data['menuItems'] = $this->loadModuleMenus();
