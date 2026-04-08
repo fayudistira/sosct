@@ -26,8 +26,8 @@ $routes->group('admission', ['namespace' => 'Modules\Admission\Controllers', 'fi
     $routes->get('switch-history/(:num)', 'SwitchProgramController::getHistory/$1');
 });
 
-// API Routes (RESTful) - Protected by session filter for AJAX calls
-$routes->group('api/admissions', ['namespace' => 'Modules\Admission\Controllers\Api', 'filter' => 'tokens'], function($routes) {
+// API Routes (RESTful) - Protected by session filter for AJAX calls from admin panel
+$routes->group('api/admissions', ['namespace' => 'Modules\Admission\Controllers\Api', 'filter' => 'session'], function($routes) {
     // CRUD operations (MUST be after specific routes)
     $routes->get('/', 'AdmissionApiController::index');
     $routes->post('/', 'AdmissionApiController::create');

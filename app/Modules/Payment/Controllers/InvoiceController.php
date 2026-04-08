@@ -452,6 +452,7 @@ class InvoiceController extends BaseController
                 profiles.phone,
                 programs.title as program_title,
                 programs.category,
+                programs.language,
                 programs.tuition_fee,
                 programs.registration_fee as program_registration_fee
             ')
@@ -490,7 +491,8 @@ class InvoiceController extends BaseController
             'student' => $student,
             'installment' => $installment,
             'invoiceHistory' => $invoiceHistory,
-            'totalPaid' => $totalPaid
+            'totalPaid' => $totalPaid,
+            'waUrl' => $this->generateWhatsAppUrl($invoice, $student)
         ]);
     }
 

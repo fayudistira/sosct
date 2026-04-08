@@ -23,7 +23,7 @@ class AdmissionController extends BaseController
 
     /**
      * List all admissions with pagination and stats
-     * 
+     *
      * @return string
      */
     public function index(): string

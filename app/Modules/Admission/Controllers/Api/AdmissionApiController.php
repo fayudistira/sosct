@@ -43,7 +43,17 @@ class AdmissionApiController extends ResourceController
         $sortField = $allowedSortFields[$sort] ?? 'admissions.application_date';
         
         // Build query
-        $builder = $this->model->select('admissions.*, profiles.full_name, profiles.email, profiles.phone, programs.title as program_title')
+        $builder = $this->model->select('
+                admissions.id,
+                admissions.registration_number,
+                admissions.status,
+                admissions.application_date,
+                admissions.start_date,
+                profiles.full_name,
+                profiles.email,
+                profiles.phone,
+                programs.title as program_title
+            ')
             ->join('profiles', 'profiles.id = admissions.profile_id')
             ->join('programs', 'programs.id = admissions.program_id', 'left');
         
@@ -54,6 +64,7 @@ class AdmissionApiController extends ResourceController
                 ->orLike('profiles.email', $search)
                 ->orLike('admissions.registration_number', $search)
                 ->orLike('profiles.phone', $search)
+                ->orLike('programs.title', $search)
                 ->groupEnd();
         }
         
@@ -67,10 +78,11 @@ class AdmissionApiController extends ResourceController
         
         // Get total count before pagination
         $total = $builder->countAllResults(false);
-        
-        // Get paginated results
-        $admissions = $builder->paginate($perPage, 'default', $page);
-        
+
+        // Manual pagination - calculate offset and limit
+        $offset = ($page - 1) * $perPage;
+        $admissions = $builder->limit($perPage, $offset)->findAll();
+
         return $this->respond([
             'status' => 'success',
             'data' => $admissions,
@@ -78,7 +90,9 @@ class AdmissionApiController extends ResourceController
                 'current_page' => (int) $page,
                 'per_page' => (int) $perPage,
                 'total' => $total,
-                'total_pages' => ceil($total / $perPage)
+                'total_pages' => ceil($total / $perPage),
+                'from' => $total > 0 ? $offset + 1 : 0,
+                'to' => min($offset + $perPage, $total)
             ]
         ]);
     }
