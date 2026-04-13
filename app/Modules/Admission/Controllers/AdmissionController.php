@@ -47,6 +47,7 @@ class AdmissionController extends BaseController
             'program_title' => 'programs.title',
             'status' => 'admissions.status',
             'application_date' => 'admissions.application_date',
+            'start_date' => 'admissions.start_date',
             'language' => 'programs.language'
         ];
 

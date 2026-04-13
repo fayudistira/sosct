@@ -118,12 +118,12 @@
                         <th class="text-center" style="width: 50px;">No.</th>
                         <th class="sortable" data-sort="registration_number">No. Registrasi <span class="sort-icon"></span></th>
                         <th class="sortable" data-sort="full_name">Nama Lengkap <span class="sort-icon"></span></th>
-                        <th class="sortable" data-sort="email">Email <span class="sort-icon"></span></th>
                         <th class="sortable" data-sort="phone">Telp. <span class="sort-icon"></span></th>
                         <th class="sortable" data-sort="program_title">Program <span class="sort-icon"></span></th>
                         <th class="sortable" data-sort="language">Bahasa <span class="sort-icon"></span></th>
                         <th class="sortable" data-sort="status">Status <span class="sort-icon"></span></th>
                         <th class="sortable" data-sort="application_date">Tgl. Daftar <span class="sort-icon"></span></th>
+                        <th class="sortable" data-sort="start_date">Start Date <span class="sort-icon"></span></th>
                         <th class="text-end">Actions</th>
                     </tr>
                 </thead>
@@ -137,7 +137,6 @@
                                 <td class="text-center text-muted"><?= $startIndex + $index ?></td>
                                 <td class="fw-medium"><?= esc($admission['registration_number']) ?></td>
                                 <td><?= esc($admission['full_name']) ?></td>
-                                <td><?= esc($admission['email']) ?></td>
                                 <td><?= esc($admission['phone']) ?></td>
                                 <td><?= esc($admission['program_title'] ?? 'N/A') ?></td>
                                 <td><?= esc($admission['program_language'] ?? 'N/A') ?></td>
@@ -153,6 +152,7 @@
                                     <span class="badge <?= $badgeClass ?>"><?= ucfirst($admission['status']) ?></span>
                                 </td>
                                 <td><?= date('M d, Y', strtotime($admission['application_date'])) ?></td>
+                                <td><?= !empty($admission['start_date']) ? date('M d, Y', strtotime($admission['start_date'])) : '-' ?></td>
                                 <td class="text-end table-actions">
                                     <a href="<?= base_url('admission/view/' . $admission['id']) ?>" class="btn btn-outline-dark-red btn-sm" title="View">
                                         <i class="bi bi-eye"></i>
@@ -316,7 +316,6 @@ function updateTable(admissions) {
                 <td class="text-center text-muted">${startIndex + index}</td>
                 <td class="fw-medium">${escapeHtml(admission.registration_number)}</td>
                 <td>${escapeHtml(admission.full_name)}</td>
-                <td>${escapeHtml(admission.email)}</td>
                 <td>${escapeHtml(admission.phone)}</td>
                 <td>${escapeHtml(admission.program_title || 'N/A')}</td>
                 <td>${escapeHtml(admission.program_language || 'N/A')}</td>
@@ -324,6 +323,7 @@ function updateTable(admissions) {
                     <span class="badge ${badgeClass}">${escapeHtml(ucfirst(admission.status))}</span>
                 </td>
                 <td>${formatDate(admission.application_date)}</td>
+                <td>${admission.start_date ? formatDate(admission.start_date) : '-'}</td>
                 <td class="text-end table-actions">
                     <a href="<?= base_url('admission/view/') ?>${admission.id}" class="btn btn-outline-dark-red btn-sm" title="View">
                         <i class="bi bi-eye"></i>
