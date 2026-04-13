@@ -654,7 +654,7 @@ document.addEventListener('DOMContentLoaded',function(){
         </div>
 
         <!-- File Uploads -->
-        <div class="card-custom card mb-4">
+        <div class="card-custom card mb-4 d-none">
             <div class="card-header">
                 <h4 class="mb-0"><i class="bi bi-file-earmark-arrow-up me-2"></i>Unggah Berkas</h4>
             </div>
