@@ -81,6 +81,12 @@
                     <option value="approved" <?= ($statusFilter ?? '') === 'approved' ? 'selected' : '' ?>>Approved</option>
                     <option value="rejected" <?= ($statusFilter ?? '') === 'rejected' ? 'selected' : '' ?>>Rejected</option>
                 </select>
+                <select name="language" id="language-filter" class="form-select" style="max-width: 150px;">
+                    <option value="">Semua Bahasa</option>
+                    <?php foreach ($languages ?? [] as $lang): ?>
+                        <option value="<?= esc($lang) ?>" <?= ($languageFilter ?? '') === $lang ? 'selected' : '' ?>><?= esc($lang) ?></option>
+                    <?php endforeach ?>
+                </select>
                 <input type="hidden" name="sort" id="sort-input" value="<?= $currentSort ?? 'application_date' ?>">
                 <input type="hidden" name="order" id="order-input" value="<?= $currentOrder ?? 'desc' ?>">
                 <button type="submit" class="btn btn-primary">
@@ -115,6 +121,7 @@
                         <th class="sortable" data-sort="email">Email <span class="sort-icon"></span></th>
                         <th class="sortable" data-sort="phone">Telp. <span class="sort-icon"></span></th>
                         <th class="sortable" data-sort="program_title">Program <span class="sort-icon"></span></th>
+                        <th class="sortable" data-sort="language">Bahasa <span class="sort-icon"></span></th>
                         <th class="sortable" data-sort="status">Status <span class="sort-icon"></span></th>
                         <th class="sortable" data-sort="application_date">Tgl. Daftar <span class="sort-icon"></span></th>
                         <th class="text-end">Actions</th>
@@ -133,6 +140,7 @@
                                 <td><?= esc($admission['email']) ?></td>
                                 <td><?= esc($admission['phone']) ?></td>
                                 <td><?= esc($admission['program_title'] ?? 'N/A') ?></td>
+                                <td><?= esc($admission['program_language'] ?? 'N/A') ?></td>
                                 <td>
                                     <?php
                                     $badgeClass = match ($admission['status']) {
@@ -160,7 +168,7 @@
                         <?php endforeach ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="9" class="text-center text-muted">No admissions found</td>
+                            <td colspan="10" class="text-center text-muted">No admissions found</td>
                         </tr>
                     <?php endif ?>
                 </tbody>
@@ -234,6 +242,7 @@ function performSearch(page = 1) {
     currentPage = page;
     const searchValue = document.getElementById('search-input').value;
     const statusValue = document.getElementById('status-filter').value;
+    const languageValue = document.getElementById('language-filter').value;
 
     // Show loading state
     const tbody = document.getElementById('admissions-tbody');
@@ -247,6 +256,7 @@ function performSearch(page = 1) {
     const params = new URLSearchParams();
     if (searchValue) params.append('q', searchValue);
     if (statusValue) params.append('status', statusValue);
+    if (languageValue) params.append('language', languageValue);
     params.append('page', page);
     params.append('per_page', 10);
     params.append('sort', currentSort);
@@ -309,6 +319,7 @@ function updateTable(admissions) {
                 <td>${escapeHtml(admission.email)}</td>
                 <td>${escapeHtml(admission.phone)}</td>
                 <td>${escapeHtml(admission.program_title || 'N/A')}</td>
+                <td>${escapeHtml(admission.program_language || 'N/A')}</td>
                 <td>
                     <span class="badge ${badgeClass}">${escapeHtml(ucfirst(admission.status))}</span>
                 </td>
@@ -446,10 +457,14 @@ document.getElementById('search-input').addEventListener('keypress', function(e)
     }
 });
 
+// Event listeners
+document.getElementById('language-filter').addEventListener('change', () => performSearch(1));
+
 // Clear filters
 document.getElementById('clear-filters').addEventListener('click', function() {
     document.getElementById('search-input').value = '';
     document.getElementById('status-filter').value = '';
+    document.getElementById('language-filter').value = '';
     document.getElementById('sort-input').value = 'application_date';
     document.getElementById('order-input').value = 'desc';
     currentSort = 'application_date';
