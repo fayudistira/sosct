@@ -660,12 +660,12 @@ document.addEventListener('DOMContentLoaded',function(){
             </div>
             <div class="card-body">
                 <div class="row g-3">
-                    <div class="col-md-6">
+                    <div class="col-md-6 d-none">
                         <label for="photo" class="form-label">Foto Profil <span class="text-danger">*</span></label>
-                        <input type="file" class="form-control" id="photo" name="photo" accept="image/jpeg,image/jpg,image/png,image/webp" required>
+                        <input type="file" class="form-control" id="photo" name="photo" accept="image/jpeg,image/jpg,image/png,image/webp">
                         <small class="text-muted">Format: JPG, PNG, WebP. Maks: 2MB. Foto akan dikonversi ke WebP untuk optimasi.</small>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 d-none">
                         <label for="documents" class="form-label">KTP/ID</label>
                         <input type="file" class="form-control" id="documents" name="documents[]" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,image/*" multiple>
                         <small class="text-muted">Format: PDF, DOC, DOCX, JPG, PNG, GIF. Maks: 5MB per berkas</small>
