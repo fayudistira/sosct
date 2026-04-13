@@ -22,6 +22,7 @@ class AdmissionApiController extends ResourceController
         $perPage = $this->request->getGet('per_page') ?? 10;
         $search = $this->request->getGet('q');
         $status = $this->request->getGet('status');
+        $language = $this->request->getGet('language');
         $sort = $this->request->getGet('sort') ?? 'application_date';
         $order = $this->request->getGet('order') ?? 'desc';
         
@@ -36,7 +37,8 @@ class AdmissionApiController extends ResourceController
             'phone' => 'profiles.phone',
             'program_title' => 'programs.title',
             'status' => 'admissions.status',
-            'application_date' => 'admissions.application_date'
+            'application_date' => 'admissions.application_date',
+            'language' => 'programs.language'
         ];
         
         // Validate sort field
@@ -52,7 +54,8 @@ class AdmissionApiController extends ResourceController
                 profiles.full_name,
                 profiles.email,
                 profiles.phone,
-                programs.title as program_title
+                programs.title as program_title,
+                programs.language as program_language
             ')
             ->join('profiles', 'profiles.id = admissions.profile_id')
             ->join('programs', 'programs.id = admissions.program_id', 'left');
@@ -72,7 +75,12 @@ class AdmissionApiController extends ResourceController
         if ($status) {
             $builder->where('admissions.status', $status);
         }
-        
+
+        // Apply language filter
+        if ($language) {
+            $builder->where('programs.language', $language);
+        }
+
         // Apply sorting
         $builder->orderBy($sortField, $order);
         

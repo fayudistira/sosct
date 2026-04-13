@@ -31,6 +31,7 @@ class AdmissionController extends BaseController
         // Handle search and filter parameters
         $search = $this->request->getGet('q');
         $status = $this->request->getGet('status');
+        $language = $this->request->getGet('language');
         $sort = $this->request->getGet('sort') ?? 'application_date';
         $order = $this->request->getGet('order') ?? 'desc';
 
@@ -45,7 +46,8 @@ class AdmissionController extends BaseController
             'phone' => 'profiles.phone',
             'program_title' => 'programs.title',
             'status' => 'admissions.status',
-            'application_date' => 'admissions.application_date'
+            'application_date' => 'admissions.application_date',
+            'language' => 'programs.language'
         ];
 
         // Validate sort field
@@ -62,7 +64,8 @@ class AdmissionController extends BaseController
                 profiles.email,
                 profiles.phone,
                 programs.title as program_title,
-                programs.category
+                programs.category,
+                programs.language as program_language
             ')
             ->join('profiles', 'profiles.id = admissions.profile_id')
             ->join('programs', 'programs.id = admissions.program_id', 'left');
@@ -81,6 +84,11 @@ class AdmissionController extends BaseController
         // Apply status filter
         if (!empty($status)) {
             $query->where('admissions.status', $status);
+        }
+
+        // Apply language filter
+        if (!empty($language)) {
+            $query->where('programs.language', $language);
         }
 
         // Apply sorting
@@ -106,9 +114,12 @@ class AdmissionController extends BaseController
         // Pass search/filter parameters to view for form population
         $data['keyword'] = $search;
         $data['statusFilter'] = $status;
+        $data['languageFilter'] = $language;
         $data['currentSort'] = $sort;
         $data['currentOrder'] = strtolower($order);
 
+        $programModel = new \Modules\Program\Models\ProgramModel();
+        $data['languages'] = $programModel->getAvailableLanguages();
         $data['statusCounts'] = $this->admissionModel->getStatusCounts();
         $data['menuItems'] = $this->loadModuleMenus();
         $data['user'] = auth()->user();
