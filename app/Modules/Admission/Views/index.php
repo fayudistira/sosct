@@ -442,7 +442,8 @@ function handleSort(sortField) {
     // Update sort indicators
     updateSortIndicators();
 
-    performSearch(1);
+    // Submit form to sort immediately
+    document.getElementById('search-form').submit();
 }
 
 // Event listeners
