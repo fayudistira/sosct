@@ -177,7 +177,7 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label">Program <span class="text-danger">*</span></label>
-                    <select name="program_id" class="form-select form-select-sm" required disabled>
+                    <select name="program_id" class="form-select form-select-sm" required>
                         <option value="">Select Program</option>
                         <?php foreach ($programs as $program): ?>
                             <option value="<?= esc($program['id']) ?>" <?= old('program_id', $admission['program_id']) === $program['id'] ? 'selected' : '' ?>>
@@ -185,8 +185,6 @@
                             </option>
                         <?php endforeach ?>
                     </select>
-                    <input type="hidden" name="program_id" value="<?= esc($admission['program_id']) ?>">
-                    <small class="text-muted">Program cannot be changed after admission is created</small>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Start Date</label>
