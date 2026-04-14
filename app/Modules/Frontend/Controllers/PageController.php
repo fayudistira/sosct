@@ -288,7 +288,6 @@ class PageController extends BaseController
             'father_name' => 'required|min_length[3]|max_length[100]',
             'mother_name' => 'required|min_length[3]|max_length[100]',
             'course' => 'permit_empty|min_length[3]', // Optional - for backward compatibility
-            'photo' => 'uploaded[photo]|max_size[photo,2048]|is_image[photo]|mime_in[photo,image/jpg,image/jpeg,image/png,image/webp]',
             'documents.*' => 'max_size[documents,5120]|ext_in[documents,pdf,doc,docx,jpg,jpeg,png,gif,webp]',
         ];
 

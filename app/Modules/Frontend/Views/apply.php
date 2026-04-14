@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded',function(){
                     <div>
                         <h6 class="mb-1 fw-bold text-dark"><i class="bi bi-magic me-2"></i>Superadmin Tool: Autofill Form</h6>
                         <p class="small mb-0 opacity-75">
-                            Upload a <code>.txt</code> file to test this form.
+                            Unggah file <code>.txt</code> untuk menguji formulir ini.
                             <a href="<?= base_url('templates/admission_autofill_template.txt') ?>" download class="text-decoration-none ms-1 fw-bold text-dark">
                                 <i class="bi bi-download me-1"></i>Download Template
                             </a>
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
                     // Check file type
                     if (file.type !== 'application/json' && !file.name.endsWith('.txt') && !file.name.endsWith('.json')) {
-                        alert('Please upload a .txt or .json file.\\nDetected file type: ' + file.type);
+                        alert('Silakan unggah file .txt atau .json.\\nTipe file terdeteksi: ' + file.type);
                         return;
                     }
 
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded',function(){
                             console.log('Form found:', !!form);
 
                             if (!form) {
-                                alert('Form not found!\\nCheck console for details.');
+                                alert('Formulir tidak ditemukan!\\nPeriksa konsol untuk detail.');
                                 console.log('All forms on page:', Array.from(document.querySelectorAll('form')).map(f => f.action));
                                 return;
                             }
@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
                         } catch (err) {
                             console.error('JSON Parse Error:', err);
-                            alert('Error parsing JSON: ' + err.message + '\\nCheck console for details.');
+                            alert('Kesalahan parsing JSON: ' + err.message + '\\nPeriksa konsol untuk detail.');
                         }
                     };
                     reader.readAsText(file);
@@ -296,7 +296,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <?php if (session('errors')): ?>
         <div class="alert alert-danger alert-dismissible fade show">
             <i class="bi bi-exclamation-triangle me-2"></i>
-            <strong>Please fix the following errors:</strong>
+            <strong>Silakan perbaiki kesalahan berikut:</strong>
             <ul class="mb-0 mt-2">
                 <?php foreach (session('errors') as $error): ?>
                     <li><?= esc($error) ?></li>
@@ -708,7 +708,7 @@ document.addEventListener('DOMContentLoaded',function(){
             form.addEventListener('submit', function(e) {
                 // Disable the submit button
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Submitting...';
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Mengirim...';
                 submitBtn.classList.add('disabled');
 
                 // Allow the form to submit normally
