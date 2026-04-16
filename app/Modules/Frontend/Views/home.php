@@ -1360,8 +1360,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<!--
+Temporarily disabled Simulasi Ujian HSK Coming Soon popup - to be activated later
+-->
 <!-- Coming Soon Popup -->
-<div class="coming-soon-popup position-fixed bottom-0 end-0 m-4 p-4 rounded-3 shadow-lg bg-white z-index-9999" style="max-width: 320px; animation: slideInUp 0.5s ease-out;">
+<!-- <div class="coming-soon-popup position-fixed bottom-0 end-0 m-4 p-4 rounded-3 shadow-lg bg-white z-index-9999" style="max-width: 320px; animation: slideInUp 0.5s ease-out;">
     <button type="button" class="btn-close position-absolute top-0 end-0 m-2" onclick="this.parentElement.style.display='none'" aria-label="Close"></button>
     <div class="d-flex align-items-center gap-3">
         <div class="flex-shrink-0">
@@ -1372,9 +1375,9 @@ document.addEventListener('DOMContentLoaded', function() {
             <p class="small mb-0 text-muted">Coming Soon!</p>
         </div>
     </div>
-</div>
+</div> -->
 
-<style>
+<!-- <style>
 @keyframes slideInUp {
     from {
         transform: translateY(100%);
@@ -1399,6 +1402,6 @@ document.addEventListener('DOMContentLoaded', function() {
         box-shadow: 0 0 0 0 rgba(139, 0, 0, 0);
     }
 }
-</style>
+</style> -->
 
 <?= $this->endSection() ?>
