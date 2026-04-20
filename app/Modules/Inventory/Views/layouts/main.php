@@ -28,6 +28,70 @@
             left: 0;
             top: 0;
             box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+            transition: width 0.3s ease;
+            z-index: 1000;
+        }
+
+        .inventory-sidebar.minimized {
+            width: 70px;
+        }
+
+        .inventory-sidebar.minimized .nav-item span {
+            display: none;
+        }
+
+        .inventory-sidebar.minimized .brand span {
+            display: none;
+        }
+
+        .inventory-sidebar.minimized .nav-section {
+            text-align: center;
+            padding: 0.5rem 0;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .inventory-sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .inventory-sidebar.show {
+                transform: translateX(0);
+            }
+
+            .inventory-main {
+                margin-left: 0;
+            }
+
+            .inventory-sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+            }
+
+            .inventory-sidebar-overlay.show {
+                display: block;
+            }
+        }
+
+        /* Desktop toggle button */
+        @media (min-width: 769px) {
+            .sidebar-toggle-mobile {
+                display: none;
+            }
+        }
+
+        /* Mobile toggle button */
+        @media (max-width: 768px) {
+            .sidebar-toggle-desktop {
+                display: none;
+            }
         }
         
         .inventory-sidebar .brand {
@@ -86,6 +150,11 @@
             margin-left: 260px;
             padding: 1.5rem;
             min-height: 100vh;
+            transition: margin-left 0.3s ease;
+        }
+
+        .inventory-main.sidebar-minimized {
+            margin-left: 70px;
         }
         
         /* Header */
@@ -219,12 +288,21 @@
             </a>
         </nav>
     </div>
-    
+
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="inventory-sidebar-overlay"></div>
+
     <!-- Main Content -->
     <div class="inventory-main">
         <!-- Header -->
         <div class="inventory-header">
             <h4>
+                <button class="btn btn-sm btn-outline-secondary sidebar-toggle sidebar-toggle-desktop me-2" title="Minimize Sidebar">
+                    <i class="bi bi-list"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-secondary sidebar-toggle sidebar-toggle-mobile me-2 d-md-none" title="Toggle Sidebar">
+                    <i class="bi bi-list"></i>
+                </button>
                 <i class="bi bi-<?= $icon ?? 'box-seam' ?>"></i>
                 <?= $pageTitle ?? 'Inventaris' ?>
             </h4>
@@ -250,5 +328,41 @@
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.querySelector('.inventory-sidebar');
+            const main = document.querySelector('.inventory-main');
+            const overlay = document.querySelector('.inventory-sidebar-overlay');
+            const toggles = document.querySelectorAll('.sidebar-toggle');
+
+            toggles.forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        // Mobile behavior: toggle show class
+                        sidebar.classList.toggle('show');
+                        overlay.classList.toggle('show');
+                    } else {
+                        // Desktop behavior: toggle minimized class
+                        sidebar.classList.toggle('minimized');
+                        main.classList.toggle('sidebar-minimized');
+                    }
+                });
+            });
+
+            // Close sidebar when clicking overlay on mobile
+            overlay.addEventListener('click', function() {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+            });
+
+            // Close sidebar on window resize if switching to desktop
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('show');
+                    overlay.classList.remove('show');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
