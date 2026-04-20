@@ -126,12 +126,12 @@ class ItemController extends BaseController
     public function store()
     {
         $data = $this->request->getPost();
-        
+
         // Generate ID if not provided
         if (empty($data['id'])) {
             $data['id'] = uuid_v4();
         }
-        
+
         // Generate item code if not provided
         if (empty($data['item_code'])) {
             $data['item_code'] = $this->itemModel->generateItemCode();
@@ -145,6 +145,12 @@ class ItemController extends BaseController
         // Handle specifications JSON
         if (isset($data['specifications']) && is_array($data['specifications'])) {
             $data['specifications'] = json_encode($data['specifications']);
+        }
+
+        // Handle picture uploads
+        $pictures = $this->handlePictureUploads($data['id']);
+        if ($pictures) {
+            $data['pictures'] = json_encode($pictures);
         }
 
         if ($this->itemModel->insert($data)) {
@@ -187,7 +193,7 @@ class ItemController extends BaseController
     public function update($id)
     {
         $data = $this->request->getPost();
-        
+
         // Include ID for validation context
         $data['id'] = $id;
 
@@ -200,6 +206,37 @@ class ItemController extends BaseController
         if (isset($data['specifications']) && is_array($data['specifications'])) {
             $data['specifications'] = json_encode($data['specifications']);
         }
+
+        // Handle picture uploads
+        $pictures = $this->handlePictureUploads($id);
+        if ($pictures || isset($data['delete_pictures'])) {
+            $existingItem = $this->itemModel->find($id);
+            $existingPictures = $existingItem['pictures'] ? json_decode($existingItem['pictures'], true) : [];
+
+            // Remove deleted pictures
+            if (!empty($data['delete_pictures'])) {
+                $deletePictures = json_decode($data['delete_pictures'], true);
+                $existingPictures = array_diff($existingPictures, $deletePictures);
+
+                // Delete files from server
+                foreach ($deletePictures as $pic) {
+                    $filePath = FCPATH . $pic;
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                }
+            }
+
+            // Merge with new pictures
+            if ($pictures) {
+                $existingPictures = array_merge($existingPictures, $pictures);
+            }
+
+            $data['pictures'] = json_encode($existingPictures);
+        }
+
+        // Remove temporary fields
+        unset($data['delete_pictures']);
 
         if ($this->itemModel->update($id, $data)) {
             return redirect()->to('/inventory/items')->with('success', 'Item updated successfully');
@@ -537,5 +574,35 @@ class ItemController extends BaseController
         $itemData['maximum_stock'] = (int) ($itemData['maximum_stock'] ?? 0);
 
         return $itemData;
+    }
+
+    /**
+     * Handle multiple picture uploads
+     */
+    private function handlePictureUploads(string $itemId): array
+    {
+        $pictures = [];
+        $files = $this->request->getFiles();
+
+        if (!isset($files['pictures'])) {
+            return $pictures;
+        }
+
+        $uploadPath = FCPATH . 'uploads/items/' . $itemId . '/';
+
+        // Create directory if it doesn't exist
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0755, true);
+        }
+
+        foreach ($files['pictures'] as $file) {
+            if ($file->isValid() && !$file->hasMoved()) {
+                $newName = $file->getRandomName();
+                $file->move($uploadPath, $newName);
+                $pictures[] = 'uploads/items/' . $itemId . '/' . $newName;
+            }
+        }
+
+        return $pictures;
     }
 }

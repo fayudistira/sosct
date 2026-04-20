@@ -32,6 +32,7 @@ class ItemModel extends Model
         'status',
         'specifications',
         'thumbnail',
+        'pictures',
         'supplier_id',
         'supplier_name',
         'created_at',

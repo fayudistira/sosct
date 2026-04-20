@@ -10,7 +10,7 @@
 
         <div class="card">
             <div class="card-body">
-                <form method="post" action="/inventory/items/update/<?= $item['id'] ?>">
+                <form method="post" action="/inventory/items/update/<?= $item['id'] ?>" enctype="multipart/form-data">
                     <?= csrf_field() ?>
                     <div class="row">
                         <div class="col-md-6">
@@ -144,6 +144,31 @@
                         </div>
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label">Foto Barang</label>
+                        <?php if (!empty($item['pictures'])): ?>
+                            <div class="mb-3">
+                                <label class="form-label">Foto Yang Ada:</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <?php foreach(json_decode($item['pictures'], true) as $picture): ?>
+                                        <div class="position-relative">
+                                            <img src="<?= base_url($picture) ?>" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                                            <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" onclick="removeExistingPicture('<?= $picture ?>')">
+                                                <i class="bi bi-x"></i>
+                                            </button>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                        <input type="file" name="pictures[]" class="form-control" multiple accept="image/*" capture="environment">
+                        <input type="hidden" name="delete_pictures" id="delete-pictures" value="">
+                        <div class="form-text">
+                            Pilih multiple gambar tambahan atau ambil foto dari kamera (khusus mobile).
+                        </div>
+                        <div id="image-preview" class="mt-3 d-flex flex-wrap gap-2"></div>
+                    </div>
+
                     <div class="text-end">
                         <a href="/inventory/items" class="btn btn-secondary me-2">Batal</a>
                         <button type="submit" class="btn btn-primary">
@@ -153,4 +178,56 @@
                 </form>
             </div>
         </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const fileInput = document.querySelector('input[name="pictures[]"]');
+                const previewContainer = document.getElementById('image-preview');
+                const deletePicturesInput = document.getElementById('delete-pictures');
+
+                fileInput.addEventListener('change', function(e) {
+                    previewContainer.innerHTML = '';
+
+                    Array.from(e.target.files).forEach((file, index) => {
+                        if (file.type.startsWith('image/')) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                const imgContainer = document.createElement('div');
+                                imgContainer.className = 'position-relative';
+                                imgContainer.innerHTML = `
+                                    <img src="${e.target.result}" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                                    <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" onclick="removeImage(${index})">
+                                        <i class="bi bi-x"></i>
+                                    </button>
+                                `;
+                                previewContainer.appendChild(imgContainer);
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                });
+
+                window.removeImage = function(index) {
+                    const dt = new DataTransfer();
+                    const files = Array.from(fileInput.files);
+                    files.splice(index, 1);
+                    files.forEach(file => dt.items.add(file));
+                    fileInput.files = dt.files;
+
+                    // Trigger change event to update preview
+                    fileInput.dispatchEvent(new Event('change'));
+                };
+
+                window.removeExistingPicture = function(picturePath) {
+                    if (confirm('Apakah Anda yakin ingin menghapus foto ini?')) {
+                        let deletedPictures = deletePicturesInput.value ? JSON.parse(deletePicturesInput.value) : [];
+                        deletedPictures.push(picturePath);
+                        deletePicturesInput.value = JSON.stringify(deletedPictures);
+
+                        // Hide the picture
+                        event.target.closest('.position-relative').style.display = 'none';
+                    }
+                };
+            });
+        </script>
     <?= $this->endSection() ?>
