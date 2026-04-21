@@ -211,7 +211,7 @@ class ItemController extends BaseController
         $pictures = $this->handlePictureUploads($id);
         if ($pictures || isset($data['delete_pictures'])) {
             $existingItem = $this->itemModel->find($id);
-            $existingPictures = $existingItem['pictures'] ? json_decode($existingItem['pictures'], true) : [];
+            $existingPictures = isset($existingItem['pictures']) && $existingItem['pictures'] ? json_decode($existingItem['pictures'], true) : [];
 
             // Remove deleted pictures
             if (!empty($data['delete_pictures'])) {
