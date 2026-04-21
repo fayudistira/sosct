@@ -52,6 +52,7 @@
         /* Mobile responsiveness */
         @media (max-width: 768px) {
             .inventory-sidebar {
+                width: 280px;
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
             }
@@ -62,6 +63,7 @@
 
             .inventory-main {
                 margin-left: 0;
+                padding: 1rem;
             }
 
             .inventory-sidebar-overlay {
@@ -77,6 +79,110 @@
 
             .inventory-sidebar-overlay.show {
                 display: block;
+            }
+
+            .inventory-header {
+                padding: 0.75rem 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .inventory-header h4 {
+                font-size: 1.1rem;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .inventory-sidebar .brand {
+                padding: 1rem;
+                font-size: 1.1rem;
+            }
+
+            .inventory-sidebar .nav-item {
+                padding: 0.75rem 1rem;
+                font-size: 0.95rem;
+            }
+
+            .inventory-sidebar .nav-section {
+                padding: 0.5rem 1rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 576px) {
+            .inventory-main {
+                padding: 0.75rem;
+            }
+
+            .inventory-header {
+                padding: 0.5rem 0.75rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .inventory-header h4 {
+                font-size: 1rem;
+            }
+
+            .inventory-sidebar {
+                width: 260px;
+            }
+
+            .inventory-sidebar .nav-item {
+                padding: 0.6rem 0.75rem;
+                font-size: 0.9rem;
+            }
+
+            .inventory-sidebar .brand {
+                padding: 0.75rem;
+                font-size: 1rem;
+            }
+
+            /* Improve card spacing on mobile */
+            .inventory-card {
+                margin-bottom: 1rem;
+            }
+
+            .inventory-card .card-body {
+                padding: 1rem 0.75rem;
+            }
+
+            .inventory-card .card-header {
+                padding: 0.75rem;
+                font-size: 0.95rem;
+            }
+
+            /* Better button spacing */
+            .btn-group .btn {
+                margin-right: 0.25rem;
+            }
+
+            .btn-group .btn:last-child {
+                margin-right: 0;
+            }
+        }
+
+        /* Mobile table improvements */
+        @media (max-width: 768px) {
+            .table-responsive {
+                border: none;
+            }
+
+            .table th,
+            .table td {
+                padding: 0.5rem;
+                font-size: 0.875rem;
+            }
+
+            /* Hide less important columns on mobile */
+            .table th:nth-child(3),
+            .table td:nth-child(3),
+            .table th:nth-child(4),
+            .table td:nth-child(4),
+            .table th:nth-child(6),
+            .table td:nth-child(6) {
+                display: none;
             }
         }
 

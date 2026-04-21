@@ -3,21 +3,27 @@
 <?= $this->section('content') ?>
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="mb-0"><i class="bi bi-box-seam me-2"></i>Detail Barang</h4>
-            <div>
-                <a href="/inventory/items/barcode/<?= $item['id'] ?>" class="btn btn-info me-2" target="_blank">
-                    <i class="bi bi-qr-code me-1"></i> QR Code
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="/inventory/items/barcode/<?= $item['id'] ?>" class="btn btn-info btn-sm" target="_blank">
+                    <i class="bi bi-qr-code me-1 d-none d-md-inline"></i>
+                    <i class="bi bi-qr-code d-md-none"></i>
+                    <span class="d-none d-md-inline">QR Code</span>
                 </a>
-                <a href="/inventory/items/edit/<?= $item['id'] ?>" class="btn btn-warning me-2">
-                    <i class="bi bi-pencil me-1"></i> Edit
+                <a href="/inventory/items/edit/<?= $item['id'] ?>" class="btn btn-warning btn-sm">
+                    <i class="bi bi-pencil me-1 d-none d-md-inline"></i>
+                    <i class="bi bi-pencil d-md-none"></i>
+                    <span class="d-none d-md-inline">Edit</span>
                 </a>
-                <a href="/inventory/items" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-1"></i> Kembali
+                <a href="/inventory/items" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1 d-none d-md-inline"></i>
+                    <i class="bi bi-arrow-left d-md-none"></i>
+                    <span class="d-none d-md-inline">Kembali</span>
                 </a>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-12 col-lg-8">
                 <div class="card mb-4">
                     <div class="card-header">
                         <h5 class="mb-0">Informasi Barang</h5>
@@ -80,17 +86,17 @@
                         <h5 class="mb-0">Foto Barang</h5>
                     </div>
                     <div class="card-body">
-                        <div class="row g-3">
+                        <div class="row g-2 g-md-3">
                             <?php if($hasPictures): ?>
                                 <?php foreach(json_decode($item['pictures'], true) as $picture): ?>
-                                    <div class="col-md-3 col-sm-6">
+                                    <div class="col-6 col-md-3">
                                         <div class="position-relative">
                                             <img src="<?= base_url($picture) ?>"
                                                  class="img-fluid rounded shadow-sm"
-                                                 style="width: 100%; height: 150px; object-fit: cover; cursor: pointer;"
+                                                 style="width: 100%; height: 120px; object-fit: cover; cursor: pointer;"
                                                  onclick="openImageModal('<?= base_url($picture) ?>')"
                                                  alt="Item Picture">
-                                            <button class="btn btn-sm btn-outline-primary position-absolute top-50 start-50 translate-middle"
+                                            <button class="btn btn-sm btn-outline-primary position-absolute top-50 start-50 translate-middle d-none d-md-block"
                                                     onclick="openImageModal('<?= base_url($picture) ?>')"
                                                     style="background: rgba(255,255,255,0.8); border: none;">
                                                 <i class="bi bi-zoom-in"></i>
@@ -99,14 +105,14 @@
                                     </div>
                                 <?php endforeach; ?>
                             <?php elseif($hasThumbnail): ?>
-                                <div class="col-md-3 col-sm-6">
+                                <div class="col-6 col-md-3">
                                     <div class="position-relative">
                                         <img src="<?= base_url($item['thumbnail']) ?>"
                                              class="img-fluid rounded shadow-sm"
-                                             style="width: 100%; height: 150px; object-fit: cover; cursor: pointer;"
+                                             style="width: 100%; height: 120px; object-fit: cover; cursor: pointer;"
                                              onclick="openImageModal('<?= base_url($item['thumbnail']) ?>')"
                                              alt="Item Thumbnail">
-                                        <button class="btn btn-sm btn-outline-primary position-absolute top-50 start-50 translate-middle"
+                                        <button class="btn btn-sm btn-outline-primary position-absolute top-50 start-50 translate-middle d-none d-md-block"
                                                 onclick="openImageModal('<?= base_url($item['thumbnail']) ?>')"
                                                 style="background: rgba(255,255,255,0.8); border: none;">
                                             <i class="bi bi-zoom-in"></i>
@@ -160,7 +166,7 @@
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-12 col-lg-4 mt-4 mt-lg-0">
                 <div class="card mb-4">
                     <div class="card-header">
                         <h5 class="mb-0">Stok</h5>
