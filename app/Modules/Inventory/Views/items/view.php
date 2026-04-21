@@ -70,6 +70,55 @@
                     </div>
                 </div>
 
+                <?php
+                $hasPictures = !empty($item['pictures']);
+                $hasThumbnail = !empty($item['thumbnail']);
+                if($hasPictures || $hasThumbnail):
+                ?>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Foto Barang</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <?php if($hasPictures): ?>
+                                <?php foreach(json_decode($item['pictures'], true) as $picture): ?>
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="position-relative">
+                                            <img src="<?= base_url($picture) ?>"
+                                                 class="img-fluid rounded shadow-sm"
+                                                 style="width: 100%; height: 150px; object-fit: cover; cursor: pointer;"
+                                                 onclick="openImageModal('<?= base_url($picture) ?>')"
+                                                 alt="Item Picture">
+                                            <button class="btn btn-sm btn-outline-primary position-absolute top-50 start-50 translate-middle"
+                                                    onclick="openImageModal('<?= base_url($picture) ?>')"
+                                                    style="background: rgba(255,255,255,0.8); border: none;">
+                                                <i class="bi bi-zoom-in"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php elseif($hasThumbnail): ?>
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="position-relative">
+                                        <img src="<?= base_url($item['thumbnail']) ?>"
+                                             class="img-fluid rounded shadow-sm"
+                                             style="width: 100%; height: 150px; object-fit: cover; cursor: pointer;"
+                                             onclick="openImageModal('<?= base_url($item['thumbnail']) ?>')"
+                                             alt="Item Thumbnail">
+                                        <button class="btn btn-sm btn-outline-primary position-absolute top-50 start-50 translate-middle"
+                                                onclick="openImageModal('<?= base_url($item['thumbnail']) ?>')"
+                                                style="background: rgba(255,255,255,0.8); border: none;">
+                                            <i class="bi bi-zoom-in"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
+
                 <div class="card">
                     <div class="card-header">
                         <h5 class="mb-0">Riwayat Mutasi</h5>
@@ -164,4 +213,26 @@
                 <?php endif; ?>
             </div>
         </div>
+
+        <!-- Image Modal -->
+        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body p-0">
+                        <img id="modalImage" src="" class="img-fluid w-100" alt="Full Size Image">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function openImageModal(imageSrc) {
+                document.getElementById('modalImage').src = imageSrc;
+                const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+                modal.show();
+            }
+        </script>
     <?= $this->endSection() ?>
