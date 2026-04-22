@@ -2,9 +2,9 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title><?= esc($title ?? 'Inventaris') ?> - Modul Inventaris</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
         :root {
@@ -17,6 +17,20 @@
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
             background-color: #f5f5f5;
+            width: 100% !important;
+            overflow-x: hidden !important;
+        }
+
+        html, body {
+            max-width: 100% !important;
+        }
+
+        /* Force full width layout on mobile */
+        .inventory-container {
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
         }
         
         /* Sidebar */
@@ -52,18 +66,19 @@
         /* Mobile responsiveness */
         @media (max-width: 768px) {
             .inventory-sidebar {
-                width: 280px;
-                transform: translateX(-100%);
+                width: 280px !important;
+                transform: translateX(-100%) !important;
                 transition: transform 0.3s ease;
             }
 
             .inventory-sidebar.show {
-                transform: translateX(0);
+                transform: translateX(0) !important;
             }
 
             .inventory-main {
-                margin-left: 0;
-                padding: 1rem;
+                margin-left: 0 !important;
+                padding: 0.75rem !important;
+                width: 100% !important;
             }
 
             .inventory-sidebar-overlay {
@@ -82,84 +97,124 @@
             }
 
             .inventory-header {
-                padding: 0.75rem 1rem;
-                margin-bottom: 1rem;
+                padding: 0.75rem !important;
+                margin-bottom: 1rem !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.75rem !important;
             }
 
             .inventory-header h4 {
-                font-size: 1.1rem;
-                flex-wrap: wrap;
-                gap: 0.5rem;
+                font-size: 1.1rem !important;
+                flex-wrap: wrap !important;
+                gap: 0.5rem !important;
+                width: 100% !important;
             }
 
             .inventory-sidebar .brand {
-                padding: 1rem;
-                font-size: 1.1rem;
+                padding: 1rem !important;
+                font-size: 1.1rem !important;
             }
 
             .inventory-sidebar .nav-item {
-                padding: 0.75rem 1rem;
-                font-size: 0.95rem;
+                padding: 0.75rem 1rem !important;
+                font-size: 0.95rem !important;
             }
 
             .inventory-sidebar .nav-section {
-                padding: 0.5rem 1rem;
-                font-size: 0.75rem;
+                padding: 0.5rem 1rem !important;
+                font-size: 0.75rem !important;
+            }
+
+            /* Ensure cards take full width on mobile */
+            .card {
+                width: 100% !important;
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
+
+            .row {
+                --bs-gutter-x: 0.75rem !important;
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                width: 100% !important;
+            }
+
+            /* Force all columns to stack on mobile */
+            .col-12, .col-md-8, .col-md-4, .col-md-3, .col-md-6, .col-lg-8, .col-lg-4, .col-sm-6 {
+                flex: 0 0 100% !important;
+                max-width: 100% !important;
+                padding-left: 0.375rem !important;
+                padding-right: 0.375rem !important;
+            }
+
+            /* Specific overrides for common column classes */
+            @media (max-width: 768px) {
+                .col-md-3, .col-md-4, .col-md-6, .col-md-8, .col-lg-4, .col-lg-8 {
+                    flex: 0 0 100% !important;
+                    max-width: 100% !important;
+                }
             }
         }
 
         /* Extra small screens */
         @media (max-width: 576px) {
             .inventory-main {
-                padding: 0.75rem;
+                padding: 0.5rem !important;
             }
 
             .inventory-header {
-                padding: 0.5rem 0.75rem;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.75rem;
+                padding: 0.5rem !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.5rem !important;
             }
 
             .inventory-header h4 {
-                font-size: 1rem;
+                font-size: 1rem !important;
             }
 
             .inventory-sidebar {
-                width: 260px;
+                width: 260px !important;
             }
 
             .inventory-sidebar .nav-item {
-                padding: 0.6rem 0.75rem;
-                font-size: 0.9rem;
+                padding: 0.6rem 0.75rem !important;
+                font-size: 0.9rem !important;
             }
 
             .inventory-sidebar .brand {
-                padding: 0.75rem;
-                font-size: 1rem;
+                padding: 0.75rem !important;
+                font-size: 1rem !important;
             }
 
             /* Improve card spacing on mobile */
             .inventory-card {
-                margin-bottom: 1rem;
+                margin-bottom: 1rem !important;
             }
 
             .inventory-card .card-body {
-                padding: 1rem 0.75rem;
+                padding: 0.75rem !important;
             }
 
             .inventory-card .card-header {
-                padding: 0.75rem;
-                font-size: 0.95rem;
+                padding: 0.5rem !important;
+                font-size: 0.95rem !important;
             }
 
             /* Better button spacing */
             .btn-group .btn {
-                margin-right: 0.25rem;
+                margin-right: 0.25rem !important;
             }
 
             .btn-group .btn:last-child {
-                margin-right: 0;
+                margin-right: 0 !important;
+            }
+
+            /* Ensure full width on very small screens */
+            .container, .container-fluid {
+                padding-left: 0.25rem !important;
+                padding-right: 0.25rem !important;
             }
         }
 
@@ -400,6 +455,7 @@
 
     <!-- Main Content -->
     <div class="inventory-main">
+        <div class="inventory-container">
         <!-- Header -->
         <div class="inventory-header">
             <h4>
@@ -431,7 +487,8 @@
         </div>
         <?php endif; ?>
         <?= $this->renderSection('content') ?>
-    </div>
+        </div> <!-- Close inventory-container -->
+    </div> <!-- Close inventory-main -->
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -440,6 +497,20 @@
             const main = document.querySelector('.inventory-main');
             const overlay = document.querySelector('.inventory-sidebar-overlay');
             const toggles = document.querySelectorAll('.sidebar-toggle');
+
+            // Force layout recalculation on mobile
+            function forceMobileLayout() {
+                if (window.innerWidth <= 768) {
+                    document.body.style.width = '100%';
+                    document.body.style.maxWidth = '100%';
+                    main.style.width = '100%';
+                    main.style.marginLeft = '0';
+                    main.style.padding = '0.75rem';
+                }
+            }
+
+            // Apply mobile layout immediately
+            forceMobileLayout();
 
             toggles.forEach(toggle => {
                 toggle.addEventListener('click', function() {
@@ -463,6 +534,7 @@
 
             // Close sidebar on window resize if switching to desktop
             window.addEventListener('resize', function() {
+                forceMobileLayout();
                 if (window.innerWidth > 768) {
                     sidebar.classList.remove('show');
                     overlay.classList.remove('show');
