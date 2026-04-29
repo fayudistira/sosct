@@ -197,6 +197,37 @@ class ItemController extends BaseController
         // Include ID for validation context
         $data['id'] = $id;
 
+        // Handle empty foreign keys - convert to null
+        if (isset($data['category_id']) && empty($data['category_id'])) {
+            $data['category_id'] = null;
+        }
+        if (isset($data['location_id']) && empty($data['location_id'])) {
+            $data['location_id'] = null;
+        }
+        if (isset($data['program_id']) && empty($data['program_id'])) {
+            $data['program_id'] = null;
+        }
+
+        // Validate foreign keys if provided - set to null if invalid to avoid constraint errors
+        if (!empty($data['category_id'])) {
+            $category = $this->categoryModel->find($data['category_id']);
+            if (!$category) {
+                $data['category_id'] = null; // Set to null instead of error to prevent constraint failure
+            }
+        }
+        if (!empty($data['location_id'])) {
+            $location = $this->locationModel->find($data['location_id']);
+            if (!$location) {
+                $data['location_id'] = null;
+            }
+        }
+        if (!empty($data['program_id'])) {
+            $program = $this->programModel->find($data['program_id']);
+            if (!$program) {
+                $data['program_id'] = null;
+            }
+        }
+
         // Handle barcode - remove if empty to avoid unique constraint errors
         if (isset($data['barcode']) && empty($data['barcode'])) {
             unset($data['barcode']);

@@ -144,30 +144,36 @@
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Foto Barang</label>
-                        <?php if (!empty($item['pictures'])): ?>
-                            <div class="mb-3">
-                                <label class="form-label">Foto Yang Ada:</label>
-                                <div class="d-flex flex-wrap gap-2">
-                                    <?php foreach(json_decode($item['pictures'], true) as $picture): ?>
-                                        <div class="position-relative">
-                                            <img src="<?= base_url($picture) ?>" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
-                                            <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" onclick="removeExistingPicture('<?= $picture ?>')">
-                                                <i class="bi bi-x"></i>
-                                            </button>
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-                        <input type="file" name="pictures[]" class="form-control" multiple accept="image/*" capture="environment">
-                        <input type="hidden" name="delete_pictures" id="delete-pictures" value="">
-                        <div class="form-text">
-                            Pilih multiple gambar tambahan atau ambil foto dari kamera (khusus mobile).
-                        </div>
-                        <div id="image-preview" class="mt-3 d-flex flex-wrap gap-2"></div>
-                    </div>
+                     <div class="mb-3">
+                         <label class="form-label">Foto Barang</label>
+                         <?php if (!empty($item['pictures'])): ?>
+                             <div class="mb-3">
+                                 <label class="form-label">Foto Yang Ada:</label>
+                                 <div class="d-flex flex-wrap gap-2">
+                                     <?php foreach(json_decode($item['pictures'], true) as $picture): ?>
+                                         <div class="position-relative">
+                                             <img src="<?= base_url($picture) ?>" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                                             <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" onclick="removeExistingPicture('<?= $picture ?>')">
+                                                 <i class="bi bi-x"></i>
+                                             </button>
+                                         </div>
+                                     <?php endforeach; ?>
+                                 </div>
+                             </div>
+                         <?php endif; ?>
+                         <div class="mb-2">
+                             <select id="upload-mode" class="form-select form-select-sm" style="width: auto; display: inline-block;">
+                                 <option value="gallery">Pilih dari Galeri</option>
+                                 <option value="camera">Ambil Foto dari Kamera</option>
+                             </select>
+                         </div>
+                         <input type="file" name="pictures[]" id="file-input" class="form-control" multiple accept="image/*">
+                         <input type="hidden" name="delete_pictures" id="delete-pictures" value="">
+                         <div class="form-text">
+                             Pilih multiple gambar dari galeri atau ambil foto dari kamera (khusus mobile).
+                         </div>
+                         <div id="image-preview" class="mt-3 d-flex flex-wrap gap-2"></div>
+                     </div>
 
                     <div class="text-end">
                         <a href="/inventory/items" class="btn btn-secondary me-2">Batal</a>
@@ -181,9 +187,22 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                const fileInput = document.querySelector('input[name="pictures[]"]');
+                const fileInput = document.getElementById('file-input');
+                const uploadMode = document.getElementById('upload-mode');
                 const previewContainer = document.getElementById('image-preview');
                 const deletePicturesInput = document.getElementById('delete-pictures');
+
+                // Handle upload mode change
+                uploadMode.addEventListener('change', function() {
+                    if (this.value === 'camera') {
+                        fileInput.setAttribute('capture', 'environment');
+                    } else {
+                        fileInput.removeAttribute('capture');
+                    }
+                    // Reset file input when mode changes
+                    fileInput.value = '';
+                    previewContainer.innerHTML = '';
+                });
 
                 fileInput.addEventListener('change', function(e) {
                     previewContainer.innerHTML = '';

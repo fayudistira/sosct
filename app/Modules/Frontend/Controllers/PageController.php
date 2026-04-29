@@ -611,21 +611,13 @@ class PageController extends BaseController
     public function applySuccess(): string
     {
         $registrationNumber = session('registration_number');
-        
+
         // Get admission and profile data
         $admissionData = null;
-        $profileData = null;
-        
+
         if ($registrationNumber) {
             $admissionModel = new \Modules\Admission\Models\AdmissionModel();
-            $profileModel = new \Modules\Account\Models\ProfileModel();
-
-            $admissionData = $admissionModel
-                ->select('admissions.*, profiles.*, programs.*')
-                ->join('profiles', 'profiles.id = admissions.profile_id')
-                ->join('programs', 'programs.id = admissions.program_id')
-                ->where('admissions.registration_number', $registrationNumber)
-                ->first();
+            $admissionData = $admissionModel->getByRegistrationNumber($registrationNumber);
         }
 
         return view('Modules\Frontend\Views\apply_success', [

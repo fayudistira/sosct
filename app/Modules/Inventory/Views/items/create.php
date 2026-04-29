@@ -148,9 +148,18 @@
 
                     <div class="mb-3">
                         <label class="form-label">Foto Barang</label>
-                        <input type="file" name="pictures[]" class="form-control" multiple accept="image/*" capture="environment">
+                        <div class="d-flex gap-2 mb-2 flex-wrap">
+                            <input type="file" name="pictures[]" id="camera-input" class="form-control" accept="image/*" capture="environment" style="display: none;">
+                            <input type="file" name="pictures[]" id="gallery-input" class="form-control" multiple accept="image/*" style="display: none;">
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="document.getElementById('camera-input').click()">
+                                <i class="bi bi-camera me-1"></i> Ambil Foto
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('gallery-input').click()">
+                                <i class="bi bi-images me-1"></i> Pilih dari Galeri
+                            </button>
+                        </div>
                         <div class="form-text">
-                            Pilih multiple gambar atau ambil foto dari kamera (khusus mobile). Maksimal 10 gambar.
+                            Ambil foto langsung dari kamera atau pilih multiple gambar dari galeri perangkat. Maksimal 10 gambar.
                         </div>
                         <div id="image-preview" class="mt-3 d-flex flex-wrap gap-2"></div>
                     </div>
