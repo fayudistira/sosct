@@ -654,21 +654,21 @@ document.addEventListener('DOMContentLoaded',function(){
         </div>
 
         <!-- File Uploads -->
-        <div class="card-custom card mb-4 d-none">
+        <div class="card-custom card mb-4">
             <div class="card-header">
-                <h4 class="mb-0"><i class="bi bi-file-earmark-arrow-up me-2"></i>Unggah Berkas</h4>
+                <h4 class="mb-0"><i class="bi bi-file-earmark-arrow-up me-2"></i>Unggah Berkas (Opsional)</h4>
             </div>
             <div class="card-body">
                 <div class="row g-3">
-                    <div class="col-md-6 d-none">
-                        <label for="photo" class="form-label">Foto Profil <span class="text-danger">*</span></label>
+                    <div class="col-md-6">
+                        <label for="photo" class="form-label">Foto Profil</label>
                         <input type="file" class="form-control" id="photo" name="photo" accept="image/jpeg,image/jpg,image/png,image/webp">
-                        <small class="text-muted">Format: JPG, PNG, WebP. Maks: 2MB. Foto akan dikonversi ke WebP untuk optimasi.</small>
+                        <small class="text-muted">Format: JPG, PNG, WebP. Maks: 2MB. Foto akan dikonversi ke WebP untuk optimasi. (Opsional)</small>
                     </div>
-                    <div class="col-md-6 d-none">
+                    <div class="col-md-6">
                         <label for="documents" class="form-label">KTP/ID</label>
                         <input type="file" class="form-control" id="documents" name="documents[]" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,image/*" multiple>
-                        <small class="text-muted">Format: PDF, DOC, DOCX, JPG, PNG, GIF. Maks: 5MB per berkas</small>
+                        <small class="text-muted">Format: PDF, DOC, DOCX, JPG, PNG, GIF. Maks: 5MB per berkas. (Opsional)</small>
                     </div>
                 </div>
             </div>
