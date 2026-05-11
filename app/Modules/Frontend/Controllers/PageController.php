@@ -276,19 +276,19 @@ class PageController extends BaseController
             'place_of_birth' => 'required|min_length[3]|max_length[100]',
             'date_of_birth' => 'required|valid_date',
             'religion' => 'required|min_length[3]|max_length[50]',
-            'phone' => 'required|regex_match[/^[0-9]{10,15}$/]',
-            'email' => 'required|valid_email|is_unique[profiles.email]',
+            'phone' => 'required|regex_match[/^[+]?[0-9]{10,15}$/]',
+            'email' => 'required|valid_email',
             'street_address' => 'required|min_length[5]',
             'district' => 'required|min_length[3]',
             'regency' => 'required|min_length[3]',
             'province' => 'required|min_length[3]',
             'emergency_contact_name' => 'required|min_length[3]|max_length[100]',
-            'emergency_contact_phone' => 'required|regex_match[/^[0-9]{10,15}$/]',
+            'emergency_contact_phone' => 'required|regex_match[/^[+]?[0-9]{10,15}$/]',
             'emergency_contact_relation' => 'required|min_length[3]|max_length[50]',
             'father_name' => 'required|min_length[3]|max_length[100]',
             'mother_name' => 'required|min_length[3]|max_length[100]',
             'course' => 'permit_empty|min_length[3]', // Optional - for backward compatibility
-            'documents.*' => 'max_size[documents,5120]|ext_in[documents,pdf,doc,docx,jpg,jpeg,png,gif,webp]',
+            'documents.*' => 'max_size[documents,5120]|ext_in[documents,pdf,doc,docx,jpg,jpeg,png,gif,image/*]',
         ];
 
         if (!$this->validate($rules)) {
@@ -657,29 +657,22 @@ class PageController extends BaseController
         $message .= "DATA PRIBADI\n";
         $message .= "Nama Lengkap: " . ($admissionData['full_name'] ?? '-') . "\n";
         $message .= "Nomor KTP: " . ($admissionData['citizen_id'] ?? '-') . "\n";
-        $gender = ($admissionData['gender'] ?? '-') == 'Male' ? 'Laki-Laki' : (($admissionData['gender'] ?? '-') == 'Female' ? 'Perempuan' : '-');
-        $message .= "Jenis Kelamin: " . $gender . "\n";
+        $message .= "Jenis Kelamin: " . ($admissionData['gender'] ?? '-') . "\n";
         $message .= "Agama: " . ($admissionData['religion'] ?? '-') . "\n";
         $dob = trim(($admissionData['place_of_birth'] ?? '') . ", " . ($admissionData['date_of_birth'] ?? ''), ", ");
         $message .= "Tempat, Tanggal Lahir: " . ($dob != ", " ? $dob : '-') . "\n";
-        
+
         $address = ($admissionData['street_address'] ?? '-');
         if (!empty($admissionData['district'])) $address .= ", " . $admissionData['district'];
         if (!empty($admissionData['regency'])) $address .= ", " . $admissionData['regency'];
         if (!empty($admissionData['province'])) $address .= ", " . $admissionData['province'];
+        if (!empty($admissionData['postal_code'])) $address .= " , " . $admissionData['postal_code'];
         $message .= "Alamat: " . $address . "\n";
         $message .= "No. Telp: " . ($admissionData['phone'] ?? '-') . "\n";
         $message .= "Email: " . ($admissionData['email'] ?? '-') . "\n\n";
 
         $message .= "KONTAK DARURAT\n";
-        $emergencyContact = $admissionData['emergency_contact_name'] ?? '-';
-        if (!empty($admissionData['emergency_contact_phone'])) {
-            $emergencyContact .= " (" . $admissionData['emergency_contact_phone'] . ")";
-        }
-        if (!empty($admissionData['emergency_contact_relation'])) {
-            $emergencyContact .= " - " . $admissionData['emergency_contact_relation'];
-        }
-        $message .= $emergencyContact . "\n\n";
+        $message .= "Nama: " . ($admissionData['emergency_contact_name'] ?? '-') . " (" . ($admissionData['emergency_contact_phone'] ?? '-') . ") - " . ($admissionData['emergency_contact_relation'] ?? '-') . "\n\n";
 
         $message .= "DATA DAPODIK\n";
         $message .= "Ayah: " . ($admissionData['father_name'] ?? '-') . "\n";
@@ -692,13 +685,17 @@ class PageController extends BaseController
         $message .= "Mulai Kursus: " . ($admissionData['start_date'] ?? date('Y-m-d')) . "\n\n";
 
         $message .= "INFORMASI HARGA\n";
-        $totalFee = (float)($program['tuition_fee'] ?? 0) + (float)($program['registration_fee'] ?? 0);
-        $message .= "Harga Program: Rp " . number_format($totalFee, 0, ',', '.') . ",-\n\n";
+        $tuitionFee = (float)($program['tuition_fee'] ?? 0);
+        $registrationFee = (float)($program['registration_fee'] ?? 500000);
+        $totalFee = $tuitionFee + $registrationFee;
+        $message .= "Biaya Program: Rp " . number_format($tuitionFee, 0, ',', '.') . ",-\n";
+        $message .= "Biaya Registrasi : Rp " . number_format($registrationFee, 0, ',', '.') . ",-\n";
+        $message .= "Total : Rp " . number_format($totalFee, 0, ',', '.') . ",-\n\n";
 
-        $message .= "CATATAN: Biaya registrasi Rp " . number_format($program['registration_fee'] ?? 500000, 0, ',', '.') . " dibayarkan setelah mengisi formulir ini.\n\n";
+        $message .= "CATATAN: Biaya registrasi Rp " . number_format($registrationFee, 0, ',', '.') . " dibayarkan setelah mengisi formulir ini.\n\n";
 
         $message .= "Terima kasih.";
-        
+
         return $message;
     }
 
